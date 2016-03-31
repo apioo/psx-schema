@@ -1,0 +1,34 @@
+{
+  "name": "psx/schema",
+  "description": "Parse and generate data schema formats",
+  "keywords": ["schema", "xsd", "jsonschema"],
+  "homepage": "http://phpsx.org",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Christoph Kappestein",
+      "email": "christoph.kappestein@gmail.com",
+      "homepage": "http://christoph.kappestein.com/"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "doctrine/annotations": "^1.2",
+    "psx/data": "dev-master",
+    "psx/datetime": "dev-master",
+    "psx/http": "dev-master",
+    "psx/json": "dev-master",
+    "psx/schema": "dev-master",
+    "symfony/console": "^2.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "PSX\\Schema\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PSX\\Schema\\Tests\\": "tests/"
+    }
+  }
+}
