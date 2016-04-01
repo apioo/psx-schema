@@ -219,6 +219,6 @@ XML;
         $dom = new \DOMDocument();
         $dom->loadXML($result);
 
-        $this->assertTrue($dom->schemaValidate(__DIR__ . '/../../../Api/Tests/Generator/Wsdl/schema.xsd'));
+        $this->assertTrue($dom->schemaValidate(__DIR__ . '/schema.xsd'));
     }
 }

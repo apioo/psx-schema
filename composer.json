@@ -18,8 +18,11 @@
     "psx/datetime": "dev-master",
     "psx/http": "dev-master",
     "psx/json": "dev-master",
-    "psx/schema": "dev-master",
-    "symfony/console": "^2.8"
+    "psx/uri": "dev-master",
+    "psx/validate": "dev-master",
+    "symfony/console": "^2.8",
+
+    "psx/model": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.8"

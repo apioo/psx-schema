@@ -20,8 +20,6 @@
 
 namespace PSX\Schema;
 
-use PSX\Data\RecordAbstract;
-
 /**
  * PropertyAbstract
  *

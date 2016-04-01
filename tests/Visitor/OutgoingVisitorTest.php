@@ -217,17 +217,6 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('4', $visitor->visitString(4, $property, ''));
     }
 
-    /**
-     * @expectedException \ErrorException
-     */
-    public function testVisitStringInvalidFormat()
-    {
-        $visitor  = new OutgoingVisitor();
-        $property = Property::getString('test');
-
-        $visitor->visitString(array(), $property, '');
-    }
-
     public function testVisitTime()
     {
         $visitor  = new OutgoingVisitor();
