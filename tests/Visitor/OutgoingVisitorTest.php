@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests\Visitor;
 
 use PSX\Schema\Property;
-use PSX\Schema\Visitor\AssimilationVisitor;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
 
