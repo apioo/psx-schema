@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Data\Record;
+use PSX\Record\Record;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;

@@ -77,7 +77,7 @@ class IncomingVisitorTest extends \PHPUnit_Framework_TestCase
 
         $record = $visitor->visitComplex((object) ['foo' => 'bar'], $property, '');
 
-        $this->assertInstanceOf('PSX\Data\RecordInterface', $record);
+        $this->assertInstanceOf('PSX\Record\RecordInterface', $record);
         $this->assertEquals(['foo' => 'bar'], $record->getProperties());
     }
 

@@ -20,7 +20,7 @@
 
 namespace PSX\Schema;
 
-use PSX\Data\RecordInterface;
+use PSX\Record\RecordInterface;
 use PSX\Schema\Visitor\IncomingVisitor;
 use Traversable;
 use ReflectionClass;

@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Visitor;
 
-use PSX\Data\Record;
+use PSX\Record\Record;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\RevealerInterface;
