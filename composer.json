@@ -14,10 +14,10 @@
   "require": {
     "php": ">=5.5",
     "doctrine/annotations": "^1.2",
-    "psx/data": "^0.1",
     "psx/datetime": "^0.1",
     "psx/http": "^0.1",
     "psx/json": "^0.1",
+    "psx/record": "^0.1",
     "psx/uri": "^0.1",
     "psx/validate": "^0.1",
     "symfony/console": "^2.8"
