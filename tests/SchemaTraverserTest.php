@@ -80,7 +80,15 @@ class SchemaTraverserTest extends \PHPUnit_Framework_TestCase
         $traverser = new SchemaTraverser();
         $data = $traverser->traverse($expect, $schema, new OutgoingVisitor());
 
-        $this->assertEquals($expect, Transformer::toArray($data));
+        $this->assertEquals('level1', $data->title);
+        $this->assertEquals('level2', $data->model->title);
+        $this->assertEquals('level3', $data->model->model->title);
+        $this->assertEquals('level4', $data->model->model->model->title);
+        $this->assertEquals('level5', $data->model->model->model->model->title);
+        $this->assertEquals('level6', $data->model->model->model->model->model->title);
+        $this->assertEquals('level7', $data->model->model->model->model->model->model->title);
+        $this->assertEquals('level8', $data->model->model->model->model->model->model->model->title);
+        $this->assertEquals(null, $data->model->model->model->model->model->model->model->model);
     }
 
     /**

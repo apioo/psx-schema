@@ -38,9 +38,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testVisitArray()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -57,9 +57,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitBoolean()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -76,9 +76,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitComplex()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -97,9 +97,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitDateTime()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -116,9 +116,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitDate()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -135,9 +135,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitDuration()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -154,9 +154,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitFloat()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -173,9 +173,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitInteger()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -192,9 +192,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitString()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
@@ -211,9 +211,9 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testVisitTime()
     {
-        $validator = $this->getMockBuilder('PSX\Validate\Validator')
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('validateProperty'))
+            ->setMethods(['validate', 'validateProperty'])
             ->getMock();
 
         $validator->expects($this->once())
