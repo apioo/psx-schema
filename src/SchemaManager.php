@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use Doctrine\Common\Annotations\Reader;
+
 /**
  * SchemaManager
  *
@@ -29,18 +31,25 @@ namespace PSX\Schema;
  */
 class SchemaManager implements SchemaManagerInterface
 {
+    protected $popoParser;
+
+    public function __construct(Reader $annotationReader)
+    {
+        $this->popoParser = new Parser\Popo($annotationReader);
+    }
+
     public function getSchema($schemaName)
     {
         if (class_exists($schemaName)) {
-            $schema = new $schemaName($this);
-
-            if ($schema instanceof SchemaInterface) {
-                return $schema;
+            if (in_array('PSX\\Schema\\SchemaInterface', class_implements($schemaName))) {
+                return new $schemaName($this);
             } else {
-                throw new InvalidSchemaException('Could not find schema ' . $schemaName);
+                return $this->popoParser->parse($schemaName);
             }
+        } elseif (is_file($schemaName)) {
+            return Parser\JsonSchema::fromFile($schemaName);
         } else {
-            throw new InvalidSchemaException('Schema class ' . $schemaName . ' does not exist');
+            throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
         }
     }
 }
