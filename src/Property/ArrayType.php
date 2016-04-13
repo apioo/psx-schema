@@ -48,7 +48,7 @@ class ArrayType extends CompositeTypeAbstract
 
     public function getPrototype()
     {
-        return current($this->properties);
+        return isset($this->properties['prototype']) ? $this->properties['prototype'] : null;
     }
 
     public function setMinLength($minLength)

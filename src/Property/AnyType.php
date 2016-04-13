@@ -53,6 +53,6 @@ class AnyType extends ComplexType
 
     public function getPrototype()
     {
-        return current($this->properties);
+        return isset($this->properties['prototype']) ? $this->properties['prototype'] : null;
     }
 }
