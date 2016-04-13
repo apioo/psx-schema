@@ -320,20 +320,24 @@ class Document
             $property->setEnumeration($data['enum']);
         }
 
-        if (isset($data['minimum'])) {
-            $property->setMin($data['minimum']);
+        if ($property instanceof Property\DecimalType) {
+            if (isset($data['minimum'])) {
+                $property->setMin($data['minimum']);
+            }
+
+            if (isset($data['maximum'])) {
+                $property->setMax($data['maximum']);
+            }
         }
 
-        if (isset($data['maximum'])) {
-            $property->setMax($data['maximum']);
-        }
+        if ($property instanceof Property\StringType) {
+            if (isset($data['minLength'])) {
+                $property->setMinLength($data['minLength']);
+            }
 
-        if (isset($data['minLength'])) {
-            $property->setMinLength($data['minLength']);
-        }
-
-        if (isset($data['maxLength'])) {
-            $property->setMaxLength($data['maxLength']);
+            if (isset($data['maxLength'])) {
+                $property->setMaxLength($data['maxLength']);
+            }
         }
 
         if (isset($data['description'])) {
