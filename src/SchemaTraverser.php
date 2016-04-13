@@ -111,44 +111,15 @@ class SchemaTraverser
         } elseif ($property instanceof Property\BooleanType) {
             return $visitor->visitBoolean($data, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\ChoiceType) {
-            $properties = $property->getProperties();
-            $reference  = $property->getReference();
-            $type       = null;
+            $choiceType = $property->getChoice($data, $this->getCurrentPath());
 
-            if (!empty($reference)) {
-                // if we have a reference it must be a revealer class
-                $class = new ReflectionClass($reference);
-                if ($class->implementsInterface('PSX\\Schema\\RevealerInterface')) {
-                    $revealer = $class->newInstance();
-                    $type     = $revealer->getType($data, $this->getCurrentPath());
+            if (!$choiceType instanceof Property\ComplexType) {
+                $types = array_keys($property->getChoiceTypes());
 
-                    if (!isset($properties[$type])) {
-                        throw new ValidationException($this->getCurrentPath() . ' must be one of the following objects [' . implode(', ', array_keys($properties)) . ']');
-                    }
-                } else {
-                    throw new RuntimeException('Choice type must implement PSX\\Schema\\RevealerInterface ');
-                }
-            } else {
-                // if we have no reference we try to find the data structure
-                // which matches the most
-                $matches = array();
-                foreach ($properties as $index => $prop) {
-                    $value = $this->match($data, $prop);
-                    if ($value > 0) {
-                        $matches[$index] = $value;
-                    }
-                }
-
-                if (empty($matches)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be one of the following objects [' . implode(', ', array_keys($properties)) . ']');
-                }
-
-                arsort($matches);
-
-                $type = key($matches);
+                throw new ValidationException($this->getCurrentPath() . ' must be one of the following types (' . implode(', ', $types) . ')');
             }
 
-            return $this->recTraverse($data, $properties[$type], $visitor);
+            return $this->recTraverse($data, $choiceType, $visitor);
         } elseif ($property instanceof Property\ComplexType) {
             $data   = $this->normalizeToArray($data);
             $result = new \stdClass();
@@ -196,36 +167,6 @@ class SchemaTraverser
         } elseif ($property instanceof Property\StringType) {
             return $visitor->visitString($data, $property, $this->getCurrentPath());
         }
-    }
-
-    /**
-     * Returns a value indicating how much the given data structure matches
-     * this type
-     *
-     * @param mixed $data
-     * @param \PSX\Schema\Property\ComplexType $property
-     * @return integer
-     */
-    protected function match($data, Property\ComplexType $property)
-    {
-        $data = $this->normalizeToArray($data);
-
-        if (is_array($data)) {
-            $properties = $property->getProperties();
-            $match      = 0;
-
-            foreach ($properties as $name => $property) {
-                if (isset($data[$name])) {
-                    $match++;
-                } elseif ($property->isRequired()) {
-                    return 0;
-                }
-            }
-
-            return $match / count($properties);
-        }
-
-        return 0;
     }
 
     protected function normalizeToArray($data)

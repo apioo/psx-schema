@@ -20,8 +20,13 @@
 
 namespace PSX\Schema\Property;
 
+use PSX\Record\RecordInterface;
+use PSX\Schema\ChoiceResolver;
+use PSX\Schema\ChoiceResolverInterface;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\Property;
 use RuntimeException;
+use ReflectionClass;
 
 /**
  * ChoiceType
@@ -32,6 +37,11 @@ use RuntimeException;
  */
 class ChoiceType extends CompositeTypeAbstract
 {
+    /**
+     * @var \PSX\Schema\ChoiceResolverInterface
+     */
+    protected $choiceResolver;
+
     public function add(PropertyInterface $property)
     {
         if (!$property instanceof ComplexType && !$property instanceof RecursionType) {
@@ -39,5 +49,49 @@ class ChoiceType extends CompositeTypeAbstract
         }
 
         return parent::add($property);
+    }
+
+    public function setResolver(ChoiceResolverInterface $choiceResolver)
+    {
+        $this->choiceResolver = $choiceResolver;
+    }
+
+    public function getChoice($data, $path)
+    {
+        $type = $this->getResolver()->getType($data, $path, $this);
+
+        return isset($this->properties[$type]) ? $this->properties[$type] : null;
+    }
+    
+    public function getChoiceTypes()
+    {
+        return $this->getResolver()->getTypes($this);
+    }
+    
+    protected function getResolver()
+    {
+        static $resolver;
+
+        if ($resolver) {
+            return $resolver;
+        }
+
+        if ($this->choiceResolver === null) {
+            if (!empty($this->reference)) {
+                // if we have a reference it must be a choice resolver class
+                $class = new ReflectionClass($this->reference);
+                if ($class->implementsInterface('PSX\\Schema\\ChoiceResolverInterface')) {
+                    $resolver = $class->newInstance();
+                } else {
+                    throw new RuntimeException('Choice type reference must implement the interface PSX\\Schema\\ChoiceResolverInterface');
+                }
+            } else {
+                $resolver = new ChoiceResolver();
+            }
+        } else {
+            $resolver = $this->choiceResolver;
+        }
+
+        return $resolver;
     }
 }

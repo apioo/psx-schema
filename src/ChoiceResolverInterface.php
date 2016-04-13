@@ -21,22 +21,29 @@
 namespace PSX\Schema;
 
 /**
- * RevealerInterface
+ * ChoiceResolverInterface
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface RevealerInterface
+interface ChoiceResolverInterface
 {
     /**
-     * Reveals the true value of a json object. Through this it is possible to
-     * handle polymorphic types. It can returns either a class name as string
-     * or an object which contains the provided data
+     * Returns the name of a specific type
      *
-     * @param string $value
+     * @param mixed $data
      * @param string $path
-     * @return string|object|null
+     * @param \PSX\Schema\Property\ChoiceType $property
+     * @return string
      */
-    public function reveal($value, $path);
+    public function getType($data, $path, Property\ChoiceType $property);
+
+    /**
+     * Returns an associative array of all possible type name => class names
+     *
+     * @param \PSX\Schema\Property\ChoiceType $property
+     * @return array
+     */
+    public function getTypes(Property\ChoiceType $property);
 }
