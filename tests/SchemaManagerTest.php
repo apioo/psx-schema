@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\SchemaManager;
 
 /**
@@ -31,20 +32,43 @@ use PSX\Schema\SchemaManager;
  */
 class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetSchema()
-    {
-        $schemaManager = new SchemaManager();
-
-        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schemaManager->getSchema('PSX\Schema\Tests\Generator\TestSchema'));
-    }
+    /**
+     * @var \Doctrine\Common\Annotations\Reader
+     */
+    protected $reader;
 
     /**
-     * @expectedException \PSX\Schema\InvalidSchemaException
+     * @var \PSX\Schema\SchemaManager
      */
-    public function testGetSchemaInvalidClass()
+    protected $schemaManager;
+
+    protected function setUp()
     {
-        $schemaManager = new SchemaManager();
-        $schemaManager->getSchema('stdClass');
+        $this->reader = new SimpleAnnotationReader();
+        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $this->schemaManager = new SchemaManager($this->reader);
+    }
+
+    public function testGetSchemaClass()
+    {
+        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\Generator\TestSchema');
+
+        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+    }
+
+    public function testGetSchemaPopo()
+    {
+        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\Parser\Popo\News');
+
+        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+    }
+
+    public function testGetSchemaFile()
+    {
+        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/JsonSchema/other_schema.json');
+
+        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }
 
     /**
@@ -52,7 +76,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSchemaNotExisting()
     {
-        $schemaManager = new SchemaManager();
+        $schemaManager = new SchemaManager($this->reader);
         $schemaManager->getSchema('foo');
     }
 }
