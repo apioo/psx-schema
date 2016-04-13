@@ -20,13 +20,12 @@ Generator | Description
 --------- | -----------
 HTML | Generates a HTML representation of the schema
 JsonSchema | Generates a [JsonSchema](http://json-schema.org/) specification
-Sample | Generates a sample format using provided data
+PHP | Generates a PHP class representing the schema using annotations
 XSD | Generates a [XSD](https://www.w3.org/TR/xmlschema-0/) specification
 
 ## Usage
 
 ```php
-
 // read a schema from a JsonSchema file
 $schema = JsonSchema::fromFile('schema.json');
 
@@ -39,11 +38,46 @@ $traverser = new SchemaTraverser();
 $visitor = new IncomingVisitor();
 
 // now we traverse the data
+$data = ['foo' => 'bar']
+
 $traverser->traverse($data, $schema, $visitor);
 
 // we can generate a XSD representation from the schema
 $generator = new Xsd('http://phpsx.org/tns');
 
 echo $generator->generate($schema);
+
+```
+
+## Annotations
+
+It is possible to turn a normal PHP class into an schema. Therefor you can use
+annotations to describe the type of each property.
+
+```php
+class News
+{
+    /**
+     * @Type("integer")
+     */
+    protected $id;
+
+    /**
+     * @Type("string")
+     */
+    protected $title;
+
+    /**
+     * @Type("PSX\Schema\Tests\Parser\Popo\Author")
+     */
+    protected $author;
+
+    /**
+     * @Type("array<PSX\Schema\Tests\Parser\Popo\Comment>")
+     */
+    protected $comments;
+
+    // getter/setter
+}
 
 ```
