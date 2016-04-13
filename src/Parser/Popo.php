@@ -23,6 +23,7 @@ namespace PSX\Schema\Parser;
 use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
 use PSX\Schema\Parser\Popo\ObjectReader;
+use PSX\Schema\Parser\Popo\TypeParser;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
@@ -86,9 +87,11 @@ class Popo implements ParserInterface
     /**
      * @param string $type
      * @param string $key
+     * @param ReflectionProperty $reflection
+     * @param boolean $parseProperties
      * @return \PSX\Schema\PropertyInterface
      */
-    protected function getProperty($type, $key, ReflectionProperty $reflection)
+    protected function getProperty($type, $key, ReflectionProperty $reflection, $parseProperties = true)
     {
         if (empty($type)) {
             $type = 'string';
@@ -98,28 +101,32 @@ class Popo implements ParserInterface
             return $property;
         }
 
-        $pos = strpos($type, '<');
-        if ($pos !== false) {
-            $typeHint = substr($type, $pos + 1, strrpos($type, '>') - $pos - 1);
-            $typeHint = ltrim($typeHint, '\\');
-            $baseType = substr($type, 0, $pos);
-        } else {
-            $typeHint = null;
-            $baseType = $type;
-        }
+        $typeObject = TypeParser::parse($type);
 
-        $baseType = strtolower(ltrim($baseType, '\\'));
-
-        switch ($baseType) {
+        switch ($typeObject->getBaseType()) {
             case 'any':
             case 'map':
                 $property = new Property\AnyType($key);
-                $property->setPrototype($this->getProperty($typeHint, $key, $reflection));
+                $subTypes = $typeObject->getSubTypes();
+
+                if (!empty($subTypes)) {
+                    $prop = $this->getProperty(reset($subTypes), null, $reflection, false);
+                    $property->setPrototype($prop);
+                } else {
+                    throw new RuntimeException('Any type must have a sub type');
+                }
                 break;
 
             case 'array':
                 $property = new Property\ArrayType($key);
-                $property->setPrototype($this->getProperty($typeHint, $key, $reflection));
+                $subTypes = $typeObject->getSubTypes();
+
+                if (!empty($subTypes)) {
+                    $prop = $this->getProperty(reset($subTypes), null, $reflection, false);
+                    $property->setPrototype($prop);
+                } else {
+                    throw new RuntimeException('Array type must have a sub type');
+                }
                 break;
 
             case 'bool':
@@ -129,13 +136,36 @@ class Popo implements ParserInterface
 
             case 'choice':
                 $property = new Property\ChoiceType($key);
-                $property->setReference($typeHint);
+                $subTypes = $typeObject->getSubTypes();
 
-                $this->parseChoiceType($property, $reflection);
+                if (!empty($subTypes)) {
+                    foreach ($subTypes as $name => $complexType) {
+                        $prop = $this->getProperty($complexType, $name, $reflection, false);
+                        $prop->setName($name);
+
+                        $property->add($prop);
+                    }
+                } else {
+                    throw new RuntimeException('Choice type must have a sub type');
+                }
+                break;
+
+            case 'complex':
+                $property = new Property\ComplexType($key);
+                $property->setReference($typeObject->getTypeHint());
+
+                $this->addObjectCache($type, $reflection, $property);
+                $this->pushProperty($type, $reflection, $property);
+
+                $this->parseComplexType($property);
+
+                $this->popProperty();
                 break;
 
             case 'datetime':
                 $property = new Property\DateTimeType($key);
+                $typeHint = $typeObject->getTypeHint();
+
                 if (!empty($typeHint)) {
                     $property->setPattern($this->getDateTimePattern($typeHint));
                 }
@@ -157,59 +187,50 @@ class Popo implements ParserInterface
             case 'integer':
                 $property = new Property\IntegerType($key);
                 break;
-
-            case 'string':
-                $property = new Property\StringType($key);
-                break;
-
+            
             case 'time':
                 $property = new Property\TimeType($key);
                 break;
 
-            case 'complex':
+            case 'string':
             default:
-                $property = new Property\ComplexType($key);
-                $property->setReference($type == 'complex' ? $typeHint : $type);
-
-                $this->addObjectCache($type, $reflection, $property);
-                $this->pushProperty($type, $reflection, $property);
-
-                $this->parseComplexType($property);
-
-                $this->popProperty();
+                $property = new Property\StringType($key);
                 break;
         }
 
-        $this->parseProperties($reflection, $property);
-
-        if ($property instanceof Property\ArrayType) {
-            $this->parseArrayProperties($reflection, $property);
-        } elseif ($property instanceof Property\DecimalType) {
-            $this->parseDecimalProperties($reflection, $property);
-        } elseif ($property instanceof Property\StringType) {
-            $this->parseStringProperties($reflection, $property);
+        // set type hint if available
+        $typeHint = $typeObject->getTypeHint();
+        if (!empty($typeHint)) {
+            $property->setReference($typeHint);
         }
 
-        if ($property instanceof PropertySimpleAbstract) {
-            $this->parseSimpleProperties($reflection, $property);
+        if ($parseProperties) {
+            $this->parseProperties($reflection, $property);
+
+            if ($property instanceof Property\ArrayType) {
+                $this->parseArrayProperties($reflection, $property);
+            } elseif ($property instanceof Property\DecimalType) {
+                $this->parseDecimalProperties($reflection, $property);
+            } elseif ($property instanceof Property\StringType) {
+                $this->parseStringProperties($reflection, $property);
+            }
+
+            if ($property instanceof PropertySimpleAbstract) {
+                $this->parseSimpleProperties($reflection, $property);
+            }
         }
 
         return $property;
     }
 
-    protected function parseChoiceType(Property\ChoiceType $property, ReflectionProperty $reflection)
-    {
-        $class = new ReflectionClass($property->getReference());
-        $types = $class->newInstance()->getTypes();
-
-        foreach ($types as $key => $type) {
-            $property->add($this->getProperty($type, $key, $reflection));
-        }
-    }
-
     protected function parseComplexType(Property\ComplexType $property)
     {
         $class = new ReflectionClass($property->getReference());
+
+        $title = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Title');
+        if ($title !== null) {
+            $property->setName($title->getTitle());
+        }
 
         $description = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Description');
         if ($description !== null) {
@@ -218,7 +239,7 @@ class Popo implements ParserInterface
 
         $additionalProperties = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\AdditionalProperties');
         if ($additionalProperties !== null) {
-            $property->setDescription($additionalProperties->hasAdditionalProperties());
+            $property->setAdditionalProperties($additionalProperties->hasAdditionalProperties());
         }
 
         $properties = ObjectReader::getProperties($this->reader, $class);
