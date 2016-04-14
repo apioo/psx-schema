@@ -31,7 +31,7 @@ use PSX\Record\RecordInterface;
  */
 class ChoiceResolver implements ChoiceResolverInterface
 {
-    public function getType($data, $path, Property\ChoiceType $property)
+    public function getProperty($data, $path, Property\ChoiceType $property)
     {
         $properties = $property->getProperties();
         $matches    = [];
@@ -48,8 +48,9 @@ class ChoiceResolver implements ChoiceResolverInterface
         }
 
         arsort($matches);
+        $key = key($matches);
 
-        return key($matches);
+        return isset($properties[$key]) ? $properties[$key] : null;
     }
 
     public function getTypes(Property\ChoiceType $property)

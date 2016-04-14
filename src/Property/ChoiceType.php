@@ -58,11 +58,9 @@ class ChoiceType extends CompositeTypeAbstract
 
     public function getChoice($data, $path)
     {
-        $type = $this->getResolver()->getType($data, $path, $this);
-
-        return isset($this->properties[$type]) ? $this->properties[$type] : null;
+        return $this->getResolver()->getProperty($data, $path, $this);
     }
-    
+
     public function getChoiceTypes()
     {
         return $this->getResolver()->getTypes($this);

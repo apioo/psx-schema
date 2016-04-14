@@ -30,14 +30,14 @@ namespace PSX\Schema;
 interface ChoiceResolverInterface
 {
     /**
-     * Returns the name of a specific type
+     * Returns the fitting property for the provided data or null
      *
      * @param mixed $data
      * @param string $path
      * @param \PSX\Schema\Property\ChoiceType $property
-     * @return string
+     * @return \PSX\Schema\PropertyInterface|null
      */
-    public function getType($data, $path, Property\ChoiceType $property);
+    public function getProperty($data, $path, Property\ChoiceType $property);
 
     /**
      * Returns an associative array of all possible type name => class names
