@@ -108,8 +108,8 @@ class TypeParser
 
         preg_match('/^([A-z0-9\\\\]+)(\(([A-z0-9\\\\]+)\))?(\<(.*)\>)?$/', $type, $matches);
 
-        $baseType = isset($matches[1]) ? $matches[1] : null;
-        $typeHint = isset($matches[3]) ? $matches[3] : null;
+        $baseType = isset($matches[1]) ? ltrim($matches[1], '\\') : null;
+        $typeHint = isset($matches[3]) ? ltrim($matches[3], '\\') : null;
         $subTypes = isset($matches[5]) ? $matches[5] : null;
 
         // if we have a class name its a complex type
@@ -120,7 +120,7 @@ class TypeParser
 
         return new self(
             strtolower($baseType),
-            ltrim($typeHint, '\\'),
+            $typeHint,
             self::parseSubType($subTypes)
         );
     }

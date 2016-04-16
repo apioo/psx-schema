@@ -164,10 +164,10 @@ class Popo implements ParserInterface
 
             case 'datetime':
                 $property = new Property\DateTimeType($key);
-                $typeHint = $typeObject->getTypeHint();
+                $subType  = reset($typeObject->getSubTypes());
 
-                if (!empty($typeHint)) {
-                    $property->setPattern($this->getDateTimePattern($typeHint));
+                if (!empty($subType)) {
+                    $property->setPattern($this->getDateTimePattern($subType));
                 }
                 break;
 
