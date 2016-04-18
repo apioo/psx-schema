@@ -72,6 +72,14 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetSchemaInvalidType()
+    {
+        $this->schemaManager->getSchema(new \stdClass());
+    }
+
+    /**
      * @expectedException \PSX\Schema\InvalidSchemaException
      */
     public function testGetSchemaNotExisting()

@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
+use InvalidArgumentException;
 
 /**
  * SchemaManager
@@ -58,6 +59,10 @@ class SchemaManager implements SchemaManagerInterface
 
     public function getSchema($schemaName)
     {
+        if (!is_string($schemaName)) {
+            throw new InvalidArgumentException('Schema name must be a string');
+        }
+
         $item = null;
         if (!$this->debug) {
             $item = $this->cache->getItem($schemaName);
