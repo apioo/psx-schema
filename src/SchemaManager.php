@@ -21,6 +21,9 @@
 namespace PSX\Schema;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Cache\ArrayCache;
+use Psr\Cache\CacheItemPoolInterface;
+use PSX\Cache\Pool;
 
 /**
  * SchemaManager
@@ -31,25 +34,55 @@ use Doctrine\Common\Annotations\Reader;
  */
 class SchemaManager implements SchemaManagerInterface
 {
+    /**
+     * @var \PSX\Schema\Parser\Popo
+     */
     protected $popoParser;
 
-    public function __construct(Reader $annotationReader)
+    /**
+     * @var \Psr\Cache\CacheItemPoolInterface
+     */
+    protected $cache;
+
+    /**
+     * @var boolean
+     */
+    protected $debug;
+
+    public function __construct(Reader $annotationReader, CacheItemPoolInterface $cache = null, $debug = false)
     {
         $this->popoParser = new Parser\Popo($annotationReader);
+        $this->cache      = $cache === null ? new Pool(new ArrayCache()) : $cache;
+        $this->debug      = $debug;
     }
 
     public function getSchema($schemaName)
     {
+        $item = null;
+        if (!$this->debug) {
+            $item = $this->cache->getItem($schemaName);
+            if ($item->isHit()) {
+                return new Schema($item->get());
+            }
+        }
+        
         if (class_exists($schemaName)) {
             if (in_array('PSX\\Schema\\SchemaInterface', class_implements($schemaName))) {
-                return new $schemaName($this);
+                $schema = new $schemaName($this);
             } else {
-                return $this->popoParser->parse($schemaName);
+                $schema = $this->popoParser->parse($schemaName);
             }
         } elseif (is_file($schemaName)) {
-            return Parser\JsonSchema::fromFile($schemaName);
+            $schema = Parser\JsonSchema::fromFile($schemaName);
         } else {
             throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
         }
+
+        if (!$this->debug && $item !== null) {
+            $item->set($schema->getDefinition());
+            $this->cache->save($item);
+        }
+
+        return $schema;
     }
 }
