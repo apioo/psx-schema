@@ -76,12 +76,11 @@ class ChoiceResolver implements ChoiceResolverInterface
      */
     protected function match($data, Property\ComplexType $property)
     {
-        $data = $this->normalizeToArray($data);
+        $data       = $this->normalizeToArray($data);
+        $properties = $property->getProperties();
 
-        if (is_array($data)) {
-            $properties = $property->getProperties();
-            $match      = 0;
-
+        if (is_array($data) && count($properties) > 0) {
+            $match = 0;
             foreach ($properties as $name => $property) {
                 if (isset($data[$name])) {
                     $match++;
