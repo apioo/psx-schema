@@ -104,4 +104,14 @@ abstract class CompositeTypeAbstract extends PropertyAbstract implements Iterato
     {
         return count($this->properties);
     }
+
+    public function __clone()
+    {
+        $properties = $this->properties;
+        $this->properties = [];
+
+        foreach ($properties as $name => $property) {
+            $this->properties[$name] = clone $properties[$name];
+        }
+    }
 }

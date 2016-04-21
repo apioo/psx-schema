@@ -67,24 +67,25 @@ class SchemaManager implements SchemaManagerInterface
         if (!$this->debug) {
             $item = $this->cache->getItem($schemaName);
             if ($item->isHit()) {
-                return new Schema($item->get());
+                return $item->get();
             }
         }
-        
-        if (class_exists($schemaName)) {
+
+        if (strpos($schemaName, '.') !== false) {
+            $schema = Parser\JsonSchema::fromFile($schemaName);
+        } elseif (class_exists($schemaName)) {
             if (in_array('PSX\\Schema\\SchemaInterface', class_implements($schemaName))) {
                 $schema = new $schemaName($this);
             } else {
                 $schema = $this->popoParser->parse($schemaName);
             }
-        } elseif (is_file($schemaName)) {
-            $schema = Parser\JsonSchema::fromFile($schemaName);
         } else {
             throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
         }
 
         if (!$this->debug && $item !== null) {
-            $item->set($schema->getDefinition());
+            $schema = new Schema($schema->getDefinition());
+            $item->set($schema);
             $this->cache->save($item);
         }
 

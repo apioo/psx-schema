@@ -38,7 +38,9 @@ abstract class SchemaAbstract implements SchemaInterface
 
     protected function getSchema($name)
     {
-        return $this->schemaManager->getSchema($name)->getDefinition();
+        // clone the definition so that we dont change the definition of
+        // another schema
+        return clone $this->schemaManager->getSchema($name)->getDefinition();
     }
 
     protected function getSchemaBuilder($name)
