@@ -231,9 +231,9 @@ class Popo implements ParserInterface
         $annotations = $this->reader->getClassAnnotations($class);
 
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\TitleInterface) {
+            if ($annotation instanceof Annotation\Title) {
                 $property->setName($annotation->getTitle());
-            } elseif ($annotation instanceof Annotation\DescriptionInterface) {
+            } elseif ($annotation instanceof Annotation\Description) {
                 $property->setDescription($annotation->getDescription());
             } elseif ($annotation instanceof Annotation\AdditionalProperties) {
                 $property->setAdditionalProperties($annotation->hasAdditionalProperties());
@@ -303,7 +303,7 @@ class Popo implements ParserInterface
                 $property->setName($annotation->getKey());
             } elseif ($annotation instanceof Annotation\Required) {
                 $property->setRequired(true);
-            } elseif ($annotation instanceof Annotation\DescriptionInterface) {
+            } elseif ($annotation instanceof Annotation\Description) {
                 $property->setDescription($annotation->getDescription());
             }
         }
