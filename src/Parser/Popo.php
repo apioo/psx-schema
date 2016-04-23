@@ -228,12 +228,12 @@ class Popo implements ParserInterface
     {
         $class = new ReflectionClass($property->getReference());
 
-        $title = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Title');
+        $title = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\TitleInterface');
         if ($title !== null) {
             $property->setName($title->getTitle());
         }
 
-        $description = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Description');
+        $description = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\DescriptionInterface');
         if ($description !== null) {
             $property->setDescription($description->getDescription());
         }

@@ -29,7 +29,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Title
+class Title implements TitleInterface
 {
     /**
      * @var string

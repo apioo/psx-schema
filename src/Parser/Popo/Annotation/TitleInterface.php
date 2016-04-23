@@ -21,28 +21,16 @@
 namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Description
+ * TitleInterface
  *
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Description implements DescriptionInterface
+interface TitleInterface
 {
     /**
-     * @var string
+     * @return string
      */
-    protected $description;
-
-    public function __construct(array $values)
-    {
-        $this->description = current($values);
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
+    public function getTitle();
 }
