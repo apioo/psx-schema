@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\Parser\Popo\TypeParser;
+use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
@@ -88,10 +89,10 @@ class Popo implements ParserInterface
      * @param string $type
      * @param string $key
      * @param ReflectionProperty $reflection
-     * @param boolean $parseProperties
+     * @param array $annotations
      * @return \PSX\Schema\PropertyInterface
      */
-    protected function getProperty($type, $key, ReflectionProperty $reflection, $parseProperties = true)
+    protected function getProperty($type, $key, ReflectionProperty $reflection, array $annotations = null)
     {
         if (empty($type)) {
             $type = 'string';
@@ -110,7 +111,7 @@ class Popo implements ParserInterface
                 $subTypes = $typeObject->getSubTypes();
 
                 if (!empty($subTypes)) {
-                    $prop = $this->getProperty(reset($subTypes), null, $reflection, false);
+                    $prop = $this->getProperty(reset($subTypes), null, $reflection);
                     $property->setPrototype($prop);
                 } else {
                     throw new RuntimeException('Any type must have a sub type');
@@ -122,7 +123,7 @@ class Popo implements ParserInterface
                 $subTypes = $typeObject->getSubTypes();
 
                 if (!empty($subTypes)) {
-                    $prop = $this->getProperty(reset($subTypes), null, $reflection, false);
+                    $prop = $this->getProperty(reset($subTypes), null, $reflection);
                     $property->setPrototype($prop);
                 } else {
                     throw new RuntimeException('Array type must have a sub type');
@@ -140,7 +141,7 @@ class Popo implements ParserInterface
 
                 if (!empty($subTypes)) {
                     foreach ($subTypes as $name => $complexType) {
-                        $prop = $this->getProperty($complexType, $name, $reflection, false);
+                        $prop = $this->getProperty($complexType, $name, $reflection);
                         $prop->setName($name);
 
                         $property->add($prop);
@@ -205,19 +206,19 @@ class Popo implements ParserInterface
             $property->setReference($typeHint);
         }
 
-        if ($parseProperties) {
-            $this->parseProperties($reflection, $property);
+        if (!empty($annotations)) {
+            $this->parseProperties($property, $annotations);
 
             if ($property instanceof Property\ArrayType) {
-                $this->parseArrayProperties($reflection, $property);
+                $this->parseArrayProperties($property, $annotations);
             } elseif ($property instanceof Property\DecimalType) {
-                $this->parseDecimalProperties($reflection, $property);
+                $this->parseDecimalProperties($property, $annotations);
             } elseif ($property instanceof Property\StringType) {
-                $this->parseStringProperties($reflection, $property);
+                $this->parseStringProperties($property, $annotations);
             }
 
             if ($property instanceof PropertySimpleAbstract) {
-                $this->parseSimpleProperties($reflection, $property);
+                $this->parseSimpleProperties($property, $annotations);
             }
         }
 
@@ -226,27 +227,24 @@ class Popo implements ParserInterface
 
     protected function parseComplexType(Property\ComplexType $property)
     {
-        $class = new ReflectionClass($property->getReference());
+        $class       = new ReflectionClass($property->getReference());
+        $annotations = $this->reader->getClassAnnotations($class);
 
-        $title = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\TitleInterface');
-        if ($title !== null) {
-            $property->setName($title->getTitle());
-        }
-
-        $description = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\DescriptionInterface');
-        if ($description !== null) {
-            $property->setDescription($description->getDescription());
-        }
-
-        $additionalProperties = $this->reader->getClassAnnotation($class, 'PSX\\Schema\\Parser\\Popo\\Annotation\\AdditionalProperties');
-        if ($additionalProperties !== null) {
-            $property->setAdditionalProperties($additionalProperties->hasAdditionalProperties());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\TitleInterface) {
+                $property->setName($annotation->getTitle());
+            } elseif ($annotation instanceof Annotation\DescriptionInterface) {
+                $property->setDescription($annotation->getDescription());
+            } elseif ($annotation instanceof Annotation\AdditionalProperties) {
+                $property->setAdditionalProperties($annotation->hasAdditionalProperties());
+            }
         }
 
         $properties = ObjectReader::getProperties($this->reader, $class);
         foreach ($properties as $key => $reflection) {
-            $type = $this->getTypeForProperty($reflection);
-            $prop = $this->getProperty($type, $key, $reflection);
+            $annotations = $this->reader->getPropertyAnnotations($reflection);
+            $type        = $this->getTypeForProperty($reflection, $annotations);
+            $prop        = $this->getProperty($type, $key, $reflection, $annotations);
 
             if ($prop instanceof PropertyInterface) {
                 $property->add($prop);
@@ -254,81 +252,73 @@ class Popo implements ParserInterface
         }
     }
 
-    protected function parseArrayProperties(ReflectionProperty $reflection, Property\ArrayType $property)
+    protected function parseArrayProperties(Property\ArrayType $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\MinLength');
-        if ($annotation !== null) {
-            $property->setMinLength($annotation->getMinLength());
-        }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\MaxLength');
-        if ($annotation !== null) {
-            $property->setMaxLength($annotation->getMaxLength());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\MinLength) {
+                $property->setMinLength($annotation->getMinLength());
+            } elseif ($annotation instanceof Annotation\MaxLength) {
+                $property->setMaxLength($annotation->getMaxLength());
+            }
         }
     }
 
-    protected function parseDecimalProperties(ReflectionProperty $reflection, Property\DecimalType $property)
+    protected function parseDecimalProperties(Property\DecimalType $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Minimum');
-        if ($annotation !== null) {
-            $property->setMin($annotation->getMin());
-        }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Maximum');
-        if ($annotation !== null) {
-            $property->setMax($annotation->getMax());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Minimum) {
+                $property->setMin($annotation->getMin());
+            } elseif ($annotation instanceof Annotation\Maximum) {
+                $property->setMax($annotation->getMax());
+            }
         }
     }
 
-    protected function parseStringProperties(ReflectionProperty $reflection, Property\StringType $property)
+    protected function parseStringProperties(Property\StringType $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\MinLength');
-        if ($annotation !== null) {
-            $property->setMinLength($annotation->getMinLength());
-        }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\MaxLength');
-        if ($annotation !== null) {
-            $property->setMaxLength($annotation->getMaxLength());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\MinLength) {
+                $property->setMinLength($annotation->getMinLength());
+            } elseif ($annotation instanceof Annotation\MaxLength) {
+                $property->setMaxLength($annotation->getMaxLength());
+            }
         }
     }
 
-    protected function parseSimpleProperties(ReflectionProperty $reflection, PropertySimpleAbstract $property)
+    protected function parseSimpleProperties(PropertySimpleAbstract $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Pattern');
-        if ($annotation !== null) {
-            $property->setPattern($annotation->getPattern());
-        }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Enum');
-        if ($annotation !== null) {
-            $property->setEnumeration($annotation->getEnum());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Pattern) {
+                $property->setPattern($annotation->getPattern());
+            } elseif ($annotation instanceof Annotation\Enum) {
+                $property->setEnumeration($annotation->getEnum());
+            }
         }
     }
 
-    protected function parseProperties(ReflectionProperty $reflection, PropertyAbstract $property)
+    protected function parseProperties(PropertyAbstract $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Key');
-        if ($annotation !== null) {
-            $property->setName($annotation->getKey());
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Key) {
+                $property->setName($annotation->getKey());
+            } elseif ($annotation instanceof Annotation\Required) {
+                $property->setRequired(true);
+            } elseif ($annotation instanceof Annotation\DescriptionInterface) {
+                $property->setDescription($annotation->getDescription());
+            }
         }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Description');
-        if ($annotation !== null) {
-            $property->setDescription($annotation->getDescription());
-        }
-
-        $annotation = $this->reader->getPropertyAnnotation($reflection, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Required');
-        $property->setRequired($annotation !== null);
     }
 
-    protected function getTypeForProperty(ReflectionProperty $property)
+    protected function getTypeForProperty(ReflectionProperty $property, array $annotations)
     {
-        $annotation = $this->reader->getPropertyAnnotation($property, 'PSX\\Schema\\Parser\\Popo\\Annotation\\Type');
+        $type = null;
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Type) {
+                $type = $annotation->getType();
+            }
+        }
 
-        if ($annotation !== null) {
-            $type = $annotation->getType();
-        } else {
+        if ($type === null) {
             // as fallback we try to read the @var annotation
             preg_match('/\* @var (.*)\\s/imsU', $property->getDocComment(), $matches);
             if (isset($matches[1])) {

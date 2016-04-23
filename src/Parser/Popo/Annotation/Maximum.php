@@ -21,7 +21,7 @@
 namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Description
+ * Maximum
  *
  * @Annotation
  * @Target("PROPERTY")
