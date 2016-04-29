@@ -87,7 +87,8 @@ class SchemaCommand extends Command
                 break;
 
             case 'php':
-                $response = var_export($schema, true);
+                $generator = new Generator\Php();
+                $response  = $generator->generate($schema);
                 break;
 
             case 'serialize':
