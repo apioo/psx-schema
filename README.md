@@ -108,9 +108,9 @@ following some examples how to define different types:
   Property must be an integer
 - `Acme\News`  
   Property must be an object of type `Acme\News`
-- `array<Acme\News>`
+- `array<Acme\News>`  
   Property must be an array of `Acme\News` objects
-- `array(Acme\Collection)<Acme\News>`
+- `array(Acme\Collection)<Acme\News>`  
   Property must be an array of `Acme\News` objects. As array implementation we
   use `Acme\Collection`
 
