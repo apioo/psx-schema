@@ -125,7 +125,7 @@ Type       = "any" / "array" / "boolean" / "choice" / "complex" / "datetime" /
 Impl       = "(" Class ")" 
 Class      = CHAR ; Must be an absolute PHP class name
 
-Properties = "<" ( Property "," ) ">"
+Properties = "<" *( Property "," ) ">"
 Property   = Value / Key "=" Value
 Key        = ALPHA / DIGIT
 Value      = CHAR
