@@ -78,3 +78,55 @@ class News
 }
 
 ```
+
+The following annotations are available:
+
+| Annotation            | Target         | Example                     |
+|-----------------------|----------------|-----------------------------|
+| @AdditionalProperties | Class          | @AdditionalProperties(true) |
+| @Description          | Class/Property | @Description("content")     |
+| @Enum                 | Property       | @Enum({"foo", "bar"})       |
+| @Exclude              | Property       | @Exclude                    |
+| @Key                  | Property       | @Key("$ref")                |
+| @Maximum              | Property       | @Maximum(16)                |
+| @MaxLength            | Property       | @MaxLength(16)              |
+| @Minimum              | Property       | @Minimum(4)                 |
+| @MinLength            | Property       | @MinLength(4)               |
+| @Pattern              | Property       | @Pattern("A-z+")            |
+| @Required             | Property       | @Required                   |
+| @Title                | Class          | @Title("foo")               |
+| @Type                 | Property       | @Type("string")             |
+
+### Type
+
+Through the `@Type` annotation we can define the type of the property. In the 
+following some examples how to define different types:
+
+- `string`  
+  Property must be a string
+- `integer`  
+  Property must be an integer
+- `Acme\News`  
+  Property must be an object of type `Acme\News`
+- `array<Acme\News>`
+  Property must be an array of `Acme\News` objects
+- `array(Acme\Collection)<Acme\News>`
+  Property must be an array of `Acme\News` objects. As array implementation we
+  use `Acme\Collection`
+
+The ABNF of the type is:
+
+```text
+Rule       =  Type [ Impl ] [ Properties ]
+
+Type       = "any" / "array" / "boolean" / "choice" / "complex" / "datetime" / 
+             "date" / "duration" / "float" / "integer" / "string" / "time"
+
+Impl       = "(" Class ")" 
+Class      = CHAR ; Must be an absolute PHP class name
+
+Properties = "<" ( Property "," ) ">"
+Property   = Value / Key "=" Value
+Key        = ALPHA / DIGIT
+Value      = CHAR
+```
