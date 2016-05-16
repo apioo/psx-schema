@@ -108,6 +108,8 @@ class SchemaTraverser
             }
 
             return $visitor->visitArray($result, $property, $this->getCurrentPath());
+        } elseif ($property instanceof Property\BinaryType) {
+            return $visitor->visitBinary($data, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\BooleanType) {
             return $visitor->visitBoolean($data, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\ChoiceType) {
@@ -164,6 +166,8 @@ class SchemaTraverser
             return $visitor->visitInteger($data, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\TimeType) {
             return $visitor->visitTime($data, $property, $this->getCurrentPath());
+        } elseif ($property instanceof Property\UriType) {
+            return $visitor->visitUri($data, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\StringType) {
             return $visitor->visitString($data, $property, $this->getCurrentPath());
         }

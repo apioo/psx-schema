@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
+use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
 use PSX\Schema\SchemaInterface;
@@ -252,18 +253,39 @@ class Xsd implements GeneratorInterface
         }
     }
 
-    protected function getPropertyTypeName(PropertyInterface $type, $withNamespace = false)
+    protected function getPropertyTypeName(PropertyAbstract $type, $withNamespace = false)
     {
         if ($this->hasConstraints($type)) {
             return ($withNamespace ? 'tns:' : '') . 'type' . $type->getId();
         } else {
-            return ($withNamespace ? 'xs:' : '') . $this->getBasicType($type);
+            return $this->getBasicType($type, $withNamespace);
         }
     }
 
-    protected function getBasicType(PropertyInterface $type, $withNamespace = false)
+    protected function getBasicType(PropertyAbstract $type, $withNamespace = false)
     {
-        return ($withNamespace ? 'xs:' : '') . $type->getTypeName();
+        $typeName = $type->getTypeName();
+
+        switch ($typeName) {
+            case 'binary':
+                return ($withNamespace ? 'xs:' : '') . 'base64Binary';
+                break;
+
+            case 'uri':
+                return ($withNamespace ? 'xs:' : '') . 'anyURI';
+                break;
+
+            case 'boolean':
+            case 'dateTime':
+            case 'date':
+            case 'duration':
+            case 'float':
+            case 'integer':
+            case 'string':
+            case 'time':
+            default:
+                return ($withNamespace ? 'xs:' : '') . $typeName;
+        }
     }
 
     protected function hasConstraints(PropertyInterface $type)

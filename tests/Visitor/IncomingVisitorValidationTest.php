@@ -71,6 +71,26 @@ class IncomingVisitorValidationTest extends \PHPUnit_Framework_TestCase
         $visitor->visitArray(array('foo', 'bar'), $property, '');
     }
 
+    public function testVisitBinary()
+    {
+        $visitor  = new IncomingVisitor();
+        $property = Property::getBinary('test');
+
+        $visitor->visitBinary('', $property, '');
+        $visitor->visitBinary(base64_encode('foo'), $property, '');
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitBinaryInvalidFormat()
+    {
+        $visitor  = new IncomingVisitor();
+        $property = Property::getBinary('test');
+
+        $visitor->visitBinary('foobar', $property, '');
+    }
+
     public function testVisitBoolean()
     {
         $visitor  = new IncomingVisitor();
@@ -544,5 +564,14 @@ class IncomingVisitorValidationTest extends \PHPUnit_Framework_TestCase
         $property = Property::getTime('test');
 
         $visitor->visitTime(new \DateTime(), $property, '');
+    }
+
+    public function testVisitUri()
+    {
+        $visitor  = new IncomingVisitor();
+        $property = Property::getUri('test');
+
+        $visitor->visitUri('/foo', $property, '');
+        $visitor->visitUri('http://foo.com?foo=bar', $property, '');
     }
 }

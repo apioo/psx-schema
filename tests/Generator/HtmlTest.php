@@ -38,7 +38,7 @@ class HtmlTest extends GeneratorTestCase
 
         $expect = <<<'HTML'
 <div>
-	<div id="psx-type-5e6f524596c660731e20c7883db801ce" class="psx-complex-type">
+	<div id="psx-type-b1db2c5f62f19bce035d880c5628d866" class="psx-complex-type">
 		<h1>news</h1>
 		<div class="psx-type-description">An general news entry</div>
 		<table class="table psx-type-properties">
@@ -125,6 +125,20 @@ class HtmlTest extends GeneratorTestCase
 									<a href="#psx-type-061fe430f3242fc808d8eb1859bb9cf3">web</a>
 								</span>
 							</span>&gt;</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">profileImage</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-binary">
+							<a href="http://tools.ietf.org/html/rfc4648" title="RFC4648">Base64</a>
+						</span>
 					</td>
 					<td>
 						<span class="psx-property-description"/>
@@ -321,6 +335,20 @@ class HtmlTest extends GeneratorTestCase
 					<td>
 						<span class="psx-property-type psx-property-type-time">
 							<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>
+						</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">profileUri</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-uri">
+							<a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>
 						</span>
 					</td>
 					<td>

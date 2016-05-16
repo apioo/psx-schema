@@ -171,6 +171,10 @@ class JsonSchemaTest extends GeneratorTestCase
             },
             "title": "resources"
         },
+        "profileImage": {
+            "type": "string",
+            "format": "base64"
+        },
         "read": {
             "type": "boolean"
         },
@@ -181,13 +185,16 @@ class JsonSchemaTest extends GeneratorTestCase
             "$ref": "#\/definitions\/ref98ac42f0f6f1ba965117d40b752bbb92"
         },
         "sendDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date"
         },
         "readDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
         },
         "expires": {
-            "type": "string"
+            "type": "string",
+            "format": "duration"
         },
         "price": {
             "type": "number",
@@ -213,7 +220,12 @@ class JsonSchemaTest extends GeneratorTestCase
             ]
         },
         "coffeeTime": {
-            "type": "string"
+            "type": "string",
+            "format": "time"
+        },
+        "profileUri": {
+            "type": "string",
+            "format": "uri"
         }
     },
     "required": [

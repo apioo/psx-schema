@@ -82,6 +82,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PSX\Schema\Property\ArrayType', $property->get('array'));
         $this->assertEquals(1, $property->get('array')->getMinLength());
         $this->assertEquals(9, $property->get('array')->getMaxLength());
+        $this->assertInstanceOf('PSX\Schema\Property\BinaryType', $property->get('binary'));
         $this->assertInstanceOf('PSX\Schema\Property\BooleanType', $property->get('boolean'));
         $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('integer'));
         $this->assertEquals(1, $property->get('integer')->getMin());
@@ -96,6 +97,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PSX\Schema\Property\DateTimeType', $property->get('datetime'));
         $this->assertInstanceOf('PSX\Schema\Property\DurationType', $property->get('duration'));
         $this->assertInstanceOf('PSX\Schema\Property\TimeType', $property->get('time'));
+        $this->assertInstanceOf('PSX\Schema\Property\UriType', $property->get('uri'));
         $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('unknown'));
 
         $this->assertInstanceOf('PSX\Schema\Property\ChoiceType', $property->get('choice'));

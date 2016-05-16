@@ -112,6 +112,17 @@ class Builder
 
     /**
      * @param string $name
+     * @return \PSX\Schema\Property\BinaryType
+     */
+    public function binary($name)
+    {
+        $this->add($property = Property::getBinary($name));
+
+        return $property;
+    }
+
+    /**
+     * @param string $name
      * @return \PSX\Schema\Property\BooleanType
      */
     public function boolean($name)
@@ -232,6 +243,17 @@ class Builder
     public function time($name)
     {
         $this->add($property = Property::getTime($name));
+
+        return $property;
+    }
+
+    /**
+     * @param string $name
+     * @return \PSX\Schema\Property\UriType
+     */
+    public function uri($name)
+    {
+        $this->add($property = Property::getUri($name));
 
         return $property;
     }

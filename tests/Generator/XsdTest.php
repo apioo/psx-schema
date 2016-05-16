@@ -49,6 +49,7 @@ class XsdTest extends GeneratorTestCase
 				<xs:element name="tags" type="xs:string" minOccurs="1" maxOccurs="6"/>
 				<xs:element name="receiver" type="tns:type98ac42f0f6f1ba965117d40b752bbb92" minOccurs="1" maxOccurs="unbounded"/>
 				<xs:element name="resources" type="tns:typef78af2fbd7e56ca137acc2dc418bdb98" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="profileImage" type="xs:base64Binary" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="source" type="tns:typede9ec7b57ff66baf264101526a8dc7d3" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="author" type="tns:type98ac42f0f6f1ba965117d40b752bbb92" minOccurs="1" maxOccurs="1"/>
@@ -60,6 +61,7 @@ class XsdTest extends GeneratorTestCase
 				<xs:element name="content" type="tns:type9c50571703dc940dbc1a7e4e4f27ffe8" minOccurs="1" maxOccurs="1"/>
 				<xs:element name="question" type="tns:type4796f0df34ef8cf6e2ca96eac9ceb254" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="coffeeTime" type="xs:time" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="profileUri" type="xs:anyURI" minOccurs="0" maxOccurs="1" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

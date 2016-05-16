@@ -234,6 +234,10 @@ class Html implements GeneratorInterface
                 $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
             } elseif ($type instanceof Property\DurationType) {
                 $typeName = '<span title="ISO 8601">Duration</span>';
+            } elseif ($type instanceof Property\UriType) {
+                $typeName = '<a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>';
+            } elseif ($type instanceof Property\BinaryType) {
+                $typeName = '<a href="http://tools.ietf.org/html/rfc4648" title="RFC4648">Base64</a>';
             }
 
             $span = '<span class="psx-property-type ' . $cssClass . '">' . $typeName . '</span>';

@@ -61,6 +61,10 @@
                 }
             }]
         },
+        "binary": {
+            "type": "string",
+            "format": "base64"
+        },
         "boolean": {
             "type": "boolean"
         },
@@ -94,6 +98,10 @@
         "time": {
             "type": "string",
             "format": "time"
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
         },
         "unknown": {
         }

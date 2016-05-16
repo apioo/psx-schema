@@ -79,6 +79,7 @@ class TestSchema extends SchemaAbstract
                 ->add($location)
                 ->add($web)
             );
+        $sb->binary('profileImage');
         $sb->boolean('read');
         $sb->choiceType('source')
             ->add($author)
@@ -103,6 +104,7 @@ class TestSchema extends SchemaAbstract
         $sb->string('question')
             ->setEnumeration(array('foo', 'bar'));
         $sb->time('coffeeTime');
+        $sb->uri('profileUri');
 
         return $sb->getProperty();
     }

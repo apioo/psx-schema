@@ -30,6 +30,7 @@ use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Schema\VisitorInterface;
+use PSX\Uri\Uri;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -45,6 +46,19 @@ class OutgoingVisitor implements VisitorInterface
 {
     public function visitArray(array $data, Property\ArrayType $property, $path)
     {
+        return $data;
+    }
+
+    public function visitBinary($data, Property\BinaryType $property, $path)
+    {
+        if (is_string($data)) {
+            $data = base64_encode($data);
+        } elseif (is_resource($data)) {
+            $data = base64_encode(stream_get_contents($data, -1, 0));
+        } else {
+            throw new ValidationException($path . ' must be a binary string or resource');
+        }
+
         return $data;
     }
 
@@ -148,6 +162,22 @@ class OutgoingVisitor implements VisitorInterface
             $data = Time::fromDateTime($data);
         } else {
             throw new ValidationException($path . ' must be a valid full-time format (partial-time time-offset) [RFC3339]');
+        }
+
+        return $data->toString();
+    }
+
+    public function visitUri($data, Property\UriType $property, $path)
+    {
+        if (is_string($data)) {
+            try {
+                $data = new Uri($data);
+            } catch (\InvalidArgumentException $e) {
+                throw new ValidationException($path . ' must be a valid uri [RFC3986]');
+            }
+        } elseif ($data instanceof Uri) {
+        } else {
+            throw new ValidationException($path . ' must be a valid uri [RFC3986]');
         }
 
         return $data->toString();

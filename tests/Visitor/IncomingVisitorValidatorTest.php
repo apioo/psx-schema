@@ -26,6 +26,7 @@ use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Schema\Visitor\IncomingVisitor;
+use PSX\Uri\Uri;
 
 /**
  * Checks whether the validator is called for each property
@@ -53,6 +54,29 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 
         $visitor->visitArray(array('foo'), $property, '/test');
+    }
+
+    public function testVisitBinary()
+    {
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(['validate', 'validateProperty'])
+            ->getMock();
+
+        $validator->expects($this->once())
+            ->method('validateProperty')
+            ->with($this->equalTo('/test'), $this->callback(function($value){
+                $this->assertInternalType('resource', $value);
+                $this->assertEquals('foo', stream_get_contents($value, -1, 0));
+                return true;
+            }));
+
+        $visitor = new IncomingVisitor();
+        $visitor->setValidator($validator);
+
+        $property = Property::getBinary('test');
+
+        $visitor->visitBinary(base64_encode('foo'), $property, '/test');
     }
 
     public function testVisitBoolean()
@@ -226,5 +250,24 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getTime('test');
 
         $visitor->visitTime('13:37:00', $property, '/test');
+    }
+
+    public function testVisitUri()
+    {
+        $validator = $this->getMockBuilder('PSX\Validate\ValidatorInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(['validate', 'validateProperty'])
+            ->getMock();
+
+        $validator->expects($this->once())
+            ->method('validateProperty')
+            ->with($this->equalTo('/test'), $this->equalTo(new Uri('/foo')));
+
+        $visitor = new IncomingVisitor();
+        $visitor->setValidator($validator);
+
+        $property = Property::getUri('test');
+
+        $visitor->visitUri('/foo', $property, '/test');
     }
 }

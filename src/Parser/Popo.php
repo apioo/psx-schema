@@ -130,6 +130,10 @@ class Popo implements ParserInterface
                 }
                 break;
 
+            case 'binary':
+                $property = new Property\BinaryType($key);
+                break;
+
             case 'bool':
             case 'boolean':
                 $property = new Property\BooleanType($key);
@@ -192,6 +196,10 @@ class Popo implements ParserInterface
             
             case 'time':
                 $property = new Property\TimeType($key);
+                break;
+
+            case 'uri':
+                $property = new Property\UriType($key);
                 break;
 
             case 'string':

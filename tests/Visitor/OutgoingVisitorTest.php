@@ -49,6 +49,23 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $visitor->visitArray([], $property, ''));
     }
 
+    public function testVisitBinary()
+    {
+        $visitor  = new OutgoingVisitor();
+        $property = Property::getBinary('test');
+
+        $resource = fopen('php://temp', 'r+');
+        fwrite($resource, 'foo');
+
+        $this->assertEquals('', $visitor->visitBinary('', $property, ''));
+        $this->assertEquals('Zm9v', $visitor->visitBinary('foo', $property, ''));
+        $this->assertEquals('Zm9v', $visitor->visitBinary($resource, $property, ''));
+
+        // there is no check whether the data is already base64 encoded so in
+        // case we double encode the data
+        $this->assertEquals('Wm05dg==', $visitor->visitBinary('Zm9v', $property, ''));
+    }
+
     public function testVisitBoolean()
     {
         $visitor  = new OutgoingVisitor();
@@ -235,5 +252,14 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getTime('test');
 
         $visitor->visitTime('foo', $property, '');
+    }
+
+    public function testVisitUri()
+    {
+        $visitor  = new OutgoingVisitor();
+        $property = Property::getUri('test');
+
+        $this->assertEquals('/foo', $visitor->visitUri('/foo', $property, ''));
+        $this->assertEquals('http://foo.com', $visitor->visitUri('http://foo.com', $property, ''));
     }
 }

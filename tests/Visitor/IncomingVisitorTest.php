@@ -23,6 +23,7 @@ namespace PSX\Schema\Tests\Visitor;
 use PSX\Schema\Property;
 use PSX\Schema\Visitor\AssimilationVisitor;
 use PSX\Schema\Visitor\IncomingVisitor;
+use PSX\Uri\Uri;
 
 /**
  * IncomingVisitorTest
@@ -39,6 +40,21 @@ class IncomingVisitorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getArray('test')->setPrototype(Property::getString('foo'));
 
         $this->assertEquals(['10'], $visitor->visitArray([10], $property, ''));
+    }
+
+    public function testVisitBinary()
+    {
+        $visitor  = new IncomingVisitor();
+        $property = Property::getBinary('test');
+
+        $base64 = base64_encode('foo');
+        $resource = fopen('php://temp', 'r+');
+        fwrite($resource, 'foo');
+
+        $this->assertInternalType('resource', $visitor->visitBinary($base64, $property, ''));
+        $this->assertInternalType('resource', $visitor->visitBinary($resource, $property, ''));
+        $this->assertEquals('foo', stream_get_contents($visitor->visitBinary($base64, $property, '')));
+        $this->assertEquals('foo', stream_get_contents($visitor->visitBinary($resource, $property, '')));
     }
 
     public function testVisitBoolean()
@@ -235,5 +251,15 @@ class IncomingVisitorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getTime('test');
 
         $visitor->visitTime('foo', $property, '');
+    }
+
+    public function testVisitUri()
+    {
+        $visitor  = new IncomingVisitor();
+        $property = Property::getUri('test');
+
+        $this->assertInstanceOf('PSX\Uri\Uri', $visitor->visitUri('/foo', $property, ''));
+        $this->assertInstanceOf('PSX\Uri\Uri', $visitor->visitUri('http://foo.com?foo=bar', $property, ''));
+        $this->assertInstanceOf('PSX\Uri\Uri', $visitor->visitUri(new Uri('/foo'), $property, ''));
     }
 }

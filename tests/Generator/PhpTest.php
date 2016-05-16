@@ -193,7 +193,7 @@ class Complex061fe430
  * @Description("An general news entry")
  * @AdditionalProperties(false)
  */
-class Complex5e6f5245
+class Complexb1db2c5f
 {
     /**
      * @Key("config")
@@ -219,6 +219,11 @@ class Complex5e6f5245
      * @Type("array<choice<location=PSX\Generation\Complexbb850228,web=PSX\Generation\Complex061fe430>>")
      */
     public $resources;
+    /**
+     * @Key("profileImage")
+     * @Type("binary")
+     */
+    public $profileImage;
     /**
      * @Key("read")
      * @Type("boolean")
@@ -286,6 +291,11 @@ class Complex5e6f5245
      * @Type("time")
      */
     public $coffeeTime;
+    /**
+     * @Key("profileUri")
+     * @Type("uri")
+     */
+    public $profileUri;
     public function setConfig($config)
     {
         $this->config = $config;
@@ -317,6 +327,14 @@ class Complex5e6f5245
     public function getResources()
     {
         return $this->resources;
+    }
+    public function setProfileImage($profileImage)
+    {
+        $this->profileImage = $profileImage;
+    }
+    public function getProfileImage()
+    {
+        return $this->profileImage;
     }
     public function setRead($read)
     {
@@ -406,6 +424,14 @@ class Complex5e6f5245
     {
         return $this->coffeeTime;
     }
+    public function setProfileUri($profileUri)
+    {
+        $this->profileUri = $profileUri;
+    }
+    public function getProfileUri()
+    {
+        return $this->profileUri;
+    }
 }
 PHP;
 
@@ -425,7 +451,7 @@ PHP;
 
         include_once $file;
 
-        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complex5e6f5245');
+        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complexb1db2c5f');
 
         $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $source);
         $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $schema);

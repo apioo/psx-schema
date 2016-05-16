@@ -298,6 +298,10 @@ class Document
                 $property = Property::getDuration($name);
             } elseif ($data['format'] == 'time') {
                 $property = Property::getTime($name);
+            } elseif ($data['format'] == 'uri') {
+                $property = Property::getUri($name);
+            } elseif ($data['format'] == 'base64') {
+                $property = Property::getBinary($name);
             }
         }
 

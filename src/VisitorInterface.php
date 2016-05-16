@@ -40,6 +40,16 @@ interface VisitorInterface
     public function visitArray(array $data, Property\ArrayType $property, $path);
 
     /**
+     * Visits a binary value
+     *
+     * @param string $data
+     * @param \PSX\Schema\Property\BinaryType $property
+     * @param string $path
+     * @return mixed
+     */
+    public function visitBinary($data, Property\BinaryType $property, $path);
+
+    /**
      * Visits a boolean value
      *
      * @param string $data
@@ -128,4 +138,14 @@ interface VisitorInterface
      * @return mixed
      */
     public function visitTime($data, Property\TimeType $property, $path);
+
+    /**
+     * Visits a uri value
+     *
+     * @param string $data
+     * @param \PSX\Schema\Property\UriType $property
+     * @param string $path
+     * @return mixed
+     */
+    public function visitUri($data, Property\UriType $property, $path);
 }

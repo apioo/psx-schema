@@ -31,6 +31,7 @@ use PSX\DateTime\Date;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Schema\VisitorInterface;
+use PSX\Uri\Uri;
 use PSX\Validate\ValidatorInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -84,6 +85,38 @@ class IncomingVisitor implements VisitorInterface
         $this->assertCompositeProperties($property, $path);
 
         $this->assertArrayConstraints($data, $property, $path);
+
+        $this->assertValidatorConstraints($data, $path);
+
+        return $this->createSimpleProperty($data, $property);
+    }
+
+    public function visitBinary($data, Property\BinaryType $property, $path)
+    {
+        $this->assertRequired($data, $property, $path);
+
+        if (is_resource($data)) {
+            rewind($data);
+        } elseif (is_string($data)) {
+            $result = preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data);
+
+            if ($result) {
+                $binary = base64_decode($data);
+                if ($binary === false) {
+                    throw new ValidationException($path . ' must be a valid Base64 encoded string [RFC4648]');
+                }
+
+                $resource = fopen('php://temp', 'r+');
+                fwrite($resource, $binary);
+                rewind($resource);
+
+                $data = $resource;
+            } else {
+                throw new ValidationException($path . ' must be a valid Base64 encoded string [RFC4648]');
+            }
+        } else {
+            throw new ValidationException($path . ' must be a valid Base64 encoded string [RFC4648]');
+        }
 
         $this->assertValidatorConstraints($data, $path);
 
@@ -324,6 +357,22 @@ class IncomingVisitor implements VisitorInterface
             }
         } else {
             throw new ValidationException($path . ' must be a valid full-time format (partial-time time-offset) [RFC3339]');
+        }
+
+        $this->assertValidatorConstraints($data, $path);
+
+        return $this->createSimpleProperty($data, $property);
+    }
+
+    public function visitUri($data, Property\UriType $property, $path)
+    {
+        $this->assertRequired($data, $property, $path);
+
+        if ($data instanceof Uri) {
+        } elseif (is_string($data)) {
+            $data = new Uri($data);
+        } else {
+            throw new ValidationException($path . ' must be a valid uri [RFC3986]');
         }
 
         $this->assertValidatorConstraints($data, $path);

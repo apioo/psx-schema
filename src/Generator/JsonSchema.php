@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
+use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Json\Parser;
@@ -65,9 +66,6 @@ class JsonSchema implements GeneratorInterface
     protected function generateRootElement(Property\ComplexType $type)
     {
         $properties  = $type->getProperties();
-        $typeName    = $type->getName();
-        $description = $type->getDescription();
-        $addProps    = $type->hasAdditionalProperties();
         $props       = array();
         $required    = array();
 
@@ -82,8 +80,8 @@ class JsonSchema implements GeneratorInterface
         }
         
         $definitions = array();
-        foreach ($this->definitions as $name => $type) {
-            $definitions[$name] = $type;
+        foreach ($this->definitions as $name => $definition) {
+            $definitions[$name] = $definition;
         }
 
         $result = array(
@@ -92,10 +90,12 @@ class JsonSchema implements GeneratorInterface
             'type'    => 'object',
         );
 
+        $typeName = $type->getName();
         if (!empty($typeName)) {
             $result['title'] = $typeName;
         }
 
+        $description = $type->getDescription();
         if (!empty($description)) {
             $result['description'] = $description;
         }
@@ -112,7 +112,15 @@ class JsonSchema implements GeneratorInterface
             $result['required'] = $required;
         }
 
-        $result['additionalProperties'] = $addProps;
+        $reference = $type->getReference();
+        if (!empty($reference)) {
+            $result['reference'] = $reference;
+        }
+
+        $addProps = $type->hasAdditionalProperties();
+        if ($addProps !== null) {
+            $result['additionalProperties'] = $addProps;
+        }
 
         return $result;
     }
@@ -240,6 +248,20 @@ class JsonSchema implements GeneratorInterface
                 $result['description'] = $description;
             }
 
+            if ($type instanceof Property\DateTimeType) {
+                $result['format'] = 'date-time';
+            } elseif ($type instanceof Property\DateType) {
+                $result['format'] = 'date';
+            } elseif ($type instanceof Property\TimeType) {
+                $result['format'] = 'time';
+            } elseif ($type instanceof Property\DurationType) {
+                $result['format'] = 'duration';
+            } elseif ($type instanceof Property\UriType) {
+                $result['format'] = 'uri';
+            } elseif ($type instanceof Property\BinaryType) {
+                $result['format'] = 'base64';
+            }
+
             if ($type instanceof Property\StringType) {
                 $minLength = $type->getMinLength();
                 if ($minLength) {
@@ -276,7 +298,7 @@ class JsonSchema implements GeneratorInterface
         }
     }
 
-    protected function getPropertyTypeName(PropertyInterface $type)
+    protected function getPropertyTypeName(PropertyAbstract $type)
     {
         switch ($type->getTypeName()) {
             case 'float':

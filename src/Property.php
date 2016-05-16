@@ -50,6 +50,15 @@ abstract class Property
 
     /**
      * @param string $name
+     * @return \PSX\Schema\Property\BinaryType
+     */
+    public static function getBinary($name)
+    {
+        return new Property\BinaryType($name);
+    }
+
+    /**
+     * @param string $name
      * @return \PSX\Schema\Property\BooleanType
      */
     public static function getBoolean($name)
@@ -136,5 +145,14 @@ abstract class Property
     public static function getTime($name)
     {
         return new Property\TimeType($name);
+    }
+
+    /**
+     * @param string $name
+     * @return \PSX\Schema\Property\UriType
+     */
+    public static function getUri($name)
+    {
+        return new Property\UriType($name);
     }
 }
