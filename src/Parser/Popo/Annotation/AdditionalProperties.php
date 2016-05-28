@@ -32,16 +32,16 @@ namespace PSX\Schema\Parser\Popo\Annotation;
 class AdditionalProperties
 {
     /**
-     * @var boolean
+     * @var boolean|string
      */
     protected $additionalProperties;
 
     public function __construct(array $values)
     {
-        $this->additionalProperties = (bool) current($values);
+        $this->additionalProperties = current($values);
     }
 
-    public function hasAdditionalProperties()
+    public function getAdditionalProperties()
     {
         return $this->additionalProperties;
     }

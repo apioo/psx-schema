@@ -36,7 +36,7 @@ class ObjectReader
      * Returns all available properties of an object
      *
      * @param \ReflectionClass $class
-     * @return array
+     * @return \ReflectionProperty[]
      */
     public static function getProperties(Reader $reader, ReflectionClass $class)
     {

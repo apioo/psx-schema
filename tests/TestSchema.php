@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Generator;
+namespace PSX\Schema\Tests;
 
 use PSX\Schema\Property;
 use PSX\Schema\SchemaAbstract;
@@ -35,12 +35,16 @@ class TestSchema extends SchemaAbstract
     public function getDefinition()
     {
         $sb = $this->getSchemaBuilder('location')
+            ->setAdditionalProperties(true)
             ->setDescription('Location of the person');
-        $sb->integer('lat');
-        $sb->integer('long');
+        $sb->float('lat');
+        $sb->float('long');
         $location = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('web')
+            ->setAdditionalProperties(Property::getString('value'))
+            ->setMinProperties(2)
+            ->setMaxProperties(8)
             ->setDescription('An application');
         $sb->string('name');
         $sb->string('url');
@@ -55,24 +59,31 @@ class TestSchema extends SchemaAbstract
             ->setDescription('We will send no spam to this addresss');
         $sb->arrayType('categories')
             ->setPrototype(Property::getString('category'))
-            ->setMaxLength(8);
+            ->setMaxItems(8);
         $sb->arrayType('locations')
             ->setPrototype($location)
             ->setDescription('Array of locations');
         $sb->complexType('origin', $location);
         $author = $sb->getProperty();
 
+        $sb = $this->getSchemaBuilder('meta')
+            ->setDescription('Some meta data')
+            ->addPatternProperty('^tags_\d$', Property::getString('tag'))
+            ->addPatternProperty('^location_\d$', $location);
+        $sb->dateTime('createDate');
+        $meta = $sb->getProperty();
+
         $sb = $this->getSchemaBuilder('news')
             ->setDescription('An general news entry');
-        $sb->anyType('config')
-            ->setPrototype(Property::getString('value'));
+        $sb->complexType('config')
+            ->setAdditionalProperties(Property::getString('value'));
         $sb->arrayType('tags')
             ->setPrototype(Property::getString('tag'))
-            ->setMinLength(1)
-            ->setMaxLength(6);
+            ->setMinItems(1)
+            ->setMaxItems(6);
         $sb->arrayType('receiver')
             ->setPrototype($author)
-            ->setMinLength(1)
+            ->setMinItems(1)
             ->setRequired(true);
         $sb->arrayType('resources')
             ->setPrototype(Property::getChoice('resource')
@@ -84,8 +95,8 @@ class TestSchema extends SchemaAbstract
         $sb->choiceType('source')
             ->add($author)
             ->add($web);
-        $sb->complexType($author)
-            ->setRequired(true);
+        $sb->complexType($author);
+        $sb->complexType($meta);
         $sb->date('sendDate');
         $sb->dateTime('readDate');
         $sb->duration('expires');
@@ -102,7 +113,7 @@ class TestSchema extends SchemaAbstract
             ->setMaxLength(512)
             ->setRequired(true);
         $sb->string('question')
-            ->setEnumeration(array('foo', 'bar'));
+            ->setEnumeration(['foo', 'bar']);
         $sb->time('coffeeTime');
         $sb->uri('profileUri');
 

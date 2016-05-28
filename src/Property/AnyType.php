@@ -21,7 +21,6 @@
 namespace PSX\Schema\Property;
 
 use PSX\Schema\PropertyInterface;
-use RuntimeException;
 
 /**
  * AnyType
@@ -32,13 +31,6 @@ use RuntimeException;
  */
 class AnyType extends ComplexType
 {
-    protected $additionalProperties = true;
-
-    public function setAdditionalProperties($value)
-    {
-        throw new RuntimeException('It is not possible to change the additional properties for the any type');
-    }
-
     public function add(PropertyInterface $property)
     {
         return $this->setPrototype($property);
@@ -46,13 +38,11 @@ class AnyType extends ComplexType
 
     public function setPrototype(PropertyInterface $prototype)
     {
-        $this->properties = array('prototype' => $prototype);
-
-        return $this;
+        return $this->setAdditionalProperties($prototype);
     }
 
     public function getPrototype()
     {
-        return isset($this->properties['prototype']) ? $this->properties['prototype'] : null;
+        return isset($this->additionalProperties) ? $this->additionalProperties : null;
     }
 }

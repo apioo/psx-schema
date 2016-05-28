@@ -20,8 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Schema\SchemaManager;
+use PSX\Schema\Tests\SchemaTestCase;
 
 /**
  * GeneratorTestCase
@@ -30,28 +29,6 @@ use PSX\Schema\SchemaManager;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class GeneratorTestCase extends \PHPUnit_Framework_TestCase
+abstract class GeneratorTestCase extends SchemaTestCase
 {
-    /**
-     * @var \Doctrine\Common\Annotations\Reader
-     */
-    protected $reader;
-
-    /**
-     * @var \PSX\Schema\SchemaManager
-     */
-    protected $schemaManager;
-    
-    protected function setUp()
-    {
-        $this->reader = new SimpleAnnotationReader();
-        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-        
-        $this->schemaManager = new SchemaManager($this->reader);
-    }
-
-    protected function getSchema()
-    {
-        return $this->schemaManager->getSchema('PSX\Schema\Tests\Generator\TestSchema');
-    }
 }

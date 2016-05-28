@@ -40,35 +40,31 @@ class JsonSchemaTest extends GeneratorTestCase
 {
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
-    "type": "object",
-    "title": "news",
-    "description": "An general news entry",
     "definitions": {
-        "ref156478d0880470b0a7122d05a3bd2153": {
-            "type": "object",
+        "ref72828040aecd82459c3636a4226e81fc": {
             "title": "config",
-            "patternProperties": {
-                "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]+$": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
         },
-        "refbb8502281f7ea91de9f753ecbfd59e2b": {
+        "refb33b896fd4135c2882510d8949e883cf": {
+            "title": "location",
+            "description": "Location of the person",
             "type": "object",
             "properties": {
                 "lat": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "long": {
-                    "type": "integer"
+                    "type": "number"
                 }
             },
-            "title": "origin",
-            "description": "Location of the person",
-            "additionalProperties": false
+            "additionalProperties": true
         },
-        "ref98ac42f0f6f1ba965117d40b752bbb92": {
+        "ref4770be5abc2aedca274241c166226fc7": {
+            "title": "author",
+            "description": "An simple author element with some description",
             "type": "object",
             "properties": {
                 "title": {
@@ -76,8 +72,8 @@ class JsonSchemaTest extends GeneratorTestCase
                     "pattern": "[A-z]{3,16}"
                 },
                 "email": {
-                    "type": "string",
-                    "description": "We will send no spam to this addresss"
+                    "description": "We will send no spam to this addresss",
+                    "type": "string"
                 },
                 "categories": {
                     "type": "array",
@@ -90,23 +86,23 @@ class JsonSchemaTest extends GeneratorTestCase
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#\/definitions\/refbb8502281f7ea91de9f753ecbfd59e2b"
+                        "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
                     },
                     "title": "locations",
                     "description": "Array of locations"
                 },
                 "origin": {
-                    "$ref": "#\/definitions\/refbb8502281f7ea91de9f753ecbfd59e2b"
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
                 }
             },
-            "title": "author",
-            "description": "An simple author element with some description",
+            "additionalProperties": false,
             "required": [
                 "title"
-            ],
-            "additionalProperties": false
+            ]
         },
-        "ref061fe430f3242fc808d8eb1859bb9cf3": {
+        "ref57c64cac92e27c1db99e6a6793546e12": {
+            "title": "web",
+            "description": "An application",
             "type": "object",
             "properties": {
                 "name": {
@@ -116,36 +112,61 @@ class JsonSchemaTest extends GeneratorTestCase
                     "type": "string"
                 }
             },
-            "title": "web",
-            "description": "An application",
+            "additionalProperties": {
+                "type": "string"
+            },
+            "minProperties": 2,
+            "maxProperties": 8
+        },
+        "ref4898a93cd82b117833f9683324e0f6dd": {
+            "title": "resource",
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                },
+                {
+                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                }
+            ]
+        },
+        "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
+            "title": "source",
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                },
+                {
+                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                }
+            ]
+        },
+        "ref68a5de1071c84dc3c357e50c05e674fa": {
+            "title": "meta",
+            "description": "Some meta data",
+            "type": "object",
+            "properties": {
+                "createDate": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "patternProperties": {
+                "^tags_\\d$": {
+                    "type": "string"
+                },
+                "^location_\\d$": {
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                }
+            },
             "additionalProperties": false
-        },
-        "reff78af2fbd7e56ca137acc2dc418bdb98": {
-            "oneOf": [
-                {
-                    "$ref": "#\/definitions\/refbb8502281f7ea91de9f753ecbfd59e2b"
-                },
-                {
-                    "$ref": "#\/definitions\/ref061fe430f3242fc808d8eb1859bb9cf3"
-                }
-            ],
-            "title": "resource"
-        },
-        "refde9ec7b57ff66baf264101526a8dc7d3": {
-            "oneOf": [
-                {
-                    "$ref": "#\/definitions\/ref98ac42f0f6f1ba965117d40b752bbb92"
-                },
-                {
-                    "$ref": "#\/definitions\/ref061fe430f3242fc808d8eb1859bb9cf3"
-                }
-            ],
-            "title": "source"
         }
     },
+    "title": "news",
+    "description": "An general news entry",
+    "type": "object",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/ref156478d0880470b0a7122d05a3bd2153"
+            "$ref": "#\/definitions\/ref72828040aecd82459c3636a4226e81fc"
         },
         "tags": {
             "type": "array",
@@ -159,7 +180,7 @@ class JsonSchemaTest extends GeneratorTestCase
         "receiver": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref98ac42f0f6f1ba965117d40b752bbb92"
+                "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
             },
             "title": "receiver",
             "minItems": 1
@@ -167,7 +188,7 @@ class JsonSchemaTest extends GeneratorTestCase
         "resources": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/reff78af2fbd7e56ca137acc2dc418bdb98"
+                "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
             },
             "title": "resources"
         },
@@ -179,10 +200,13 @@ class JsonSchemaTest extends GeneratorTestCase
             "type": "boolean"
         },
         "source": {
-            "$ref": "#\/definitions\/refde9ec7b57ff66baf264101526a8dc7d3"
+            "$ref": "#\/definitions\/ref20f5d15c759c1d56a2ed0675fe4b4a0b"
         },
         "author": {
-            "$ref": "#\/definitions\/ref98ac42f0f6f1ba965117d40b752bbb92"
+            "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+        },
+        "meta": {
+            "$ref": "#\/definitions\/ref68a5de1071c84dc3c357e50c05e674fa"
         },
         "sendDate": {
             "type": "string",
@@ -207,8 +231,8 @@ class JsonSchemaTest extends GeneratorTestCase
             "maximum": 5
         },
         "content": {
-            "type": "string",
             "description": "Contains the main content of the news entry",
+            "type": "string",
             "minLength": 3,
             "maxLength": 512
         },
@@ -228,13 +252,12 @@ class JsonSchemaTest extends GeneratorTestCase
             "format": "uri"
         }
     },
+    "additionalProperties": false,
     "required": [
         "receiver",
-        "author",
         "price",
         "content"
-    ],
-    "additionalProperties": false
+    ]
 }
 JSON;
 

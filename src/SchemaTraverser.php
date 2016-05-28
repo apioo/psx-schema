@@ -76,19 +76,6 @@ class SchemaTraverser
 
                 return $complex;
             }
-        } elseif ($property instanceof Property\AnyType) {
-            $data   = $this->normalizeToArray($data);
-            $result = new \stdClass();
-
-            foreach ($data as $key => $value) {
-                array_push($this->pathStack, $key);
-
-                $result->{$key} = $this->recTraverse($value, $property->getPrototype(), $visitor);
-
-                array_pop($this->pathStack);
-            }
-
-            return $visitor->visitComplex($result, $property, $this->getCurrentPath());
         } elseif ($property instanceof Property\ArrayType) {
             if (!is_array($data) && !$data instanceof Traversable) {
                 throw new ValidationException($this->getCurrentPath() . ' must be an array');
@@ -123,14 +110,20 @@ class SchemaTraverser
 
             return $this->recTraverse($data, $choiceType, $visitor);
         } elseif ($property instanceof Property\ComplexType) {
+            if (!is_array($data) && !is_object($data)) {
+                throw new ValidationException($this->getCurrentPath() . ' must be an object');
+            }
+
             $data   = $this->normalizeToArray($data);
             $result = new \stdClass();
+            $keys   = [];
 
             foreach ($property as $key => $prop) {
                 array_push($this->pathStack, $key);
 
                 if (isset($data[$key])) {
                     $result->{$key} = $this->recTraverse($data[$key], $prop, $visitor);
+                    $keys[] = $key;
                 } elseif ($prop->isRequired()) {
                     throw new ValidationException($this->getCurrentPath() . ' is required');
                 }
@@ -138,17 +131,44 @@ class SchemaTraverser
                 array_pop($this->pathStack);
             }
 
-            if ($property->hasAdditionalProperties()) {
-                foreach ($data as $key => $value) {
-                    if (!isset($result->{$key})) {
-                        $result->{$key} = $value;
+            $patternProperties = $property->getPatternProperties();
+            if (!empty($patternProperties)) {
+                foreach ($patternProperties as $pattern => $prop) {
+                    // check whether we have keys which match this pattern and 
+                    // are not already a fixed property
+
+                    foreach ($data as $key => $value) {
+                        if (preg_match('~' . $pattern . '~', $key) && !in_array($key, $keys)) {
+                            array_push($this->pathStack, $key);
+
+                            $result->{$key} = $this->recTraverse($data[$key], $prop, $visitor);
+                            $keys[] = $key;
+
+                            array_pop($this->pathStack);
+                        }
                     }
                 }
-            } elseif ($visitor instanceof IncomingVisitor) {
-                // check whether there are fields which not exist in the schema
-                foreach ($data as $key => $value) {
-                    if (!$property->has($key)) {
-                        throw new ValidationException($this->getCurrentPath() . ' property "' . $key . '" does not exist');
+            }
+
+            $remainingKeys = array_diff(array_keys($data), $keys);
+            if (!empty($remainingKeys)) {
+                $additionalProperties = $property->getAdditionalProperties();
+
+                if (is_bool($additionalProperties)) {
+                    if ($additionalProperties === true) {
+                        foreach ($remainingKeys as $key) {
+                            $result->{$key} = $data[$key];
+                        }
+                    } elseif ($visitor instanceof IncomingVisitor) {
+                        throw new ValidationException($this->getCurrentPath() . ' property "' . implode(', ', $remainingKeys) . '" does not exist');
+                    }
+                } elseif ($additionalProperties instanceof PropertyInterface) {
+                    foreach ($remainingKeys as $key) {
+                        array_push($this->pathStack, $key);
+
+                        $result->{$key} = $this->recTraverse($data[$key], $additionalProperties, $visitor);
+
+                        array_pop($this->pathStack);
                     }
                 }
             }

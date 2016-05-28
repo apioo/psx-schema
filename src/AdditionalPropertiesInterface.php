@@ -18,26 +18,24 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Parser;
-
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Schema\Parser;
-use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
+namespace PSX\Schema;
 
 /**
- * PopoTest
+ * If you have an object which allows additional or pattern properties and you 
+ * dont want to implement the ArrayAccess interface you can implement this 
+ * interface to give PSX the option to set those properties on the object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PopoTest extends ParserTestCase
+interface AdditionalPropertiesInterface
 {
-    public function testParse()
-    {
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Complex12b3526e::class);
-
-        $this->assertSchema($this->getSchema(), $schema);
-    }
+    /**
+     * Sets an additional property
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setProperty($name, $value);
 }

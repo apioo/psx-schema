@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Property;
 
+use PSX\Schema\PropertyInterface;
+
 /**
  * ComplexType
  *
@@ -29,7 +31,25 @@ namespace PSX\Schema\Property;
  */
 class ComplexType extends CompositeTypeAbstract
 {
+    /**
+     * @var boolean|\PSX\Schema\PropertyInterface
+     */
     protected $additionalProperties = false;
+
+    /**
+     * @var \PSX\Schema\PropertyInterface[]
+     */
+    protected $patternProperties = array();
+
+    /**
+     * @var integer
+     */
+    protected $minProperties;
+
+    /**
+     * @var integer
+     */
+    protected $maxProperties;
 
     public function setAdditionalProperties($value)
     {
@@ -38,8 +58,82 @@ class ComplexType extends CompositeTypeAbstract
         return $this;
     }
 
-    public function hasAdditionalProperties()
+    public function getAdditionalProperties()
     {
         return $this->additionalProperties;
+    }
+
+    public function setPatternProperties($patternProperties)
+    {
+        $this->patternProperties = $patternProperties;
+
+        return $this;
+    }
+
+    public function getPatternProperties()
+    {
+        return $this->patternProperties;
+    }
+
+    public function addPatternProperty($pattern, PropertyInterface $prototype)
+    {
+        $this->patternProperties[$pattern] = $prototype;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMinProperties()
+    {
+        return $this->minProperties;
+    }
+
+    /**
+     * @param integer $minProperties
+     */
+    public function setMinProperties($minProperties)
+    {
+        $this->minProperties = $minProperties;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMaxProperties()
+    {
+        return $this->maxProperties;
+    }
+
+    /**
+     * @param integer $maxProperties
+     */
+    public function setMaxProperties($maxProperties)
+    {
+        $this->maxProperties = $maxProperties;
+    }
+
+    public function getId()
+    {
+        $result     = parent::getId();
+        $properties = $this->patternProperties;
+
+        ksort($properties);
+
+        foreach ($properties as $pattern => $property) {
+            $result.= $pattern . $property->getId();
+        }
+
+        if (is_bool($this->additionalProperties)) {
+            $result.= $this->additionalProperties;
+        } elseif ($this->additionalProperties instanceof PropertyInterface) {
+            $result.= $this->additionalProperties->getId();
+        }
+
+        $result.= $this->minProperties;
+        $result.= $this->maxProperties;
+
+        return md5($result);
     }
 }

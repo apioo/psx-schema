@@ -86,153 +86,76 @@ class Popo implements ParserInterface
     }
 
     /**
-     * @param string $type
-     * @param string $key
-     * @param ReflectionProperty $reflection
+     * @param \PSX\Schema\PropertyInterface $property
+     * @param \PSX\Schema\Parser\Popo\TypeParser $typeObject
      * @param array $annotations
-     * @return \PSX\Schema\PropertyInterface
      */
-    protected function getProperty($type, $key, ReflectionProperty $reflection, array $annotations = null)
+    protected function parseProperty(PropertyInterface $property, TypeParser $typeObject, array $annotations)
     {
-        if (empty($type)) {
-            $type = 'string';
-        }
-
-        if (($property = $this->findProperty($type, $reflection)) !== null) {
-            return $property;
-        }
-
-        $typeObject = TypeParser::parse($type);
-
-        switch ($typeObject->getBaseType()) {
-            case 'any':
-            case 'map':
-                $property = new Property\AnyType($key);
-                $subTypes = $typeObject->getSubTypes();
-
-                if (!empty($subTypes)) {
-                    $prop = $this->getProperty(reset($subTypes), null, $reflection);
-                    $property->setPrototype($prop);
-                } else {
-                    throw new RuntimeException('Any type must have a sub type');
-                }
-                break;
-
-            case 'array':
-                $property = new Property\ArrayType($key);
-                $subTypes = $typeObject->getSubTypes();
-
-                if (!empty($subTypes)) {
-                    $prop = $this->getProperty(reset($subTypes), null, $reflection);
-                    $property->setPrototype($prop);
-                } else {
-                    throw new RuntimeException('Array type must have a sub type');
-                }
-                break;
-
-            case 'binary':
-                $property = new Property\BinaryType($key);
-                break;
-
-            case 'bool':
-            case 'boolean':
-                $property = new Property\BooleanType($key);
-                break;
-
-            case 'choice':
-                $property = new Property\ChoiceType($key);
-                $subTypes = $typeObject->getSubTypes();
-
-                if (!empty($subTypes)) {
-                    foreach ($subTypes as $name => $complexType) {
-                        $prop = $this->getProperty($complexType, $name, $reflection);
-                        $prop->setName($name);
-
-                        $property->add($prop);
-                    }
-                } else {
-                    throw new RuntimeException('Choice type must have a sub type');
-                }
-                break;
-
-            case 'complex':
-                $property = new Property\ComplexType($key);
-                $property->setReference($typeObject->getTypeHint());
-
-                $this->addObjectCache($type, $reflection, $property);
-                $this->pushProperty($type, $reflection, $property);
-
-                $this->parseComplexType($property);
-
-                $this->popProperty();
-                break;
-
-            case 'datetime':
-                $property = new Property\DateTimeType($key);
-                $subTypes = $typeObject->getSubTypes();
-                $subType  = reset($subTypes);
-
-                if (!empty($subType)) {
-                    $property->setPattern($this->getDateTimePattern($subType));
-                }
-                break;
-
-            case 'date':
-                $property = new Property\DateType($key);
-                break;
-
-            case 'duration':
-                $property = new Property\DurationType($key);
-                break;
-
-            case 'float':
-                $property = new Property\FloatType($key);
-                break;
-
-            case 'int':
-            case 'integer':
-                $property = new Property\IntegerType($key);
-                break;
-            
-            case 'time':
-                $property = new Property\TimeType($key);
-                break;
-
-            case 'uri':
-                $property = new Property\UriType($key);
-                break;
-
-            case 'string':
-            default:
-                $property = new Property\StringType($key);
-                break;
-        }
-
         // set type hint if available
         $typeHint = $typeObject->getTypeHint();
         if (!empty($typeHint)) {
             $property->setReference($typeHint);
         }
 
-        if (!empty($annotations)) {
+        // parse annotations
+        if ($property instanceof PropertyAbstract) {
             $this->parseProperties($property, $annotations);
-
-            if ($property instanceof Property\ArrayType) {
-                $this->parseArrayProperties($property, $annotations);
-            } elseif ($property instanceof Property\DecimalType) {
-                $this->parseDecimalProperties($property, $annotations);
-            } elseif ($property instanceof Property\StringType) {
-                $this->parseStringProperties($property, $annotations);
-            }
-
-            if ($property instanceof PropertySimpleAbstract) {
-                $this->parseSimpleProperties($property, $annotations);
-            }
         }
 
-        return $property;
+        if ($property instanceof Property\ArrayType) {
+            $this->parseArrayProperties($property, $annotations);
+        } elseif ($property instanceof Property\DecimalType) {
+            $this->parseDecimalProperties($property, $annotations);
+        } elseif ($property instanceof Property\StringType) {
+            $this->parseStringProperties($property, $annotations);
+        }
+
+        if ($property instanceof PropertySimpleAbstract) {
+            $this->parseSimpleProperties($property, $annotations);
+        }
+
+        if ($property instanceof Property\ArrayType) {
+            $this->parseArrayType($property, $typeObject);
+        } elseif ($property instanceof Property\ChoiceType) {
+            $this->parseChoiceType($property, $typeObject);
+        } elseif ($property instanceof Property\ComplexType) {
+            $this->parseComplexType($property);
+        } elseif ($property instanceof Property\DateTimeType) {
+            $subTypes = $typeObject->getSubTypes();
+            $subType  = reset($subTypes);
+
+            if (!empty($subType)) {
+                $property->setPattern($this->getDateTimePattern($subType));
+            }
+        }
     }
 
+    protected function parseArrayType(Property\ArrayType $property, TypeParser $typeObject)
+    {
+        $subTypes = $typeObject->getSubTypes();
+        $subType  = reset($subTypes);
+
+        if (!empty($subType)) {
+            $property->setPrototype($this->getPropertyForType($subType));
+        } else {
+            throw new RuntimeException('Array type must have a sub type');
+        }
+    }
+    
+    protected function parseChoiceType(Property\ChoiceType $property, TypeParser $typeObject)
+    {
+        $subTypes = $typeObject->getSubTypes();
+
+        if (!empty($subTypes)) {
+            foreach ($subTypes as $name => $subType) {
+                $property->add($this->getPropertyForType($subType));
+            }
+        } else {
+            throw new RuntimeException('Choice type must have a sub type');
+        }
+    }
+    
     protected function parseComplexType(Property\ComplexType $property)
     {
         $class       = new ReflectionClass($property->getReference());
@@ -244,29 +167,78 @@ class Popo implements ParserInterface
             } elseif ($annotation instanceof Annotation\Description) {
                 $property->setDescription($annotation->getDescription());
             } elseif ($annotation instanceof Annotation\AdditionalProperties) {
-                $property->setAdditionalProperties($annotation->hasAdditionalProperties());
+                $additionalProperties = $annotation->getAdditionalProperties();
+                if (is_bool($additionalProperties)) {
+                    $property->setAdditionalProperties($additionalProperties);
+                } elseif (is_string($additionalProperties)) {
+                    $property->setAdditionalProperties($this->getPropertyForType($additionalProperties));
+                }
+            } elseif ($annotation instanceof Annotation\PatternProperty) {
+                $property->addPatternProperty(
+                    $annotation->getPattern(), 
+                    $this->getPropertyForType($annotation->getType())
+                );
+            } elseif ($annotation instanceof Annotation\MinProperties) {
+                $property->setMinProperties($annotation->getMinProperties());
+            } elseif ($annotation instanceof Annotation\MaxProperties) {
+                $property->setMaxProperties($annotation->getMaxProperties());
             }
         }
 
+        $className  = $class->getName();
         $properties = ObjectReader::getProperties($this->reader, $class);
         foreach ($properties as $key => $reflection) {
             $annotations = $this->reader->getPropertyAnnotations($reflection);
-            $type        = $this->getTypeForProperty($reflection, $annotations);
-            $prop        = $this->getProperty($type, $key, $reflection, $annotations);
 
-            if ($prop instanceof PropertyInterface) {
-                $property->add($prop);
+            $type = $this->getTypeForProperty($reflection->getDocComment(), $annotations);
+            if (empty($type)) {
+                $type = 'string';
             }
+
+            $typeObject = TypeParser::parse($type);
+            $prop       = $this->getPropertyType($typeObject->getBaseType(), $key);
+
+            if ($prop instanceof Property\ComplexType) {
+                $foundProp = $this->findProperty($type, $className, $reflection->getName());
+                if ($foundProp !== null) {
+                    $prop = $foundProp;
+                } else {
+                    $this->addObjectCache($type, $className, $reflection->getName(), $prop);
+                    $this->pushProperty($type, $className, $reflection->getName(), $prop);
+
+                    $this->parseProperty($prop, $typeObject, $annotations);
+
+                    $this->popProperty();
+                }
+            } else {
+                $this->parseProperty($prop, $typeObject, $annotations);
+            }
+
+            $prop->setName($key);
+
+            $property->add($prop);
         }
     }
 
     protected function parseArrayProperties(Property\ArrayType $property, array $annotations)
     {
         foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\MinItems) {
+                $property->setMinItems($annotation->getMinItems());
+            } elseif ($annotation instanceof Annotation\MaxItems) {
+                $property->setMaxItems($annotation->getMaxItems());
+            }
+
+            // the MinLength and MaxLength annotations are deprecated for an
+            // array property
             if ($annotation instanceof Annotation\MinLength) {
-                $property->setMinLength($annotation->getMinLength());
+                trigger_error("The MinLength annotation is deprecated for array properties use instead the MinItems annotation", E_USER_DEPRECATED);
+
+                $property->setMinItems($annotation->getMinLength());
             } elseif ($annotation instanceof Annotation\MaxLength) {
-                $property->setMaxLength($annotation->getMaxLength());
+                trigger_error("The MaxLength annotation is deprecated for array properties use instead the MaxItems annotation", E_USER_DEPRECATED);
+
+                $property->setMaxItems($annotation->getMaxLength());
             }
         }
     }
@@ -317,7 +289,7 @@ class Popo implements ParserInterface
         }
     }
 
-    protected function getTypeForProperty(ReflectionProperty $property, array $annotations)
+    protected function getTypeForProperty($docComment, array $annotations)
     {
         $type = null;
         foreach ($annotations as $annotation) {
@@ -328,7 +300,7 @@ class Popo implements ParserInterface
 
         if ($type === null) {
             // as fallback we try to read the @var annotation
-            preg_match('/\* @var (.*)\\s/imsU', $property->getDocComment(), $matches);
+            preg_match('/\* @var (.*)\\s/imsU', $docComment, $matches);
             if (isset($matches[1])) {
                 $type = $matches[1];
             } else {
@@ -337,6 +309,66 @@ class Popo implements ParserInterface
         }
 
         return $type;
+    }
+
+    protected function getPropertyType($type, $key)
+    {
+        switch ($type) {
+            case 'array':
+                return new Property\ArrayType($key);
+                break;
+
+            case 'binary':
+                return new Property\BinaryType($key);
+                break;
+
+            case 'bool':
+            case 'boolean':
+            return new Property\BooleanType($key);
+                break;
+
+            case 'choice':
+                return new Property\ChoiceType($key);
+                break;
+
+            case 'complex':
+                return new Property\ComplexType($key);
+                break;
+
+            case 'datetime':
+                return new Property\DateTimeType($key);
+                break;
+
+            case 'date':
+                return new Property\DateType($key);
+                break;
+
+            case 'duration':
+                return new Property\DurationType($key);
+                break;
+
+            case 'float':
+                return new Property\FloatType($key);
+                break;
+
+            case 'int':
+            case 'integer':
+                return new Property\IntegerType($key);
+                break;
+
+            case 'time':
+                return new Property\TimeType($key);
+                break;
+
+            case 'uri':
+                return new Property\UriType($key);
+                break;
+
+            case 'string':
+            default:
+                return new Property\StringType($key);
+                break;
+        }
     }
 
     /**
@@ -384,9 +416,23 @@ class Popo implements ParserInterface
         }
     }
 
-    protected function findProperty($type, ReflectionProperty $reflection)
+    protected function getPropertyForType($type, $name = null, array $annotations = array())
     {
-        $id = $reflection->getDeclaringClass()->getName() . '::' . $reflection->getName() . '{' . $type . '}';
+        $typeObject = TypeParser::parse($type);
+        $property   = $this->getPropertyType($typeObject->getBaseType(), $name);
+
+        $this->parseProperty($property, $typeObject, $annotations);
+
+        if ($name !== null) {
+            $property->setName($name);
+        }
+
+        return $property;
+    }
+    
+    protected function findProperty($type, $className, $propertyName)
+    {
+        $id = $className . '::' . $propertyName . '{' . $type . '}';
 
         if (isset($this->stack[$id])) {
             return new Property\RecursionType($this->stack[$id]);
@@ -399,14 +445,14 @@ class Popo implements ParserInterface
         return null;
     }
 
-    protected function addObjectCache($type, ReflectionProperty $reflection, PropertyInterface $property)
+    protected function addObjectCache($type, $className, $propertyName, PropertyInterface $property)
     {
-        $this->objects[$reflection->getDeclaringClass()->getName() . '::' . $reflection->getName() . '{' . $type . '}'] = $property;
+        $this->objects[$className . '::' . $propertyName . '{' . $type . '}'] = $property;
     }
 
-    protected function pushProperty($type, ReflectionProperty $reflection, PropertyInterface $property)
+    protected function pushProperty($type, $className, $propertyName, PropertyInterface $property)
     {
-        $this->stack[$reflection->getDeclaringClass()->getName() . '::' . $reflection->getName() . '{' . $type . '}'] = $property;
+        $this->stack[$className . '::' . $propertyName . '{' . $type . '}'] = $property;
     }
 
     protected function popProperty()

@@ -31,8 +31,15 @@ use PSX\Schema\PropertyInterface;
  */
 class ArrayType extends CompositeTypeAbstract
 {
-    protected $minLength;
-    protected $maxLength;
+    /**
+     * @var integer
+     */
+    protected $minItems;
+
+    /**
+     * @var integer
+     */
+    protected $maxItems;
 
     public function add(PropertyInterface $property)
     {
@@ -51,27 +58,95 @@ class ArrayType extends CompositeTypeAbstract
         return isset($this->properties['prototype']) ? $this->properties['prototype'] : null;
     }
 
+    /**
+     * @param integer $minLength
+     * @return $this
+     * @deprecated
+     */
     public function setMinLength($minLength)
     {
-        $this->minLength = $minLength;
+        $this->minItems = $minLength;
 
         return $this;
     }
 
+    /**
+     * @return integer
+     * @deprecated
+     */
     public function getMinLength()
     {
-        return $this->minLength;
+        return $this->minItems;
     }
 
-    public function setMaxLength($maxLength)
+    /**
+     * @param integer $minItems
+     * @return $this
+     */
+    public function setMinItems($minItems)
     {
-        $this->maxLength = $maxLength;
+        $this->minItems = $minItems;
 
         return $this;
     }
 
+    /**
+     * @return integer
+     */
+    public function getMinItems()
+    {
+        return $this->minItems;
+    }
+
+    /**
+     * @param integer $maxLength
+     * @return $this
+     * @deprecated
+     */
+    public function setMaxLength($maxLength)
+    {
+        $this->maxItems = $maxLength;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     * @deprecated
+     */
     public function getMaxLength()
     {
-        return $this->maxLength;
+        return $this->maxItems;
+    }
+
+    /**
+     * @param integer $maxItems
+     * @return $this
+     */
+    public function setMaxItems($maxItems)
+    {
+        $this->maxItems = $maxItems;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMaxItems()
+    {
+        return $this->maxItems;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return md5(
+            parent::getId() .
+            $this->minItems .
+            $this->maxItems
+        );
     }
 }

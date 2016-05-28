@@ -20,24 +20,15 @@
 
 namespace PSX\Schema\Tests\Parser;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Schema\Parser;
-use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
+use PSX\Schema\Tests\SchemaTestCase;
 
 /**
- * PopoTest
+ * ParserTestCase
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PopoTest extends ParserTestCase
+abstract class ParserTestCase extends SchemaTestCase
 {
-    public function testParse()
-    {
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Complex12b3526e::class);
-
-        $this->assertSchema($this->getSchema(), $schema);
-    }
 }

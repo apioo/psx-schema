@@ -48,7 +48,9 @@ class ChoiceType extends CompositeTypeAbstract
             throw new RuntimeException('Choice property accepts only complex types ' . get_class($property). ' given');
         }
 
-        return parent::add($property);
+        $this->properties[] = $property;
+
+        return $this;
     }
 
     public function setResolver(ChoiceResolverInterface $choiceResolver)

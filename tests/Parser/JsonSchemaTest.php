@@ -30,8 +30,15 @@ use PSX\Schema\Parser\JsonSchema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class JsonSchemaTest extends \PHPUnit_Framework_TestCase
+class JsonSchemaTest extends ParserTestCase
 {
+    public function testParse()
+    {
+        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/test_schema.json');
+
+        $this->assertSchema($this->getSchema(), $schema);
+    }
+
     /**
      * The offical json schema is recursive so we check whether we can parse it
      * without a problem
@@ -44,6 +51,14 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
     }
 
+    public function testParseSwagger()
+    {
+        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/swagger.json');
+        $property = $schema->getDefinition();
+
+        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+    }
+
     public function testParseExternalResource()
     {
         $handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
@@ -51,11 +66,11 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $resolver = JsonSchema\RefResolver::createDefault($http);
 
         $parser   = new JsonSchema(__DIR__ . '/JsonSchema', $resolver);
-        $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema.json'));
+        $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema_external.json'));
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
-        $this->assertEquals('record', $property->getName());
+        $this->assertEquals(null, $property->getName());
         $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('id'));
         $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('bar'));
         $this->assertInstanceOf('PSX\Schema\Property\ArrayType', $property->get('bar')->get('number'));
@@ -102,10 +117,10 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('PSX\Schema\Property\ChoiceType', $property->get('choice'));
         $this->assertEquals(2, count($property->get('choice')->getProperties()));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get('foo'));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get('bar'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get('foo')->get('foo'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get('bar')->get('bar'));
+        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get(0));
+        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get(1));
+        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get(0)->get('foo'));
+        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get(1)->get('bar'));
     }
 
     /**

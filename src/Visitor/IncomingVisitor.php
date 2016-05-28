@@ -21,6 +21,8 @@
 namespace PSX\Schema\Visitor;
 
 use PSX\Record\Record;
+use PSX\Record\RecordInterface;
+use PSX\Schema\AdditionalPropertiesInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
@@ -82,8 +84,6 @@ class IncomingVisitor implements VisitorInterface
 
     public function visitArray(array $data, Property\ArrayType $property, $path)
     {
-        $this->assertCompositeProperties($property, $path);
-
         $this->assertArrayConstraints($data, $property, $path);
 
         $this->assertValidatorConstraints($data, $path);
@@ -149,7 +149,7 @@ class IncomingVisitor implements VisitorInterface
 
     public function visitComplex(\stdClass $data, Property\ComplexType $property, $path)
     {
-        $this->assertCompositeProperties($property, $path);
+        $this->assertComplexConstraints($data, $property, $path);
 
         $this->assertValidatorConstraints($data, $path);
 
@@ -171,6 +171,8 @@ class IncomingVisitor implements VisitorInterface
             $class  = new ReflectionClass($reference);
             $record = $class->newInstance();
 
+            // at first we try to set the values through proper setter methods
+            $keys = [];
             foreach ($data as $key => $val) {
                 try {
                     $methodName = 'set' . ucfirst($key);
@@ -178,9 +180,34 @@ class IncomingVisitor implements VisitorInterface
 
                     if ($method instanceof ReflectionMethod) {
                         $method->invokeArgs($record, array($val));
+                    } else {
+                        $keys[] = $key;
                     }
                 } catch (ReflectionException $e) {
                     // method does not exist
+                    $keys[] = $key;
+                }
+            }
+
+            // if we have keys where we have no fitting setter method we try to
+            // add the values in another way to the object
+            if (!empty($keys)) {
+                if ($record instanceof RecordInterface) {
+                    foreach ($keys as $key) {
+                        $record->setProperty($key, $data->$key);
+                    }
+                } elseif ($record instanceof \ArrayAccess) {
+                    foreach ($keys as $key) {
+                        $record[$key] = $data->$key;
+                    }
+                } elseif ($record instanceof \stdClass) {
+                    foreach ($keys as $key) {
+                        $record->$key = $data->$key;
+                    }
+                } elseif ($record instanceof AdditionalPropertiesInterface) {
+                    foreach ($keys as $key) {
+                        $record->setProperty($key, $data->$key);
+                    }
                 }
             }
 
@@ -399,13 +426,6 @@ class IncomingVisitor implements VisitorInterface
         return $data;
     }
 
-    protected function assertCompositeProperties(Property\CompositeTypeAbstract $property, $path)
-    {
-        if (count($property) == 0) {
-            //throw new ValidationException($path . ' has no properties');
-        }
-    }
-
     protected function assertRequired($data, PropertyInterface $property, $path)
     {
         if ($property->isRequired() && $data === null) {
@@ -420,7 +440,7 @@ class IncomingVisitor implements VisitorInterface
         }
 
         if ($property->getPattern() !== null) {
-            $result = preg_match('/^(' . $property->getPattern() . '){1}$/', $data);
+            $result = preg_match('/' . $property->getPattern() . '/', $data);
 
             if (!$result) {
                 throw new ValidationException($path . ' does not match pattern [' . $property->getPattern() . ']');
@@ -430,6 +450,36 @@ class IncomingVisitor implements VisitorInterface
         if ($property->getEnumeration() !== null) {
             if (!in_array($data, $property->getEnumeration())) {
                 throw new ValidationException($path . ' is not in enumeration [' . implode(', ', $property->getEnumeration()) . ']');
+            }
+        }
+    }
+
+    protected function assertArrayConstraints(array $data, Property\ArrayType $property, $path)
+    {
+        if ($property->getMinItems() !== null) {
+            if (count($data) < $property->getMinItems()) {
+                throw new ValidationException($path . ' must contain more or equal then ' . $property->getMinItems() . ' items');
+            }
+        }
+
+        if ($property->getMaxItems() !== null) {
+            if (count($data) > $property->getMaxItems()) {
+                throw new ValidationException($path . ' must contain less or equal then ' . $property->getMaxItems() . ' items');
+            }
+        }
+    }
+
+    protected function assertComplexConstraints(\stdClass $data, Property\ComplexType $property, $path)
+    {
+        if ($property->getMinProperties() !== null) {
+            if (count(get_object_vars($data)) < $property->getMinProperties()) {
+                throw new ValidationException($path . ' must contain more or equal then ' . $property->getMinProperties() . ' properties');
+            }
+        }
+
+        if ($property->getMaxProperties() !== null) {
+            if (count(get_object_vars($data)) > $property->getMaxProperties()) {
+                throw new ValidationException($path . ' must contain less or equal then ' . $property->getMaxProperties() . ' properties');
             }
         }
     }
@@ -461,28 +511,13 @@ class IncomingVisitor implements VisitorInterface
 
         if ($property->getMinLength() !== null) {
             if (strlen($data) < $property->getMinLength()) {
-                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' characters');
+                throw new ValidationException($path . ' must contain more or equal then ' . $property->getMinLength() . ' characters');
             }
         }
 
         if ($property->getMaxLength() !== null) {
             if (strlen($data) > $property->getMaxLength()) {
-                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' characters');
-            }
-        }
-    }
-
-    protected function assertArrayConstraints(array $data, Property\ArrayType $property, $path)
-    {
-        if ($property->getMinLength() !== null) {
-            if (count($data) < $property->getMinLength()) {
-                throw new ValidationException($path . ' must contain more then ' . $property->getMinLength() . ' elements');
-            }
-        }
-
-        if ($property->getMaxLength() !== null) {
-            if (count($data) > $property->getMaxLength()) {
-                throw new ValidationException($path . ' must contain less then ' . $property->getMaxLength() . ' elements');
+                throw new ValidationException($path . ' must contain less or equal then ' . $property->getMaxLength() . ' characters');
             }
         }
     }

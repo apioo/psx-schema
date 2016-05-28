@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
 
 /**
  * SchemaManagerTest
@@ -52,21 +53,21 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSchemaClass()
     {
-        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\Generator\TestSchema');
+        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\TestSchema');
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }
 
     public function testGetSchemaPopo()
     {
-        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\Parser\Popo\News');
+        $schema = $this->schemaManager->getSchema(Complex12b3526e::class);
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }
 
     public function testGetSchemaFile()
     {
-        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/JsonSchema/other_schema.json');
+        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/JsonSchema/test_schema.json');
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }

@@ -29,6 +29,9 @@ namespace PSX\Schema;
  */
 class Builder
 {
+    /**
+     * @var \PSX\Schema\Property\ComplexType
+     */
     protected $property;
 
     public function __construct($name)
@@ -59,6 +62,51 @@ class Builder
     }
 
     /**
+     * @param string $pattern
+     * @param \PSX\Schema\PropertyInterface $property
+     * @return $this
+     */
+    public function addPatternProperty($pattern, PropertyInterface $property)
+    {
+        $this->property->addPatternProperty($pattern, $property);
+
+        return $this;
+    }
+
+    /**
+     * @param boolean|\PSX\Schema\PropertyInterface $value
+     * @return $this
+     */
+    public function setAdditionalProperties($value)
+    {
+        $this->property->setAdditionalProperties($value);
+
+        return $this;
+    }
+
+    /**
+     * @param integer $minProperties
+     * @return $this
+     */
+    public function setMinProperties($minProperties)
+    {
+        $this->property->setMinProperties($minProperties);
+
+        return $this;
+    }
+
+    /**
+     * @param integer $maxProperties
+     * @return $this
+     */
+    public function setMaxProperties($maxProperties)
+    {
+        $this->property->setMaxProperties($maxProperties);
+
+        return $this;
+    }
+
+    /**
      * @param string $reference
      * @return $this
      */
@@ -83,6 +131,7 @@ class Builder
     /**
      * @param string $name
      * @return \PSX\Schema\Property\AnyType
+     * @deprecated
      */
     public function anyType($name)
     {

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Parser;
+namespace PSX\Schema\Tests\Parser\Popo;
 
 use PSX\Http;
 use PSX\Schema\Parser\JsonSchema;

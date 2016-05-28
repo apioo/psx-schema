@@ -40,7 +40,7 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
         $property = Property::getChoice('foo');
         $property->add($complexFoo);
 
-        $this->assertEquals(['foo' => $complexFoo], $property->getProperties());
+        $this->assertEquals([0 => $complexFoo], $property->getProperties());
     }
 
     /**
@@ -67,7 +67,7 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
 
         $property = Property::getChoice('test')->add($complexFoo)->add($complexBar);
 
-        $this->assertEquals('5432f5aea2aec299d91b45bbc8ed6455', $property->getId());
+        $this->assertEquals('72d2b76576807d2a4d7e2a513209b322', $property->getId());
     }
 
     public function testGetTypeName()

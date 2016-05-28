@@ -28,11 +28,12 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class Property
+final class Property
 {
     /**
      * @param string $name
      * @return \PSX\Schema\Property\AnyType
+     * @deprecated
      */
     public static function getAny($name)
     {

@@ -37,7 +37,7 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
             ->add(Property::getString('foo'))
             ->add(Property::getString('bar'));
 
-        $this->assertEquals('cd6b6757bad65f214ca0928a3db48c27', $property->getId());
+        $this->assertEquals('6b16cb5b5eef258b2aa8ca7f161fc4cc', $property->getId());
     }
 
     public function testProperties()

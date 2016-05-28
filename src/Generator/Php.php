@@ -96,9 +96,18 @@ class Php implements GeneratorInterface
         $class = $this->factory->class($className);
         $class->setDocComment($this->getDocCommentForClass($type));
 
-        $properties = $type->getProperties();
+        // if the type has additional or pattern properties extend from
+        // ArrayObject
+        $patternProperties    = $type->getPatternProperties();
+        $additionalProperties = $type->getAdditionalProperties();
+
+        if (!empty($patternProperties) || !empty($additionalProperties)) {
+            $class->extend('\ArrayObject');
+        }
 
         // add properties
+        $properties = $type->getProperties();
+
         foreach ($properties as $property) {
             $class->addStmt($this->factory->property($property->getName())
                 ->makePublic()
@@ -125,7 +134,7 @@ class Php implements GeneratorInterface
 
         // generate other complex types
         foreach ($properties as $property) {
-            if ($property instanceof Property\ArrayType || $property instanceof Property\AnyType) {
+            if ($property instanceof Property\ArrayType) {
                 if ($property->getPrototype() instanceof Property\ComplexType) {
                     $this->generateRootElement($property->getPrototype());
                 }
@@ -147,7 +156,6 @@ class Php implements GeneratorInterface
     protected function getDocCommentForClass(Property\ComplexType $property)
     {
         $comment = '/**' . "\n";
-
         $comment.= ' * @Title("' . $this->escapeString($property->getName()) . '")' . "\n";
 
         $description = $property->getDescription();
@@ -155,7 +163,32 @@ class Php implements GeneratorInterface
             $comment.= ' * @Description("' . $this->escapeString($description) . '")' . "\n";
         }
 
-        $comment.= ' * @AdditionalProperties(' . ($property->hasAdditionalProperties() ? 'true' : 'false') . ')' . "\n";
+        $additionalProperties = $property->getAdditionalProperties();
+        if (is_bool($additionalProperties)) {
+            $comment.= ' * @AdditionalProperties(' . ($additionalProperties ? 'true' : 'false') . ')' . "\n";
+        } elseif ($additionalProperties instanceof PropertyInterface) {
+            $type = $this->getPropertyType($additionalProperties);
+            $comment.= ' * @AdditionalProperties("' . $this->escapeString($type) . '")' . "\n";
+        }
+
+        $patternProperties = $property->getPatternProperties();
+        if (!empty($patternProperties)) {
+            foreach ($patternProperties as $pattern => $prop) {
+                $type = $this->getPropertyType($prop);
+                $comment.= ' * @PatternProperty(pattern="' . $this->escapeString($pattern) . '", type="' . $this->escapeString($type) . '")' . "\n";
+            }
+        }
+
+        $minProperties = $property->getMinProperties();
+        if ($minProperties !== null) {
+            $comment.= ' * @MinProperties(' . $minProperties . ')' . "\n";
+        }
+
+        $maxProperties = $property->getMaxProperties();
+        if ($maxProperties !== null) {
+            $comment.= ' * @MaxProperties(' . $maxProperties . ')' . "\n";
+        }
+
         $comment.= ' */';
 
         return $comment;
@@ -178,15 +211,25 @@ class Php implements GeneratorInterface
             $comment.= ' * @Description("' . $this->escapeString($property->getDescription()) . '")' . "\n";
         }
 
-        if ($property instanceof Property\ArrayType) {
-            $minLength = $property->getMinLength();
-            if ($minLength) {
-                $comment.= ' * @MinLength(' . $minLength . ')' . "\n";
+        if ($property instanceof Property\ComplexType) {
+            $minProperties = $property->getMinProperties();
+            if ($minProperties > 0) {
+                $comment.= ' * @MinProperties(' . $minProperties . ')' . "\n";
             }
 
-            $maxLength = $property->getMaxLength();
-            if ($maxLength) {
-                $comment.= ' * @MaxLength(' . $maxLength . ')' . "\n";
+            $maxProperties = $property->getMaxProperties();
+            if ($maxProperties > 0) {
+                $comment.= ' * @MaxProperties(' . $maxProperties . ')' . "\n";
+            }
+        } elseif ($property instanceof Property\ArrayType) {
+            $minItems = $property->getMinItems();
+            if ($minItems > 0) {
+                $comment.= ' * @MinItems(' . $minItems . ')' . "\n";
+            }
+
+            $maxItems = $property->getMaxItems();
+            if ($maxItems > 0) {
+                $comment.= ' * @MaxItems(' . $maxItems . ')' . "\n";
             }
         } elseif ($property instanceof Property\DecimalType) {
             $min = $property->getMin();
@@ -240,17 +283,6 @@ class Php implements GeneratorInterface
             $type.= '<' . $this->getPropertyType($property->getPrototype()) . '>';
 
             return $type;
-        } elseif ($property instanceof Property\AnyType) {
-            $type = 'any';
-
-            $reference = $property->getReference();
-            if (!empty($reference)) {
-                $type.= '(' . $reference . ')';
-            }
-
-            $type.= '<' . $this->getPropertyType($property->getPrototype()) . '>';
-
-            return $type;
         } elseif ($property instanceof Property\ChoiceType) {
             $type = 'choice';
 
@@ -260,9 +292,9 @@ class Php implements GeneratorInterface
             }
 
             $properties = $property->getProperties();
-            $subTypes = [];
-            foreach ($properties as $name => $prop) {
-                $subTypes[] = $name . '=' . $this->getPropertyType($prop);
+            $subTypes   = [];
+            foreach ($properties as $prop) {
+                $subTypes[] = $this->getPropertyType($prop);
             }
 
             $type .= '<' . implode(',', $subTypes) . '>';

@@ -18,77 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Parser\Popo;
+namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Comment
+ * MaxItems
  *
+ * @Annotation
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Comment
+class MaxItems
 {
     /**
-     * @Type("integer")
+     * @var integer
      */
-    protected $id;
+    protected $maxItems;
 
-    /**
-     * @Type("PSX\Schema\Tests\Parser\Popo\Author")
-     */
-    protected $author;
-
-    /**
-     * @Type("string")
-     */
-    protected $text;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function __construct(array $values)
     {
-        return $this->id;
+        $this->maxItems = current($values);
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
+    public function getMaxItems()
     {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * @param mixed $author
-     */
-    public function setAuthor(Author $author)
-    {
-        $this->author = $author;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
-     * @param mixed $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
+        return $this->maxItems;
     }
 }

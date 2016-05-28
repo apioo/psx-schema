@@ -59,8 +59,18 @@ class ChoiceResolver implements ChoiceResolverInterface
         $types      = [];
         
         foreach ($properties as $key => $property) {
+            $title     = $property->getName();
             $reference = $property->getReference();
-            $types[$key] = $reference;
+
+            if (empty($title) && !empty($reference)) {
+                $title = lcfirst(substr(strrchr($reference, '\\'), 1));
+            }
+
+            if (empty($title)) {
+                $title = substr($property->getId(), 0, 8);
+            }
+
+            $types[$title] = $reference;
         }
 
         return $types;

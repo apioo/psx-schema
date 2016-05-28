@@ -147,15 +147,23 @@ class Document
             $data = array_replace_recursive($data, $part);
         }
 
+        /*
         if (empty($name)) {
             $name = isset($data['title']) ? $data['title'] : null;
         }
+        */
 
         if (isset($data['oneOf']) && is_array($data['oneOf'])) {
             return $this->parseOneOf($data, $name, $depth);
         }
 
         $type = isset($data['type']) ? $data['type'] : null;
+
+        if ($type === null) {
+            if (isset($data['properties']) || isset($data['patternProperties']) || isset($data['additionalProperties'])) {
+                $type = 'object';
+            }
+        }
 
         switch ($type) {
             case 'object':
@@ -188,31 +196,47 @@ class Document
     protected function parseComplexType(array $data, $name, $depth)
     {
         $complexType = Property::getComplex($name);
-        $properties  = isset($data['properties']) ? $data['properties'] : array();
 
-        if (isset($data['patternProperties']) && is_array($data['patternProperties'])) {
-            $prototype = current($data['patternProperties']);
-
-            if (!empty($prototype) && is_array($prototype)) {
-                $anyType = Property::getAny($name);
-                $anyType->setPrototype($this->getRecProperty($prototype, $name, $depth + 1));
-
-                return $anyType;
-            }
+        if (isset($data['description'])) {
+            $complexType->setDescription($data['description']);
         }
 
-        foreach ($properties as $name => $row) {
-            if (is_array($row)) {
-                $property = $this->getRecProperty($row, $name, $depth + 1);
+        if (isset($data['minProperties'])) {
+            $complexType->setMinProperties($data['minProperties']);
+        }
 
-                if ($property !== null) {
-                    $complexType->add($property);
+        if (isset($data['maxProperties'])) {
+            $complexType->setMaxProperties($data['maxProperties']);
+        }
+
+        if (isset($data['properties']) && is_array($data['properties'])) {
+            foreach ($data['properties'] as $name => $row) {
+                if (is_array($row)) {
+                    $property = $this->getRecProperty($row, $name, $depth + 1);
+
+                    if ($property !== null) {
+                        $property->setName($name);
+
+                        $complexType->add($property);
+                    }
                 }
             }
         }
 
-        if (isset($data['description'])) {
-            $complexType->setDescription($data['description']);
+        if (isset($data['patternProperties']) && is_array($data['patternProperties'])) {
+            foreach ($data['patternProperties'] as $pattern => $prototype) {
+                if (is_array($prototype)) {
+                    $complexType->addPatternProperty($pattern, $this->getRecProperty($prototype, null, $depth + 1));
+                }
+            }
+        }
+
+        if (isset($data['additionalProperties'])) {
+            if (is_bool($data['additionalProperties'])) {
+                $complexType->setAdditionalProperties($data['additionalProperties']);
+            } elseif (is_array($data['additionalProperties'])) {
+                $complexType->setAdditionalProperties($this->getRecProperty($data['additionalProperties'], null, $depth + 1));
+            }
         }
 
         if (isset($data['required']) && is_array($data['required'])) {
@@ -236,6 +260,10 @@ class Document
     {
         $arrayType = Property::getArray($name);
 
+        if (isset($data['description'])) {
+            $arrayType->setDescription($data['description']);
+        }
+
         if (isset($data['minItems'])) {
             $arrayType->setMinLength($data['minItems']);
         }
@@ -250,10 +278,6 @@ class Document
             if ($property !== null) {
                 $arrayType->setPrototype($property);
             }
-        }
-
-        if (isset($data['description'])) {
-            $arrayType->setDescription($data['description']);
         }
 
         return $arrayType;
@@ -316,6 +340,10 @@ class Document
 
     protected function parseScalar(PropertySimpleAbstract $property, array $data)
     {
+        if (isset($data['description'])) {
+            $property->setDescription($data['description']);
+        }
+
         if (isset($data['pattern'])) {
             $property->setPattern($data['pattern']);
         }
@@ -342,10 +370,6 @@ class Document
             if (isset($data['maxLength'])) {
                 $property->setMaxLength($data['maxLength']);
             }
-        }
-
-        if (isset($data['description'])) {
-            $property->setDescription($data['description']);
         }
     }
 

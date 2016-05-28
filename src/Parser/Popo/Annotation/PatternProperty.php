@@ -18,77 +18,42 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Parser\Popo;
+namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Author
+ * PatternProperty
  *
+ * @Annotation
+ * @Target("CLASS")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Author
+class PatternProperty
 {
     /**
-    * @Type("integer")
-    */
-    protected $id;
-
-    /**
-    * @Type("string")
-    */
-    protected $name;
-
-    /**
-    * @Type("string")
-    */
-    protected $email;
-
-    /**
-     * @return mixed
+     * @var string
      */
-    public function getId()
+    protected $pattern;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+    public function __construct(array $values)
     {
-        return $this->id;
+        $this->pattern = isset($values['pattern']) ? $values['pattern'] : null;
+        $this->type    = isset($values['type'])    ? $values['type']    : null;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
+    public function getPattern()
     {
-        $this->id = $id;
+        return $this->pattern;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getType()
     {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
+        return $this->type;
     }
 }

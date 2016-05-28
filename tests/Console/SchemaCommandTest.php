@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Console;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
+use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -43,7 +44,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'parser' => 'popo',
-            'source' => 'PSX\Schema\Tests\Parser\Popo\News',
+            'source' => Complex12b3526e::class,
             'format' => 'jsonschema',
         ));
 
@@ -52,67 +53,229 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 {
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
-    "type": "object",
-    "title": "record",
     "definitions": {
-        "ref55c6af017850766bb43c35c3a5308cf8": {
+        "ref72828040aecd82459c3636a4226e81fc": {
+            "title": "config",
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            },
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex72828040"
+        },
+        "refb33b896fd4135c2882510d8949e883cf": {
+            "title": "location",
+            "description": "Location of the person",
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
+                "lat": {
+                    "type": "number"
                 },
+                "long": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": true,
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexb33b896f"
+        },
+        "ref4770be5abc2aedca274241c166226fc7": {
+            "title": "author",
+            "description": "An simple author element with some description",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "pattern": "[A-z]{3,16}"
+                },
+                "email": {
+                    "description": "We will send no spam to this addresss",
+                    "type": "string"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "categories",
+                    "maxItems": 8
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    },
+                    "title": "locations",
+                    "description": "Array of locations"
+                },
+                "origin": {
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "title"
+            ],
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex4770be5a"
+        },
+        "ref57c64cac92e27c1db99e6a6793546e12": {
+            "title": "web",
+            "description": "An application",
+            "type": "object",
+            "properties": {
                 "name": {
                     "type": "string"
                 },
-                "email": {
+                "url": {
                     "type": "string"
                 }
             },
-            "title": "author",
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Author",
-            "additionalProperties": false
+            "additionalProperties": {
+                "type": "string"
+            },
+            "minProperties": 2,
+            "maxProperties": 8,
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex57c64cac"
         },
-        "ref8ea17bd280ad7a490807842559096981": {
+        "ref4898a93cd82b117833f9683324e0f6dd": {
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                },
+                {
+                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                }
+            ]
+        },
+        "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
+            "title": "source",
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                },
+                {
+                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                }
+            ]
+        },
+        "ref68a5de1071c84dc3c357e50c05e674fa": {
+            "title": "meta",
+            "description": "Some meta data",
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "author": {
-                    "$ref": "#\/definitions\/ref55c6af017850766bb43c35c3a5308cf8"
-                },
-                "text": {
-                    "type": "string"
+                "createDate": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Comment",
-            "additionalProperties": false
+            "patternProperties": {
+                "^tags_\\d$": {
+                    "type": "string"
+                },
+                "^location_\\d$": {
+                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                }
+            },
+            "additionalProperties": false,
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex68a5de10"
         }
     },
+    "title": "news",
+    "description": "An general news entry",
+    "type": "object",
     "properties": {
-        "id": {
-            "type": "integer"
+        "config": {
+            "$ref": "#\/definitions\/ref72828040aecd82459c3636a4226e81fc"
         },
-        "title": {
-            "type": "string"
-        },
-        "author": {
-            "$ref": "#\/definitions\/ref55c6af017850766bb43c35c3a5308cf8"
-        },
-        "comments": {
+        "tags": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref8ea17bd280ad7a490807842559096981"
+                "type": "string"
             },
-            "title": "comments"
+            "title": "tags",
+            "minItems": 1,
+            "maxItems": 6
         },
-        "date": {
+        "receiver": {
+            "type": "array",
+            "items": {
+                "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+            },
+            "title": "receiver",
+            "minItems": 1
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
+            },
+            "title": "resources"
+        },
+        "profileImage": {
+            "type": "string",
+            "format": "base64"
+        },
+        "read": {
+            "type": "boolean"
+        },
+        "source": {
+            "$ref": "#\/definitions\/ref20f5d15c759c1d56a2ed0675fe4b4a0b"
+        },
+        "author": {
+            "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+        },
+        "meta": {
+            "$ref": "#\/definitions\/ref68a5de1071c84dc3c357e50c05e674fa"
+        },
+        "sendDate": {
+            "type": "string",
+            "format": "date"
+        },
+        "readDate": {
             "type": "string",
             "format": "date-time"
+        },
+        "expires": {
+            "type": "string",
+            "format": "duration"
+        },
+        "price": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+        },
+        "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+        },
+        "content": {
+            "description": "Contains the main content of the news entry",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 512
+        },
+        "question": {
+            "type": "string",
+            "enum": [
+                "foo",
+                "bar"
+            ]
+        },
+        "coffeeTime": {
+            "type": "string",
+            "format": "time"
+        },
+        "profileUri": {
+            "type": "string",
+            "format": "uri"
         }
     },
-    "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\News",
-    "additionalProperties": false
+    "additionalProperties": false,
+    "required": [
+        "receiver",
+        "price",
+        "content"
+    ],
+    "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex12b3526e"
 }
 JSON;
 

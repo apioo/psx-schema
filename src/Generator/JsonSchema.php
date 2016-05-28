@@ -65,91 +65,27 @@ class JsonSchema implements GeneratorInterface
 
     protected function generateRootElement(Property\ComplexType $type)
     {
-        $properties  = $type->getProperties();
-        $props       = array();
-        $required    = array();
-
         $this->definitions = array();
 
-        foreach ($properties as $name => $property) {
-            $props[$name] = $this->generateType($property);
+        $object = $this->generateComplexType($type);
 
-            if ($property->isRequired()) {
-                $required[] = $name;
-            }
-        }
-        
-        $definitions = array();
-        foreach ($this->definitions as $name => $definition) {
-            $definitions[$name] = $definition;
-        }
-
-        $result = array(
+        $result = [
             '$schema' => self::SCHEMA,
             'id'      => $this->targetNamespace,
-            'type'    => 'object',
-        );
+        ];
 
-        $typeName = $type->getName();
-        if (!empty($typeName)) {
-            $result['title'] = $typeName;
+        if (!empty($this->definitions)) {
+            $result['definitions'] = $this->definitions;
         }
 
-        $description = $type->getDescription();
-        if (!empty($description)) {
-            $result['description'] = $description;
-        }
-
-        if (!empty($definitions)) {
-            $result['definitions'] = $definitions;
-        }
-
-        if (!empty($props)) {
-            $result['properties'] = $props;
-        }
-
-        if (!empty($required)) {
-            $result['required'] = $required;
-        }
-
-        $reference = $type->getReference();
-        if (!empty($reference)) {
-            $result['reference'] = $reference;
-        }
-
-        $addProps = $type->hasAdditionalProperties();
-        if ($addProps !== null) {
-            $result['additionalProperties'] = $addProps;
-        }
+        $result = array_merge($result, $object);
 
         return $result;
     }
 
     protected function generateType(PropertyInterface $type)
     {
-        if ($type instanceof Property\AnyType) {
-            $result = array(
-                'type' => 'object',
-            );
-
-            $name = $type->getName();
-            if (!empty($name)) {
-                $result['title'] = $name;
-            }
-
-            $description = $type->getDescription();
-            if (!empty($description)) {
-                $result['description'] = $description;
-            }
-
-            $result['patternProperties'] = array(
-                '^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+$' => $this->generateType($type->getPrototype())
-            );
-
-            $result['additionalProperties'] = false;
-
-            return $this->generateRef($type, $result);
-        } elseif ($type instanceof Property\ArrayType) {
+        if ($type instanceof Property\ArrayType) {
             $result = array(
                 'type'  => 'array',
                 'items' => $this->generateType($type->getPrototype()),
@@ -177,16 +113,7 @@ class JsonSchema implements GeneratorInterface
 
             return $result;
         } elseif ($type instanceof Property\ChoiceType) {
-            $properties = $type->getProperties();
-            $props      = array();
-
-            foreach ($properties as $property) {
-                $props[] = $this->generateType($property);
-            }
-
-            $result = array(
-                'oneOf' => $props,
-            );
+            $result = [];
 
             $name = $type->getName();
             if (!empty($name)) {
@@ -196,56 +123,31 @@ class JsonSchema implements GeneratorInterface
             $description = $type->getDescription();
             if (!empty($description)) {
                 $result['description'] = $description;
+            }
+
+            $properties = $type->getProperties();
+            if (!empty($properties)) {
+                $result['oneOf'] = [];
+                foreach ($properties as $property) {
+                    $result['oneOf'][] = $this->generateType($property);
+                }
             }
 
             return $this->generateRef($type, $result);
         } elseif ($type instanceof Property\ComplexType) {
-            $properties = $type->getProperties();
-            $props      = array();
-            $required   = array();
-
-            foreach ($properties as $property) {
-                $props[$property->getName()] = $this->generateType($property);
-
-                if ($property->isRequired()) {
-                    $required[] = $property->getName();
-                }
-            }
-
-            $result = array(
-                'type'       => 'object',
-                'properties' => $props,
-            );
-
-            $name = $type->getName();
-            if (!empty($name)) {
-                $result['title'] = $name;
-            }
-
-            $description = $type->getDescription();
-            if (!empty($description)) {
-                $result['description'] = $description;
-            }
-
-            if (!empty($required)) {
-                $result['required'] = $required;
-            }
-
-            $reference = $type->getReference();
-            if (!empty($reference)) {
-                $result['reference'] = $reference;
-            }
-
-            $result['additionalProperties'] = $type->hasAdditionalProperties();
+            $result = $this->generateComplexType($type);
 
             return $this->generateRef($type, $result);
         } else {
-            $result = array();
-            $result['type'] = $this->getPropertyTypeName($type);
+            $result = [];
 
             $description = $type->getDescription();
             if (!empty($description)) {
                 $result['description'] = $description;
+            }
+
+            if ($type instanceof PropertyAbstract) {
+                $result['type'] = $this->getPropertyTypeName($type);
             }
 
             if ($type instanceof Property\DateTimeType) {
@@ -296,6 +198,76 @@ class JsonSchema implements GeneratorInterface
 
             return $result;
         }
+    }
+
+    protected function generateComplexType(Property\ComplexType $type)
+    {
+        $result = [];
+
+        $name = $type->getName();
+        if (!empty($name)) {
+            $result['title'] = $name;
+        }
+
+        $description = $type->getDescription();
+        if (!empty($description)) {
+            $result['description'] = $description;
+        }
+
+        $result['type'] = 'object';
+
+        $properties = $type->getProperties();
+        $required   = [];
+        if (!empty($properties)) {
+            $props = [];
+            foreach ($properties as $property) {
+                $props[$property->getName()] = $this->generateType($property);
+
+                if ($property->isRequired()) {
+                    $required[] = $property->getName();
+                }
+            }
+            $result['properties'] = $props;
+        }
+
+        $patternProperties = $type->getPatternProperties();
+        if (!empty($patternProperties)) {
+            $patternProps = [];
+            foreach ($patternProperties as $pattern => $prop) {
+                $patternProps[$pattern] = $this->generateType($prop);
+            }
+            $result['patternProperties'] = $patternProps;
+        }
+
+        $addProps = $type->getAdditionalProperties();
+        if ($addProps !== null) {
+            if (is_bool($addProps)) {
+                $result['additionalProperties'] = $addProps;
+            } elseif ($addProps instanceof PropertyInterface) {
+                $result['additionalProperties'] = $this->generateType($addProps);
+            }
+        }
+
+        $minProperties = $type->getMinProperties();
+        if ($minProperties !== null) {
+            $result['minProperties'] = $minProperties;
+        }
+
+        $maxProperties = $type->getMaxProperties();
+        if ($maxProperties !== null) {
+            $result['maxProperties'] = $maxProperties;
+        }
+
+        if (!empty($required)) {
+            $result['required'] = $required;
+        }
+
+        $reference = $type->getReference();
+        if (!empty($reference)) {
+            $result['reference'] = $reference;
+        }
+
+        return $result;
     }
 
     protected function getPropertyTypeName(PropertyAbstract $type)

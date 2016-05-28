@@ -38,7 +38,7 @@ class HtmlTest extends GeneratorTestCase
 
         $expect = <<<'HTML'
 <div>
-	<div id="psx-type-b1db2c5f62f19bce035d880c5628d866" class="psx-complex-type">
+	<div id="psx-type-12b3526ee773c0681e998e7d564de460" class="psx-complex-type">
 		<h1>news</h1>
 		<div class="psx-type-description">An general news entry</div>
 		<table class="table psx-type-properties">
@@ -62,7 +62,9 @@ class HtmlTest extends GeneratorTestCase
 						<span class="psx-property-name psx-property-optional">config</span>
 					</td>
 					<td>
-						<span class="psx-property-type psx-property-type-any">Object&lt;String,<span class="psx-property-type psx-property-type-string">String</span>&gt;</span>
+						<span class="psx-property-type psx-property-type-complex">
+							<a href="#psx-type-72828040aecd82459c3636a4226e81fc">config</a>
+						</span>
 					</td>
 					<td>
 						<span class="psx-property-description"/>
@@ -98,7 +100,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-98ac42f0f6f1ba965117d40b752bbb92">author</a>
+								<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -120,9 +122,9 @@ class HtmlTest extends GeneratorTestCase
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-choice">
 								<span class="psx-property-type psx-property-type-complex">
-									<a href="#psx-type-bb8502281f7ea91de9f753ecbfd59e2b">location</a>
+									<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
 								</span>|<span class="psx-property-type psx-property-type-complex">
-									<a href="#psx-type-061fe430f3242fc808d8eb1859bb9cf3">web</a>
+									<a href="#psx-type-57c64cac92e27c1db99e6a6793546e12">web</a>
 								</span>
 							</span>&gt;</span>
 					</td>
@@ -164,9 +166,9 @@ class HtmlTest extends GeneratorTestCase
 					<td>
 						<span class="psx-property-type psx-property-type-choice">
 							<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-98ac42f0f6f1ba965117d40b752bbb92">author</a>
+								<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
 							</span>|<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-061fe430f3242fc808d8eb1859bb9cf3">web</a>
+								<a href="#psx-type-57c64cac92e27c1db99e6a6793546e12">web</a>
 							</span>
 						</span>
 					</td>
@@ -177,11 +179,25 @@ class HtmlTest extends GeneratorTestCase
 				</tr>
 				<tr>
 					<td>
-						<span class="psx-property-name psx-property-required">author</span>
+						<span class="psx-property-name psx-property-optional">author</span>
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-98ac42f0f6f1ba965117d40b752bbb92">author</a>
+							<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
+						</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">meta</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-complex">
+							<a href="#psx-type-68a5de1071c84dc3c357e50c05e674fa">meta</a>
 						</span>
 					</td>
 					<td>
@@ -359,7 +375,40 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-98ac42f0f6f1ba965117d40b752bbb92" class="psx-complex-type">
+	<div id="psx-type-72828040aecd82459c3636a4226e81fc" class="psx-complex-type">
+		<h1>config</h1>
+		<table class="table psx-type-properties">
+			<colgroup>
+				<col width="20%" />
+				<col width="20%" />
+				<col width="40%" />
+				<col width="20%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Constraints</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">*</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-string">String</span>
+					</td>
+					<td>
+						<span class="psx-property-description">Additional properties must be of this type</span>
+					</td>
+					<td/>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div id="psx-type-4770be5abc2aedca274241c166226fc7" class="psx-complex-type">
 		<h1>author</h1>
 		<div class="psx-type-description">An simple author element with some description</div>
 		<table class="table psx-type-properties">
@@ -434,7 +483,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-bb8502281f7ea91de9f753ecbfd59e2b">location</a>
+								<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -448,7 +497,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-bb8502281f7ea91de9f753ecbfd59e2b">location</a>
+							<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
 						</span>
 					</td>
 					<td>
@@ -459,7 +508,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-bb8502281f7ea91de9f753ecbfd59e2b" class="psx-complex-type">
+	<div id="psx-type-b33b896fd4135c2882510d8949e883cf" class="psx-complex-type">
 		<h1>location</h1>
 		<div class="psx-type-description">Location of the person</div>
 		<table class="table psx-type-properties">
@@ -483,7 +532,7 @@ class HtmlTest extends GeneratorTestCase
 						<span class="psx-property-name psx-property-optional">lat</span>
 					</td>
 					<td>
-						<span class="psx-property-type psx-property-type-integer">Integer</span>
+						<span class="psx-property-type psx-property-type-float">Float</span>
 					</td>
 					<td>
 						<span class="psx-property-description"/>
@@ -495,17 +544,22 @@ class HtmlTest extends GeneratorTestCase
 						<span class="psx-property-name psx-property-optional">long</span>
 					</td>
 					<td>
-						<span class="psx-property-type psx-property-type-integer">Integer</span>
+						<span class="psx-property-type psx-property-type-float">Float</span>
 					</td>
 					<td>
 						<span class="psx-property-description"/>
 					</td>
 					<td/>
 				</tr>
+				<tr>
+					<td colspan="4">
+						<span class="psx-property-description">Additional properties are allowed</span>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-061fe430f3242fc808d8eb1859bb9cf3" class="psx-complex-type">
+	<div id="psx-type-57c64cac92e27c1db99e6a6793546e12" class="psx-complex-type">
 		<h1>web</h1>
 		<div class="psx-type-description">An application</div>
 		<table class="table psx-type-properties">
@@ -545,6 +599,80 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">*</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-string">String</span>
+					</td>
+					<td>
+						<span class="psx-property-description">Additional properties must be of this type</span>
+					</td>
+					<td/>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div id="psx-type-68a5de1071c84dc3c357e50c05e674fa" class="psx-complex-type">
+		<h1>meta</h1>
+		<div class="psx-type-description">Some meta data</div>
+		<table class="table psx-type-properties">
+			<colgroup>
+				<col width="20%" />
+				<col width="20%" />
+				<col width="40%" />
+				<col width="20%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Constraints</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">createDate</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-datetime">
+							<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTime</a>
+						</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">^tags_\d$</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-string">String</span>
+					</td>
+					<td>
+						<span class="psx-property-description"/>
+					</td>
+					<td/>
+				</tr>
+				<tr>
+					<td>
+						<span class="psx-property-name psx-property-optional">^location_\d$</span>
+					</td>
+					<td>
+						<span class="psx-property-type psx-property-type-complex">
+							<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
+						</span>
+					</td>
+					<td>
+						<span class="psx-property-description">Location of the person</span>
 					</td>
 					<td/>
 				</tr>

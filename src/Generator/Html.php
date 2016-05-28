@@ -64,10 +64,22 @@ class Html implements GeneratorInterface
 
         $response    = '';
         $description = $type->getDescription();
-        $properties  = [];
 
-        if ($type instanceof Property\CompositeTypeAbstract) {
+        $properties      = [];
+        $patternProps    = [];
+        $additionalProps = false;
+
+        if ($type instanceof Property\ComplexType) {
+            $properties      = $type->getProperties();
+            $patternProps    = $type->getPatternProperties();
+            $additionalProps = $type->getAdditionalProperties();
+
+            if (empty($properties) && empty($description) && empty($patternProps) && empty($additionalProps)) {
+                return;
+            }
+        } elseif ($type instanceof Property\CompositeTypeAbstract) {
             $properties = $type->getProperties();
+
             if (empty($properties) && empty($description)) {
                 return;
             }
@@ -76,9 +88,12 @@ class Html implements GeneratorInterface
         if ($type instanceof Property\ComplexType) {
             $response.= '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
             $response.= '<h1>' . $type->getName() . '</h1>';
-            $response.= '<div class="psx-type-description">' . $description . '</div>';
+            
+            if (!empty($description)) {
+                $response.= '<div class="psx-type-description">' . $description . '</div>';
+            }
 
-            if (!empty($properties)) {
+            if (!empty($properties) || !empty($patternProps) || !empty($additionalProps)) {
                 $response.= '<table class="table psx-type-properties">';
                 $response.= '<colgroup>';
                 $response.= '<col width="20%" />';
@@ -97,7 +112,7 @@ class Html implements GeneratorInterface
                 $response.= '<tbody>';
 
                 foreach ($properties as $property) {
-                    list($type, $constraints) = $this->getValueDescription($property);
+                    list($subType, $constraints) = $this->getValueDescription($property);
 
                     $description = '';
                     if (!$property instanceof Property\ComplexType) {
@@ -106,8 +121,34 @@ class Html implements GeneratorInterface
 
                     $response.= '<tr>';
                     $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $property->getName() . '</span></td>';
-                    $response.= '<td>' . $type . '</td>';
+                    $response.= '<td>' . $subType . '</td>';
                     $response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
+                    $response.= '<td>' . $constraints . '</td>';
+                    $response.= '</tr>';
+                }
+
+                foreach ($patternProps as $pattern => $property) {
+                    list($type, $constraints) = $this->getValueDescription($property);
+
+                    $response.= '<tr>';
+                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $pattern . '</span></td>';
+                    $response.= '<td>' . $type . '</td>';
+                    $response.= '<td><span class="psx-property-description">' . $property->getDescription() . '</span></td>';
+                    $response.= '<td>' . $constraints . '</td>';
+                    $response.= '</tr>';
+                }
+
+                if ($additionalProps === true) {
+                    $response.= '<tr>';
+                    $response.= '<td colspan="4"><span class="psx-property-description">Additional properties are allowed</span></td>';
+                    $response.= '</tr>';
+                } elseif ($additionalProps instanceof PropertyInterface) {
+                    list($type, $constraints) = $this->getValueDescription($additionalProps);
+
+                    $response.= '<tr>';
+                    $response.= '<td><span class="psx-property-name ' . ($additionalProps->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">*</span></td>';
+                    $response.= '<td>' . $type . '</td>';
+                    $response.= '<td><span class="psx-property-description">Additional properties must be of this type</span></td>';
                     $response.= '<td>' . $constraints . '</td>';
                     $response.= '</tr>';
                 }
@@ -120,8 +161,11 @@ class Html implements GeneratorInterface
         }
 
         foreach ($properties as $property) {
-            if ($property instanceof Property\AnyType || $property instanceof Property\ArrayType) {
-                $response.= $this->generateType($property->getPrototype());
+            if ($property instanceof Property\ArrayType) {
+                $prototype = $property->getPrototype();
+                if ($prototype instanceof PropertyInterface) {
+                    $response.= $this->generateType($property->getPrototype());
+                }
             } elseif ($property instanceof Property\CompositeTypeAbstract) {
                 $response.= $this->generateType($property);
             }
@@ -132,18 +176,7 @@ class Html implements GeneratorInterface
 
     protected function getValueDescription(PropertyInterface $type)
     {
-        if ($type instanceof Property\AnyType) {
-            $prototype = $type->getPrototype();
-
-            if ($prototype instanceof PropertyInterface) {
-                $property = $this->getValueDescription($prototype);
-                $span     = '<span class="psx-property-type psx-property-type-any">Object&lt;String,' . $property[0] . '&gt;</span>';
-
-                return [$span, null];
-            } else {
-                throw new RuntimeException('Any property has no prototype');
-            }
-        } elseif ($type instanceof Property\ArrayType) {
+        if ($type instanceof Property\ArrayType) {
             $constraints = array();
 
             $min = $type->getMinLength();

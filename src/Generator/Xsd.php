@@ -95,7 +95,7 @@ class Xsd implements GeneratorInterface
     protected function generateTypes(array $properties)
     {
         foreach ($properties as $property) {
-            if (($property instanceof Property\AnyType || $property instanceof Property\ArrayType) && !$property->getPrototype() instanceof Property\ChoiceType) {
+            if (($property instanceof Property\ArrayType) && !$property->getPrototype() instanceof Property\ChoiceType) {
                 $property = $property->getPrototype();
             }
 
@@ -129,6 +129,28 @@ class Xsd implements GeneratorInterface
             $this->writer->startElement($type instanceof Property\ChoiceType ? 'xs:choice' : 'xs:sequence');
 
             $this->generateProperties($type->getProperties());
+
+            if ($type instanceof Property\ComplexType) {
+                // if we have additional or pattern properties we allow any
+                // additional elements. Unfortunately there is afaik no way in
+                // XSD to specify a schema for element names which matches a
+                // specific regexp
+                $patternProperties    = $type->getPatternProperties();
+                $additionalProperties = $type->getAdditionalProperties();
+
+                if (!empty($patternProperties) || !empty($additionalProperties)) {
+                    $minProperties = $type->getMinProperties();
+                    $minProperties = $minProperties === null ? 0 : $minProperties;
+                    $maxProperties = $type->getMaxProperties();
+                    $maxProperties = $maxProperties === null ? 'unbounded' : $maxProperties;
+
+                    $this->writer->startElement('xs:any');
+                    $this->writer->writeAttribute('processContents', 'lax');
+                    $this->writer->writeAttribute('minOccurs', $minProperties);
+                    $this->writer->writeAttribute('maxOccurs', $maxProperties);
+                    $this->writer->endElement();
+                }
+            }
 
             $this->writer->endElement();
             $this->writer->endElement();
@@ -220,13 +242,13 @@ class Xsd implements GeneratorInterface
                 $minOccurs = $property->getMinLength();
                 $maxOccurs = $property->getMaxLength();
 
-                if ($minOccurs && $maxOccurs) {
+                if ($minOccurs !== null && $maxOccurs !== null) {
                     $this->writer->writeAttribute('minOccurs', $minOccurs);
                     $this->writer->writeAttribute('maxOccurs', $maxOccurs);
-                } elseif ($minOccurs) {
+                } elseif ($minOccurs !== null) {
                     $this->writer->writeAttribute('minOccurs', $minOccurs);
                     $this->writer->writeAttribute('maxOccurs', 'unbounded');
-                } elseif ($maxOccurs) {
+                } elseif ($maxOccurs !== null) {
                     $this->writer->writeAttribute('minOccurs', 0);
                     $this->writer->writeAttribute('maxOccurs', $maxOccurs);
                 } else {
@@ -234,13 +256,6 @@ class Xsd implements GeneratorInterface
                     $this->writer->writeAttribute('maxOccurs', 'unbounded');
                 }
 
-                $this->writer->endElement();
-            } elseif ($property instanceof Property\AnyType) {
-                $this->writer->startElement('xs:element');
-                $this->writer->writeAttribute('name', $property->getName());
-                $this->writer->writeAttribute('type', 'xs:anyType');
-                $this->writer->writeAttribute('minOccurs', 0);
-                $this->writer->writeAttribute('maxOccurs', 1);
                 $this->writer->endElement();
             } else {
                 $this->writer->startElement('xs:element');

@@ -1,45 +1,6 @@
 <?php
-/*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
- *
- * Copyright 2010-2016 Christoph Kappestein <k42b3.x@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-namespace PSX\Schema\Tests\Generator;
-
-use PSX\Schema\Generator\Php;
-
-/**
- * PhpTest
- *
- * @author  Christoph Kappestein <k42b3.x@gmail.com>
- * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
- */
-class PhpTest extends GeneratorTestCase
-{
-    public function testGenerate()
-    {
-        $generator = new Php();
-        $result    = $generator->generate($this->getSchema());
-
-        $expect = <<<'PHP'
-<?php
-
-namespace PSX\Generation;
+namespace PSX\Schema\Tests\Parser\Popo;
 
 /**
  * @Title("config")
@@ -110,13 +71,13 @@ class Complex4770be5a
     public $categories;
     /**
      * @Key("locations")
-     * @Type("array<PSX\Generation\Complexb33b896f>")
+     * @Type("array<PSX\Schema\Tests\Parser\Popo\Complexb33b896f>")
      * @Description("Array of locations")
      */
     public $locations;
     /**
      * @Key("origin")
-     * @Type("PSX\Generation\Complexb33b896f")
+     * @Type("PSX\Schema\Tests\Parser\Popo\Complexb33b896f")
      * @Description("Location of the person")
      */
     public $origin;
@@ -202,7 +163,7 @@ class Complex57c64cac extends \ArrayObject
  * @Description("Some meta data")
  * @AdditionalProperties(false)
  * @PatternProperty(pattern="^tags_\d$", type="string")
- * @PatternProperty(pattern="^location_\d$", type="PSX\Generation\Complexb33b896f")
+ * @PatternProperty(pattern="^location_\d$", type="PSX\Schema\Tests\Parser\Popo\Complexb33b896f")
  */
 class Complex68a5de10 extends \ArrayObject
 {
@@ -229,7 +190,7 @@ class Complex12b3526e
 {
     /**
      * @Key("config")
-     * @Type("PSX\Generation\Complex72828040")
+     * @Type("PSX\Schema\Tests\Parser\Popo\Complex72828040")
      */
     public $config;
     /**
@@ -241,14 +202,14 @@ class Complex12b3526e
     public $tags;
     /**
      * @Key("receiver")
-     * @Type("array<PSX\Generation\Complex4770be5a>")
+     * @Type("array<PSX\Schema\Tests\Parser\Popo\Complex4770be5a>")
      * @Required
      * @MinItems(1)
      */
     public $receiver;
     /**
      * @Key("resources")
-     * @Type("array<choice<PSX\Generation\Complexb33b896f,PSX\Generation\Complex57c64cac>>")
+     * @Type("array<choice<PSX\Schema\Tests\Parser\Popo\Complexb33b896f,PSX\Schema\Tests\Parser\Popo\Complex57c64cac>>")
      */
     public $resources;
     /**
@@ -263,18 +224,18 @@ class Complex12b3526e
     public $read;
     /**
      * @Key("source")
-     * @Type("choice<PSX\Generation\Complex4770be5a,PSX\Generation\Complex57c64cac>")
+     * @Type("choice<PSX\Schema\Tests\Parser\Popo\Complex4770be5a,PSX\Schema\Tests\Parser\Popo\Complex57c64cac>")
      */
     public $source;
     /**
      * @Key("author")
-     * @Type("PSX\Generation\Complex4770be5a")
+     * @Type("PSX\Schema\Tests\Parser\Popo\Complex4770be5a")
      * @Description("An simple author element with some description")
      */
     public $author;
     /**
      * @Key("meta")
-     * @Type("PSX\Generation\Complex68a5de10")
+     * @Type("PSX\Schema\Tests\Parser\Popo\Complex68a5de10")
      * @Description("Some meta data")
      */
     public $meta;
@@ -476,28 +437,5 @@ class Complex12b3526e
     public function getProfileUri()
     {
         return $this->profileUri;
-    }
-}
-PHP;
-
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $result, $result);
-    }
-
-    public function testExecute()
-    {
-        $source    = $this->getSchema();
-        $generator = new Php();
-        $result    = $generator->generate($source);
-        $file      = __DIR__ . '/generated_schema.php';
-
-        file_put_contents($file, $result);
-
-        include_once $file;
-
-        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complex12b3526e');
-
-        $this->assertSchema($schema, $source);
     }
 }

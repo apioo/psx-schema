@@ -56,12 +56,12 @@ class AnyTypeTest extends \PHPUnit_Framework_TestCase
     {
         $property = Property::getArray('test');
 
-        $this->assertEquals('3f23b824375ac633fed999e8ef1a8c25', $property->getId());
+        $this->assertEquals('1b81b2c324af02637b949c77e113236e', $property->getId());
 
         $property = Property::getArray('test');
         $property->setPrototype(Property::getString('foo'));
 
-        $this->assertEquals('27430185f8c85252b38d937c1bc081d2', $property->getId());
+        $this->assertEquals('d0995bd3f680454a2d2d37d94c7b1277', $property->getId());
     }
 
     public function testGetTypeName()

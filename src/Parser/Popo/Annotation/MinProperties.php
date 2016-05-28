@@ -18,26 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests\Parser;
-
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Schema\Parser;
-use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
+namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * PopoTest
+ * MinProperties
  *
+ * @Annotation
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PopoTest extends ParserTestCase
+class MinProperties
 {
-    public function testParse()
-    {
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Complex12b3526e::class);
+    /**
+     * @var integer
+     */
+    protected $minProperties;
 
-        $this->assertSchema($this->getSchema(), $schema);
+    public function __construct(array $values)
+    {
+        $this->minProperties = current($values);
+    }
+
+    public function getMinProperties()
+    {
+        return $this->minProperties;
     }
 }

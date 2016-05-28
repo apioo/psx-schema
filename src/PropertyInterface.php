@@ -49,7 +49,7 @@ interface PropertyInterface
     public function setDescription($description);
 
     /**
-     * Returns an description of this property
+     * Returns a description of this property
      *
      * @return string
      */
