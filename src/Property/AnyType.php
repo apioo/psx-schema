@@ -32,11 +32,6 @@ use PSX\Schema\PropertyInterface;
  */
 class AnyType extends ComplexType
 {
-    public function add(PropertyInterface $property)
-    {
-        return $this->setPrototype($property);
-    }
-
     public function setPrototype(PropertyInterface $prototype)
     {
         return $this->setAdditionalProperties($prototype);
