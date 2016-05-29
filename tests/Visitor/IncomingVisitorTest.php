@@ -88,8 +88,8 @@ class IncomingVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $visitor  = new IncomingVisitor();
         $property = Property::getComplex('test')
-            ->add(Property::getString('foo'))
-            ->add(Property::getString('bar'));
+            ->add('foo', Property::getString())
+            ->add('bar', Property::getString());
 
         $record = $visitor->visitComplex((object) ['foo' => 'bar'], $property, '');
 

@@ -36,7 +36,8 @@ class Builder
 
     public function __construct($name)
     {
-        $this->property = Property::getComplex($name);
+        $this->property = Property::getComplex();
+        $this->property->setName($name);
     }
 
     /**
@@ -121,9 +122,9 @@ class Builder
      * @param \PSX\Schema\PropertyInterface $property
      * @return $this
      */
-    public function add(PropertyInterface $property)
+    public function add($name, PropertyInterface $property = null)
     {
-        $this->property->add($property);
+        $this->property->add($name, $property);
 
         return $this;
     }
@@ -133,12 +134,12 @@ class Builder
      * @return \PSX\Schema\Property\AnyType
      * @deprecated
      */
-    public function anyType($name)
+    public function anyType($name, Property\AnyType $type = null)
     {
-        if ($name instanceof Property\AnyType) {
-            $this->add($property = $name);
+        if ($type !== null) {
+            $this->add($name, $property = clone $type);
         } else {
-            $this->add($property = Property::getAny($name));
+            $this->add($name, $property = Property::getAny());
         }
 
         return $property;
@@ -148,12 +149,12 @@ class Builder
      * @param string $name
      * @return \PSX\Schema\Property\ArrayType
      */
-    public function arrayType($name)
+    public function arrayType($name, Property\ArrayType $type = null)
     {
-        if ($name instanceof Property\ArrayType) {
-            $this->add($property = $name);
+        if ($type !== null) {
+            $this->add($name, $property = clone $type);
         } else {
-            $this->add($property = Property::getArray($name));
+            $this->add($name, $property = Property::getArray());
         }
 
         return $property;
@@ -165,7 +166,7 @@ class Builder
      */
     public function binary($name)
     {
-        $this->add($property = Property::getBinary($name));
+        $this->add($name, $property = Property::getBinary());
 
         return $property;
     }
@@ -176,7 +177,7 @@ class Builder
      */
     public function boolean($name)
     {
-        $this->add($property = Property::getBoolean($name));
+        $this->add($name, $property = Property::getBoolean());
 
         return $property;
     }
@@ -185,12 +186,12 @@ class Builder
      * @param string $name
      * @return \PSX\Schema\Property\ChoiceType
      */
-    public function choiceType($name)
+    public function choiceType($name, Property\ChoiceType $type = null)
     {
-        if ($name instanceof Property\ChoiceType) {
-            $this->add($property = $name);
+        if ($type !== null) {
+            $this->add($name, $property = clone $type);
         } else {
-            $this->add($property = Property::getChoice($name));
+            $this->add($name, $property = Property::getChoice());
         }
 
         return $property;
@@ -201,19 +202,12 @@ class Builder
      * @param \PSX\Schema\Property\ComplexType $template
      * @return \PSX\Schema\Property\ComplexType
      */
-    public function complexType($name, Property\ComplexType $template = null)
+    public function complexType($name, Property\ComplexType $type = null)
     {
-        if ($template === null) {
-            if ($name instanceof Property\ComplexType) {
-                $this->add($property = $name);
-            } else {
-                $this->add($property = Property::getComplex($name));
-            }
+        if ($type !== null) {
+            $this->add($name, $property = clone $type);
         } else {
-            $property = clone $template;
-            $property->setName($name);
-
-            $this->add($property);
+            $this->add($name, $property = Property::getComplex());
         }
 
         return $property;
@@ -225,7 +219,7 @@ class Builder
      */
     public function date($name)
     {
-        $this->add($property = Property::getDate($name));
+        $this->add($name, $property = Property::getDate());
 
         return $property;
     }
@@ -236,7 +230,7 @@ class Builder
      */
     public function dateTime($name)
     {
-        $this->add($property = Property::getDateTime($name));
+        $this->add($name, $property = Property::getDateTime());
 
         return $property;
     }
@@ -247,7 +241,7 @@ class Builder
      */
     public function duration($name)
     {
-        $this->add($property = Property::getDuration($name));
+        $this->add($name, $property = Property::getDuration());
 
         return $property;
     }
@@ -258,7 +252,7 @@ class Builder
      */
     public function float($name)
     {
-        $this->add($property = Property::getFloat($name));
+        $this->add($name, $property = Property::getFloat());
 
         return $property;
     }
@@ -269,7 +263,7 @@ class Builder
      */
     public function integer($name)
     {
-        $this->add($property = Property::getInteger($name));
+        $this->add($name, $property = Property::getInteger());
 
         return $property;
     }
@@ -280,7 +274,7 @@ class Builder
      */
     public function string($name)
     {
-        $this->add($property = Property::getString($name));
+        $this->add($name, $property = Property::getString());
 
         return $property;
     }
@@ -291,7 +285,7 @@ class Builder
      */
     public function time($name)
     {
-        $this->add($property = Property::getTime($name));
+        $this->add($name, $property = Property::getTime());
 
         return $property;
     }
@@ -302,7 +296,7 @@ class Builder
      */
     public function uri($name)
     {
-        $this->add($property = Property::getUri($name));
+        $this->add($name, $property = Property::getUri());
 
         return $property;
     }

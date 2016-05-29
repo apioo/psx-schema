@@ -45,15 +45,15 @@ class XsdTest extends GeneratorTestCase
 				<xs:documentation>An general news entry</xs:documentation>
 			</xs:annotation>
 			<xs:sequence>
-				<xs:element name="config" type="tns:type72828040aecd82459c3636a4226e81fc" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="config" type="tns:type5525537f7f38b6988025ca659a7b315d" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="tags" type="xs:string" minOccurs="1" maxOccurs="6"/>
-				<xs:element name="receiver" type="tns:type4770be5abc2aedca274241c166226fc7" minOccurs="1" maxOccurs="unbounded"/>
-				<xs:element name="resources" type="tns:type4898a93cd82b117833f9683324e0f6dd" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="receiver" type="tns:type3b735bb119d1f8f279637029c0d482e1" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element name="resources" type="tns:type0ae50ca2769f912fdb609180fef2ab22" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element name="profileImage" type="xs:base64Binary" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="read" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="source" type="tns:type20f5d15c759c1d56a2ed0675fe4b4a0b" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="author" type="tns:type4770be5abc2aedca274241c166226fc7" minOccurs="0" maxOccurs="1"/>
-				<xs:element name="meta" type="tns:type68a5de1071c84dc3c357e50c05e674fa" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="source" type="tns:type4041e76cd4c2d30153165760e80c506e" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="author" type="tns:type3b735bb119d1f8f279637029c0d482e1" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="meta" type="tns:typea80788599984d8da6729b8be82b7a016" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="sendDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="readDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="expires" type="xs:duration" minOccurs="0" maxOccurs="1"/>
@@ -66,12 +66,12 @@ class XsdTest extends GeneratorTestCase
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="type72828040aecd82459c3636a4226e81fc">
+	<xs:complexType name="type5525537f7f38b6988025ca659a7b315d">
 		<xs:sequence>
 			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="type4770be5abc2aedca274241c166226fc7">
+	<xs:complexType name="type3b735bb119d1f8f279637029c0d482e1">
 		<xs:annotation>
 			<xs:documentation>An simple author element with some description</xs:documentation>
 		</xs:annotation>
@@ -79,8 +79,8 @@ class XsdTest extends GeneratorTestCase
 			<xs:element name="title" type="tns:type40ae9277cd05f7534cbcb3ed9d9d70b9" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="categories" type="xs:string" minOccurs="0" maxOccurs="8"/>
-			<xs:element name="locations" type="tns:typeb33b896fd4135c2882510d8949e883cf" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="origin" type="tns:typeb33b896fd4135c2882510d8949e883cf" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="locations" type="tns:type73afba2a3732aa422e2dede6fd26d0cb" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="origin" type="tns:type73afba2a3732aa422e2dede6fd26d0cb" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:simpleType name="type40ae9277cd05f7534cbcb3ed9d9d70b9">
@@ -88,7 +88,7 @@ class XsdTest extends GeneratorTestCase
 			<xs:pattern value="[A-z]{3,16}"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:complexType name="typeb33b896fd4135c2882510d8949e883cf">
+	<xs:complexType name="type73afba2a3732aa422e2dede6fd26d0cb">
 		<xs:annotation>
 			<xs:documentation>Location of the person</xs:documentation>
 		</xs:annotation>
@@ -98,18 +98,13 @@ class XsdTest extends GeneratorTestCase
 			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="type513dcf4aae7ed2957c37086b84b57bb2">
-		<xs:sequence>
-			<xs:element name="resource" type="tns:type4898a93cd82b117833f9683324e0f6dd" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="type4898a93cd82b117833f9683324e0f6dd">
+	<xs:complexType name="type0ae50ca2769f912fdb609180fef2ab22">
 		<xs:choice>
-			<xs:element name="location" type="tns:typeb33b896fd4135c2882510d8949e883cf" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="web" type="tns:type57c64cac92e27c1db99e6a6793546e12" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="location" type="tns:type73afba2a3732aa422e2dede6fd26d0cb" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="web" type="tns:type55c1692462753300d5eecf90dc979d09" minOccurs="0" maxOccurs="1"/>
 		</xs:choice>
 	</xs:complexType>
-	<xs:complexType name="type57c64cac92e27c1db99e6a6793546e12">
+	<xs:complexType name="type55c1692462753300d5eecf90dc979d09">
 		<xs:annotation>
 			<xs:documentation>An application</xs:documentation>
 		</xs:annotation>
@@ -119,13 +114,13 @@ class XsdTest extends GeneratorTestCase
 			<xs:any processContents="lax" minOccurs="2" maxOccurs="8"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="type20f5d15c759c1d56a2ed0675fe4b4a0b">
+	<xs:complexType name="type4041e76cd4c2d30153165760e80c506e">
 		<xs:choice>
-			<xs:element name="author" type="tns:type4770be5abc2aedca274241c166226fc7" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="web" type="tns:type57c64cac92e27c1db99e6a6793546e12" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="author" type="tns:type3b735bb119d1f8f279637029c0d482e1" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="web" type="tns:type55c1692462753300d5eecf90dc979d09" minOccurs="0" maxOccurs="1"/>
 		</xs:choice>
 	</xs:complexType>
-	<xs:complexType name="type68a5de1071c84dc3c357e50c05e674fa">
+	<xs:complexType name="typea80788599984d8da6729b8be82b7a016">
 		<xs:annotation>
 			<xs:documentation>Some meta data</xs:documentation>
 		</xs:annotation>

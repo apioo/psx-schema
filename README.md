@@ -53,14 +53,101 @@ try {
     echo $e->getMessage();
 }
 
-// based on the schema we can also generate i.e. PHP classes
+// based on the schema we can generate i.e. PHP classes
 $generator = new \PSX\Schema\Generator\Php();
 
 echo $generator->generate($schema);
 
 ```
 
-### Annotations
+## Example
+
+This examples shows how the transformation of a JSON Schema into PHP classes 
+works. We use the example schema from the offical json schema website. Note you 
+should the generate code always as a starting point in almost any case you have 
+to adjust it.
+
+```json
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "age": {
+      "description": "Age in years",
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "firstName",
+    "lastName"
+  ]
+}
+```
+
+```php
+<?php
+
+namespace PSX\Generation;
+
+/**
+ * @Title("Example Schema")
+ * @AdditionalProperties(false)
+ */
+class Complex269bcdc2
+{
+    /**
+     * @Key("firstName")
+     * @Type("string")
+     * @Required
+     */
+    public $firstName;
+    /**
+     * @Key("lastName")
+     * @Type("string")
+     * @Required
+     */
+    public $lastName;
+    /**
+     * @Key("age")
+     * @Type("integer")
+     * @Description("Age in years")
+     */
+    public $age;
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+    public function setAge($age)
+    {
+        $this->age = $age;
+    }
+    public function getAge()
+    {
+        return $this->age;
+    }
+}
+```
+
+## Annotations
 
 It is possible to turn a normal PHP class into a schema. Therefor you can use
 annotations to describe the type of each property.

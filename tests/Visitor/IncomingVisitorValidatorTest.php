@@ -35,7 +35,7 @@ use PSX\Uri\Uri;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
+class IncomingVisitorValidatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testVisitArray()
     {
@@ -113,8 +113,8 @@ class ValidationVisitorValidatorTest extends \PHPUnit_Framework_TestCase
         $visitor->setValidator($validator);
 
         $property = Property::getComplex('test')
-            ->add(Property::getString('foo'))
-            ->add(Property::getString('bar'));
+            ->add('foo', Property::getString())
+            ->add('bar', Property::getString());
 
         $visitor->visitComplex(new \stdClass(), $property, '/test');
     }

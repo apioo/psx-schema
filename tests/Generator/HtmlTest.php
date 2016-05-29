@@ -38,7 +38,7 @@ class HtmlTest extends GeneratorTestCase
 
         $expect = <<<'HTML'
 <div>
-	<div id="psx-type-12b3526ee773c0681e998e7d564de460" class="psx-complex-type">
+	<div id="psx-type-b35219bc5eb122fb214309b745f24404" class="psx-complex-type">
 		<h1>news</h1>
 		<div class="psx-type-description">An general news entry</div>
 		<table class="table psx-type-properties">
@@ -63,7 +63,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-72828040aecd82459c3636a4226e81fc">config</a>
+							<a href="#psx-type-5525537f7f38b6988025ca659a7b315d"/>
 						</span>
 					</td>
 					<td>
@@ -100,7 +100,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
+								<a href="#psx-type-3b735bb119d1f8f279637029c0d482e1">author</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -122,9 +122,9 @@ class HtmlTest extends GeneratorTestCase
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-choice">
 								<span class="psx-property-type psx-property-type-complex">
-									<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
+									<a href="#psx-type-73afba2a3732aa422e2dede6fd26d0cb">location</a>
 								</span>|<span class="psx-property-type psx-property-type-complex">
-									<a href="#psx-type-57c64cac92e27c1db99e6a6793546e12">web</a>
+									<a href="#psx-type-55c1692462753300d5eecf90dc979d09">web</a>
 								</span>
 							</span>&gt;</span>
 					</td>
@@ -166,9 +166,9 @@ class HtmlTest extends GeneratorTestCase
 					<td>
 						<span class="psx-property-type psx-property-type-choice">
 							<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
+								<a href="#psx-type-3b735bb119d1f8f279637029c0d482e1">author</a>
 							</span>|<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-57c64cac92e27c1db99e6a6793546e12">web</a>
+								<a href="#psx-type-55c1692462753300d5eecf90dc979d09">web</a>
 							</span>
 						</span>
 					</td>
@@ -183,7 +183,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-4770be5abc2aedca274241c166226fc7">author</a>
+							<a href="#psx-type-3b735bb119d1f8f279637029c0d482e1">author</a>
 						</span>
 					</td>
 					<td>
@@ -197,7 +197,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-68a5de1071c84dc3c357e50c05e674fa">meta</a>
+							<a href="#psx-type-a80788599984d8da6729b8be82b7a016">meta</a>
 						</span>
 					</td>
 					<td>
@@ -375,8 +375,8 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-72828040aecd82459c3636a4226e81fc" class="psx-complex-type">
-		<h1>config</h1>
+	<div id="psx-type-5525537f7f38b6988025ca659a7b315d" class="psx-complex-type">
+		<h1/>
 		<table class="table psx-type-properties">
 			<colgroup>
 				<col width="20%" />
@@ -408,7 +408,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-4770be5abc2aedca274241c166226fc7" class="psx-complex-type">
+	<div id="psx-type-3b735bb119d1f8f279637029c0d482e1" class="psx-complex-type">
 		<h1>author</h1>
 		<div class="psx-type-description">An simple author element with some description</div>
 		<table class="table psx-type-properties">
@@ -483,7 +483,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-array">Array&lt;<span class="psx-property-type psx-property-type-complex">
-								<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
+								<a href="#psx-type-73afba2a3732aa422e2dede6fd26d0cb">location</a>
 							</span>&gt;</span>
 					</td>
 					<td>
@@ -497,7 +497,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
+							<a href="#psx-type-73afba2a3732aa422e2dede6fd26d0cb">location</a>
 						</span>
 					</td>
 					<td>
@@ -508,7 +508,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-b33b896fd4135c2882510d8949e883cf" class="psx-complex-type">
+	<div id="psx-type-73afba2a3732aa422e2dede6fd26d0cb" class="psx-complex-type">
 		<h1>location</h1>
 		<div class="psx-type-description">Location of the person</div>
 		<table class="table psx-type-properties">
@@ -559,7 +559,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-57c64cac92e27c1db99e6a6793546e12" class="psx-complex-type">
+	<div id="psx-type-55c1692462753300d5eecf90dc979d09" class="psx-complex-type">
 		<h1>web</h1>
 		<div class="psx-type-description">An application</div>
 		<table class="table psx-type-properties">
@@ -617,7 +617,7 @@ class HtmlTest extends GeneratorTestCase
 			</tbody>
 		</table>
 	</div>
-	<div id="psx-type-68a5de1071c84dc3c357e50c05e674fa" class="psx-complex-type">
+	<div id="psx-type-a80788599984d8da6729b8be82b7a016" class="psx-complex-type">
 		<h1>meta</h1>
 		<div class="psx-type-description">Some meta data</div>
 		<table class="table psx-type-properties">
@@ -668,7 +668,7 @@ class HtmlTest extends GeneratorTestCase
 					</td>
 					<td>
 						<span class="psx-property-type psx-property-type-complex">
-							<a href="#psx-type-b33b896fd4135c2882510d8949e883cf">location</a>
+							<a href="#psx-type-73afba2a3732aa422e2dede6fd26d0cb">location</a>
 						</span>
 					</td>
 					<td>

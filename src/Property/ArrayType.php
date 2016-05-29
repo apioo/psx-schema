@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Property;
 
+use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 
 /**
@@ -29,8 +30,13 @@ use PSX\Schema\PropertyInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ArrayType extends CompositeTypeAbstract
+class ArrayType extends PropertyAbstract
 {
+    /**
+     * @var \PSX\Schema\PropertyInterface
+     */
+    protected $prototype;
+
     /**
      * @var integer
      */
@@ -41,21 +47,16 @@ class ArrayType extends CompositeTypeAbstract
      */
     protected $maxItems;
 
-    public function add(PropertyInterface $property)
-    {
-        return $this->setPrototype($property);
-    }
-
     public function setPrototype(PropertyInterface $prototype)
     {
-        $this->properties = array('prototype' => $prototype);
+        $this->prototype = $prototype;
 
         return $this;
     }
 
     public function getPrototype()
     {
-        return isset($this->properties['prototype']) ? $this->properties['prototype'] : null;
+        return $this->prototype;
     }
 
     /**
@@ -144,9 +145,17 @@ class ArrayType extends CompositeTypeAbstract
     public function getId()
     {
         return md5(
-            parent::getId() .
+            ($this->prototype !== null ? $this->prototype->getId() : null) .
             $this->minItems .
             $this->maxItems
         );
+    }
+
+    public function __clone()
+    {
+        $prototype = $this->prototype;
+        if ($prototype instanceof PropertyInterface) {
+            $this->prototype = clone $prototype;
+        }
     }
 }

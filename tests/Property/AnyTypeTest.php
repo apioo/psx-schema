@@ -31,41 +31,15 @@ use PSX\Schema\Property;
  */
 class AnyTypeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSetPrototype()
-    {
-        $prototype = Property::getString('foo');
-
-        $property = Property::getArray('test');
-        $property->setPrototype($prototype);
-
-        $this->assertEquals($prototype, $property->getPrototype());
-    }
-
-    public function testAdd()
-    {
-        $prototype = Property::getString('foo');
-
-        $property = Property::getArray('test');
-        $property->add($prototype);
-        $property->add($prototype);
-
-        $this->assertEquals($prototype, $property->getPrototype());
-    }
-
     public function testGetId()
     {
-        $property = Property::getArray('test');
+        $property = Property::getAny();
 
-        $this->assertEquals('1b81b2c324af02637b949c77e113236e', $property->getId());
-
-        $property = Property::getArray('test');
-        $property->setPrototype(Property::getString('foo'));
-
-        $this->assertEquals('d0995bd3f680454a2d2d37d94c7b1277', $property->getId());
+        $this->assertEquals('16c24c9ea9411a7964b5a537477910c6', $property->getId());
     }
 
     public function testGetTypeName()
     {
-        $this->assertEquals('array', Property::getArray('test')->getTypeName());
+        $this->assertEquals('any', Property::getAny()->getTypeName());
     }
 }

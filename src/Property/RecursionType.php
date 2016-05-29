@@ -21,6 +21,7 @@
 namespace PSX\Schema\Property;
 
 use PSX\Schema\PropertyAbstract;
+use PSX\Schema\PropertyInterface;
 
 /**
  * RecursionType
@@ -33,7 +34,7 @@ class RecursionType extends PropertyAbstract
 {
     protected $property;
 
-    public function __construct(CompositeTypeAbstract $property = null)
+    public function __construct(PropertyInterface $property)
     {
         parent::__construct($property->getName());
 
@@ -47,7 +48,7 @@ class RecursionType extends PropertyAbstract
         return $this->property;
     }
 
-    public function setOrigin(CompositeTypeAbstract $property)
+    public function setOrigin(PropertyInterface $property)
     {
         $this->property = $property;
     }

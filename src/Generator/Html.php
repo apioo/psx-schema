@@ -57,7 +57,7 @@ class Html implements GeneratorInterface
     protected function generateType(PropertyInterface $type)
     {
         if (isset($this->_types[$type->getId()])) {
-            return;
+            return '';
         }
 
         $this->_types[$type->getId()] = $type->getName();
@@ -75,13 +75,7 @@ class Html implements GeneratorInterface
             $additionalProps = $type->getAdditionalProperties();
 
             if (empty($properties) && empty($description) && empty($patternProps) && empty($additionalProps)) {
-                return;
-            }
-        } elseif ($type instanceof Property\CompositeTypeAbstract) {
-            $properties = $type->getProperties();
-
-            if (empty($properties) && empty($description)) {
-                return;
+                return '';
             }
         }
 
@@ -111,7 +105,7 @@ class Html implements GeneratorInterface
                 $response.= '</thead>';
                 $response.= '<tbody>';
 
-                foreach ($properties as $property) {
+                foreach ($properties as $name => $property) {
                     list($subType, $constraints) = $this->getValueDescription($property);
 
                     $description = '';
@@ -120,7 +114,7 @@ class Html implements GeneratorInterface
                     }
 
                     $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $property->getName() . '</span></td>';
+                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
                     $response.= '<td>' . $subType . '</td>';
                     $response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
                     $response.= '<td>' . $constraints . '</td>';
@@ -160,18 +154,50 @@ class Html implements GeneratorInterface
             $response.= '</div>';
         }
 
-        foreach ($properties as $property) {
-            if ($property instanceof Property\ArrayType) {
-                $prototype = $property->getPrototype();
-                if ($prototype instanceof PropertyInterface) {
-                    $response.= $this->generateType($property->getPrototype());
-                }
-            } elseif ($property instanceof Property\CompositeTypeAbstract) {
-                $response.= $this->generateType($property);
+        if ($type instanceof Property\ArrayType) {
+            $prototype = $type->getPrototype();
+            if ($prototype instanceof PropertyInterface) {
+                $response.= $this->generateProperty($prototype);
+            }
+        } elseif ($type instanceof Property\ChoiceType) {
+            $choices = $type->getChoices();
+            foreach ($choices as $property) {
+                $response.= $this->generateProperty($property);
+            }
+        } elseif ($type instanceof Property\ComplexType) {
+            foreach ($properties as $property) {
+                $response.= $this->generateProperty($property);
+            }
+
+            foreach ($patternProps as $property) {
+                $response.= $this->generateProperty($property);
+            }
+
+            if ($additionalProps instanceof PropertyInterface) {
+                $response.= $this->generateProperty($additionalProps);
             }
         }
 
         return $response;
+    }
+
+    protected function generateProperty(PropertyInterface $property)
+    {
+        if ($property instanceof Property\ArrayType) {
+            $prototype = $property->getPrototype();
+            if ($prototype instanceof PropertyInterface) {
+                return $this->generateType($property->getPrototype());
+            }
+        } elseif ($property instanceof Property\ChoiceType) {
+            $choices = $property->getChoices();
+            foreach ($choices as $choice) {
+                return $this->generateType($choice);
+            }
+        } elseif ($property instanceof Property\ComplexType) {
+            return $this->generateType($property);
+        }
+
+        return '';
     }
 
     protected function getValueDescription(PropertyInterface $type)
@@ -201,10 +227,10 @@ class Html implements GeneratorInterface
                 throw new RuntimeException('Array property has no prototype');
             }
         } elseif ($type instanceof Property\ChoiceType) {
-            $choice     = array();
-            $properties = $type->getProperties();
+            $choice  = array();
+            $choices = $type->getChoices();
 
-            foreach ($properties as $prop) {
+            foreach ($choices as $prop) {
                 $property = $this->getValueDescription($prop);
                 $choice[] = $property[0];
             }

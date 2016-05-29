@@ -54,7 +54,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new Builder('foo');
 
         $builder->arrayType('foo');
-        $builder->arrayType(Property::getArray('bar'));
+        $builder->arrayType('bar', Property::getArray('bar'));
 
         $property = $builder->getProperty();
 
@@ -78,7 +78,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new Builder('foo');
 
         $builder->complexType('foo');
-        $builder->complexType(Property::getComplex('bar'));
+        $builder->complexType('bar', Property::getComplex());
         $builder->complexType('baz', Property::getComplex('foo'));
 
         $property = $builder->getProperty();

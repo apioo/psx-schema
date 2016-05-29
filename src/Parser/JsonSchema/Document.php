@@ -147,12 +147,6 @@ class Document
             $data = array_replace_recursive($data, $part);
         }
 
-        /*
-        if (empty($name)) {
-            $name = isset($data['title']) ? $data['title'] : null;
-        }
-        */
-
         if (isset($data['oneOf']) && is_array($data['oneOf'])) {
             return $this->parseOneOf($data, $name, $depth);
         }
@@ -164,6 +158,8 @@ class Document
                 $type = 'object';
             }
         }
+
+        $name = isset($data['title']) ? $data['title'] : null;
 
         switch ($type) {
             case 'object':
@@ -215,9 +211,7 @@ class Document
                     $property = $this->getRecProperty($row, $name, $depth + 1);
 
                     if ($property !== null) {
-                        $property->setName($name);
-
-                        $complexType->add($property);
+                        $complexType->add($name, $property);
                     }
                 }
             }

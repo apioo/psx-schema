@@ -42,10 +42,9 @@ class PhpTest extends GeneratorTestCase
 namespace PSX\Generation;
 
 /**
- * @Title("config")
  * @AdditionalProperties("string")
  */
-class Complex72828040 extends \ArrayObject
+class Complex5525537f extends \ArrayObject
 {
 }
 /**
@@ -53,7 +52,7 @@ class Complex72828040 extends \ArrayObject
  * @Description("Location of the person")
  * @AdditionalProperties(true)
  */
-class Complexb33b896f extends \ArrayObject
+class Complex73afba2a extends \ArrayObject
 {
     /**
      * @Key("lat")
@@ -87,7 +86,7 @@ class Complexb33b896f extends \ArrayObject
  * @Description("An simple author element with some description")
  * @AdditionalProperties(false)
  */
-class Complex4770be5a
+class Complex3b735bb1
 {
     /**
      * @Key("title")
@@ -110,13 +109,13 @@ class Complex4770be5a
     public $categories;
     /**
      * @Key("locations")
-     * @Type("array<PSX\Generation\Complexb33b896f>")
+     * @Type("array<PSX\Generation\Complex73afba2a>")
      * @Description("Array of locations")
      */
     public $locations;
     /**
      * @Key("origin")
-     * @Type("PSX\Generation\Complexb33b896f")
+     * @Type("PSX\Generation\Complex73afba2a")
      * @Description("Location of the person")
      */
     public $origin;
@@ -168,7 +167,7 @@ class Complex4770be5a
  * @MinProperties(2)
  * @MaxProperties(8)
  */
-class Complex57c64cac extends \ArrayObject
+class Complex55c16924 extends \ArrayObject
 {
     /**
      * @Key("name")
@@ -202,9 +201,9 @@ class Complex57c64cac extends \ArrayObject
  * @Description("Some meta data")
  * @AdditionalProperties(false)
  * @PatternProperty(pattern="^tags_\d$", type="string")
- * @PatternProperty(pattern="^location_\d$", type="PSX\Generation\Complexb33b896f")
+ * @PatternProperty(pattern="^location_\d$", type="PSX\Generation\Complex73afba2a")
  */
-class Complex68a5de10 extends \ArrayObject
+class Complexa8078859 extends \ArrayObject
 {
     /**
      * @Key("createDate")
@@ -225,11 +224,11 @@ class Complex68a5de10 extends \ArrayObject
  * @Description("An general news entry")
  * @AdditionalProperties(false)
  */
-class Complex12b3526e
+class Complexb35219bc
 {
     /**
      * @Key("config")
-     * @Type("PSX\Generation\Complex72828040")
+     * @Type("PSX\Generation\Complex5525537f")
      */
     public $config;
     /**
@@ -241,14 +240,14 @@ class Complex12b3526e
     public $tags;
     /**
      * @Key("receiver")
-     * @Type("array<PSX\Generation\Complex4770be5a>")
+     * @Type("array<PSX\Generation\Complex3b735bb1>")
      * @Required
      * @MinItems(1)
      */
     public $receiver;
     /**
      * @Key("resources")
-     * @Type("array<choice<PSX\Generation\Complexb33b896f,PSX\Generation\Complex57c64cac>>")
+     * @Type("array<choice<PSX\Generation\Complex73afba2a,PSX\Generation\Complex55c16924>>")
      */
     public $resources;
     /**
@@ -263,18 +262,18 @@ class Complex12b3526e
     public $read;
     /**
      * @Key("source")
-     * @Type("choice<PSX\Generation\Complex4770be5a,PSX\Generation\Complex57c64cac>")
+     * @Type("choice<PSX\Generation\Complex3b735bb1,PSX\Generation\Complex55c16924>")
      */
     public $source;
     /**
      * @Key("author")
-     * @Type("PSX\Generation\Complex4770be5a")
+     * @Type("PSX\Generation\Complex3b735bb1")
      * @Description("An simple author element with some description")
      */
     public $author;
     /**
      * @Key("meta")
-     * @Type("PSX\Generation\Complex68a5de10")
+     * @Type("PSX\Generation\Complexa8078859")
      * @Description("Some meta data")
      */
     public $meta;
@@ -496,7 +495,7 @@ PHP;
 
         include_once $file;
 
-        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complex12b3526e');
+        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complexb35219bc');
 
         $this->assertSchema($schema, $source);
     }

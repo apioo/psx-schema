@@ -34,13 +34,13 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
     public function testAddElement()
     {
         $complexFoo = Property::getComplex('foo')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('bar')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('bar', Property::getInteger()->setRequired(true));
 
         $property = Property::getChoice('foo');
         $property->add($complexFoo);
 
-        $this->assertEquals([0 => $complexFoo], $property->getProperties());
+        $this->assertEquals([0 => $complexFoo], $property->getChoices());
     }
 
     /**
@@ -59,15 +59,15 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('19d10a66f9b86790312047232da1ccd2', $property->getId());
 
         $complexFoo = Property::getComplex('foo')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('bar')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('bar', Property::getInteger()->setRequired(true));
         $complexBar = Property::getComplex('bar')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('baz')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('baz', Property::getInteger()->setRequired(true));
 
         $property = Property::getChoice('test')->add($complexFoo)->add($complexBar);
 
-        $this->assertEquals('72d2b76576807d2a4d7e2a513209b322', $property->getId());
+        $this->assertEquals('99b2fdc6f3bbeed0cd5eb73a52429c18', $property->getId());
     }
 
     public function testGetTypeName()
@@ -79,12 +79,12 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
     {
         $complexFoo = Property::getComplex('foo')
             ->setReference('Foo\Bar')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('bar')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('bar', Property::getInteger()->setRequired(true));
         $complexBar = Property::getComplex('bar')
             ->setReference('Foo\Baz')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('baz')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('baz', Property::getInteger()->setRequired(true));
 
         $property = Property::getChoice('test')->add($complexFoo)->add($complexBar);
 
@@ -96,12 +96,12 @@ class ChoiceTypeTest extends \PHPUnit_Framework_TestCase
     {
         $complexFoo = Property::getComplex('foo')
             ->setReference('Foo\Bar')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('bar')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('bar', Property::getInteger()->setRequired(true));
         $complexBar = Property::getComplex('bar')
             ->setReference('Foo\Baz')
-            ->add(Property::getInteger('foo')->setRequired(true))
-            ->add(Property::getInteger('baz')->setRequired(true));
+            ->add('foo', Property::getInteger()->setRequired(true))
+            ->add('baz', Property::getInteger()->setRequired(true));
 
         $property = Property::getChoice('test')->add($complexFoo)->add($complexBar);
 

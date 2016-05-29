@@ -20,9 +20,13 @@
 
 namespace PSX\Schema\Property;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 use PSX\Record\RecordInterface;
 use PSX\Schema\ChoiceResolver;
 use PSX\Schema\ChoiceResolverInterface;
+use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\Property;
 use RuntimeException;
@@ -35,8 +39,13 @@ use ReflectionClass;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ChoiceType extends CompositeTypeAbstract
+class ChoiceType extends PropertyAbstract implements IteratorAggregate, Countable
 {
+    /**
+     * @var \PSX\Schema\PropertyInterface[]
+     */
+    protected $choices = array();
+
     /**
      * @var \PSX\Schema\ChoiceResolverInterface
      */
@@ -48,9 +57,19 @@ class ChoiceType extends CompositeTypeAbstract
             throw new RuntimeException('Choice property accepts only complex types ' . get_class($property). ' given');
         }
 
-        $this->properties[] = $property;
+        $this->choices[] = $property;
 
         return $this;
+    }
+
+    public function setChoices(array $choices)
+    {
+        $this->choices = $choices;
+    }
+
+    public function getChoices()
+    {
+        return $this->choices;
     }
 
     public function setResolver(ChoiceResolverInterface $choiceResolver)
@@ -67,7 +86,41 @@ class ChoiceType extends CompositeTypeAbstract
     {
         return $this->getResolver()->getTypes($this);
     }
-    
+
+    public function getId()
+    {
+        $result  = parent::getId();
+        $choices = [];
+
+        foreach ($this->choices as $property) {
+            $choices[] = $property->getId();
+        }
+
+        sort($choices);
+
+        return md5($result . implode('', $choices));
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->choices);
+    }
+
+    public function count()
+    {
+        return count($this->choices);
+    }
+
+    public function __clone()
+    {
+        $choices = $this->choices;
+        $this->choices = [];
+
+        foreach ($choices as $index => $property) {
+            $this->choices[$index] = clone $choices[$index];
+        }
+    }
+
     protected function getResolver()
     {
         static $resolver;

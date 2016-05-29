@@ -214,9 +214,7 @@ class Popo implements ParserInterface
                 $this->parseProperty($prop, $typeObject, $annotations);
             }
 
-            $prop->setName($key);
-
-            $property->add($prop);
+            $property->add($key, $prop);
         }
     }
 

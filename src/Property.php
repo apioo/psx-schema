@@ -31,128 +31,114 @@ namespace PSX\Schema;
 final class Property
 {
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\AnyType
      * @deprecated
      */
-    public static function getAny($name)
+    public static function getAny($name = null)
     {
         return new Property\AnyType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\ArrayType
      */
-    public static function getArray($name)
+    public static function getArray($name = null)
     {
         return new Property\ArrayType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\BinaryType
      */
-    public static function getBinary($name)
+    public static function getBinary($name = null)
     {
         return new Property\BinaryType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\BooleanType
      */
-    public static function getBoolean($name)
+    public static function getBoolean($name = null)
     {
         return new Property\BooleanType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\ChoiceType
      */
-    public static function getChoice($name)
+    public static function getChoice($name = null)
     {
         return new Property\ChoiceType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\ComplexType
      */
-    public static function getComplex($name)
+    public static function getComplex($name = null)
     {
         return new Property\ComplexType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\DateTimeType
      */
-    public static function getDateTime($name)
+    public static function getDateTime($name = null)
     {
         return new Property\DateTimeType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\DateType
      */
-    public static function getDate($name)
+    public static function getDate($name = null)
     {
         return new Property\DateType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\DurationType
      */
-    public static function getDuration($name)
+    public static function getDuration($name = null)
     {
         return new Property\DurationType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\FloatType
      */
-    public static function getFloat($name)
+    public static function getFloat($name = null)
     {
         return new Property\FloatType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\IntegerType
      */
-    public static function getInteger($name)
+    public static function getInteger($name = null)
     {
         return new Property\IntegerType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\StringType
      */
-    public static function getString($name)
+    public static function getString($name = null)
     {
         return new Property\StringType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\TimeType
      */
-    public static function getTime($name)
+    public static function getTime($name = null)
     {
         return new Property\TimeType($name);
     }
 
     /**
-     * @param string $name
      * @return \PSX\Schema\Property\UriType
      */
-    public static function getUri($name)
+    public static function getUri($name = null)
     {
         return new Property\UriType($name);
     }

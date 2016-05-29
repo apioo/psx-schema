@@ -70,7 +70,7 @@ class JsonSchemaTest extends ParserTestCase
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
-        $this->assertEquals(null, $property->getName());
+        $this->assertEquals('record', $property->getName());
         $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('id'));
         $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('bar'));
         $this->assertInstanceOf('PSX\Schema\Property\ArrayType', $property->get('bar')->get('number'));
@@ -116,11 +116,12 @@ class JsonSchemaTest extends ParserTestCase
         $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('unknown'));
 
         $this->assertInstanceOf('PSX\Schema\Property\ChoiceType', $property->get('choice'));
-        $this->assertEquals(2, count($property->get('choice')->getProperties()));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get(0));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('choice')->get(1));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get(0)->get('foo'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('choice')->get(1)->get('bar'));
+        $choices = $property->get('choice')->getChoices();
+        $this->assertEquals(2, count($choices));
+        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $choices[0]);
+        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $choices[1]);
+        $this->assertInstanceOf('PSX\Schema\Property\StringType', $choices[0]->get('foo'));
+        $this->assertInstanceOf('PSX\Schema\Property\StringType', $choices[1]->get('bar'));
     }
 
     /**

@@ -20,6 +20,11 @@
 
 namespace PSX\Schema\Property;
 
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 
 /**
@@ -29,17 +34,22 @@ use PSX\Schema\PropertyInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ComplexType extends CompositeTypeAbstract
+class ComplexType extends PropertyAbstract implements IteratorAggregate, Countable
 {
     /**
-     * @var boolean|\PSX\Schema\PropertyInterface
+     * @var \PSX\Schema\PropertyInterface[]
      */
-    protected $additionalProperties = false;
+    protected $properties = array();
 
     /**
      * @var \PSX\Schema\PropertyInterface[]
      */
     protected $patternProperties = array();
+
+    /**
+     * @var boolean|\PSX\Schema\PropertyInterface
+     */
+    protected $additionalProperties = false;
 
     /**
      * @var integer
@@ -51,16 +61,72 @@ class ComplexType extends CompositeTypeAbstract
      */
     protected $maxProperties;
 
-    public function setAdditionalProperties($value)
+    /**
+     * @param \PSX\Schema\PropertyInterface $property
+     * @return $this
+     */
+    public function add($name, PropertyInterface $property = null)
     {
-        $this->additionalProperties = $value;
+        // for BC reasons we allow also to pass a property as name. In this
+        // case we use the name of the property as key
+        if ($name instanceof PropertyInterface) {
+            trigger_error('Using a property as first argument is deprecated. Use a string key instead and the property as second argument', E_USER_DEPRECATED);
+
+            $property = $name;
+            $name     = $property->getName();
+        } elseif ($property === null) {
+            throw new InvalidArgumentException('Property must be defined');
+        }
+
+        if (empty($name)) {
+            throw new InvalidArgumentException('Empty names are not allowed');
+        }
+
+        $this->properties[$name] = $property;
 
         return $this;
     }
 
-    public function getAdditionalProperties()
+    /**
+     * @param string $name
+     * @return \PSX\Schema\PropertyInterface
+     */
+    public function get($name)
     {
-        return $this->additionalProperties;
+        return isset($this->properties[$name]) ? $this->properties[$name] : null;
+    }
+
+    /**
+     * @param string $name
+     * @return boolean
+     */
+    public function has($name)
+    {
+        return isset($this->properties[$name]);
+    }
+
+    public function remove($name)
+    {
+        if (isset($this->properties[$name])) {
+            unset($this->properties[$name]);
+        }
+    }
+
+    public function setProperties(array $properties)
+    {
+        $this->properties = $properties;
+    }
+
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    public function addPatternProperty($pattern, PropertyInterface $prototype)
+    {
+        $this->patternProperties[$pattern] = $prototype;
+
+        return $this;
     }
 
     public function setPatternProperties($patternProperties)
@@ -75,11 +141,16 @@ class ComplexType extends CompositeTypeAbstract
         return $this->patternProperties;
     }
 
-    public function addPatternProperty($pattern, PropertyInterface $prototype)
+    public function setAdditionalProperties($value)
     {
-        $this->patternProperties[$pattern] = $prototype;
+        $this->additionalProperties = $value;
 
         return $this;
+    }
+
+    public function getAdditionalProperties()
+    {
+        return $this->additionalProperties;
     }
 
     /**
@@ -117,12 +188,12 @@ class ComplexType extends CompositeTypeAbstract
     public function getId()
     {
         $result     = parent::getId();
-        $properties = $this->patternProperties;
+        $properties = array_merge($this->properties, $this->patternProperties);
 
         ksort($properties);
 
-        foreach ($properties as $pattern => $property) {
-            $result.= $pattern . $property->getId();
+        foreach ($properties as $name => $property) {
+            $result.= $name . $property->getId();
         }
 
         if (is_bool($this->additionalProperties)) {
@@ -135,5 +206,37 @@ class ComplexType extends CompositeTypeAbstract
         $result.= $this->maxProperties;
 
         return md5($result);
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->properties);
+    }
+
+    public function count()
+    {
+        return count($this->properties);
+    }
+
+    public function __clone()
+    {
+        $properties = $this->properties;
+        $this->properties = [];
+
+        foreach ($properties as $name => $property) {
+            $this->properties[$name] = clone $properties[$name];
+        }
+
+        $patternProperties = $this->patternProperties;
+        $this->patternProperties = [];
+
+        foreach ($patternProperties as $pattern => $property) {
+            $this->patternProperties[$pattern] = clone $patternProperties[$pattern];
+        }
+
+        $additionalProperties = $this->additionalProperties;
+        if ($additionalProperties instanceof PropertyInterface) {
+            $this->additionalProperties = clone $additionalProperties; 
+        }
     }
 }

@@ -108,27 +108,27 @@ class Php implements GeneratorInterface
         // add properties
         $properties = $type->getProperties();
 
-        foreach ($properties as $property) {
-            $class->addStmt($this->factory->property($property->getName())
+        foreach ($properties as $name => $property) {
+            $class->addStmt($this->factory->property($name)
                 ->makePublic()
-                ->setDocComment($this->getDocCommentForProperty($property)));
+                ->setDocComment($this->getDocCommentForProperty($property, $name)));
         }
 
         // add getter setter
-        foreach ($properties as $property) {
-            $class->addStmt($this->factory->method('set' . ucfirst($property->getName()))
+        foreach ($properties as $name => $property) {
+            $class->addStmt($this->factory->method('set' . ucfirst($name))
                 ->makePublic()
-                ->addParam($this->factory->param($property->getName()))
+                ->addParam($this->factory->param($name))
                 ->addStmt(new Node\Expr\Assign(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $property->getName()),
-                    new Node\Expr\Variable($property->getName())
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
+                    new Node\Expr\Variable($name)
                 ))
             );
 
-            $class->addStmt($this->factory->method('get' . ucfirst($property->getName()))
+            $class->addStmt($this->factory->method('get' . ucfirst($name))
                 ->makePublic()
                 ->addStmt(new Node\Stmt\Return_(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $property->getName())
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
                 )));
         }
 
@@ -139,8 +139,8 @@ class Php implements GeneratorInterface
                     $this->generateRootElement($property->getPrototype());
                 }
             } elseif ($property instanceof Property\ChoiceType) {
-                $properties = $property->getProperties();
-                foreach ($properties as $prop) {
+                $choices = $property->getChoices();
+                foreach ($choices as $prop) {
                     if ($prop instanceof Property\ComplexType) {
                         $this->generateRootElement($prop);
                     }
@@ -156,7 +156,11 @@ class Php implements GeneratorInterface
     protected function getDocCommentForClass(Property\ComplexType $property)
     {
         $comment = '/**' . "\n";
-        $comment.= ' * @Title("' . $this->escapeString($property->getName()) . '")' . "\n";
+
+        $title = $property->getName();
+        if (!empty($title)) {
+            $comment.= ' * @Title("' . $this->escapeString($title) . '")' . "\n";
+        }
 
         $description = $property->getDescription();
         if (!empty($description)) {
@@ -194,14 +198,14 @@ class Php implements GeneratorInterface
         return $comment;
     }
 
-    protected function getDocCommentForProperty(PropertyInterface $property)
+    protected function getDocCommentForProperty(PropertyInterface $property, $name)
     {
         $type = $this->getPropertyType($property);
 
         $comment = '/**' . "\n";
-        $comment.= ' * @Key("' . $this->escapeString($property->getName()) . '")' . "\n";
+        $comment.= ' * @Key("' . $this->escapeString($name) . '")' . "\n";
         $comment.= ' * @Type("' . $type . '")' . "\n";
-        
+
         if ($property->isRequired()) {
             $comment.= ' * @Required' . "\n";
         }
@@ -291,9 +295,9 @@ class Php implements GeneratorInterface
                 $type .= '(' . $reference . ')';
             }
 
-            $properties = $property->getProperties();
-            $subTypes   = [];
-            foreach ($properties as $prop) {
+            $choices  = $property->getChoices();
+            $subTypes = [];
+            foreach ($choices as $prop) {
                 $subTypes[] = $this->getPropertyType($prop);
             }
 

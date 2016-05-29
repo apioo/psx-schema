@@ -36,7 +36,7 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitArray()
     {
         $visitor  = new OutgoingVisitor();
-        $property = Property::getArray('test')->setPrototype(Property::getString('foo'));
+        $property = Property::getArray()->setPrototype(Property::getString('foo'));
 
         $this->assertEquals(['10'], $visitor->visitArray([10], $property, ''));
     }
@@ -44,7 +44,7 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitArrayNoPrototype()
     {
         $visitor  = new OutgoingVisitor();
-        $property = Property::getArray('test');
+        $property = Property::getArray();
 
         $this->assertEquals(array(), $visitor->visitArray([], $property, ''));
     }
@@ -52,7 +52,7 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBinary()
     {
         $visitor  = new OutgoingVisitor();
-        $property = Property::getBinary('test');
+        $property = Property::getBinary();
 
         $resource = fopen('php://temp', 'r+');
         fwrite($resource, 'foo');
@@ -69,7 +69,7 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBoolean()
     {
         $visitor  = new OutgoingVisitor();
-        $property = Property::getBoolean('test');
+        $property = Property::getBoolean();
 
         $this->assertInternalType('boolean', $visitor->visitBoolean(1, $property, ''));
         $this->assertEquals(true, $visitor->visitBoolean(true, $property, ''));
@@ -85,7 +85,7 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBooleanInvalidFormat()
     {
         $visitor  = new OutgoingVisitor();
-        $property = Property::getBoolean('test');
+        $property = Property::getBoolean();
 
         $this->assertEquals(true, $visitor->visitBoolean(4, $property, ''));
     }
@@ -94,8 +94,8 @@ class OutgoingVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $visitor  = new OutgoingVisitor();
         $property = Property::getComplex('test')
-            ->add(Property::getString('foo'))
-            ->add(Property::getString('bar'));
+            ->add('foo', Property::getString())
+            ->add('bar', Property::getString());
 
         $record = $visitor->visitComplex((object) ['foo' => 'bar'], $property, '');
 

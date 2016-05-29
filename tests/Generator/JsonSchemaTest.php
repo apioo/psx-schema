@@ -41,14 +41,13 @@ class JsonSchemaTest extends GeneratorTestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "definitions": {
-        "ref72828040aecd82459c3636a4226e81fc": {
-            "title": "config",
+        "ref5525537f7f38b6988025ca659a7b315d": {
             "type": "object",
             "additionalProperties": {
                 "type": "string"
             }
         },
-        "refb33b896fd4135c2882510d8949e883cf": {
+        "ref73afba2a3732aa422e2dede6fd26d0cb": {
             "title": "location",
             "description": "Location of the person",
             "type": "object",
@@ -62,7 +61,7 @@ class JsonSchemaTest extends GeneratorTestCase
             },
             "additionalProperties": true
         },
-        "ref4770be5abc2aedca274241c166226fc7": {
+        "ref3b735bb119d1f8f279637029c0d482e1": {
             "title": "author",
             "description": "An simple author element with some description",
             "type": "object",
@@ -80,19 +79,17 @@ class JsonSchemaTest extends GeneratorTestCase
                     "items": {
                         "type": "string"
                     },
-                    "title": "categories",
                     "maxItems": 8
                 },
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                        "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                     },
-                    "title": "locations",
                     "description": "Array of locations"
                 },
                 "origin": {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 }
             },
             "additionalProperties": false,
@@ -100,7 +97,7 @@ class JsonSchemaTest extends GeneratorTestCase
                 "title"
             ]
         },
-        "ref57c64cac92e27c1db99e6a6793546e12": {
+        "ref55c1692462753300d5eecf90dc979d09": {
             "title": "web",
             "description": "An application",
             "type": "object",
@@ -118,29 +115,28 @@ class JsonSchemaTest extends GeneratorTestCase
             "minProperties": 2,
             "maxProperties": 8
         },
-        "ref4898a93cd82b117833f9683324e0f6dd": {
+        "ref0ae50ca2769f912fdb609180fef2ab22": {
             "title": "resource",
             "oneOf": [
                 {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 },
                 {
-                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
                 }
             ]
         },
-        "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
-            "title": "source",
+        "ref4041e76cd4c2d30153165760e80c506e": {
             "oneOf": [
                 {
-                    "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                    "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
                 },
                 {
-                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
                 }
             ]
         },
-        "ref68a5de1071c84dc3c357e50c05e674fa": {
+        "refa80788599984d8da6729b8be82b7a016": {
             "title": "meta",
             "description": "Some meta data",
             "type": "object",
@@ -155,7 +151,7 @@ class JsonSchemaTest extends GeneratorTestCase
                     "type": "string"
                 },
                 "^location_\\d$": {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 }
             },
             "additionalProperties": false
@@ -166,31 +162,28 @@ class JsonSchemaTest extends GeneratorTestCase
     "type": "object",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/ref72828040aecd82459c3636a4226e81fc"
+            "$ref": "#\/definitions\/ref5525537f7f38b6988025ca659a7b315d"
         },
         "tags": {
             "type": "array",
             "items": {
                 "type": "string"
             },
-            "title": "tags",
             "minItems": 1,
             "maxItems": 6
         },
         "receiver": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
             },
-            "title": "receiver",
             "minItems": 1
         },
         "resources": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
-            },
-            "title": "resources"
+                "$ref": "#\/definitions\/ref0ae50ca2769f912fdb609180fef2ab22"
+            }
         },
         "profileImage": {
             "type": "string",
@@ -200,13 +193,13 @@ class JsonSchemaTest extends GeneratorTestCase
             "type": "boolean"
         },
         "source": {
-            "$ref": "#\/definitions\/ref20f5d15c759c1d56a2ed0675fe4b4a0b"
+            "$ref": "#\/definitions\/ref4041e76cd4c2d30153165760e80c506e"
         },
         "author": {
-            "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+            "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
         },
         "meta": {
-            "$ref": "#\/definitions\/ref68a5de1071c84dc3c357e50c05e674fa"
+            "$ref": "#\/definitions\/refa80788599984d8da6729b8be82b7a016"
         },
         "sendDate": {
             "type": "string",

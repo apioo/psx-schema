@@ -34,17 +34,17 @@ class ComplexTypeTest extends \PHPUnit_Framework_TestCase
     public function testGetId()
     {
         $property = Property::getComplex('test')
-            ->add(Property::getString('foo'))
-            ->add(Property::getString('bar'));
+            ->add('foo', Property::getString())
+            ->add('bar', Property::getString());
 
-        $this->assertEquals('6b16cb5b5eef258b2aa8ca7f161fc4cc', $property->getId());
+        $this->assertEquals('cd6b6757bad65f214ca0928a3db48c27', $property->getId());
     }
 
     public function testProperties()
     {
         $property = Property::getComplex('test')
-            ->add(Property::getString('foo'))
-            ->add(Property::getString('bar'));
+            ->add('foo', Property::getString())
+            ->add('bar', Property::getString());
 
         $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('foo'));
         $this->assertTrue($property->has('foo'));

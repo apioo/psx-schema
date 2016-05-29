@@ -33,7 +33,7 @@ class ChoiceResolver implements ChoiceResolverInterface
 {
     public function getProperty($data, $path, Property\ChoiceType $property)
     {
-        $properties = $property->getProperties();
+        $properties = $property->getChoices();
         $matches    = [];
 
         foreach ($properties as $index => $prop) {
@@ -55,7 +55,7 @@ class ChoiceResolver implements ChoiceResolverInterface
 
     public function getTypes(Property\ChoiceType $property)
     {
-        $properties = $property->getProperties();
+        $properties = $property->getChoices();
         $types      = [];
         
         foreach ($properties as $key => $property) {

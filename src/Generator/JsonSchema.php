@@ -125,10 +125,10 @@ class JsonSchema implements GeneratorInterface
                 $result['description'] = $description;
             }
 
-            $properties = $type->getProperties();
-            if (!empty($properties)) {
+            $choices = $type->getChoices();
+            if (!empty($choices)) {
                 $result['oneOf'] = [];
-                foreach ($properties as $property) {
+                foreach ($choices as $property) {
                     $result['oneOf'][] = $this->generateType($property);
                 }
             }
@@ -220,11 +220,11 @@ class JsonSchema implements GeneratorInterface
         $required   = [];
         if (!empty($properties)) {
             $props = [];
-            foreach ($properties as $property) {
-                $props[$property->getName()] = $this->generateType($property);
+            foreach ($properties as $name => $property) {
+                $props[$name] = $this->generateType($property);
 
                 if ($property->isRequired()) {
-                    $required[] = $property->getName();
+                    $required[] = $name;
                 }
             }
             $result['properties'] = $props;

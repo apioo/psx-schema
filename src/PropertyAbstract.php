@@ -51,7 +51,12 @@ abstract class PropertyAbstract implements PropertyInterface
      */
     protected $reference;
 
-    public function __construct($name)
+    /**
+     * @param string $name
+     * @param string $description
+     * @param boolean $required
+     */
+    public function __construct($name = null)
     {
         $this->name = $name;
     }

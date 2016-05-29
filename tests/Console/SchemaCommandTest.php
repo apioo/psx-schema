@@ -22,7 +22,7 @@ namespace PSX\Schema\Tests\Console;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
-use PSX\Schema\Tests\Parser\Popo\Complex12b3526e;
+use PSX\Schema\Tests\Parser\Popo\Complexb35219bc;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -44,7 +44,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'parser' => 'popo',
-            'source' => Complex12b3526e::class,
+            'source' => Complexb35219bc::class,
             'format' => 'jsonschema',
         ));
 
@@ -54,15 +54,15 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "definitions": {
-        "ref72828040aecd82459c3636a4226e81fc": {
+        "ref5525537f7f38b6988025ca659a7b315d": {
             "title": "config",
             "type": "object",
             "additionalProperties": {
                 "type": "string"
             },
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex72828040"
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex5525537f"
         },
-        "refb33b896fd4135c2882510d8949e883cf": {
+        "ref73afba2a3732aa422e2dede6fd26d0cb": {
             "title": "location",
             "description": "Location of the person",
             "type": "object",
@@ -75,9 +75,9 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
                 }
             },
             "additionalProperties": true,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexb33b896f"
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex73afba2a"
         },
-        "ref4770be5abc2aedca274241c166226fc7": {
+        "ref3b735bb119d1f8f279637029c0d482e1": {
             "title": "author",
             "description": "An simple author element with some description",
             "type": "object",
@@ -101,22 +101,22 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
                 "locations": {
                     "type": "array",
                     "items": {
-                        "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                        "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                     },
                     "title": "locations",
                     "description": "Array of locations"
                 },
                 "origin": {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 }
             },
             "additionalProperties": false,
             "required": [
                 "title"
             ],
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex4770be5a"
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex3b735bb1"
         },
-        "ref57c64cac92e27c1db99e6a6793546e12": {
+        "ref55c1692462753300d5eecf90dc979d09": {
             "title": "web",
             "description": "An application",
             "type": "object",
@@ -133,30 +133,30 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
             },
             "minProperties": 2,
             "maxProperties": 8,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex57c64cac"
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex55c16924"
         },
-        "ref4898a93cd82b117833f9683324e0f6dd": {
+        "ref0ae50ca2769f912fdb609180fef2ab22": {
             "oneOf": [
                 {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 },
                 {
-                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
                 }
             ]
         },
-        "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
+        "ref4041e76cd4c2d30153165760e80c506e": {
             "title": "source",
             "oneOf": [
                 {
-                    "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                    "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
                 },
                 {
-                    "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
+                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
                 }
             ]
         },
-        "ref68a5de1071c84dc3c357e50c05e674fa": {
+        "refa80788599984d8da6729b8be82b7a016": {
             "title": "meta",
             "description": "Some meta data",
             "type": "object",
@@ -171,11 +171,11 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
                     "type": "string"
                 },
                 "^location_\\d$": {
-                    "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
                 }
             },
             "additionalProperties": false,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex68a5de10"
+            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexa8078859"
         }
     },
     "title": "news",
@@ -183,7 +183,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
     "type": "object",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/ref72828040aecd82459c3636a4226e81fc"
+            "$ref": "#\/definitions\/ref5525537f7f38b6988025ca659a7b315d"
         },
         "tags": {
             "type": "array",
@@ -197,7 +197,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         "receiver": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+                "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
             },
             "title": "receiver",
             "minItems": 1
@@ -205,7 +205,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         "resources": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
+                "$ref": "#\/definitions\/ref0ae50ca2769f912fdb609180fef2ab22"
             },
             "title": "resources"
         },
@@ -217,13 +217,13 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
             "type": "boolean"
         },
         "source": {
-            "$ref": "#\/definitions\/ref20f5d15c759c1d56a2ed0675fe4b4a0b"
+            "$ref": "#\/definitions\/ref4041e76cd4c2d30153165760e80c506e"
         },
         "author": {
-            "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+            "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
         },
         "meta": {
-            "$ref": "#\/definitions\/ref68a5de1071c84dc3c357e50c05e674fa"
+            "$ref": "#\/definitions\/refa80788599984d8da6729b8be82b7a016"
         },
         "sendDate": {
             "type": "string",
@@ -275,7 +275,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         "price",
         "content"
     ],
-    "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex12b3526e"
+    "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexb35219bc"
 }
 JSON;
 

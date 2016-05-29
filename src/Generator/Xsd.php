@@ -83,7 +83,10 @@ class Xsd implements GeneratorInterface
 
         $this->writer->startElement('xs:sequence');
 
-        $this->generateProperties($type->getProperties());
+        $properties = $type->getProperties();
+        foreach ($properties as $name => $property) {
+            $this->generateProperty($name, $property);
+        }
 
         $this->writer->endElement();
         $this->writer->endElement();
@@ -95,7 +98,7 @@ class Xsd implements GeneratorInterface
     protected function generateTypes(array $properties)
     {
         foreach ($properties as $property) {
-            if (($property instanceof Property\ArrayType) && !$property->getPrototype() instanceof Property\ChoiceType) {
+            if ($property instanceof Property\ArrayType) {
                 $property = $property->getPrototype();
             }
 
@@ -107,7 +110,7 @@ class Xsd implements GeneratorInterface
 
     protected function generateType(PropertyInterface $type)
     {
-        $typeName = $this->getPropertyTypeName($type);
+        $typeName = $this->getPropertyTypeName($type, false);
 
         if (in_array($typeName, $this->_types)) {
             return;
@@ -115,7 +118,7 @@ class Xsd implements GeneratorInterface
 
         $this->_types[] = $typeName;
 
-        if ($type instanceof Property\CompositeTypeAbstract) {
+        if ($type instanceof Property\ChoiceType) {
             $this->writer->startElement('xs:complexType');
             $this->writer->writeAttribute('name', $typeName);
 
@@ -126,30 +129,58 @@ class Xsd implements GeneratorInterface
                 $this->writer->endElement();
             }
 
-            $this->writer->startElement($type instanceof Property\ChoiceType ? 'xs:choice' : 'xs:sequence');
+            $this->writer->startElement('xs:choice');
 
-            $this->generateProperties($type->getProperties());
-
-            if ($type instanceof Property\ComplexType) {
-                // if we have additional or pattern properties we allow any
-                // additional elements. Unfortunately there is afaik no way in
-                // XSD to specify a schema for element names which matches a
-                // specific regexp
-                $patternProperties    = $type->getPatternProperties();
-                $additionalProperties = $type->getAdditionalProperties();
-
-                if (!empty($patternProperties) || !empty($additionalProperties)) {
-                    $minProperties = $type->getMinProperties();
-                    $minProperties = $minProperties === null ? 0 : $minProperties;
-                    $maxProperties = $type->getMaxProperties();
-                    $maxProperties = $maxProperties === null ? 'unbounded' : $maxProperties;
-
-                    $this->writer->startElement('xs:any');
-                    $this->writer->writeAttribute('processContents', 'lax');
-                    $this->writer->writeAttribute('minOccurs', $minProperties);
-                    $this->writer->writeAttribute('maxOccurs', $maxProperties);
-                    $this->writer->endElement();
+            $choices = $type->getChoices();
+            foreach ($choices as $property) {
+                $name = $property->getName();
+                if (empty($name)) {
+                    $name = substr($property->getId(), 0, 8);
                 }
+
+                $this->generateProperty($name, $property);
+            }
+
+            $this->writer->endElement();
+            $this->writer->endElement();
+
+            $this->generateTypes($type->getChoices());
+        } elseif ($type instanceof Property\ComplexType) {
+            $this->writer->startElement('xs:complexType');
+            $this->writer->writeAttribute('name', $typeName);
+
+            $documentation = $type->getDescription();
+            if (!empty($documentation)) {
+                $this->writer->startElement('xs:annotation');
+                $this->writer->writeElement('xs:documentation', $documentation);
+                $this->writer->endElement();
+            }
+
+            $this->writer->startElement('xs:sequence');
+
+            $properties = $type->getProperties();
+            foreach ($properties as $name => $property) {
+                $this->generateProperty($name, $property);
+            }
+
+            // if we have additional or pattern properties we allow any
+            // additional elements. Unfortunately there is afaik no way in
+            // XSD to specify a schema for element names which matche a
+            // specific regexp
+            $patternProperties    = $type->getPatternProperties();
+            $additionalProperties = $type->getAdditionalProperties();
+
+            if (!empty($patternProperties) || !empty($additionalProperties)) {
+                $minProperties = $type->getMinProperties();
+                $minProperties = $minProperties === null ? 0 : $minProperties;
+                $maxProperties = $type->getMaxProperties();
+                $maxProperties = $maxProperties === null ? 'unbounded' : $maxProperties;
+
+                $this->writer->startElement('xs:any');
+                $this->writer->writeAttribute('processContents', 'lax');
+                $this->writer->writeAttribute('minOccurs', $minProperties);
+                $this->writer->writeAttribute('maxOccurs', $maxProperties);
+                $this->writer->endElement();
             }
 
             $this->writer->endElement();
@@ -168,7 +199,7 @@ class Xsd implements GeneratorInterface
             }
 
             $this->writer->startElement('xs:restriction');
-            $this->writer->writeAttribute('base', $this->getBasicType($type, true));
+            $this->writer->writeAttribute('base', $this->getBasicType($type));
 
             if ($type instanceof Property\StringType) {
                 $this->generateTypeString($type);
@@ -231,63 +262,61 @@ class Xsd implements GeneratorInterface
         }
     }
 
-    protected function generateProperties(array $properties)
+    protected function generateProperty($name, PropertyInterface $property)
     {
-        foreach ($properties as $property) {
-            if ($property instanceof Property\ArrayType) {
-                $this->writer->startElement('xs:element');
-                $this->writer->writeAttribute('name', $property->getName());
-                $this->writer->writeAttribute('type', $this->getPropertyTypeName($property->getPrototype(), true));
+        if ($property instanceof Property\ArrayType) {
+            $this->writer->startElement('xs:element');
+            $this->writer->writeAttribute('name', $name);
+            $this->writer->writeAttribute('type', $this->getPropertyTypeName($property->getPrototype(), true));
 
-                $minOccurs = $property->getMinLength();
-                $maxOccurs = $property->getMaxLength();
+            $minOccurs = $property->getMinLength();
+            $maxOccurs = $property->getMaxLength();
 
-                if ($minOccurs !== null && $maxOccurs !== null) {
-                    $this->writer->writeAttribute('minOccurs', $minOccurs);
-                    $this->writer->writeAttribute('maxOccurs', $maxOccurs);
-                } elseif ($minOccurs !== null) {
-                    $this->writer->writeAttribute('minOccurs', $minOccurs);
-                    $this->writer->writeAttribute('maxOccurs', 'unbounded');
-                } elseif ($maxOccurs !== null) {
-                    $this->writer->writeAttribute('minOccurs', 0);
-                    $this->writer->writeAttribute('maxOccurs', $maxOccurs);
-                } else {
-                    $this->writer->writeAttribute('minOccurs', 0);
-                    $this->writer->writeAttribute('maxOccurs', 'unbounded');
-                }
-
-                $this->writer->endElement();
+            if ($minOccurs !== null && $maxOccurs !== null) {
+                $this->writer->writeAttribute('minOccurs', $minOccurs);
+                $this->writer->writeAttribute('maxOccurs', $maxOccurs);
+            } elseif ($minOccurs !== null) {
+                $this->writer->writeAttribute('minOccurs', $minOccurs);
+                $this->writer->writeAttribute('maxOccurs', 'unbounded');
+            } elseif ($maxOccurs !== null) {
+                $this->writer->writeAttribute('minOccurs', 0);
+                $this->writer->writeAttribute('maxOccurs', $maxOccurs);
             } else {
-                $this->writer->startElement('xs:element');
-                $this->writer->writeAttribute('name', $property->getName());
-                $this->writer->writeAttribute('type', $this->getPropertyTypeName($property, true));
-                $this->writer->writeAttribute('minOccurs', $property->isRequired() ? 1 : 0);
-                $this->writer->writeAttribute('maxOccurs', 1);
-                $this->writer->endElement();
+                $this->writer->writeAttribute('minOccurs', 0);
+                $this->writer->writeAttribute('maxOccurs', 'unbounded');
             }
+
+            $this->writer->endElement();
+        } else {
+            $this->writer->startElement('xs:element');
+            $this->writer->writeAttribute('name', $name);
+            $this->writer->writeAttribute('type', $this->getPropertyTypeName($property, true));
+            $this->writer->writeAttribute('minOccurs', $property->isRequired() ? 1 : 0);
+            $this->writer->writeAttribute('maxOccurs', 1);
+            $this->writer->endElement();
         }
     }
 
-    protected function getPropertyTypeName(PropertyAbstract $type, $withNamespace = false)
+    protected function getPropertyTypeName(PropertyAbstract $type, $withNamespace)
     {
         if ($this->hasConstraints($type)) {
-            return ($withNamespace ? 'tns:' : '') . 'type' . $type->getId();
+            return ($withNamespace === false ? '' : 'tns:') . 'type' . $type->getId();
         } else {
-            return $this->getBasicType($type, $withNamespace);
+            return $this->getBasicType($type);
         }
     }
 
-    protected function getBasicType(PropertyAbstract $type, $withNamespace = false)
+    protected function getBasicType(PropertyAbstract $type)
     {
         $typeName = $type->getTypeName();
 
         switch ($typeName) {
             case 'binary':
-                return ($withNamespace ? 'xs:' : '') . 'base64Binary';
+                return 'xs:base64Binary';
                 break;
 
             case 'uri':
-                return ($withNamespace ? 'xs:' : '') . 'anyURI';
+                return 'xs:anyURI';
                 break;
 
             case 'boolean':
@@ -299,13 +328,13 @@ class Xsd implements GeneratorInterface
             case 'string':
             case 'time':
             default:
-                return ($withNamespace ? 'xs:' : '') . $typeName;
+                return 'xs:' . $typeName;
         }
     }
 
     protected function hasConstraints(PropertyInterface $type)
     {
-        if ($type instanceof Property\CompositeTypeAbstract) {
+        if ($type instanceof Property\ArrayType || $type instanceof Property\ChoiceType || $type instanceof Property\ComplexType) {
             return true;
         } elseif ($type instanceof PropertySimpleAbstract) {
             if ($type instanceof Property\DecimalType) {

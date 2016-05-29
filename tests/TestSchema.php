@@ -85,7 +85,7 @@ class TestSchema extends SchemaAbstract
             ->setPrototype($author)
             ->setMinItems(1)
             ->setRequired(true);
-        $sb->arrayType('resources')
+        $sb->arrayType('resources') 
             ->setPrototype(Property::getChoice('resource')
                 ->add($location)
                 ->add($web)
@@ -95,8 +95,8 @@ class TestSchema extends SchemaAbstract
         $sb->choiceType('source')
             ->add($author)
             ->add($web);
-        $sb->complexType($author);
-        $sb->complexType($meta);
+        $sb->complexType('author', $author);
+        $sb->complexType('meta', $meta);
         $sb->date('sendDate');
         $sb->dateTime('readDate');
         $sb->duration('expires');

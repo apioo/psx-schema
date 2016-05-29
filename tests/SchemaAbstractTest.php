@@ -95,7 +95,7 @@ class SchemaCommon extends SchemaAbstract
         $sb->integer('lat');
         $sb->integer('long');
         $sb->arrayType('entry')->setPrototype($entry);
-        $sb->complexType($author);
+        $sb->complexType('author', $author);
 
         return $sb->getProperty();
     }
