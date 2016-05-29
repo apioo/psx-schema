@@ -1,5 +1,7 @@
 
-### 1.0.2
+### 1.0.3
+
+### 1.0.2 (2016-05-29)
 
 * Correct generation and parsing of pattern and additional properties
 * Added PatternProperty, MinProperties and MaxProperties
