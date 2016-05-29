@@ -80,6 +80,10 @@ class Popo implements ParserInterface
         $object = new Property\ComplexType('record');
         $object->setReference($className);
 
+        $key = $className . null . $className;
+
+        $this->addProperty($key, $object);
+
         $this->parseComplexType($object);
 
         return new Schema($object);
@@ -90,7 +94,7 @@ class Popo implements ParserInterface
      * @param \PSX\Schema\Parser\Popo\TypeParser $typeObject
      * @param array $annotations
      */
-    protected function parseProperty(PropertyInterface $property, TypeParser $typeObject, array $annotations)
+    protected function parseProperty(PropertyInterface $property, TypeParser $typeObject, array $annotations, $className, $propertyName)
     {
         // set type hint if available
         $typeHint = $typeObject->getTypeHint();
@@ -120,7 +124,19 @@ class Popo implements ParserInterface
         } elseif ($property instanceof Property\ChoiceType) {
             $this->parseChoiceType($property, $typeObject);
         } elseif ($property instanceof Property\ComplexType) {
+            $key       = $className . $propertyName . $typeObject->getTypeHint();
+            $foundProp = $this->findProperty($key);
+
+            if ($foundProp !== null) {
+                return $foundProp;
+            }
+
+            $this->addProperty($key, $property);
+            $this->pushProperty($key, $property);
+            
             $this->parseComplexType($property);
+            
+            $this->popProperty();
         } elseif ($property instanceof Property\DateTimeType) {
             $subTypes = $typeObject->getSubTypes();
             $subType  = reset($subTypes);
@@ -129,6 +145,8 @@ class Popo implements ParserInterface
                 $property->setPattern($this->getDateTimePattern($subType));
             }
         }
+
+        return $property;
     }
 
     protected function parseArrayType(Property\ArrayType $property, TypeParser $typeObject)
@@ -196,23 +214,9 @@ class Popo implements ParserInterface
             }
 
             $typeObject = TypeParser::parse($type);
-            $prop       = $this->getPropertyType($typeObject->getBaseType(), $key);
 
-            if ($prop instanceof Property\ComplexType) {
-                $foundProp = $this->findProperty($type, $className, $reflection->getName());
-                if ($foundProp !== null) {
-                    $prop = $foundProp;
-                } else {
-                    $this->addObjectCache($type, $className, $reflection->getName(), $prop);
-                    $this->pushProperty($type, $className, $reflection->getName(), $prop);
-
-                    $this->parseProperty($prop, $typeObject, $annotations);
-
-                    $this->popProperty();
-                }
-            } else {
-                $this->parseProperty($prop, $typeObject, $annotations);
-            }
+            $prop = $this->getPropertyType($typeObject->getBaseType(), $key);
+            $prop = $this->parseProperty($prop, $typeObject, $annotations, $className, $reflection->getName());
 
             $property->add($key, $prop);
         }
@@ -414,43 +418,35 @@ class Popo implements ParserInterface
         }
     }
 
-    protected function getPropertyForType($type, $name = null, array $annotations = array())
+    protected function getPropertyForType($type)
     {
         $typeObject = TypeParser::parse($type);
-        $property   = $this->getPropertyType($typeObject->getBaseType(), $name);
+        $property   = $this->getPropertyType($typeObject->getBaseType(), null);
 
-        $this->parseProperty($property, $typeObject, $annotations);
-
-        if ($name !== null) {
-            $property->setName($name);
-        }
-
-        return $property;
+        return $this->parseProperty($property, $typeObject, [], $typeObject->getTypeHint(), null);
     }
     
-    protected function findProperty($type, $className, $propertyName)
+    protected function findProperty($key)
     {
-        $id = $className . '::' . $propertyName . '{' . $type . '}';
-
-        if (isset($this->stack[$id])) {
-            return new Property\RecursionType($this->stack[$id]);
+        if (isset($this->stack[$key])) {
+            return new Property\RecursionType($this->stack[$key]);
         }
 
-        if (isset($this->objects[$id])) {
-            return $this->objects[$id];
+        if (isset($this->objects[$key])) {
+            return $this->objects[$key];
         }
 
         return null;
     }
 
-    protected function addObjectCache($type, $className, $propertyName, PropertyInterface $property)
+    protected function addProperty($key, PropertyInterface $property)
     {
-        $this->objects[$className . '::' . $propertyName . '{' . $type . '}'] = $property;
+        $this->objects[$key] = $property;
     }
 
-    protected function pushProperty($type, $className, $propertyName, PropertyInterface $property)
+    protected function pushProperty($key, PropertyInterface $property)
     {
-        $this->stack[$className . '::' . $propertyName . '{' . $type . '}'] = $property;
+        $this->stack[$key] = $property;
     }
 
     protected function popProperty()
