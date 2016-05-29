@@ -64,8 +64,8 @@ echo $generator->generate($schema);
 
 This examples shows how the transformation of a JSON Schema into PHP classes 
 works. We use the example schema from the offical json schema website. Note you 
-should the generate code always as a starting point in almost any case you have 
-to adjust it.
+should the see then generate code always as a starting point in almost any case 
+you have to adjust it.
 
 ```json
 {
@@ -148,37 +148,6 @@ class Complex269bcdc2
 ```
 
 ## Annotations
-
-It is possible to turn a normal PHP class into a schema. Therefor you can use
-annotations to describe the type of each property.
-
-```php
-class News
-{
-    /**
-     * @Type("integer")
-     */
-    protected $id;
-
-    /**
-     * @Type("string")
-     */
-    protected $title;
-
-    /**
-     * @Type("PSX\Schema\Tests\Parser\Popo\Author")
-     */
-    protected $author;
-
-    /**
-     * @Type("array<PSX\Schema\Tests\Parser\Popo\Comment>")
-     */
-    protected $comments;
-
-    // getter/setter
-}
-
-```
 
 The following annotations are available:
 
