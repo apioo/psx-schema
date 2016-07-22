@@ -33,13 +33,13 @@ class PhpTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new Php();
+        $generator = new Php(__NAMESPACE__);
         $result    = $generator->generate($this->getSchema());
 
         $expect = <<<'PHP'
 <?php
 
-namespace PSX\Generation;
+namespace PSX\Schema\Tests\Generator;
 
 /**
  * @AdditionalProperties("string")
@@ -109,13 +109,13 @@ class Complex3b735bb1
     public $categories;
     /**
      * @Key("locations")
-     * @Type("array<PSX\Generation\Complex73afba2a>")
+     * @Type("array<PSX\Schema\Tests\Generator\Complex73afba2a>")
      * @Description("Array of locations")
      */
     public $locations;
     /**
      * @Key("origin")
-     * @Type("PSX\Generation\Complex73afba2a")
+     * @Type("PSX\Schema\Tests\Generator\Complex73afba2a")
      * @Description("Location of the person")
      */
     public $origin;
@@ -201,7 +201,7 @@ class Complex55c16924 extends \ArrayObject
  * @Description("Some meta data")
  * @AdditionalProperties(false)
  * @PatternProperty(pattern="^tags_\d$", type="string")
- * @PatternProperty(pattern="^location_\d$", type="PSX\Generation\Complex73afba2a")
+ * @PatternProperty(pattern="^location_\d$", type="PSX\Schema\Tests\Generator\Complex73afba2a")
  */
 class Complexa8078859 extends \ArrayObject
 {
@@ -228,7 +228,7 @@ class Complexb35219bc
 {
     /**
      * @Key("config")
-     * @Type("PSX\Generation\Complex5525537f")
+     * @Type("PSX\Schema\Tests\Generator\Complex5525537f")
      */
     public $config;
     /**
@@ -240,14 +240,14 @@ class Complexb35219bc
     public $tags;
     /**
      * @Key("receiver")
-     * @Type("array<PSX\Generation\Complex3b735bb1>")
+     * @Type("array<PSX\Schema\Tests\Generator\Complex3b735bb1>")
      * @Required
      * @MinItems(1)
      */
     public $receiver;
     /**
      * @Key("resources")
-     * @Type("array<choice<PSX\Generation\Complex73afba2a,PSX\Generation\Complex55c16924>>")
+     * @Type("array<choice<PSX\Schema\Tests\Generator\Complex73afba2a,PSX\Schema\Tests\Generator\Complex55c16924>>")
      */
     public $resources;
     /**
@@ -262,18 +262,18 @@ class Complexb35219bc
     public $read;
     /**
      * @Key("source")
-     * @Type("choice<PSX\Generation\Complex3b735bb1,PSX\Generation\Complex55c16924>")
+     * @Type("choice<PSX\Schema\Tests\Generator\Complex3b735bb1,PSX\Schema\Tests\Generator\Complex55c16924>")
      */
     public $source;
     /**
      * @Key("author")
-     * @Type("PSX\Generation\Complex3b735bb1")
+     * @Type("PSX\Schema\Tests\Generator\Complex3b735bb1")
      * @Description("An simple author element with some description")
      */
     public $author;
     /**
      * @Key("meta")
-     * @Type("PSX\Generation\Complexa8078859")
+     * @Type("PSX\Schema\Tests\Generator\Complexa8078859")
      * @Description("Some meta data")
      */
     public $meta;
@@ -487,7 +487,7 @@ PHP;
     public function testExecute()
     {
         $source    = $this->getSchema();
-        $generator = new Php();
+        $generator = new Php(__NAMESPACE__);
         $result    = $generator->generate($source);
         $file      = __DIR__ . '/generated_schema.php';
 
@@ -495,7 +495,7 @@ PHP;
 
         include_once $file;
 
-        $schema = $this->schemaManager->getSchema('PSX\\Generation\\Complexb35219bc');
+        $schema = $this->schemaManager->getSchema(__NAMESPACE__ . '\\Complexb35219bc');
 
         $this->assertSchema($schema, $source);
     }
