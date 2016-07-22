@@ -109,13 +109,14 @@ class Php implements GeneratorInterface
         $properties = $type->getProperties();
 
         foreach ($properties as $name => $property) {
-            $class->addStmt($this->factory->property($name)
+            $class->addStmt($this->factory->property($this->normalizeParameterName($name))
                 ->makePublic()
                 ->setDocComment($this->getDocCommentForProperty($property, $name)));
         }
 
         // add getter setter
         foreach ($properties as $name => $property) {
+            $name = $this->normalizeParameterName($name);
             $class->addStmt($this->factory->method('set' . ucfirst($name))
                 ->makePublic()
                 ->addParam($this->factory->param($name))
@@ -134,25 +135,54 @@ class Php implements GeneratorInterface
 
         // generate other complex types
         foreach ($properties as $property) {
-            if ($property instanceof Property\ArrayType) {
-                if ($property->getPrototype() instanceof Property\ComplexType) {
-                    $this->generateRootElement($property->getPrototype());
-                }
-            } elseif ($property instanceof Property\ChoiceType) {
-                $choices = $property->getChoices();
-                foreach ($choices as $prop) {
-                    if ($prop instanceof Property\ComplexType) {
-                        $this->generateRootElement($prop);
-                    }
-                }
-            } elseif ($property instanceof Property\ComplexType) {
-                $this->generateRootElement($property);
+            $this->generateProperty($property);
+        }
+        
+        // generate pattern properties
+        if (!empty($patternProperties)) {
+            foreach ($patternProperties as $pattern => $property) {
+                $this->generateProperty($property);
             }
+        }
+        
+        if ($additionalProperties instanceof PropertyInterface) {
+            $this->generateProperty($additionalProperties);
         }
 
         $this->root->addStmt($class);
     }
 
+    protected function generateProperty(PropertyInterface $property)
+    {
+        if ($property instanceof Property\RecursionType) {
+            return $this->generateProperty($property->getOrigin());
+        } elseif ($property instanceof Property\ArrayType) {
+            if ($property->getPrototype() instanceof Property\ComplexType) {
+                $this->generateRootElement($property->getPrototype());
+            }
+        } elseif ($property instanceof Property\ChoiceType) {
+            $choices = $property->getChoices();
+            foreach ($choices as $prop) {
+                if ($prop instanceof Property\ComplexType) {
+                    $this->generateRootElement($prop);
+                }
+            }
+        } elseif ($property instanceof Property\ComplexType) {
+            $this->generateRootElement($property);
+        }
+    }
+
+    protected function normalizeParameterName($name)
+    {
+        if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
+            return $name;
+        }
+
+        $name = preg_replace('/[^a-zA-Z_\x7f-\xff]/', '_', $name);
+
+        return $name;
+    }
+    
     protected function getDocCommentForClass(Property\ComplexType $property)
     {
         $comment = '/**' . "\n";
@@ -276,7 +306,9 @@ class Php implements GeneratorInterface
 
     protected function getPropertyType(PropertyInterface $property)
     {
-        if ($property instanceof Property\ArrayType) {
+        if ($property instanceof Property\RecursionType) {
+            return $this->getPropertyType($property->getOrigin());
+        } elseif ($property instanceof Property\ArrayType) {
             $type = 'array';
 
             $reference = $property->getReference();
@@ -284,7 +316,11 @@ class Php implements GeneratorInterface
                 $type.= '(' . $reference . ')';
             }
 
-            $type.= '<' . $this->getPropertyType($property->getPrototype()) . '>';
+            if ($property->getPrototype() instanceof PropertyInterface) {
+                $type.= '<' . $this->getPropertyType($property->getPrototype()) . '>';
+            } else {
+                $type.= '<string>';
+            }
 
             return $type;
         } elseif ($property instanceof Property\ChoiceType) {

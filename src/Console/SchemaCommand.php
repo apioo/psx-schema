@@ -21,12 +21,14 @@
 namespace PSX\Schema\Console;
 
 use Doctrine\Common\Annotations\Reader;
+use PSX\Http\Client;
 use PSX\Schema\Parser;
 use PSX\Schema\Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use RuntimeException;
 
 /**
  * SchemaCommand
@@ -69,16 +71,24 @@ class SchemaCommand extends Command
     {
         switch ($input->getArgument('parser')) {
             case 'jsonschema':
-                $parser = Parser\JsonSchema::fromFile($input->getArgument('source'));
+                $file = $input->getArgument('source');
+                if (!empty($file) && is_file($file)) {
+                    $basePath = pathinfo($file, PATHINFO_DIRNAME);
+                    $resolver = Parser\JsonSchema\RefResolver::createDefault(new Client());
+
+                    $parser = new Parser\JsonSchema($basePath, $resolver);
+                    $schema = $parser->parse(file_get_contents($file));
+                } else {
+                    throw new RuntimeException('Could not load json schema ' . $file);
+                }
                 break;
 
             case 'popo':
             default:
                 $parser = new Parser\Popo($this->annotationReader);
+                $schema = $parser->parse($input->getArgument('source'));
                 break;
         }
-
-        $schema = $parser->parse($input->getArgument('source'));
 
         switch ($input->getArgument('format')) {
             case 'html':

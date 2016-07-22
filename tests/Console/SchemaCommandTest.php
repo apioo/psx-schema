@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Console;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
+use PSX\Schema\Parser\Popo;
 use PSX\Schema\Tests\Parser\Popo\Complexb35219bc;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -34,7 +35,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCommand()
+    public function testCommandPopo()
     {
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
@@ -281,4 +282,31 @@ JSON;
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
+
+    public function testCommandJsonSchema()
+    {
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $command = new SchemaCommand($reader, 'urn:phpsx.org');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'parser' => 'jsonschema',
+            'source' => __DIR__ . '/../Parser/JsonSchema/swagger.json',
+            'format' => 'php',
+        ));
+
+        $actual = $commandTester->getDisplay();
+
+        file_put_contents(__DIR__ . '/generated_schema.php', $actual);
+
+        include_once __DIR__ . '/generated_schema.php';
+
+        $parser = new Popo($reader);
+        $schema = $parser->parse(\PSX\Generation\Complexbed841e2::class);
+
+        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+    }
+
 }
