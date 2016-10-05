@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\Reader;
 use PSX\Http\Client;
 use PSX\Schema\Parser;
 use PSX\Schema\Generator;
+use PSX\Schema\SchemaManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,21 +41,25 @@ use RuntimeException;
 class SchemaCommand extends Command
 {
     /**
-     * @var \Doctrine\Common\Annotations\Reader
+     * @var \PSX\Schema\SchemaManager
      */
-    protected $annotationReader;
+    protected $schemaManager;
 
     /**
      * @var string
      */
     protected $targetNamespace;
 
-    public function __construct(Reader $annotationReader, $targetNamespace)
+    /**
+     * @param \PSX\Schema\SchemaManager $schemaManager
+     * @param string $targetNamespace
+     */
+    public function __construct(SchemaManager $schemaManager, $targetNamespace)
     {
         parent::__construct();
 
-        $this->annotationReader = $annotationReader;
-        $this->targetNamespace  = $targetNamespace;
+        $this->schemaManager   = $schemaManager;
+        $this->targetNamespace = $targetNamespace;
     }
 
     protected function configure()
@@ -62,33 +67,13 @@ class SchemaCommand extends Command
         $this
             ->setName('schema')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
-            ->addArgument('parser', InputArgument::REQUIRED, 'The parser which should be used either "jsonschema" or "popo"')
-            ->addArgument('source', InputArgument::REQUIRED, 'The schema source depending on the parser this is either a absolute class name or schema file')
+            ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
             ->addArgument('format', InputArgument::OPTIONAL, 'Optional the output format possible values are: html, php, serialize, xsd, jsonschema');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        switch ($input->getArgument('parser')) {
-            case 'jsonschema':
-                $file = $input->getArgument('source');
-                if (!empty($file) && is_file($file)) {
-                    $basePath = pathinfo($file, PATHINFO_DIRNAME);
-                    $resolver = Parser\JsonSchema\RefResolver::createDefault(new Client());
-
-                    $parser = new Parser\JsonSchema($basePath, $resolver);
-                    $schema = $parser->parse(file_get_contents($file));
-                } else {
-                    throw new RuntimeException('Could not load json schema ' . $file);
-                }
-                break;
-
-            case 'popo':
-            default:
-                $parser = new Parser\Popo($this->annotationReader);
-                $schema = $parser->parse($input->getArgument('source'));
-                break;
-        }
+        $schema = $this->schemaManager->getSchema($input->getArgument('source'));
 
         switch ($input->getArgument('format')) {
             case 'html':

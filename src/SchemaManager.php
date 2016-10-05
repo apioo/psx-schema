@@ -25,6 +25,10 @@ use Doctrine\Common\Cache\ArrayCache;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
 use InvalidArgumentException;
+use PSX\Http\Client;
+use PSX\Http\ClientInterface;
+use PSX\Schema\Parser\JsonSchema\RefResolver;
+use PSX\Schema\Parser\Popo\TypeParser;
 
 /**
  * SchemaManager
@@ -50,11 +54,17 @@ class SchemaManager implements SchemaManagerInterface
      */
     protected $debug;
 
+    /**
+     * @var \PSX\Http\ClientInterface
+     */
+    protected $httpClient;
+
     public function __construct(Reader $annotationReader, CacheItemPoolInterface $cache = null, $debug = false)
     {
         $this->popoParser = new Parser\Popo($annotationReader);
         $this->cache      = $cache === null ? new Pool(new ArrayCache()) : $cache;
         $this->debug      = $debug;
+        $this->httpClient = new Client();
     }
 
     public function getSchema($schemaName)
@@ -72,9 +82,10 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         if (strpos($schemaName, '.') !== false) {
-            $schema = Parser\JsonSchema::fromFile($schemaName);
+            $resolver = RefResolver::createDefault($this->httpClient);
+            $schema   = Parser\JsonSchema::fromFile($schemaName, $resolver);
         } elseif (class_exists($schemaName)) {
-            if (in_array('PSX\\Schema\\SchemaInterface', class_implements($schemaName))) {
+            if (in_array(SchemaInterface::class, class_implements($schemaName))) {
                 $schema = new $schemaName($this);
             } else {
                 $schema = $this->popoParser->parse($schemaName);

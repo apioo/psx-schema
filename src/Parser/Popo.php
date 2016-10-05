@@ -63,6 +63,9 @@ class Popo implements ParserInterface
      */
     protected $stack;
 
+    /**
+     * @param \Doctrine\Common\Annotations\Reader $reader
+     */
     public function __construct(Reader $reader)
     {
         $this->reader = $reader;

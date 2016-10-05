@@ -38,9 +38,20 @@ class JsonSchema implements ParserInterface
 {
     const SCHEMA_04 = 'http://json-schema.org/draft-04/schema#';
 
+    /**
+     * @var null|string
+     */
     protected $basePath;
+
+    /**
+     * @var \PSX\Schema\Parser\JsonSchema\RefResolver
+     */
     protected $resolver;
 
+    /**
+     * @param string|null $basePath
+     * @param \PSX\Schema\Parser\JsonSchema\RefResolver|null $resolver
+     */
     public function __construct($basePath = null, RefResolver $resolver = null)
     {
         $this->basePath = $basePath;
@@ -57,11 +68,11 @@ class JsonSchema implements ParserInterface
         return new Schema($document->getProperty());
     }
 
-    public static function fromFile($file)
+    public static function fromFile($file, RefResolver $resolver = null)
     {
         if (!empty($file) && is_file($file)) {
             $basePath = pathinfo($file, PATHINFO_DIRNAME);
-            $parser   = new self($basePath);
+            $parser   = new self($basePath, $resolver);
 
             return $parser->parse(file_get_contents($file));
         } else {
