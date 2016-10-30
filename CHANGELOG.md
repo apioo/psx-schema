@@ -1,7 +1,11 @@
 
-### 1.0.4 (2016-10-30)
+### 1.0.5 (2016-10-30)
 
 * Allow symfony 3.0 components
+
+### 1.0.4 (2016-10-05)
+
+* Use schema manager in schema command
 
 ### 1.0.3 (2016-07-22)
 
