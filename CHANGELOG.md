@@ -1,4 +1,8 @@
 
+### 1.0.4 (2016-10-30)
+
+* Allow symfony 3.0 components
+
 ### 1.0.3 (2016-07-22)
 
 * Fix php generation of pattern and additional complex types
