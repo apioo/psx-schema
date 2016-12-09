@@ -33,119 +33,129 @@ interface VisitorInterface
      * Visits an array value
      *
      * @param array $data
-     * @param \PSX\Schema\Property\ArrayType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitArray(array $data, Property\ArrayType $property, $path);
+    public function visitArray(array $data, PropertyInterface $property, $path);
 
     /**
      * Visits a binary value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\BinaryType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitBinary($data, Property\BinaryType $property, $path);
+    public function visitBinary($data, PropertyInterface $property, $path);
 
     /**
      * Visits a boolean value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\BooleanType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitBoolean($data, Property\BooleanType $property, $path);
+    public function visitBoolean($data, PropertyInterface $property, $path);
 
     /**
      * Visits a complex value
      *
      * @param \stdClass $data
-     * @param \PSX\Schema\Property\ComplexType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitComplex(\stdClass $data, Property\ComplexType $property, $path);
+    public function visitObject(\stdClass $data, PropertyInterface $property, $path);
 
     /**
      * Visits a date time value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\DateTimeType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitDateTime($data, Property\DateTimeType $property, $path);
+    public function visitDateTime($data, PropertyInterface $property, $path);
 
     /**
      * Visits a date value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\DateType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitDate($data, Property\DateType $property, $path);
+    public function visitDate($data, PropertyInterface $property, $path);
 
     /**
      * Visits a duration value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\DurationType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitDuration($data, Property\DurationType $property, $path);
+    public function visitDuration($data, PropertyInterface $property, $path);
 
     /**
      * Visits a float value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\FloatType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitFloat($data, Property\FloatType $property, $path);
+    public function visitNumber($data, PropertyInterface $property, $path);
 
     /**
      * Visits an integer value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\IntegerType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitInteger($data, Property\IntegerType $property, $path);
+    public function visitInteger($data, PropertyInterface $property, $path);
 
     /**
      * Visits a string value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\StringType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitString($data, Property\StringType $property, $path);
+    public function visitString($data, PropertyInterface $property, $path);
 
     /**
      * Visits a time value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\TimeType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitTime($data, Property\TimeType $property, $path);
+    public function visitTime($data, PropertyInterface $property, $path);
 
     /**
      * Visits a uri value
      *
      * @param string $data
-     * @param \PSX\Schema\Property\UriType $property
+     * @param \PSX\Schema\PropertyInterface $property
      * @param string $path
      * @return mixed
      */
-    public function visitUri($data, Property\UriType $property, $path);
+    public function visitUri($data, PropertyInterface $property, $path);
+
+    /**
+     * Visits a uri value
+     *
+     * @param string $data
+     * @param \PSX\Schema\PropertyInterface $property
+     * @param string $path
+     * @return mixed
+     */
+    public function visitNull($data, PropertyInterface $property, $path);
 }

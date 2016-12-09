@@ -22,10 +22,10 @@ namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Schema\Parser\JsonSchema;
 use PSX\Schema\Property;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertySimpleAbstract;
 use PSX\Json;
 use PSX\Json\Pointer;
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
 use RuntimeException;
 
@@ -99,12 +99,12 @@ class Document
      * @param integer $depth
      * @return \PSX\Schema\PropertyInterface
      */
-    public function getProperty($pointer = null, $name = null, $depth = 0)
+    public function getProperty($pointer = null, $name = null, $depth = 0, PropertyInterface $property = null)
     {
         if ($pointer === null) {
-            return $this->getRecProperty($this->data, $name, $depth);
+            return $this->getRecProperty($this->data, $name, $depth, $property);
         } else {
-            return $this->getRecProperty($this->pointer($pointer), $name, $depth);
+            return $this->getRecProperty($this->pointer($pointer), $name, $depth, $property);
         }
     }
 
@@ -136,10 +136,10 @@ class Document
         return $this->baseUri->getHost() == $ref->getHost() && $this->baseUri->getPath() == $ref->getPath();
     }
 
-    protected function getRecProperty(array $data, $name, $depth)
+    protected function getRecProperty(array $data, $name, $depth, PropertyInterface $property = null)
     {
         if (isset($data['$ref'])) {
-            return $this->resolver->resolve($this, new Uri($data['$ref']), $name, $depth);
+            return $this->resolver->resolve($this, new Uri($data['$ref']), $name, $depth, $property);
         }
 
         if (isset($data['extends'])) {
@@ -147,71 +147,44 @@ class Document
             $data = array_replace_recursive($data, $part);
         }
 
-        if (isset($data['oneOf']) && is_array($data['oneOf'])) {
-            return $this->parseOneOf($data, $name, $depth);
+        if ($property === null) {
+            $property = new PropertyType();
         }
 
-        $type = isset($data['type']) ? $data['type'] : null;
-
-        if ($type === null) {
-            if (isset($data['properties']) || isset($data['patternProperties']) || isset($data['additionalProperties'])) {
-                $type = 'object';
-            }
+        if (isset($data['type'])) {
+            $property->setType($data['type']);
         }
 
-        $name = isset($data['title']) ? $data['title'] : null;
-
-        switch ($type) {
-            case 'object':
-                return $this->parseComplexType($data, $name, $depth);
-                break;
-
-            case 'array':
-                return $this->parseArrayType($data, $name, $depth);
-                break;
-
-            case 'boolean':
-                return $this->parseBoolean($data, $name);
-                break;
-
-            case 'integer':
-                return $this->parseInteger($data, $name);
-                break;
-
-            case 'number':
-                return $this->parseFloat($data, $name);
-                break;
-
-            default:
-            case 'string':
-                return $this->parseString($data, $name);
-                break;
+        if (isset($data['title'])) {
+            $property->setTitle($data['title']);
         }
-    }
-
-    protected function parseComplexType(array $data, $name, $depth)
-    {
-        $complexType = Property::getComplex($name);
 
         if (isset($data['description'])) {
-            $complexType->setDescription($data['description']);
+            $property->setDescription($data['description']);
         }
 
-        if (isset($data['minProperties'])) {
-            $complexType->setMinProperties($data['minProperties']);
+        if (isset($data['enum'])) {
+            $property->setEnum($data['enum']);
         }
 
-        if (isset($data['maxProperties'])) {
-            $complexType->setMaxProperties($data['maxProperties']);
-        }
+        $this->parseObjectType($property, $data, $depth);
+        $this->parseArrayType($property, $data, $depth);
+        $this->parseScalar($property, $data);
+        $this->parseCombinations($property, $data, $depth);
+        $this->parseNot($property, $data, $depth);
 
+        return $property;
+    }
+
+    protected function parseObjectType(PropertyType $property, array $data, $depth)
+    {
         if (isset($data['properties']) && is_array($data['properties'])) {
             foreach ($data['properties'] as $name => $row) {
                 if (is_array($row)) {
-                    $property = $this->getRecProperty($row, $name, $depth + 1);
+                    $prop = $this->getRecProperty($row, $name, $depth + 1);
 
-                    if ($property !== null) {
-                        $complexType->add($name, $property);
+                    if ($prop !== null) {
+                        $property->addProperty($name, $prop);
                     }
                 }
             }
@@ -220,166 +193,169 @@ class Document
         if (isset($data['patternProperties']) && is_array($data['patternProperties'])) {
             foreach ($data['patternProperties'] as $pattern => $prototype) {
                 if (is_array($prototype)) {
-                    $complexType->addPatternProperty($pattern, $this->getRecProperty($prototype, null, $depth + 1));
+                    $property->addPatternProperty($pattern, $this->getRecProperty($prototype, null, $depth + 1));
                 }
             }
         }
 
         if (isset($data['additionalProperties'])) {
             if (is_bool($data['additionalProperties'])) {
-                $complexType->setAdditionalProperties($data['additionalProperties']);
+                $property->setAdditionalProperties($data['additionalProperties']);
             } elseif (is_array($data['additionalProperties'])) {
-                $complexType->setAdditionalProperties($this->getRecProperty($data['additionalProperties'], null, $depth + 1));
+                $property->setAdditionalProperties($this->getRecProperty($data['additionalProperties'], null, $depth + 1));
             }
         }
 
         if (isset($data['required']) && is_array($data['required'])) {
-            foreach ($data['required'] as $propertyName) {
-                $property = $complexType->get($propertyName);
+            $property->setRequired($data['required']);
+        }
 
-                if ($property instanceof PropertyInterface) {
-                    $property->setRequired(true);
+        if (isset($data['minProperties'])) {
+            $property->setMinProperties($data['minProperties']);
+        }
+
+        if (isset($data['maxProperties'])) {
+            $property->setMaxProperties($data['maxProperties']);
+        }
+
+        if (isset($data['dependencies']) && is_array($data['dependencies'])) {
+            $result = [];
+            foreach ($data['dependencies'] as $name => $row) {
+                if (isset($row[0])) {
+                    $result[$name] = $row;
+                } else {
+                    $result[$name] = $this->getRecProperty($row, null, $depth + 1);
+                }
+            }
+
+            $property->setDependencies($result);
+        }
+
+        // PSX specific contains the fitting class for this object
+        if (isset($data['class'])) {
+            $property->setClass($data['class']);
+        }
+
+        return $property;
+    }
+
+    protected function parseArrayType(PropertyType $property, array $data, $depth)
+    {
+        if (isset($data['items']) && is_array($data['items'])) {
+            if (isset($data['items'][0])) {
+                // tuple validation
+                $properties = [];
+                foreach ($data['items'] as $item) {
+                    $prop = $this->getRecProperty($item, null, $depth + 1);
+                    if ($prop !== null) {
+                        $properties[] = $prop;
+                    }
+                }
+
+                $property->setItems($properties);
+            } else {
+                $prop = $this->getRecProperty($data['items'], null, $depth + 1);
+                if ($prop !== null) {
+                    $property->setItems($prop);
                 }
             }
         }
 
-        if (isset($data['reference']) && class_exists($data['reference'])) {
-            $complexType->setReference($data['reference']);
-        }
-
-        return $complexType;
-    }
-
-    protected function parseArrayType(array $data, $name, $depth)
-    {
-        $arrayType = Property::getArray($name);
-
-        if (isset($data['description'])) {
-            $arrayType->setDescription($data['description']);
+        if (isset($data['additionalItems'])) {
+            if (is_bool($data['additionalItems'])) {
+                $property->setAdditionalItems($data['additionalItems']);
+            } elseif (is_array($data['additionalItems'])) {
+                $property->setAdditionalItems($this->getRecProperty($data['additionalItems'], null, $depth + 1));
+            }
         }
 
         if (isset($data['minItems'])) {
-            $arrayType->setMinLength($data['minItems']);
+            $property->setMinItems($data['minItems']);
         }
 
         if (isset($data['maxItems'])) {
-            $arrayType->setMaxLength($data['maxItems']);
+            $property->setMaxItems($data['maxItems']);
         }
 
-        if (isset($data['items']) && is_array($data['items'])) {
-            $property = $this->getRecProperty($data['items'], null, $depth + 1);
-
-            if ($property !== null) {
-                $arrayType->setPrototype($property);
-            }
+        if (isset($data['uniqueItems'])) {
+            $property->setUniqueItems($data['uniqueItems']);
         }
-
-        return $arrayType;
-    }
-
-    protected function parseBoolean(array $data, $name)
-    {
-        $property = Property::getBoolean($name);
-
-        $this->parseScalar($property, $data);
 
         return $property;
     }
 
-    protected function parseInteger(array $data, $name)
+    protected function parseScalar(PropertyType $property, array $data)
     {
-        $property = Property::getInteger($name);
-
-        $this->parseScalar($property, $data);
-
-        return $property;
-    }
-
-    protected function parseFloat(array $data, $name)
-    {
-        $property = Property::getFloat($name);
-
-        $this->parseScalar($property, $data);
-
-        return $property;
-    }
-
-    protected function parseString(array $data, $name)
-    {
-        $property = null;
-        if (isset($data['format'])) {
-            if ($data['format'] == 'date') {
-                $property = Property::getDate($name);
-            } elseif ($data['format'] == 'date-time') {
-                $property = Property::getDateTime($name);
-            } elseif ($data['format'] == 'duration') {
-                $property = Property::getDuration($name);
-            } elseif ($data['format'] == 'time') {
-                $property = Property::getTime($name);
-            } elseif ($data['format'] == 'uri') {
-                $property = Property::getUri($name);
-            } elseif ($data['format'] == 'base64') {
-                $property = Property::getBinary($name);
-            }
+        // number
+        if (isset($data['minimum'])) {
+            $property->setMinimum($data['minimum']);
         }
 
-        if ($property === null) {
-            $property = Property::getString($name);
+        if (isset($data['exclusiveMinimum'])) {
+            $property->setExclusiveMinimum((bool) $data['exclusiveMinimum']);
         }
 
-        $this->parseScalar($property, $data);
-
-        return $property;
-    }
-
-    protected function parseScalar(PropertySimpleAbstract $property, array $data)
-    {
-        if (isset($data['description'])) {
-            $property->setDescription($data['description']);
+        if (isset($data['maximum'])) {
+            $property->setMaximum($data['maximum']);
         }
 
+        if (isset($data['exclusiveMaximum'])) {
+            $property->setExclusiveMaximum((bool) $data['exclusiveMaximum']);
+        }
+
+        if (isset($data['multipleOf'])) {
+            $property->setMultipleOf($data['multipleOf']);
+        }
+
+        // string
         if (isset($data['pattern'])) {
             $property->setPattern($data['pattern']);
         }
 
-        if (isset($data['enum'])) {
-            $property->setEnumeration($data['enum']);
+        if (isset($data['format'])) {
+            $property->setFormat($data['format']);
         }
 
-        if ($property instanceof Property\DecimalType) {
-            if (isset($data['minimum'])) {
-                $property->setMin($data['minimum']);
-            }
-
-            if (isset($data['maximum'])) {
-                $property->setMax($data['maximum']);
-            }
+        if (isset($data['minLength'])) {
+            $property->setMinLength($data['minLength']);
         }
 
-        if ($property instanceof Property\StringType) {
-            if (isset($data['minLength'])) {
-                $property->setMinLength($data['minLength']);
-            }
-
-            if (isset($data['maxLength'])) {
-                $property->setMaxLength($data['maxLength']);
-            }
+        if (isset($data['maxLength'])) {
+            $property->setMaxLength($data['maxLength']);
         }
     }
 
-    protected function parseOneOf(array $data, $name, $depth)
+    protected function parseCombinations(PropertyType $property, array $data, $depth)
     {
-        $choiceType = Property::getChoice($name);
-
-        foreach ($data['oneOf'] as $row) {
-            $property = $this->getRecProperty($row, null, $depth);
-
-            if ($property instanceof Property\ComplexType) {
-                $choiceType->add($property);
+        if (isset($data['allOf']) && is_array($data['allOf'])) {
+            $props = [];
+            foreach ($data['allOf'] as $prop) {
+                $props[] = $this->getRecProperty($prop, null, $depth + 1);
             }
-        }
 
-        return $choiceType;
+            $property->setAllOf($props);
+        } elseif (isset($data['anyOf']) && is_array($data['anyOf'])) {
+            $props = [];
+            foreach ($data['anyOf'] as $prop) {
+                $props[] = $this->getRecProperty($prop, null, $depth + 1);
+            }
+
+            $property->setAnyOf($props);
+        } elseif (isset($data['oneOf']) && is_array($data['oneOf'])) {
+            $props = [];
+            foreach ($data['oneOf'] as $prop) {
+                $props[] = $this->getRecProperty($prop, null, $depth + 1);
+            }
+
+            $property->setOneOf($props);
+        }
+    }
+
+    protected function parseNot(PropertyType $property, array $data, $depth)
+    {
+        if (isset($data['not']) && is_array($data['not'])) {
+            $property->setNot($this->getRecProperty($data['not'], null, $depth + 1));
+        }
     }
 
     protected function assertVersion(array $data)

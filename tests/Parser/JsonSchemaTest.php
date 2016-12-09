@@ -69,59 +69,157 @@ class JsonSchemaTest extends ParserTestCase
         $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema_external.json'));
         $property = $schema->getDefinition();
 
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
-        $this->assertEquals('record', $property->getName());
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('id'));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('bar'));
-        $this->assertInstanceOf('PSX\Schema\Property\ArrayType', $property->get('bar')->get('number'));
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('bar')->get('number')->getPrototype());
-        $this->assertEquals(4, $property->get('bar')->get('number')->getPrototype()->getMin());
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('foo'));
-        $this->assertEquals(4, $property->get('foo')->getMin());
-        $this->assertEquals(12, $property->get('foo')->getMax());
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('value'));
-        $this->assertEquals(0, $property->get('value')->getMin());
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('test'));
-        $this->assertEquals(true, $property->get('test')->get('index')->isRequired());
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('test')->get('index'));
-        $this->assertEquals(true, $property->get('test')->get('foo')->isRequired());
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('test')->get('foo'));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('normal'));
-        $this->assertEquals(false, $property->get('normal')->get('index')->isRequired());
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('normal')->get('index'));
-        $this->assertEquals(false, $property->get('normal')->get('foo')->isRequired());
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('normal')->get('foo'));
+        $actual = json_encode($property, JSON_PRETTY_PRINT);
+        $expect = <<<JSON
+{
+    "type": "object",
+    "title": "record",
+    "description": "Some schema",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "minimum": 4
+        },
+        "bar": {
+            "type": "object",
+            "description": "Foo schema",
+            "properties": {
+                "number": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 4
+                    }
+                }
+            }
+        },
+        "foo": {
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 12
+        },
+        "value": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "test": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "integer",
+                    "minimum": 4
+                },
+                "foo": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "index",
+                "foo"
+            ]
+        },
+        "normal": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "integer",
+                    "minimum": 4
+                },
+                "foo": {
+                    "type": "string"
+                }
+            }
+        },
+        "object": {
+            "type": "object",
+            "description": "description",
+            "properties": {
+                "foo": {
+                    "type": "string"
+                }
+            }
+        },
+        "array": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 9
+        },
+        "choice": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "foo",
+                    "properties": {
+                        "foo": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "title": "bar",
+                    "properties": {
+                        "bar": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "binary": {
+            "type": "string",
+            "format": "base64"
+        },
+        "boolean": {
+            "type": "boolean"
+        },
+        "integer": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "number": {
+            "type": "number"
+        },
+        "string": {
+            "type": "string",
+            "enum": [
+                "foo",
+                "bar"
+            ],
+            "pattern": "[A-z]+",
+            "minLength": 2,
+            "maxLength": 4
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "datetime": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "duration": {
+            "type": "string",
+            "format": "duration"
+        },
+        "time": {
+            "type": "string",
+            "format": "time"
+        },
+        "uri": {
+            "type": "string",
+            "format": "uri"
+        },
+        "unknown": []
+    }
+}
+JSON;
 
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $property->get('object'));
-        $this->assertEquals('description', $property->get('object')->getDescription());
-        $this->assertInstanceOf('PSX\Schema\Property\ArrayType', $property->get('array'));
-        $this->assertEquals(1, $property->get('array')->getMinLength());
-        $this->assertEquals(9, $property->get('array')->getMaxLength());
-        $this->assertInstanceOf('PSX\Schema\Property\BinaryType', $property->get('binary'));
-        $this->assertInstanceOf('PSX\Schema\Property\BooleanType', $property->get('boolean'));
-        $this->assertInstanceOf('PSX\Schema\Property\IntegerType', $property->get('integer'));
-        $this->assertEquals(1, $property->get('integer')->getMin());
-        $this->assertEquals(4, $property->get('integer')->getMax());
-        $this->assertInstanceOf('PSX\Schema\Property\FloatType', $property->get('number'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('string'));
-        $this->assertEquals('[A-z]+', $property->get('string')->getPattern());
-        $this->assertEquals(['foo', 'bar'], $property->get('string')->getEnumeration());
-        $this->assertEquals(2, $property->get('string')->getMinLength());
-        $this->assertEquals(4, $property->get('string')->getMaxLength());
-        $this->assertInstanceOf('PSX\Schema\Property\DateType', $property->get('date'));
-        $this->assertInstanceOf('PSX\Schema\Property\DateTimeType', $property->get('datetime'));
-        $this->assertInstanceOf('PSX\Schema\Property\DurationType', $property->get('duration'));
-        $this->assertInstanceOf('PSX\Schema\Property\TimeType', $property->get('time'));
-        $this->assertInstanceOf('PSX\Schema\Property\UriType', $property->get('uri'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $property->get('unknown'));
-
-        $this->assertInstanceOf('PSX\Schema\Property\ChoiceType', $property->get('choice'));
-        $choices = $property->get('choice')->getChoices();
-        $this->assertEquals(2, count($choices));
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $choices[0]);
-        $this->assertInstanceOf('PSX\Schema\Property\ComplexType', $choices[1]);
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $choices[0]->get('foo'));
-        $this->assertInstanceOf('PSX\Schema\Property\StringType', $choices[1]->get('bar'));
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
     /**

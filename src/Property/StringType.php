@@ -21,6 +21,7 @@
 namespace PSX\Schema\Property;
 
 use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\PropertyType;
 
 /**
  * StringType
@@ -29,44 +30,10 @@ use PSX\Schema\PropertySimpleAbstract;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StringType extends PropertySimpleAbstract
+class StringType extends PropertyType
 {
-    protected $minLength;
-    protected $maxLength;
-
-    public function setMinLength($minLength)
+    public function __construct()
     {
-        $this->minLength = $minLength;
-
-        return $this;
-    }
-
-    public function getMinLength()
-    {
-        return $this->minLength;
-    }
-
-    public function setMaxLength($maxLength)
-    {
-        $this->maxLength = $maxLength;
-
-        return $this;
-    }
-
-    public function getMaxLength()
-    {
-        return $this->maxLength;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return md5(
-            parent::getId() .
-            $this->minLength .
-            $this->maxLength
-        );
+        $this->type = 'string';
     }
 }

@@ -37,32 +37,10 @@ use PSX\Schema\Visitor\IncomingVisitor;
  */
 class SchemaTraverserTest extends SchemaTestCase
 {
-    public function testNormalIncoming()
+    public function testTraverse()
     {
         $traverser = new SchemaTraverser();
-        $result    = $traverser->traverse($this->getData(), $this->getSchema(), new IncomingVisitor());
-
-        $this->assertInstanceOf('PSX\Record\RecordInterface', $result);
-
-        // the incoming visitior transforms binary types to resources. Because
-        // of this we cant json_encode the result directly therefor we use the
-        // outgoing visitor
-        $result = $traverser->traverse($result, $this->getSchema(), new OutgoingVisitor());
-
-        $this->assertInstanceOf('PSX\Record\RecordInterface', $result);
-
-        $actual = json_encode($result, JSON_PRETTY_PRINT);
-        $expect = $this->getExpectedJson();
-
-        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
-    }
-
-    public function testNormalOutgoing()
-    {
-        $traverser = new SchemaTraverser();
-        $result    = $traverser->traverse($this->getData(), $this->getSchema(), new OutgoingVisitor());
-
-        $this->assertInstanceOf('PSX\Record\RecordInterface', $result);
+        $result    = $traverser->traverse($this->getData(), $this->getSchema());
 
         $actual = json_encode($result, JSON_PRETTY_PRINT);
         $expect = $this->getExpectedJson();
@@ -72,15 +50,15 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /config/test must be a string
+     * @expectedExceptionMessage /config/test must be of type string
      */
     public function testInvalidAdditionalPropertyType()
     {
         $data = $this->getData();
-        $data['config']['test'] = ['foo'];
+        $data->config->test = ['foo'];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -91,11 +69,11 @@ class SchemaTraverserTest extends SchemaTestCase
     {
         $data = $this->getData();
         for ($i = 0; $i < 5; $i++) {
-            $data['tags'][] = 'tag-' . $i;
+            $data->tags[] = 'tag-' . $i;
         }
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -105,68 +83,68 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMinArrayItems()
     {
         $data = $this->getData();
-        $data['tags'] = [];
+        $data->tags = [];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/1 must contain less or equal then 8 properties
+     * @expectedExceptionMessage /resources/1 must match one required schema
      */
     public function testInvalidMaxObjectItems()
     {
         $data = $this->getData();
         for ($i = 0; $i < 6; $i++) {
-            $data['resources'][1][$i . '-foo'] = 'foo-' . $i;
+            $data->resources[1]->{$i . '-foo'} = 'foo-' . $i;
         }
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/1 must contain more or equal then 2 properties
+     * @expectedExceptionMessage /resources/1 must match one required schema
      */
     public function testInvalidMinObjectItems()
     {
         $data = $this->getData();
-        $data['resources'][1] = [
+        $data->resources[1] = [
             'name' => 'foo'
         ];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /receiver/1 must be an object
+     * @expectedExceptionMessage /receiver/1 must be of type object
      */
     public function testInvalidArrayPrototypeType()
     {
         $data = $this->getData();
-        $data['receiver'][] = 'foo';
+        $data->receiver[] = 'foo';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/3 must be one of the following types (location, web)
+     * @expectedExceptionMessage /resources/3 must match one required schema
      */
     public function testInvalidArrayPrototypeChoiceType()
     {
         $data = $this->getData();
-        $data['resources'][] = [
+        $data->resources[] = [
             'baz' => 'foo'
         ];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -176,10 +154,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidBinary()
     {
         $data = $this->getData();
-        $data['profileImage'] = 'foo';
+        $data->profileImage = 'foo';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -189,10 +167,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMinFloat()
     {
         $data = $this->getData();
-        $data['price'] = 0;
+        $data->price = 0;
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -202,10 +180,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMaxFloat()
     {
         $data = $this->getData();
-        $data['price'] = 101;
+        $data->price = 101;
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -215,10 +193,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMinInteger()
     {
         $data = $this->getData();
-        $data['rating'] = 0;
+        $data->rating = 0;
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -228,10 +206,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMaxInteger()
     {
         $data = $this->getData();
-        $data['rating'] = 6;
+        $data->rating = 6;
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -241,10 +219,10 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMinString()
     {
         $data = $this->getData();
-        $data['content'] = 'a';
+        $data->content = 'a';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -254,36 +232,36 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidMaxString()
     {
         $data = $this->getData();
-        $data['content'] = str_repeat('a', 513);
+        $data->content = str_repeat('a', 513);
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /question is not in enumeration [foo, bar]
+     * @expectedExceptionMessage /question is not in enum ["foo","bar"]
      */
     public function testInvalidEnumeration()
     {
         $data = $this->getData();
-        $data['question'] = 'baz';
+        $data->question = 'baz';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /author/title does not match pattern [[A-z]{3,16}]
+     * @expectedExceptionMessage /receiver/0/title does not match pattern [[A-z]{3,16}]
      */
     public function testInvalidPattern()
     {
         $data = $this->getData();
-        $data['author']['title'] = '1234';
+        $data->author->title = '1234';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
@@ -293,36 +271,36 @@ class SchemaTraverserTest extends SchemaTestCase
     public function testInvalidAdditionalPatternProperties()
     {
         $data = $this->getData();
-        $data['meta']['foo_0'] = 'foo';
+        $data->meta->foo_0 = 'foo';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta/tags_0 must be a string
+     * @expectedExceptionMessage /meta/tags_0 must be of type string
      */
     public function testInvalidatternPropertiesTags()
     {
         $data = $this->getData();
-        $data['meta']['tags_0'] = ['foo'];
+        $data->meta->tags_0 = ['foo'];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta/location_0 must be an object
+     * @expectedExceptionMessage /meta/location_0 must be of type object
      */
     public function testInvalidatternPropertiesLocation()
     {
         $data = $this->getData();
-        $data['meta']['location_0'] = 'foo';
+        $data->meta->location_0 = 'foo';
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema(), new IncomingVisitor());
+        $traverser->traverse($data, $this->getSchema());
     }
 
     public function testRecursion()
@@ -330,21 +308,21 @@ class SchemaTraverserTest extends SchemaTestCase
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
-        $data = [
+        $data = (object) [
             'title' => 'level1',
-            'model' => [
+            'model' => (object) [
                 'title' => 'level2',
-                'model' => [
+                'model' => (object) [
                     'title' => 'level3',
-                    'model' => [
+                    'model' => (object) [
                         'title' => 'level4',
-                        'model' => [
+                        'model' => (object) [
                             'title' => 'level5',
-                            'model' => [
+                            'model' => (object) [
                                 'title' => 'level6',
-                                'model' => [
+                                'model' => (object) [
                                     'title' => 'level7',
-                                    'model' => [
+                                    'model' => (object) [
                                         'title' => 'level8'
                                     ]
                                 ]
@@ -356,7 +334,7 @@ class SchemaTraverserTest extends SchemaTestCase
         ];
 
         $traverser = new SchemaTraverser();
-        $result    = $traverser->traverse($data, $schema, new OutgoingVisitor());
+        $result    = $traverser->traverse($data, $schema);
 
         $this->assertEquals('level1', $result->title);
         $this->assertEquals('level2', $result->model->title);
@@ -366,36 +344,37 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertEquals('level6', $result->model->model->model->model->model->title);
         $this->assertEquals('level7', $result->model->model->model->model->model->model->title);
         $this->assertEquals('level8', $result->model->model->model->model->model->model->model->title);
-        $this->assertEquals(null, $result->model->model->model->model->model->model->model->model);
+        $this->assertEquals(false, isset($result->model->model->model->model->model->model->model->model));
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
+     * @expectedExceptionMessage /model/model/model/model/model/model/model/model max recursion depth reached
      */
     public function testMaxRecursion()
     {
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
-        $data = [
+        $data = (object) [
             'title' => 'level1',
-            'model' => [
+            'model' => (object) [
                 'title' => 'level2',
-                'model' => [
+                'model' => (object) [
                     'title' => 'level3',
-                    'model' => [
+                    'model' => (object) [
                         'title' => 'level4',
-                        'model' => [
+                        'model' => (object) [
                             'title' => 'level5',
-                            'model' => [
+                            'model' => (object) [
                                 'title' => 'level6',
-                                'model' => [
+                                'model' => (object) [
                                     'title' => 'level7',
-                                    'model' => [
+                                    'model' => (object) [
                                         'title' => 'level8',
-                                        'model' => [
+                                        'model' => (object) [
                                             'title' => 'level9',
-                                            'model' => [
+                                            'model' => (object) [
                                                 'title' => 'level10',
                                             ]
                                         ]
@@ -409,12 +388,12 @@ class SchemaTraverserTest extends SchemaTestCase
         ];
 
         $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $schema, new OutgoingVisitor());
+        $traverser->traverse($data, $schema);
     }
-    
+
     protected function getData()
     {
-        $location = [
+        $location = (object) [
             'lat' => 51.2984641,
             'long' => 6.9227502,
             // allows any additional properties
@@ -424,14 +403,14 @@ class SchemaTraverserTest extends SchemaTestCase
             'bar' => 'foo'
         ];
 
-        $web = [
+        $web = (object) [
             'name' => 'web',
             'url' => 'http://google.com',
             // allows additional string properties
             'foo' => 'foo',
         ];
 
-        $author = [
+        $author = (object) [
             'title' => 'foo',
             'email' => 'foo@bar.com',
             'categories' => ['admin', 'user'],
@@ -439,7 +418,7 @@ class SchemaTraverserTest extends SchemaTestCase
             'origin' => $location,
         ];
 
-        $meta = [
+        $meta = (object) [
             // pattern properties
             'tags_0' => 'foo',
             'tags_1' => 'bar',
@@ -447,12 +426,8 @@ class SchemaTraverserTest extends SchemaTestCase
             'location_1' => $location,
         ];
 
-        $resource = fopen('php://temp', 'r+');
-        fwrite($resource, 'foobar');
-        rewind($resource);
-
-        return [
-            'config' => [
+        return (object) [
+            'config' => (object) [
                 // allows additional string properties
                 'foo' => 'bar',
                 'bar' => 'bar',
@@ -460,19 +435,19 @@ class SchemaTraverserTest extends SchemaTestCase
             'tags' => ['foo', 'bar'],
             'receiver' => [$author],
             'resources' => [$location, $web, $location],
-            'profileImage' => $resource,
+            'profileImage' => base64_encode('foobar'),
             'read' => true,
             'source' => $author,
             'author' => $author,
             'meta' => $meta,
-            'sendDate' => new \DateTime('2016-05-28T12:12:00'),
-            'readDate' => new \DateTime('2016-05-28T12:12:00'),
-            'expires' => new \DateInterval('P1D'),
+            'sendDate' => '2016-05-28',
+            'readDate' => '2016-05-28T12:12:00',
+            'expires' => 'P1D',
             'price' => 20.45,
             'rating' => 2,
             'content' => 'lorem ipsum',
             'question' => 'foo',
-            'coffeeTime' => new \DateTime('2016-05-28T12:12:00'),
+            'coffeeTime' => '12:12:00',
             'profileUri' => 'urn:news:1',
         ];
     }
@@ -615,7 +590,7 @@ class SchemaTraverserTest extends SchemaTestCase
         }
     },
     "sendDate": "2016-05-28",
-    "readDate": "2016-05-28T12:12:00Z",
+    "readDate": "2016-05-28T12:12:00",
     "expires": "P1D",
     "price": 20.45,
     "rating": 2,

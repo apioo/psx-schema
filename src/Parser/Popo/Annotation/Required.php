@@ -24,11 +24,25 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * Required
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target("CLASS")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
 class Required
 {
+    /**
+     * @var array
+     */
+    protected $required;
+
+    public function __construct(array $required)
+    {
+        $this->required = current($required);
+    }
+
+    public function getRequired()
+    {
+        return $this->required;
+    }
 }

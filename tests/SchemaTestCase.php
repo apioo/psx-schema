@@ -65,46 +65,16 @@ abstract class SchemaTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $leftSchema);
         $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $rightSchema);
-        $this->assertProperty($leftSchema->getDefinition(), $rightSchema->getDefinition());
-    }
 
-    protected function assertProperty($leftProperty, $rightProperty)
-    {
+        $leftProperty  = $leftSchema->getDefinition();
+        $rightProperty = $rightSchema->getDefinition();
+
         $this->assertInstanceOf('PSX\\Schema\\PropertyInterface', $leftProperty);
         $this->assertInstanceOf('PSX\\Schema\\PropertyInterface', $rightProperty);
-        $this->assertInstanceOf(get_class($leftProperty), $rightProperty);
 
-        if ($leftProperty instanceof PropertyAbstract && $rightProperty instanceof PropertyAbstract) {
-            $this->assertEquals($leftProperty->isRequired(), $rightProperty->isRequired());
-        }
+        $expect = json_encode($leftProperty, JSON_PRETTY_PRINT);
+        $actual = json_encode($rightProperty, JSON_PRETTY_PRINT);
 
-        if ($leftProperty instanceof ComplexType && $rightProperty instanceof ComplexType) {
-            $leftProperties  = $leftProperty->getPatternProperties();
-            $rightProperties = $rightProperty->getPatternProperties();
-
-            $this->assertEquals(array_keys($leftProperties), array_keys($rightProperties));
-
-            $leftProperties  = $leftProperty->getAdditionalProperties();
-            $rightProperties = $rightProperty->getAdditionalProperties();
-            
-            if (is_bool($leftProperties) && is_bool($rightProperties)) {
-                $this->assertEquals($leftProperties, $rightProperties);
-            } elseif ($leftProperties instanceof PropertyInterface && $rightProperties instanceof PropertyInterface) {
-                $this->assertProperty($leftProperties, $rightProperties);
-            }
-        }
-
-        if ($leftProperty instanceof CompositeTypeAbstract && $rightProperty instanceof CompositeTypeAbstract) {
-            $leftProperties  = $leftProperty->getProperties();
-            $rightProperties = $rightProperty->getProperties();
-
-            $this->assertEquals(array_keys($leftProperties), array_keys($rightProperties));
-
-            foreach ($leftProperties as $key => $leftProp) {
-                $this->assertProperty($leftProp, $rightProperties[$key]);
-            }
-        }
-
-        $this->assertEquals($leftProperty->getId(), $rightProperty->getId());
+        $this->assertJsonStringEqualsJsonString($expect, $actual);
     }
 }

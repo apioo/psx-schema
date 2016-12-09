@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Property;
+use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaAbstract;
 
 /**
@@ -36,16 +37,18 @@ class TestSchema extends SchemaAbstract
     {
         $sb = $this->getSchemaBuilder('location')
             ->setAdditionalProperties(true)
-            ->setDescription('Location of the person');
-        $sb->float('lat');
-        $sb->float('long');
+            ->setDescription('Location of the person')
+            ->setRequired(['lat', 'long']);
+        $sb->number('lat');
+        $sb->number('long');
         $location = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('web')
-            ->setAdditionalProperties(Property::getString('value'))
+            ->setAdditionalProperties(Property::getString())
             ->setMinProperties(2)
             ->setMaxProperties(8)
-            ->setDescription('An application');
+            ->setDescription('An application')
+            ->setRequired(['name', 'url']);
         $sb->string('name');
         $sb->string('url');
         $web = $sb->getProperty();
@@ -53,69 +56,66 @@ class TestSchema extends SchemaAbstract
         $sb = $this->getSchemaBuilder('author')
             ->setDescription('An simple author element with some description');
         $sb->string('title')
-            ->setPattern('[A-z]{3,16}')
-            ->setRequired(true);
+            ->setPattern('[A-z]{3,16}');
         $sb->string('email')
             ->setDescription('We will send no spam to this addresss');
         $sb->arrayType('categories')
-            ->setPrototype(Property::getString('category'))
+            ->setItems(Property::getString())
             ->setMaxItems(8);
         $sb->arrayType('locations')
-            ->setPrototype($location)
+            ->setItems($location)
             ->setDescription('Array of locations');
-        $sb->complexType('origin', $location);
+        $sb->objectType('origin', $location);
+        $sb->setRequired(['title']);
+        $sb->setAdditionalProperties(false);
         $author = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('meta')
             ->setDescription('Some meta data')
-            ->addPatternProperty('^tags_\d$', Property::getString('tag'))
+            ->addPatternProperty('^tags_\d$', Property::getString())
             ->addPatternProperty('^location_\d$', $location);
         $sb->dateTime('createDate');
+        $sb->setAdditionalProperties(false);
         $meta = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('news')
             ->setDescription('An general news entry');
-        $sb->complexType('config')
-            ->setAdditionalProperties(Property::getString('value'));
+        $sb->objectType('config')
+            ->setAdditionalProperties(Property::getString());
         $sb->arrayType('tags')
-            ->setPrototype(Property::getString('tag'))
+            ->setItems(Property::getString())
             ->setMinItems(1)
             ->setMaxItems(6);
         $sb->arrayType('receiver')
-            ->setPrototype($author)
-            ->setMinItems(1)
-            ->setRequired(true);
+            ->setItems($author)
+            ->setMinItems(1);
         $sb->arrayType('resources') 
-            ->setPrototype(Property::getChoice('resource')
-                ->add($location)
-                ->add($web)
-            );
+            ->setItems(Property::get()->setOneOf([$location, $web]));
         $sb->binary('profileImage');
         $sb->boolean('read');
-        $sb->choiceType('source')
-            ->add($author)
-            ->add($web);
-        $sb->complexType('author', $author);
-        $sb->complexType('meta', $meta);
+        $sb->property('source')
+            ->setOneOf([$author, $web]);
+        $sb->objectType('author', $author);
+        $sb->objectType('meta', $meta);
         $sb->date('sendDate');
         $sb->dateTime('readDate');
         $sb->duration('expires');
-        $sb->float('price')
-            ->setMin(1)
-            ->setMax(100)
-            ->setRequired(true);
+        $sb->number('price')
+            ->setMinimum(1)
+            ->setMaximum(100);
         $sb->integer('rating')
-            ->setMin(1)
-            ->setMax(5);
+            ->setMinimum(1)
+            ->setMaximum(5);
         $sb->string('content')
             ->setDescription('Contains the main content of the news entry')
             ->setMinLength(3)
-            ->setMaxLength(512)
-            ->setRequired(true);
+            ->setMaxLength(512);
         $sb->string('question')
-            ->setEnumeration(['foo', 'bar']);
+            ->setEnum(['foo', 'bar']);
         $sb->time('coffeeTime');
         $sb->uri('profileUri');
+        $sb->setRequired(['receiver', 'price', 'content']);
+        $sb->setAdditionalProperties(false);
 
         return $sb->getProperty();
     }

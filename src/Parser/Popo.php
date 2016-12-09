@@ -30,6 +30,7 @@ use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\PropertyType;
 use PSX\Schema\Schema;
 use ReflectionClass;
 use ReflectionProperty;
@@ -78,382 +79,222 @@ class Popo implements ParserInterface
         }
 
         $this->objects = [];
-        $this->stack   = [];
 
-        $object = new Property\ComplexType('record');
-        $object->setReference($className);
+        $property = $this->parseClass($className);
 
-        $key = $className . null . $className;
-
-        $this->addProperty($key, $object);
-
-        $this->parseComplexType($object);
-
-        return new Schema($object);
+        return new Schema($property);
     }
 
-    /**
-     * @param \PSX\Schema\PropertyInterface $property
-     * @param \PSX\Schema\Parser\Popo\TypeParser $typeObject
-     * @param array $annotations
-     */
-    protected function parseProperty(PropertyInterface $property, TypeParser $typeObject, array $annotations, $className, $propertyName)
+    protected function parseClass($className)
     {
-        // set type hint if available
-        $typeHint = $typeObject->getTypeHint();
-        if (!empty($typeHint)) {
-            $property->setReference($typeHint);
+        if (isset($this->objects[$className])) {
+            return new Property\RecursionType($this->objects[$className]);
         }
 
-        // parse annotations
-        if ($property instanceof PropertyAbstract) {
-            $this->parseProperties($property, $annotations);
-        }
+        $class       = new ReflectionClass($className);
+        $annotations = $this->reader->getClassAnnotations($class);
+        $property    = new PropertyType();
+        $property->setType('object');
+        $property->setClass($class->getName());
 
-        if ($property instanceof Property\ArrayType) {
-            $this->parseArrayProperties($property, $annotations);
-        } elseif ($property instanceof Property\DecimalType) {
-            $this->parseDecimalProperties($property, $annotations);
-        } elseif ($property instanceof Property\StringType) {
-            $this->parseStringProperties($property, $annotations);
-        }
+        $this->objects[$className] = $property;
 
-        if ($property instanceof PropertySimpleAbstract) {
-            $this->parseSimpleProperties($property, $annotations);
-        }
+        $this->parseClassAnnotations($property, $annotations);
 
-        if ($property instanceof Property\ArrayType) {
-            $this->parseArrayType($property, $typeObject);
-        } elseif ($property instanceof Property\ChoiceType) {
-            $this->parseChoiceType($property, $typeObject);
-        } elseif ($property instanceof Property\ComplexType) {
-            $key       = $className . $propertyName . $typeObject->getTypeHint();
-            $foundProp = $this->findProperty($key);
+        $properties = ObjectReader::getProperties($this->reader, $class);
+        foreach ($properties as $key => $reflection) {
+            $annotations = $this->reader->getPropertyAnnotations($reflection);
 
-            if ($foundProp !== null) {
-                return $foundProp;
+            // check whether we have a ref annotation
+            $ref = null;
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof Annotation\Ref) {
+                    $ref = $annotation->getRef();
+                }
             }
 
-            $this->addProperty($key, $property);
-            $this->pushProperty($key, $property);
-            
-            $this->parseComplexType($property);
-            
-            $this->popProperty();
-        } elseif ($property instanceof Property\DateTimeType) {
-            $subTypes = $typeObject->getSubTypes();
-            $subType  = reset($subTypes);
+            if (!empty($ref)) {
+                $prop = $this->parseClass($ref);
+            } else {
+                $prop = new PropertyType();
+            }
 
-            if (!empty($subType)) {
-                $property->setPattern($this->getDateTimePattern($subType));
+            $this->parsePropertyAnnotations($prop, $annotations);
+
+            $property->addProperty($key, $prop);
+        }
+
+        array_pop($this->objects);
+
+        return $property;
+    }
+
+    protected function parseArray(array $data)
+    {
+        $property = new PropertyType();
+
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'title': $property->setTitle($value); break;
+                case 'description': $property->setDescription($value); break;
+                case 'enum': $property->setEnum($value); break;
+                case 'type': $property->setType($value); break;
+                case 'allOf': $property->setAllOf($value); break;
+                case 'anyOf': $property->setAnyOf($value); break;
+                case 'oneOf': $property->setOneOf($value); break;
+                case 'not': $property->setNot($value); break;
+
+                // number
+                case 'maximum': $property->setMaximum($value); break;
+                case 'minimum': $property->setMinimum($value); break;
+                case 'exclusiveMaximum': $property->setExclusiveMaximum($value); break;
+                case 'exclusiveMinimum': $property->setExclusiveMinimum($value); break;
+                case 'multipleOf': $property->setMultipleOf($value); break;
+
+                // string
+                case 'maxLength': $property->setMaxLength($value); break;
+                case 'minLength': $property->setMinLength($value); break;
+                case 'pattern': $property->setPattern($value); break;
+                case 'format': $property->setFormat($value); break;
+
+                // array
+                case 'items': $property->setItems($value); break;
+                case 'additionalItems': $property->setAdditionalItems($value); break;
+                case 'uniqueItems': $property->setUniqueItems($value); break;
+                case 'maxItems': $property->setMaxItems($value); break;
+                case 'minItems': $property->setMinItems($value); break;
             }
         }
 
         return $property;
     }
 
-    protected function parseArrayType(Property\ArrayType $property, TypeParser $typeObject)
+    protected function parseClassAnnotations(PropertyType $property, array $annotations)
     {
-        $subTypes = $typeObject->getSubTypes();
-        $subType  = reset($subTypes);
-
-        if (!empty($subType)) {
-            $property->setPrototype($this->getPropertyForType($subType));
-        } else {
-            throw new RuntimeException('Array type must have a sub type');
-        }
-    }
-    
-    protected function parseChoiceType(Property\ChoiceType $property, TypeParser $typeObject)
-    {
-        $subTypes = $typeObject->getSubTypes();
-
-        if (!empty($subTypes)) {
-            foreach ($subTypes as $name => $subType) {
-                $property->add($this->getPropertyForType($subType));
-            }
-        } else {
-            throw new RuntimeException('Choice type must have a sub type');
-        }
-    }
-    
-    protected function parseComplexType(Property\ComplexType $property)
-    {
-        $class       = new ReflectionClass($property->getReference());
-        $annotations = $this->reader->getClassAnnotations($class);
-
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Annotation\Title) {
-                $property->setName($annotation->getTitle());
+                $property->setTitle($annotation->getTitle());
             } elseif ($annotation instanceof Annotation\Description) {
                 $property->setDescription($annotation->getDescription());
             } elseif ($annotation instanceof Annotation\AdditionalProperties) {
-                $additionalProperties = $annotation->getAdditionalProperties();
-                if (is_bool($additionalProperties)) {
-                    $property->setAdditionalProperties($additionalProperties);
-                } elseif (is_string($additionalProperties)) {
-                    $property->setAdditionalProperties($this->getPropertyForType($additionalProperties));
+                $property->setAdditionalProperties($this->parseRef($annotation->getAdditionalProperties(), true));
+            } elseif ($annotation instanceof Annotation\PatternProperties) {
+                $prop = $this->parseRef($annotation->getProperty());
+                if ($prop !== null) {
+                    $property->addPatternProperty($annotation->getPattern(), $prop);
                 }
-            } elseif ($annotation instanceof Annotation\PatternProperty) {
-                $property->addPatternProperty(
-                    $annotation->getPattern(), 
-                    $this->getPropertyForType($annotation->getType())
-                );
             } elseif ($annotation instanceof Annotation\MinProperties) {
                 $property->setMinProperties($annotation->getMinProperties());
             } elseif ($annotation instanceof Annotation\MaxProperties) {
                 $property->setMaxProperties($annotation->getMaxProperties());
-            }
-        }
-
-        $className  = $class->getName();
-        $properties = ObjectReader::getProperties($this->reader, $class);
-        foreach ($properties as $key => $reflection) {
-            $annotations = $this->reader->getPropertyAnnotations($reflection);
-
-            $type = $this->getTypeForProperty($reflection->getDocComment(), $annotations);
-            if (empty($type)) {
-                $type = 'string';
-            }
-
-            $typeObject = TypeParser::parse($type);
-
-            $prop = $this->getPropertyType($typeObject->getBaseType(), $key);
-            $prop = $this->parseProperty($prop, $typeObject, $annotations, $className, $reflection->getName());
-
-            $property->add($key, $prop);
-        }
-    }
-
-    protected function parseArrayProperties(Property\ArrayType $property, array $annotations)
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\MinItems) {
-                $property->setMinItems($annotation->getMinItems());
-            } elseif ($annotation instanceof Annotation\MaxItems) {
-                $property->setMaxItems($annotation->getMaxItems());
-            }
-
-            // the MinLength and MaxLength annotations are deprecated for an
-            // array property
-            if ($annotation instanceof Annotation\MinLength) {
-                trigger_error("The MinLength annotation is deprecated for array properties use instead the MinItems annotation", E_USER_DEPRECATED);
-
-                $property->setMinItems($annotation->getMinLength());
-            } elseif ($annotation instanceof Annotation\MaxLength) {
-                trigger_error("The MaxLength annotation is deprecated for array properties use instead the MaxItems annotation", E_USER_DEPRECATED);
-
-                $property->setMaxItems($annotation->getMaxLength());
+            } elseif ($annotation instanceof Annotation\Required) {
+                $property->setRequired($annotation->getRequired());
+            } elseif ($annotation instanceof Annotation\Dependencies) {
+                $property->addDependency($annotation->getProperty(), $annotation->getValue());
             }
         }
     }
 
-    protected function parseDecimalProperties(Property\DecimalType $property, array $annotations)
+    protected function parsePropertyAnnotations(PropertyType $property, array $annotations)
     {
         foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Title) {
+                $property->setTitle($annotation->getTitle());
+            } elseif ($annotation instanceof Annotation\Description) {
+                $property->setDescription($annotation->getDescription());
+            } elseif ($annotation instanceof Annotation\Enum) {
+                $property->setEnum($annotation->getEnum());
+            } elseif ($annotation instanceof Annotation\Type) {
+                $property->setType($annotation->getType());
+            } elseif ($annotation instanceof Annotation\AllOf) {
+                $property->setAllOf($this->parseRefs($annotation->getProperties()));
+            } elseif ($annotation instanceof Annotation\AnyOf) {
+                $property->setAnyOf($this->parseRefs($annotation->getProperties()));
+            } elseif ($annotation instanceof Annotation\OneOf) {
+                $property->setOneOf($this->parseRefs($annotation->getProperties()));
+            } elseif ($annotation instanceof Annotation\Not) {
+                $property->setNot($this->parseRef($annotation->getProperty()));
+            }
+
+            // number
             if ($annotation instanceof Annotation\Minimum) {
-                $property->setMin($annotation->getMin());
+                $property->setMinimum($annotation->getMinimum());
             } elseif ($annotation instanceof Annotation\Maximum) {
-                $property->setMax($annotation->getMax());
+                $property->setMaximum($annotation->getMaximum());
+            } elseif ($annotation instanceof Annotation\ExclusiveMinimum) {
+                $property->setExclusiveMinimum($annotation->getExclusiveMinimum());
+            } elseif ($annotation instanceof Annotation\ExclusiveMaximum) {
+                $property->setExclusiveMaximum($annotation->getExclusiveMaximum());
+            } elseif ($annotation instanceof Annotation\MultipleOf) {
+                $property->setMultipleOf($annotation->getMultipleOf());
             }
-        }
-    }
 
-    protected function parseStringProperties(Property\StringType $property, array $annotations)
-    {
-        foreach ($annotations as $annotation) {
+            // string
             if ($annotation instanceof Annotation\MinLength) {
                 $property->setMinLength($annotation->getMinLength());
             } elseif ($annotation instanceof Annotation\MaxLength) {
                 $property->setMaxLength($annotation->getMaxLength());
-            }
-        }
-    }
-
-    protected function parseSimpleProperties(PropertySimpleAbstract $property, array $annotations)
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Pattern) {
+            } elseif ($annotation instanceof Annotation\Pattern) {
                 $property->setPattern($annotation->getPattern());
-            } elseif ($annotation instanceof Annotation\Enum) {
-                $property->setEnumeration($annotation->getEnum());
+            } elseif ($annotation instanceof Annotation\Format) {
+                $property->setFormat($annotation->getFormat());
+            }
+            
+            // array
+            if ($annotation instanceof Annotation\Items) {
+                $property->setItems($this->parseRef($annotation->getItems()));
+            } elseif ($annotation instanceof Annotation\AdditionalItems) {
+                $property->setAdditionalItems($annotation->getAdditionalItems());
+            } elseif ($annotation instanceof Annotation\MinItems) {
+                $property->setMinItems($annotation->getMinItems());
+            } elseif ($annotation instanceof Annotation\MaxItems) {
+                $property->setMaxItems($annotation->getMaxItems());
+            } elseif ($annotation instanceof Annotation\UniqueItems) {
+                $property->setUniqueItems($annotation->getUniqueItems());
             }
         }
     }
 
-    protected function parseProperties(PropertyAbstract $property, array $annotations)
+    protected function parseRefs($values)
     {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Key) {
-                $property->setName($annotation->getKey());
-            } elseif ($annotation instanceof Annotation\Required) {
-                $property->setRequired(true);
-            } elseif ($annotation instanceof Annotation\Description) {
-                $property->setDescription($annotation->getDescription());
-            }
+        if (!is_array($values)) {
+            $values = [$values];
         }
+
+        $result = [];
+        foreach ($values as $value) {
+            $result[] = $this->parseRef($value);
+        }
+
+        return $result;
     }
 
-    protected function getTypeForProperty($docComment, array $annotations)
+    protected function parseRef($value, $allowBoolean = false)
     {
-        $type = null;
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Type) {
-                $type = $annotation->getType();
-            }
-        }
-
-        if ($type === null) {
-            // as fallback we try to read the @var annotation
-            preg_match('/\* @var (.*)\\s/imsU', $docComment, $matches);
-            if (isset($matches[1])) {
-                $type = $matches[1];
-            } else {
-                $type = null;
-            }
-        }
-
-        return $type;
-    }
-
-    protected function getPropertyType($type, $key)
-    {
-        switch ($type) {
-            case 'array':
-                return new Property\ArrayType($key);
-                break;
-
-            case 'binary':
-                return new Property\BinaryType($key);
-                break;
-
-            case 'bool':
-            case 'boolean':
-            return new Property\BooleanType($key);
-                break;
-
-            case 'choice':
-                return new Property\ChoiceType($key);
-                break;
-
-            case 'complex':
-                return new Property\ComplexType($key);
-                break;
-
-            case 'datetime':
-                return new Property\DateTimeType($key);
-                break;
-
-            case 'date':
-                return new Property\DateType($key);
-                break;
-
-            case 'duration':
-                return new Property\DurationType($key);
-                break;
-
-            case 'float':
-                return new Property\FloatType($key);
-                break;
-
-            case 'int':
-            case 'integer':
-                return new Property\IntegerType($key);
-                break;
-
-            case 'time':
-                return new Property\TimeType($key);
-                break;
-
-            case 'uri':
-                return new Property\UriType($key);
-                break;
-
-            case 'string':
-            default:
-                return new Property\StringType($key);
-                break;
-        }
-    }
-
-    /**
-     * This method returns the datetime pattern of a specific name. This format
-     * gets written into the pattern property. Since these format are no valid
-     * regexp it would be great to convert the formats to the fitting regexp and
-     * in the validation visitor back to the date time format so that we would
-     * produce valid JSON schema patterns
-     *
-     * @param string $typeHint
-     * @return string
-     */
-    protected function getDateTimePattern($typeHint)
-    {
-        switch ($typeHint) {
-            case 'COOKIE':
-                return \DateTime::COOKIE;
-                break;
-
-            case 'ISO8601':
-                return \DateTime::ISO8601;
-                break;
-
-            case 'RFC822':
-            case 'RFC1036':
-            case 'RFC1123':
-            case 'RFC2822':
-                return \DateTime::RFC2822;
-                break;
-
-            case 'RFC850':
-                return \DateTime::RFC850;
-                break;
-
-            case 'RSS':
-                return \DateTime::RSS;
-                break;
-
-            case 'ATOM':
-            case 'RFC3339':
-            case 'W3C':
-            default:
-                return \DateTime::W3C;
-                break;
-        }
-    }
-
-    protected function getPropertyForType($type)
-    {
-        $typeObject = TypeParser::parse($type);
-        $property   = $this->getPropertyType($typeObject->getBaseType(), null);
-
-        return $this->parseProperty($property, $typeObject, [], $typeObject->getTypeHint(), null);
-    }
-    
-    protected function findProperty($key)
-    {
-        if (isset($this->stack[$key])) {
-            return new Property\RecursionType($this->stack[$key]);
-        }
-
-        if (isset($this->objects[$key])) {
-            return $this->objects[$key];
+        if ($value instanceof Annotation\Ref) {
+            return $this->parseClass($value->getRef());
+        } elseif ($value instanceof Annotation\Schema) {
+            return $this->parseArray($this->resolveValues($value->getValues()));
+        } elseif ($allowBoolean && is_bool($value)) {
+            return $value;
         }
 
         return null;
     }
 
-    protected function addProperty($key, PropertyInterface $property)
+    protected function resolveValues(array $values)
     {
-        $this->objects[$key] = $property;
-    }
+        $result = [];
+        foreach ($values as $key => $row) {
+            if ($row instanceof Annotation\Ref || $row instanceof Annotation\Schema) {
+                $result[$key] = $this->parseRef($row);
+            } elseif (is_array($row)) {
+                $result[$key] = $this->resolveValues($row);
+            } else {
+                $result[$key] = $row;
+            }
+        }
 
-    protected function pushProperty($key, PropertyInterface $property)
-    {
-        $this->stack[$key] = $property;
-    }
-
-    protected function popProperty()
-    {
-        array_pop($this->stack);
+        return $result;
     }
 }

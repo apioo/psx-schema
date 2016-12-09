@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
 use PSX\Schema\Parser\Popo;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\Tests\Parser\Popo\Complexb35219bc;
+use PSX\Schema\Tests\Parser\Popo\News;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -42,7 +42,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
-            'source' => Complexb35219bc::class,
+            'source' => News::class,
             'format' => 'jsonschema',
         ));
 
@@ -52,18 +52,17 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "definitions": {
-        "ref5525537f7f38b6988025ca659a7b315d": {
-            "title": "config",
+        "Object79a542c6": {
             "type": "object",
             "additionalProperties": {
                 "type": "string"
             },
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex5525537f"
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Object79a542c6"
         },
-        "ref73afba2a3732aa422e2dede6fd26d0cb": {
+        "Location": {
+            "type": "object",
             "title": "location",
             "description": "Location of the person",
-            "type": "object",
             "properties": {
                 "lat": {
                     "type": "number"
@@ -73,51 +72,53 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
                 }
             },
             "additionalProperties": true,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex73afba2a"
+            "required": [
+                "lat",
+                "long"
+            ],
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Location"
         },
-        "ref3b735bb119d1f8f279637029c0d482e1": {
+        "Author": {
+            "type": "object",
             "title": "author",
             "description": "An simple author element with some description",
-            "type": "object",
             "properties": {
                 "title": {
                     "type": "string",
                     "pattern": "[A-z]{3,16}"
                 },
                 "email": {
-                    "description": "We will send no spam to this addresss",
-                    "type": "string"
+                    "type": "string",
+                    "description": "We will send no spam to this addresss"
                 },
                 "categories": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
-                    "title": "categories",
                     "maxItems": 8
                 },
                 "locations": {
                     "type": "array",
+                    "description": "Array of locations",
                     "items": {
-                        "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
-                    },
-                    "title": "locations",
-                    "description": "Array of locations"
+                        "$ref": "#\/definitions\/Location"
+                    }
                 },
                 "origin": {
-                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
+                    "$ref": "#\/definitions\/Location"
                 }
             },
             "additionalProperties": false,
             "required": [
                 "title"
             ],
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex3b735bb1"
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Author"
         },
-        "ref55c1692462753300d5eecf90dc979d09": {
+        "Web": {
+            "type": "object",
             "title": "web",
             "description": "An application",
-            "type": "object",
             "properties": {
                 "name": {
                     "type": "string"
@@ -131,33 +132,16 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
             },
             "minProperties": 2,
             "maxProperties": 8,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complex55c16924"
+            "required": [
+                "name",
+                "url"
+            ],
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Web"
         },
-        "ref0ae50ca2769f912fdb609180fef2ab22": {
-            "oneOf": [
-                {
-                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
-                },
-                {
-                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
-                }
-            ]
-        },
-        "ref4041e76cd4c2d30153165760e80c506e": {
-            "title": "source",
-            "oneOf": [
-                {
-                    "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
-                },
-                {
-                    "$ref": "#\/definitions\/ref55c1692462753300d5eecf90dc979d09"
-                }
-            ]
-        },
-        "refa80788599984d8da6729b8be82b7a016": {
+        "Meta": {
+            "type": "object",
             "title": "meta",
             "description": "Some meta data",
-            "type": "object",
             "properties": {
                 "createDate": {
                     "type": "string",
@@ -169,43 +153,47 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
                     "type": "string"
                 },
                 "^location_\\d$": {
-                    "$ref": "#\/definitions\/ref73afba2a3732aa422e2dede6fd26d0cb"
+                    "$ref": "#\/definitions\/Location"
                 }
             },
             "additionalProperties": false,
-            "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexa8078859"
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Meta"
         }
     },
+    "type": "object",
     "title": "news",
     "description": "An general news entry",
-    "type": "object",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/ref5525537f7f38b6988025ca659a7b315d"
+            "$ref": "#\/definitions\/Object79a542c6"
         },
         "tags": {
             "type": "array",
             "items": {
                 "type": "string"
             },
-            "title": "tags",
             "minItems": 1,
             "maxItems": 6
         },
         "receiver": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
+                "$ref": "#\/definitions\/Author"
             },
-            "title": "receiver",
             "minItems": 1
         },
         "resources": {
             "type": "array",
             "items": {
-                "$ref": "#\/definitions\/ref0ae50ca2769f912fdb609180fef2ab22"
-            },
-            "title": "resources"
+                "oneOf": [
+                    {
+                        "$ref": "#\/definitions\/Location"
+                    },
+                    {
+                        "$ref": "#\/definitions\/Web"
+                    }
+                ]
+            }
         },
         "profileImage": {
             "type": "string",
@@ -215,13 +203,20 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
             "type": "boolean"
         },
         "source": {
-            "$ref": "#\/definitions\/ref4041e76cd4c2d30153165760e80c506e"
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/Author"
+                },
+                {
+                    "$ref": "#\/definitions\/Web"
+                }
+            ]
         },
         "author": {
-            "$ref": "#\/definitions\/ref3b735bb119d1f8f279637029c0d482e1"
+            "$ref": "#\/definitions\/Author"
         },
         "meta": {
-            "$ref": "#\/definitions\/refa80788599984d8da6729b8be82b7a016"
+            "$ref": "#\/definitions\/Meta"
         },
         "sendDate": {
             "type": "string",
@@ -246,8 +241,8 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
             "maximum": 5
         },
         "content": {
-            "description": "Contains the main content of the news entry",
             "type": "string",
+            "description": "Contains the main content of the news entry",
             "minLength": 3,
             "maxLength": 512
         },
@@ -273,14 +268,14 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
         "price",
         "content"
     ],
-    "reference": "PSX\\Schema\\Tests\\Parser\\Popo\\Complexb35219bc"
+    "class": "PSX\\Schema\\Tests\\Parser\\Popo\\News"
 }
 JSON;
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testCommandJsonSchema()
+    public function testCommandSwagger()
     {
         $command = $this->getSchemaCommand();
 
@@ -292,15 +287,40 @@ JSON;
 
         $actual = $commandTester->getDisplay();
 
-        file_put_contents(__DIR__ . '/generated_schema.php', $actual);
+        file_put_contents(__DIR__ . '/generated_swagger.php', $actual);
 
-        include_once __DIR__ . '/generated_schema.php';
+        include_once __DIR__ . '/generated_swagger.php';
 
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
 
         $parser = new Popo($reader);
-        $schema = $parser->parse(\PSX\Generation\Complexbed841e2::class);
+        $schema = $parser->parse(\PSX\Generation\A_JSON_Schema_for_Swagger_____API_::class);
+
+        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+    }
+
+    public function testCommandJsonSchema()
+    {
+        $command = $this->getSchemaCommand();
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'source' => __DIR__ . '/../Parser/JsonSchema/schema.json',
+            'format' => 'php',
+        ));
+
+        $actual = $commandTester->getDisplay();
+
+        file_put_contents(__DIR__ . '/generated_jsonschema.php', $actual);
+
+        include_once __DIR__ . '/generated_jsonschema.php';
+
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $parser = new Popo($reader);
+        $schema = $parser->parse(\PSX\Generation\Object395f73e8::class);
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }

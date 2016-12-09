@@ -31,4 +31,10 @@ use PSX\Schema\PropertySimpleAbstract;
  */
 class BinaryType extends StringType
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->format = 'binary';
+    }
 }

@@ -29,4 +29,10 @@ namespace PSX\Schema\Property;
  */
 class DateType extends StringType
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->format = 'date';
+    }
 }

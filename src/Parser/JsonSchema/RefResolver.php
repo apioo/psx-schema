@@ -22,7 +22,10 @@ namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Http\Client;
 use PSX\Schema\Property\ComplexType;
+use PSX\Schema\Property\ObjectType;
 use PSX\Schema\Property\RecursionType;
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
 use PSX\Uri\UriResolver;
 use RuntimeException;
@@ -66,7 +69,7 @@ class RefResolver
      * @param integer $depth
      * @return \PSX\Schema\PropertyInterface
      */
-    public function resolve(Document $document, Uri $ref, $name, $depth)
+    public function resolve(Document $document, Uri $ref, $name, $depth, PropertyInterface $property = null)
     {
         $uri = $this->resolver->resolve($document->getBaseUri(), $ref);
 
@@ -74,16 +77,18 @@ class RefResolver
             return new RecursionType($this->objects[$uri->toString()]);
         }
 
-        $prop = new ComplexType($name);
+        if ($property === null) {
+            $property = new PropertyType();
+        }
 
-        $this->objects[$uri->toString()] = $prop;
+        $this->objects[$uri->toString()] = $property;
 
         $doc  = $this->getDocument($uri, $document);
-        $prop = $doc->getProperty($uri->getFragment(), $name, $depth);
+        $doc->getProperty($uri->getFragment(), $name, $depth, $property);
 
         array_pop($this->objects);
 
-        return $prop;
+        return $property;
     }
 
     /**

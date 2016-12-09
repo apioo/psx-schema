@@ -3,10 +3,10 @@ PSX Schema
 
 ## About
 
-The schema library can parse and generate data schema definitions. It was 
-designed around the JsonSchema specification. The goal is to easily create PHP 
-classes which map to JSON objects and to validate and normalize data based on
-such classes. The following parser and generator classes are available:
+This library helps to generate PHP classes from JsonSchema definitions and vice 
+versa. The generated POPOs can be filled with json data. It was inspired by 
+the Apache CXF project where it is possible simply generate POJOs to XSD. The 
+following parser and generator classes are available:
 
 ### Parser
 
@@ -18,54 +18,11 @@ such classes. The following parser and generator classes are available:
 - HTML (Generates a HTML representation of the schema)
 - JsonSchema (Generates a [JsonSchema](http://json-schema.org/) specification)
 - PHP (Generates PHP classes representing the schema using annotations)
-- XSD (Generates a [XSD](https://www.w3.org/TR/xmlschema-0/) specification)
 
 ## Usage
 
-```php
-$reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-$reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
-// at first we need a schema manager. The schema manager is responsible to read
-// different schema specification formats
-$schemaManager = new \PSX\Schema\SchemaManager($reader);
-
-// to read a json schema file
-$schema = $schemaManager->getSchema('schema.json');
-
-// or to read the schema annotations of a class
-$schema = $schemaManager->getSchema(News::class);
-
-// if we have a schema definition we can validate data. I.e. this is the data 
-// that we want to analyze
-$data = ['foo' => 'bar'];
-
-try {
-    // the schema traverse can be used to traverse through the data. The 
-    // incoming visitor validates the data according to the schema
-    $traverser = new SchemaTraverser();
-    $result    = $traverser->traverse($data, $schema, new IncomingVisitor());
-    
-    // $result contains now the normalized and well formed data
-    
-} catch (\PSX\Schema\ValidationException $e) {
-    // the validation failed
-    echo $e->getMessage();
-}
-
-// based on the schema we can generate i.e. PHP classes
-$generator = new \PSX\Schema\Generator\Php();
-
-echo $generator->generate($schema);
-
-```
-
-## Example
-
-This examples shows how the transformation of a JSON Schema into PHP classes 
-works. We use the example schema from the offical json schema website. Note you 
-should the see then generate code always as a starting point in almost any case 
-you have to adjust it.
+This example shows how to transform data into an object based on a jsonschema.
+We use the example schema from the json schema website.
 
 ```json
 {
@@ -91,6 +48,8 @@ you have to adjust it.
 }
 ```
 
+Based on the schema we can generate the following PHP class
+
 ```php
 <?php
 
@@ -98,26 +57,25 @@ namespace PSX\Generation;
 
 /**
  * @Title("Example Schema")
- * @AdditionalProperties(false)
+ * @Required({"firstName", "lastName"})
  */
-class Complex269bcdc2
+class Example_Schema
 {
     /**
      * @Key("firstName")
      * @Type("string")
-     * @Required
      */
     public $firstName;
     /**
      * @Key("lastName")
      * @Type("string")
-     * @Required
      */
     public $lastName;
     /**
      * @Key("age")
-     * @Type("integer")
      * @Description("Age in years")
+     * @Type("integer")
+     * @Minimum(0)
      */
     public $age;
     public function setFirstName($firstName)
@@ -147,62 +105,71 @@ class Complex269bcdc2
 }
 ```
 
+Now we can use this class to read json data which fits to the schema
+
+```php
+
+// the data which we want to import
+$data = json_decode({"firstName": "foo", "lastName": "bar"});
+
+$reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
+$reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+$schemaManager = new \PSX\Schema\SchemaManager($reader);
+
+// we read the schema annotations from the class
+$schema = $schemaManager->getSchema(Example_Schema::class);
+
+try {
+    $traverser = new SchemaTraverser();
+    $example   = $traverser->traverse($data, $schema, new TypeVisitor());
+    
+    // $result contains now an instance of the Example_Schema class containing 
+    // the firstName and lastName property
+    echo $example->getFirstName();
+
+} catch (\PSX\Schema\ValidationException $e) {
+    // the validation failed
+    echo $e->getMessage();
+}
+
+```
+
+
 ## Annotations
 
 The following annotations are available:
 
-| Annotation            | Target         | Example                                         |
-|-----------------------|----------------|-------------------------------------------------|
-| @AdditionalProperties | Class          | @AdditionalProperties(true)                     |
-| @Description          | Class/Property | @Description("content")                         |
-| @Enum                 | Property       | @Enum({"foo", "bar"})                           |
-| @Exclude              | Property       | @Exclude                                        |
-| @Key                  | Property       | @Key("$ref")                                    |
-| @Maximum              | Property       | @Maximum(16)                                    |
-| @MaxItems             | Property       | @MaxItems(16)                                   |
-| @MaxLength            | Property       | @MaxLength(16)                                  |
-| @MaxProperties        | Class          | @MaxProperties(16)                              |
-| @Minimum              | Property       | @Minimum(4)                                     |
-| @MinItems             | Property       | @MinItems(4)                                    |
-| @MinLength            | Property       | @MinLength(4)                                   |
-| @MinProperties        | Property       | @MinProperties(4)                               |
-| @Pattern              | Property       | @Pattern("A-z+")                                |
-| @PatternProperty      | Class          | @PatternProperty(pattern="^foo", type="string") |
-| @Required             | Property       | @Required                                       |
-| @Title                | Class          | @Title("foo")                                   |
-| @Type                 | Property       | @Type("string")                                 |
-
-### Type
-
-Through the `@Type` annotation we can define the type of the property. In the 
-following some examples how to define different types:
-
-- `string`  
-  Property must be a string
-- `integer`  
-  Property must be an integer
-- `Acme\News`  
-  Property must be an object of type `Acme\News`
-- `array<Acme\News>`  
-  Property must be an array of `Acme\News` objects
-- `array(Acme\Collection)<Acme\News>`  
-  Property must be an array of `Acme\News` objects. As array implementation we
-  use `Acme\Collection`
-
-The ABNF of the type is:
-
-```text
-Rule       =  Type [ Impl ] [ Properties ]
-
-Type       = "array" / "binary" / "boolean" / "choice" / "complex" / 
-             "datetime" / "date" / "duration" / "float" / "integer" / "string" / 
-             "time" / "uri"
-
-Impl       = "(" Class ")" 
-Class      = CHAR ; Must be an absolute PHP class name
-
-Properties = "<" *( Property "," ) ">"
-Property   = Value / Key "=" Value
-Key        = ALPHA / DIGIT
-Value      = CHAR
-```
+| Annotation            | Target         | Example                                           |
+|-----------------------|----------------|---------------------------------------------------|
+| @AdditionalItems      | Property       | @AdditionalItems(true)                            |
+| @AdditionalProperties | Class          | @AdditionalProperties(true)                       |
+| @AllOf                | Property       | @AllOf(@Schema(type="integer", minimum=0), @Schema(type="integer", maximum=64)) |
+| @AnyOf                | Property       | @AnyOf(@Schema(type="integer", minimum=0), @Schema(type="string", maxLength=64)) |
+| @Dependencies         | Class          | @Dependencies(property="name", value={"age", "gender"}) |
+| @Description          | Class/Property | @Description("content")                           |
+| @Enum                 | Property       | @Enum({"foo", "bar"})                             |
+| @Exclude              | Property       | @Exclude                                          |
+| @ExclusiveMaximum     | Property       | @ExclusiveMaximum(true)                           |
+| @ExclusiveMinimum     | Property       | @ExclusiveMinimum(true)                           |
+| @Format               | Property       | @Format("uri")                                    |
+| @Items                | Property       | @Items(@Ref("FooClass"))                          |
+| @Key                  | Property       | @Key("$ref")                                      |
+| @Maximum              | Property       | @Maximum(16)                                      |
+| @MaxItems             | Property       | @MaxItems(16)                                     |
+| @MaxLength            | Property       | @MaxLength(16)                                    |
+| @MaxProperties        | Class          | @MaxProperties(16)                                |
+| @Minimum              | Property       | @Minimum(4)                                       |
+| @MinItems             | Property       | @MinItems(4)                                      |
+| @MinLength            | Property       | @MinLength(4)                                     |
+| @MinProperties        | Property       | @MinProperties(4)                                 |
+| @MultipleOf           | Property       | @MultipleOf(2)                                    |
+| @Not                  | Property       | @Not(@Schema(type="string"))                      |
+| @OneOf                | Property       | @OneOf(@Ref("FooClass"), @Ref("BarClass"))        |
+| @Pattern              | Property       | @Pattern("A-z+")                                  |
+| @PatternProperties    | Class          | @PatternProperties(pattern="^foo", type="string") |
+| @Ref                  | Property       | @Ref("FooClass")                                  |
+| @Required             | Class          | @Required({"name", "title"})                      |
+| @Title                | Class          | @Title("foo")                                     |
+| @Type                 | Property       | @Type("string")                                   |
+| @UniqueItems          | Property       | @UniqueItems(true)                                |

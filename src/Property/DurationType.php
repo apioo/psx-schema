@@ -29,4 +29,10 @@ namespace PSX\Schema\Property;
  */
 class DurationType extends StringType
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->format = 'duration';
+    }
 }

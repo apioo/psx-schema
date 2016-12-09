@@ -30,12 +30,12 @@ namespace PSX\Schema\Tests\SchemaTraverser;
 class RecursionModel
 {
     /**
-     * @var string
+     * @Type("string")
      */
     protected $title;
 
     /**
-     * @var \PSX\Schema\Tests\SchemaTraverser\RecursionModel
+     * @Ref("PSX\Schema\Tests\SchemaTraverser\RecursionModel")
      */
     protected $model;
 }

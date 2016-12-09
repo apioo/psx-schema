@@ -22,6 +22,7 @@ namespace PSX\Schema\Property;
 
 use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 
 /**
  * ArrayType
@@ -30,132 +31,35 @@ use PSX\Schema\PropertyInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ArrayType extends PropertyAbstract
+class ArrayType extends PropertyType
 {
-    /**
-     * @var \PSX\Schema\PropertyInterface
-     */
-    protected $prototype;
+    public function __construct()
+    {
+        $this->type = 'array';
+    }
 
     /**
-     * @var integer
+     * @param PropertyInterface $prototype
+     * @return $this
+     * @deprecated
      */
-    protected $minItems;
-
-    /**
-     * @var integer
-     */
-    protected $maxItems;
-
     public function setPrototype(PropertyInterface $prototype)
     {
-        $this->prototype = $prototype;
+        $this->items = $prototype;
 
         return $this;
     }
 
+    /**
+     * @return PropertyInterface|null
+     * @deprecated
+     */
     public function getPrototype()
     {
-        return $this->prototype;
-    }
-
-    /**
-     * @param integer $minLength
-     * @return $this
-     * @deprecated
-     */
-    public function setMinLength($minLength)
-    {
-        $this->minItems = $minLength;
-
-        return $this;
-    }
-
-    /**
-     * @return integer
-     * @deprecated
-     */
-    public function getMinLength()
-    {
-        return $this->minItems;
-    }
-
-    /**
-     * @param integer $minItems
-     * @return $this
-     */
-    public function setMinItems($minItems)
-    {
-        $this->minItems = $minItems;
-
-        return $this;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getMinItems()
-    {
-        return $this->minItems;
-    }
-
-    /**
-     * @param integer $maxLength
-     * @return $this
-     * @deprecated
-     */
-    public function setMaxLength($maxLength)
-    {
-        $this->maxItems = $maxLength;
-
-        return $this;
-    }
-
-    /**
-     * @return integer
-     * @deprecated
-     */
-    public function getMaxLength()
-    {
-        return $this->maxItems;
-    }
-
-    /**
-     * @param integer $maxItems
-     * @return $this
-     */
-    public function setMaxItems($maxItems)
-    {
-        $this->maxItems = $maxItems;
-
-        return $this;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getMaxItems()
-    {
-        return $this->maxItems;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return md5(
-            ($this->prototype !== null ? $this->prototype->getId() : null) .
-            $this->minItems .
-            $this->maxItems
-        );
-    }
-
-    public function __clone()
-    {
-        $prototype = $this->prototype;
-        if ($prototype instanceof PropertyInterface) {
-            $this->prototype = clone $prototype;
+        if ($this->items instanceof PropertyInterface) {
+            return $this->items;
+        } else {
+            return null;
         }
     }
 }

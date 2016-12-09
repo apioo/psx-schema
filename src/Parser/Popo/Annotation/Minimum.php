@@ -41,7 +41,7 @@ class Minimum
         $this->minimum = current($values);
     }
 
-    public function getMin()
+    public function getMinimum()
     {
         return $this->minimum;
     }

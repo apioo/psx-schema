@@ -3,7 +3,6 @@
   "id": "urn:schema.phpsx.org#",
   "definitions": {
     "ref72828040aecd82459c3636a4226e81fc": {
-      "title": "config",
       "type": "object",
       "additionalProperties": {
         "type": "string"
@@ -21,7 +20,8 @@
           "type": "number"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": true,
+      "required": ["lat", "long"]
     },
     "ref4770be5abc2aedca274241c166226fc7": {
       "title": "author",
@@ -41,7 +41,6 @@
           "items": {
             "type": "string"
           },
-          "title": "categories",
           "maxItems": 8
         },
         "locations": {
@@ -49,7 +48,6 @@
           "items": {
             "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
           },
-          "title": "locations",
           "description": "Array of locations"
         },
         "origin": {
@@ -77,10 +75,10 @@
         "type": "string"
       },
       "minProperties": 2,
-      "maxProperties": 8
+      "maxProperties": 8,
+      "required": ["name", "url"]
     },
     "ref4898a93cd82b117833f9683324e0f6dd": {
-      "title": "resource",
       "oneOf": [
         {
           "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
@@ -91,7 +89,6 @@
       ]
     },
     "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
-      "title": "source",
       "oneOf": [
         {
           "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
@@ -134,7 +131,6 @@
       "items": {
         "type": "string"
       },
-      "title": "tags",
       "minItems": 1,
       "maxItems": 6
     },
@@ -143,15 +139,13 @@
       "items": {
         "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
       },
-      "title": "receiver",
       "minItems": 1
     },
     "resources": {
       "type": "array",
       "items": {
         "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
-      },
-      "title": "resources"
+      }
     },
     "profileImage": {
       "type": "string",

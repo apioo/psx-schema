@@ -41,7 +41,7 @@ class Maximum
         $this->maximum = current($values);
     }
 
-    public function getMax()
+    public function getMaximum()
     {
         return $this->maximum;
     }

@@ -26,6 +26,7 @@ use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter;
@@ -41,6 +42,8 @@ use RuntimeException;
  */
 class Php implements GeneratorInterface
 {
+    use GeneratorTrait;
+
     /**
      * @var \PhpParser\BuilderFactory
      */
@@ -65,7 +68,12 @@ class Php implements GeneratorInterface
      * @var array
      */
     protected $generated;
-    
+
+    /**
+     * @var array
+     */
+    protected $refs;
+
     public function __construct($namespace = null)
     {
         $this->factory   = new BuilderFactory();
@@ -76,17 +84,25 @@ class Php implements GeneratorInterface
     public function generate(SchemaInterface $schema)
     {
         $this->root      = $this->factory->namespace($this->namespace);
-        $this->generated = array();
+        $this->generated = [];
+        $this->refs      = [];
 
-        $this->generateRootElement($schema->getDefinition());
+        $this->generateObject($schema->getDefinition());
 
         return $this->printer->prettyPrintFile([$this->root->getNode()]);
     }
 
-    protected function generateRootElement(Property\ComplexType $type)
+    protected function generateObject(PropertyInterface $type)
     {
-        $className = $this->getClassNameForProperty($type);
-        
+        if ($this->getRealType($type) !== PropertyType::TYPE_OBJECT) {
+            throw new RuntimeException('Property must be an object type');
+        }
+
+        $className = $type->getClass();
+        if (empty($className)) {
+            $className = $this->getIdentifierForProperty($type);
+        }
+
         if (in_array($className, $this->generated)) {
             return;
         }
@@ -98,6 +114,7 @@ class Php implements GeneratorInterface
 
         // if the type has additional or pattern properties extend from
         // ArrayObject
+        $properties           = $type->getProperties();
         $patternProperties    = $type->getPatternProperties();
         $additionalProperties = $type->getAdditionalProperties();
 
@@ -105,71 +122,41 @@ class Php implements GeneratorInterface
             $class->extend('\ArrayObject');
         }
 
-        // add properties
-        $properties = $type->getProperties();
+        if (!empty($properties)) {
+            // add properties
+            foreach ($properties as $name => $property) {
+                $class->addStmt($this->factory->property($this->normalizeParameterName($name))
+                    ->makePublic()
+                    ->setDocComment($this->getDocCommentForProperty($property, $name)));
+            }
 
-        foreach ($properties as $name => $property) {
-            $class->addStmt($this->factory->property($this->normalizeParameterName($name))
-                ->makePublic()
-                ->setDocComment($this->getDocCommentForProperty($property, $name)));
-        }
+            // add getter setter
+            foreach ($properties as $name => $property) {
+                $name = $this->normalizeParameterName($name);
+                $class->addStmt($this->factory->method('set' . ucfirst($name))
+                    ->makePublic()
+                    ->addParam($this->factory->param($name))
+                    ->addStmt(new Node\Expr\Assign(
+                        new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
+                        new Node\Expr\Variable($name)
+                    ))
+                );
 
-        // add getter setter
-        foreach ($properties as $name => $property) {
-            $name = $this->normalizeParameterName($name);
-            $class->addStmt($this->factory->method('set' . ucfirst($name))
-                ->makePublic()
-                ->addParam($this->factory->param($name))
-                ->addStmt(new Node\Expr\Assign(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
-                    new Node\Expr\Variable($name)
-                ))
-            );
-
-            $class->addStmt($this->factory->method('get' . ucfirst($name))
-                ->makePublic()
-                ->addStmt(new Node\Stmt\Return_(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
-                )));
+                $class->addStmt($this->factory->method('get' . ucfirst($name))
+                    ->makePublic()
+                    ->addStmt(new Node\Stmt\Return_(
+                        new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
+                    )));
+            }
         }
 
         // generate other complex types
-        foreach ($properties as $property) {
-            $this->generateProperty($property);
-        }
-        
-        // generate pattern properties
-        if (!empty($patternProperties)) {
-            foreach ($patternProperties as $pattern => $property) {
-                $this->generateProperty($property);
-            }
-        }
-        
-        if ($additionalProperties instanceof PropertyInterface) {
-            $this->generateProperty($additionalProperties);
+        foreach ($this->refs as $index => $prop) {
+            $this->generateObject($prop);
+            unset($this->refs[$index]);
         }
 
         $this->root->addStmt($class);
-    }
-
-    protected function generateProperty(PropertyInterface $property)
-    {
-        if ($property instanceof Property\RecursionType) {
-            return $this->generateProperty($property->getOrigin());
-        } elseif ($property instanceof Property\ArrayType) {
-            if ($property->getPrototype() instanceof Property\ComplexType) {
-                $this->generateRootElement($property->getPrototype());
-            }
-        } elseif ($property instanceof Property\ChoiceType) {
-            $choices = $property->getChoices();
-            foreach ($choices as $prop) {
-                if ($prop instanceof Property\ComplexType) {
-                    $this->generateRootElement($prop);
-                }
-            }
-        } elseif ($property instanceof Property\ComplexType) {
-            $this->generateRootElement($property);
-        }
     }
 
     protected function normalizeParameterName($name)
@@ -183,11 +170,11 @@ class Php implements GeneratorInterface
         return $name;
     }
     
-    protected function getDocCommentForClass(Property\ComplexType $property)
+    protected function getDocCommentForClass(PropertyInterface $property)
     {
         $comment = '/**' . "\n";
 
-        $title = $property->getName();
+        $title = $property->getTitle();
         if (!empty($title)) {
             $comment.= ' * @Title("' . $this->escapeString($title) . '")' . "\n";
         }
@@ -197,20 +184,26 @@ class Php implements GeneratorInterface
             $comment.= ' * @Description("' . $this->escapeString($description) . '")' . "\n";
         }
 
+        $patternProperties = $property->getPatternProperties();
+        if (!empty($patternProperties)) {
+            foreach ($patternProperties as $pattern => $prop) {
+                $comment.= ' * @PatternProperties(pattern="' . $this->escapeString($pattern) . '", property=' . $this->getSubSchema($prop) . ')' . "\n";
+            }
+        }
+
         $additionalProperties = $property->getAdditionalProperties();
         if (is_bool($additionalProperties)) {
             $comment.= ' * @AdditionalProperties(' . ($additionalProperties ? 'true' : 'false') . ')' . "\n";
         } elseif ($additionalProperties instanceof PropertyInterface) {
-            $type = $this->getPropertyType($additionalProperties);
-            $comment.= ' * @AdditionalProperties("' . $this->escapeString($type) . '")' . "\n";
+            $comment.= ' * @AdditionalProperties(' . $this->getSubSchema($additionalProperties) . ')' . "\n";
         }
 
-        $patternProperties = $property->getPatternProperties();
-        if (!empty($patternProperties)) {
-            foreach ($patternProperties as $pattern => $prop) {
-                $type = $this->getPropertyType($prop);
-                $comment.= ' * @PatternProperty(pattern="' . $this->escapeString($pattern) . '", type="' . $this->escapeString($type) . '")' . "\n";
-            }
+        $required = $property->getRequired();
+        if (!empty($required)) {
+            $required = array_map(function($value){
+                return '"' . $this->escapeString($value) . '"';
+            }, $required);
+            $comment.= ' * @Required({' . implode(', ', $required) . '})' . "\n";
         }
 
         $minProperties = $property->getMinProperties();
@@ -230,72 +223,141 @@ class Php implements GeneratorInterface
 
     protected function getDocCommentForProperty(PropertyInterface $property, $name)
     {
-        $type = $this->getPropertyType($property);
-
         $comment = '/**' . "\n";
         $comment.= ' * @Key("' . $this->escapeString($name) . '")' . "\n";
-        $comment.= ' * @Type("' . $type . '")' . "\n";
 
-        if ($property->isRequired()) {
-            $comment.= ' * @Required' . "\n";
-        }
-
-        $description = $property->getDescription();
-        if (!empty($description)) {
-            $comment.= ' * @Description("' . $this->escapeString($property->getDescription()) . '")' . "\n";
-        }
-
-        if ($property instanceof Property\ComplexType) {
-            $minProperties = $property->getMinProperties();
-            if ($minProperties > 0) {
-                $comment.= ' * @MinProperties(' . $minProperties . ')' . "\n";
+        $type = $this->getRealType($property);
+        if ($type === PropertyType::TYPE_OBJECT) {
+            $comment.= ' * ' . $this->getSubSchema($property) . "\n";
+        } else {
+            $title = $property->getTitle();
+            if (!empty($title)) {
+                $comment.= ' * @Title("' . $title . '")' . "\n";
             }
 
-            $maxProperties = $property->getMaxProperties();
-            if ($maxProperties > 0) {
-                $comment.= ' * @MaxProperties(' . $maxProperties . ')' . "\n";
-            }
-        } elseif ($property instanceof Property\ArrayType) {
-            $minItems = $property->getMinItems();
-            if ($minItems > 0) {
-                $comment.= ' * @MinItems(' . $minItems . ')' . "\n";
+            $description = $property->getDescription();
+            if (!empty($description)) {
+                $comment.= ' * @Description("' . $this->escapeString($property->getDescription()) . '")' . "\n";
             }
 
-            $maxItems = $property->getMaxItems();
-            if ($maxItems > 0) {
-                $comment.= ' * @MaxItems(' . $maxItems . ')' . "\n";
-            }
-        } elseif ($property instanceof Property\DecimalType) {
-            $min = $property->getMin();
-            if ($min) {
-                $comment.= ' * @Minimum(' . $min . ')' . "\n";
+            $enum = $property->getEnum();
+            if (!empty($enum)) {
+                $values = array_map(function($value){
+                    return '"' . $this->escapeString($value) . '"';
+                }, $enum);
+
+                $comment.= ' * @Enum({' . implode(', ', $values) . '})' . "\n";
             }
 
-            $max = $property->getMax();
-            if ($max) {
-                $comment.= ' * @Maximum(' . $max . ')' . "\n";
+            $type = $property->getType();
+            if (!empty($type)) {
+                $comment.= ' * @Type("' . $type . '")' . "\n";
             }
-        } elseif ($property instanceof Property\StringType) {
+
+            $allOf = $property->getAllOf();
+            $anyOf = $property->getAnyOf();
+            $oneOf = $property->getOneOf();
+            if (!empty($allOf)) {
+                $result = [];
+                foreach ($allOf as $type) {
+                    $result[] = $this->getSubSchema($type);
+                }
+
+                $comment.= ' * @AllOf(' . implode(', ', $result) . ')' . "\n";
+            } elseif (!empty($anyOf)) {
+                $result = [];
+                foreach ($anyOf as $type) {
+                    $result[] = $this->getSubSchema($type);
+                }
+
+                $comment.= ' * @AnyOf(' . implode(', ', $result) . ')' . "\n";
+            } elseif (!empty($oneOf)) {
+                $result = [];
+                foreach ($oneOf as $type) {
+                    $result[] = $this->getSubSchema($type);
+                }
+
+                $comment.= ' * @OneOf(' . implode(', ', $result) . ')' . "\n";
+            }
+
+            $not = $property->getNot();
+            if ($not instanceof PropertyInterface) {
+                $comment.= ' * @OneOf(' . $this->getSubSchema($not) . ')' . "\n";
+            }
+
+            // number
+            $maximum = $property->getMaximum();
+            if ($maximum !== null) {
+                $comment.= ' * @Maximum(' . $maximum . ')' . "\n";
+            }
+
+            $minimum = $property->getMinimum();
+            if ($minimum !== null) {
+                $comment.= ' * @Minimum(' . $minimum . ')' . "\n";
+            }
+
+            $exclusiveMaximum = $property->getExclusiveMaximum();
+            if ($exclusiveMaximum !== null) {
+                $comment.= ' * @ExclusiveMaximum(' . ($exclusiveMaximum ? 'true' : 'false') . ')' . "\n";
+            }
+
+            $exclusiveMinimum = $property->getExclusiveMinimum();
+            if ($exclusiveMinimum !== null) {
+                $comment.= ' * @ExclusiveMinimum(' . ($exclusiveMinimum ? 'true' : 'false') . ')' . "\n";
+            }
+
+            $multipleOf = $property->getMultipleOf();
+            if ($multipleOf !== null) {
+                $comment.= ' * @MultipleOf(' . $multipleOf . ')' . "\n";
+            }
+
+            // string
+            $maxLength = $property->getMaxLength();
+            if ($maxLength !== null) {
+                $comment.= ' * @MaxLength(' . $maxLength . ')' . "\n";
+            }
+
             $minLength = $property->getMinLength();
-            if ($minLength) {
+            if ($minLength !== null) {
                 $comment.= ' * @MinLength(' . $minLength . ')' . "\n";
             }
 
-            $maxLength = $property->getMaxLength();
-            if ($maxLength) {
-                $comment.= ' * @MaxLength(' . $maxLength . ')' . "\n";
-            }
-        }
-
-        if ($property instanceof PropertySimpleAbstract) {
             $pattern = $property->getPattern();
-            if ($pattern) {
+            if ($pattern !== null) {
                 $comment.= ' * @Pattern("' . $pattern . '")' . "\n";
             }
 
-            $enumeration = $property->getEnumeration();
-            if ($enumeration) {
-                $comment.= ' * @Enum({"' . implode('", "', $enumeration) . '"})' . "\n";
+            $format = $property->getFormat();
+            if ($format !== null) {
+                $comment.= ' * @Format("' . $format . '")' . "\n";
+            }
+
+            // array
+            $items = $property->getItems();
+            if ($items instanceof PropertyInterface) {
+                $comment.= ' * @Items(' . $this->getSubSchema($items) . ')' . "\n";
+            }
+
+            $additionalItems = $property->getAdditionalItems();
+            if ($additionalItems instanceof PropertyInterface) {
+                $comment.= ' * @AdditionalItems(' . $this->getSubSchema($items) . ')' . "\n";
+            } elseif (is_bool($additionalItems)) {
+                $comment.= ' * @AdditionalItems(' . ($additionalItems ? 'true' : 'false') . ')' . "\n";
+            }
+
+            $uniqueItems = $property->getUniqueItems();
+            if ($uniqueItems !== null) {
+                $comment.= ' * @UniqueItems(' . ($uniqueItems ? 'true' : 'false') . ')' . "\n";
+            }
+
+            $maxItems = $property->getMaxItems();
+            if ($maxItems !== null) {
+                $comment.= ' * @MaxItems(' . $maxItems . ')' . "\n";
+            }
+
+            $minItems = $property->getMinItems();
+            if ($minItems !== null) {
+                $comment.= ' * @MinItems(' . $minItems . ')' . "\n";
             }
         }
 
@@ -304,58 +366,102 @@ class Php implements GeneratorInterface
         return $comment;
     }
 
-    protected function getPropertyType(PropertyInterface $property)
+    protected function escapeString($data)
     {
-        if ($property instanceof Property\RecursionType) {
-            return $this->getPropertyType($property->getOrigin());
-        } elseif ($property instanceof Property\ArrayType) {
-            $type = 'array';
+        $data = str_replace('"', '""', $data);
 
-            $reference = $property->getReference();
-            if (!empty($reference)) {
-                $type.= '(' . $reference . ')';
+        return $data;
+    }
+
+    protected function getSubSchema(PropertyInterface $property)
+    {
+        $type = $this->getRealType($property);
+        if ($type === PropertyType::TYPE_OBJECT) {
+            $className = $this->getIdentifierForProperty($property);
+            if (!in_array($className, $this->generated)) {
+                $this->refs[] = $property;
             }
 
-            if ($property->getPrototype() instanceof PropertyInterface) {
-                $type.= '<' . $this->getPropertyType($property->getPrototype()) . '>';
-            } else {
-                $type.= '<string>';
-            }
-
-            return $type;
-        } elseif ($property instanceof Property\ChoiceType) {
-            $type = 'choice';
-
-            $reference = $property->getReference();
-            if (!empty($reference)) {
-                $type .= '(' . $reference . ')';
-            }
-
-            $choices  = $property->getChoices();
-            $subTypes = [];
-            foreach ($choices as $prop) {
-                $subTypes[] = $this->getPropertyType($prop);
-            }
-
-            $type .= '<' . implode(',', $subTypes) . '>';
-
-            return $type;
-        } elseif ($property instanceof Property\ComplexType) {
-            return $this->namespace . '\\' . $this->getClassNameForProperty($property);
-        } elseif ($property instanceof PropertyAbstract) {
-            return $property->getTypeName();
+            return '@Ref("' . $this->namespace . '\\' . $className . '")';
         } else {
-            throw new RuntimeException('Invalid property implementation');
+            return '@Schema(' . $this->getInlineSchemaForProperty($property) . ')';
         }
     }
 
-    protected function getClassNameForProperty(Property\ComplexType $property)
+    protected function getInlineSchemaForProperty(PropertyInterface $property)
     {
-        return ucfirst($property->getTypeName() . substr($property->getId(), 0, 8));
-    }
-    
-    protected function escapeString($data)
-    {
-        return $data;
+        $data   = $property->toArray();
+        $result = [];
+
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                // string
+                case 'type':
+                case 'title':
+                case 'description':
+                case 'pattern':
+                case 'format':
+                    $result[] = $key . '="' . $this->escapeString($value) . '"';
+                    break;
+
+                // boolean
+                case 'exclusiveMaximum':
+                case 'exclusiveMinimum':
+                case 'uniqueItems':
+                    $result[] = $key . '=' . ($value ? 'true' : 'false');
+                    break;
+
+                // integer
+                case 'maximum':
+                case 'minimum':
+                case 'multipleOf':
+                case 'maxLength':
+                case 'minLength':
+                case 'maxItems':
+                case 'minItems':
+                    $result[] = $key . '=' . intval($value);
+                    break;
+                
+                // array
+                case 'enum':
+                    $values = array_map(function($value){
+                        return '"' . $this->escapeString($value) . '"';
+                    }, $value);
+
+                    $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
+                    break;
+                
+                
+                case 'allOf':
+                case 'anyOf':
+                case 'oneOf': 
+                    $values = [];
+                    foreach ($value as $row) {
+                        $values[] = $this->getSubSchema($row);
+                    }
+
+                    $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
+                    break;
+                
+                case 'not':
+                    $result[] = $key . '=' . $this->getSubSchema($value);
+                    break;
+
+                // array
+                case 'items':
+                    $result[] = $key . '=' . $this->getSubSchema($value);
+                    break;
+                
+                case 'additionalItems':
+                    if (is_bool($value)) {
+                        $result[] = $key . '=' . ($value ? 'true' : 'false');
+                    } elseif ($value instanceof PropertyInterface) {
+                        $result[] = $key . '=' . $this->getSubSchema($value);
+                    }
+                    break;
+            }
+        }
+
+        return implode(', ', $result);
     }
 }

@@ -24,7 +24,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * MaxProperties
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target("CLASS")
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org

@@ -21,8 +21,7 @@
 namespace PSX\Schema;
 
 /**
- * Factory class to access different property types. These methods should be
- * used instead of creating a new object
+ * Factory class to access different property types
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -31,115 +30,133 @@ namespace PSX\Schema;
 final class Property
 {
     /**
-     * @return \PSX\Schema\Property\AnyType
-     * @deprecated
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getAny($name = null)
+    public static function get()
     {
-        return new Property\AnyType($name);
+        return new PropertyType();
     }
 
     /**
-     * @return \PSX\Schema\Property\ArrayType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getArray($name = null)
+    public static function getArray()
     {
-        return new Property\ArrayType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_ARRAY);
     }
 
     /**
-     * @return \PSX\Schema\Property\BinaryType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getBinary($name = null)
+    public static function getBinary()
     {
-        return new Property\BinaryType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_BINARY);
     }
 
     /**
-     * @return \PSX\Schema\Property\BooleanType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getBoolean($name = null)
+    public static function getBoolean()
     {
-        return new Property\BooleanType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_BOOLEAN);
     }
 
     /**
-     * @return \PSX\Schema\Property\ChoiceType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getChoice($name = null)
+    public static function getDateTime()
     {
-        return new Property\ChoiceType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DATETIME);
     }
 
     /**
-     * @return \PSX\Schema\Property\ComplexType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getComplex($name = null)
+    public static function getDate()
     {
-        return new Property\ComplexType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DATE);
     }
 
     /**
-     * @return \PSX\Schema\Property\DateTimeType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getDateTime($name = null)
+    public static function getDuration()
     {
-        return new Property\DateTimeType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DURATION);
     }
 
     /**
-     * @return \PSX\Schema\Property\DateType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getDate($name = null)
+    public static function getInteger()
     {
-        return new Property\DateType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_INTEGER);
     }
 
     /**
-     * @return \PSX\Schema\Property\DurationType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getDuration($name = null)
+    public static function getNull()
     {
-        return new Property\DurationType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_NULL);
     }
 
     /**
-     * @return \PSX\Schema\Property\FloatType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getFloat($name = null)
+    public static function getNumber()
     {
-        return new Property\FloatType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_NUMBER);
     }
 
     /**
-     * @return \PSX\Schema\Property\IntegerType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getInteger($name = null)
+    public static function getObject()
     {
-        return new Property\IntegerType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_OBJECT);
     }
 
     /**
-     * @return \PSX\Schema\Property\StringType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getString($name = null)
+    public static function getString()
     {
-        return new Property\StringType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING);
     }
 
     /**
-     * @return \PSX\Schema\Property\TimeType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getTime($name = null)
+    public static function getTime()
     {
-        return new Property\TimeType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_TIME);
     }
 
     /**
-     * @return \PSX\Schema\Property\UriType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public static function getUri($name = null)
+    public static function getUri()
     {
-        return new Property\UriType($name);
+        return self::get()
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_URI);
     }
 }

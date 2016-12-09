@@ -24,6 +24,7 @@ use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
+use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 use RuntimeException;
 
@@ -36,275 +37,267 @@ use RuntimeException;
  */
 class Html implements GeneratorInterface
 {
-    protected $_types;
+    use GeneratorTrait;
+
+    /**
+     * Contains all objects which are already rendered
+     * 
+     * @var array
+     */
+    protected $types;
+
+    /**
+     * Contains properties which are referenced by an object and which we need
+     * to render
+     * 
+     * @var array
+     */
+    protected $references;
 
     public function generate(SchemaInterface $schema)
     {
-        $this->_types = array();
+        $this->types = [];
+        $this->references = [];
 
-        $html = $this->generateType($schema->getDefinition());
-
-        // this makes sure that we only reference objects which are actually
-        // rendered
-        foreach ($this->_types as $typeId => $typeName) {
-            $name = '<a href="#psx-type-' . $typeId . '">' . $typeName . '</a>';
-            $html = preg_replace('/<a href=\"#psx-type-' . $typeId . '\">(\w+)<\/a>/ims', $name, $html);
-        }
-
-        return $html;
+        return $this->generateType($schema->getDefinition());
     }
 
     protected function generateType(PropertyInterface $type)
     {
-        if (isset($this->_types[$type->getId()])) {
+        $constraintId = $type->getConstraintId();
+
+        if (isset($this->types[$constraintId])) {
             return '';
         }
 
-        $this->_types[$type->getId()] = $type->getName();
+        $this->types[$constraintId] = true;
 
-        $response    = '';
-        $description = $type->getDescription();
+        $response = $this->renderObject($type);
+        
+        return $response;
+    }
 
-        $properties      = [];
-        $patternProps    = [];
-        $additionalProps = false;
+    protected function renderObject(PropertyInterface $property)
+    {
+        $description     = $property->getDescription();
+        $properties      = $property->getProperties();
+        $patternProps    = $property->getPatternProperties();
+        $additionalProps = $property->getAdditionalProperties();
+        $required        = $property->getRequired() ?: [];
 
-        if ($type instanceof Property\ComplexType) {
-            $properties      = $type->getProperties();
-            $patternProps    = $type->getPatternProperties();
-            $additionalProps = $type->getAdditionalProperties();
-
-            if (empty($properties) && empty($description) && empty($patternProps) && empty($additionalProps)) {
-                return '';
-            }
+        if (empty($description) && empty($properties) && empty($patternProps) && empty($additionalProps)) {
+            return '';
         }
 
-        if ($type instanceof Property\ComplexType) {
-            $response.= '<div id="psx-type-' . $type->getId() . '" class="psx-complex-type">';
-            $response.= '<h1>' . $type->getName() . '</h1>';
-            
-            if (!empty($description)) {
-                $response.= '<div class="psx-type-description">' . $description . '</div>';
-            }
+        $response = '<div id="psx-type-' . $property->getConstraintId() . '" class="psx-complex-type">';
+        $response.= '<h1>' . (htmlspecialchars($property->getTitle()) ?: 'Object') . '</h1>';
 
-            if (!empty($properties) || !empty($patternProps) || !empty($additionalProps)) {
-                $response.= '<table class="table psx-type-properties">';
-                $response.= '<colgroup>';
-                $response.= '<col width="20%" />';
-                $response.= '<col width="20%" />';
-                $response.= '<col width="40%" />';
-                $response.= '<col width="20%" />';
-                $response.= '</colgroup>';
-                $response.= '<thead>';
-                $response.= '<tr>';
-                $response.= '<th>Property</th>';
-                $response.= '<th>Type</th>';
-                $response.= '<th>Description</th>';
-                $response.= '<th>Constraints</th>';
-                $response.= '</tr>';
-                $response.= '</thead>';
-                $response.= '<tbody>';
+        if (!empty($description)) {
+            $response.= '<div class="psx-type-description">' . htmlspecialchars($description) . '</div>';
+        }
 
+        if (!empty($properties) || !empty($patternProps) || !empty($additionalProps)) {
+            $response.= '<table class="table psx-type-properties">';
+            $response.= '<colgroup>';
+            $response.= '<col width="20%" />';
+            $response.= '<col width="20%" />';
+            $response.= '<col width="40%" />';
+            $response.= '<col width="20%" />';
+            $response.= '</colgroup>';
+            $response.= '<thead>';
+            $response.= '<tr>';
+            $response.= '<th>Property</th>';
+            $response.= '<th>Type</th>';
+            $response.= '<th>Description</th>';
+            $response.= '<th>Constraints</th>';
+            $response.= '</tr>';
+            $response.= '</thead>';
+            $response.= '<tbody>';
+
+            if (!empty($properties)) {
                 foreach ($properties as $name => $property) {
                     list($subType, $constraints) = $this->getValueDescription($property);
 
-                    $description = '';
-                    if (!$property instanceof Property\ComplexType) {
-                        $description = $property->getDescription();
-                    }
-
                     $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
+                    $response.= '<td><span class="psx-property-name ' . (in_array($name, $required) ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
                     $response.= '<td>' . $subType . '</td>';
-                    $response.= '<td><span class="psx-property-description">' . $description . '</span></td>';
+                    $response.= '<td><span class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</span></td>';
                     $response.= '<td>' . $constraints . '</td>';
                     $response.= '</tr>';
                 }
+            }
 
+            if (!empty($patternProps)) {
                 foreach ($patternProps as $pattern => $property) {
                     list($type, $constraints) = $this->getValueDescription($property);
 
                     $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $pattern . '</span></td>';
+                    $response.= '<td><span class="psx-property-name psx-property-optional">' . $pattern . '</span></td>';
                     $response.= '<td>' . $type . '</td>';
-                    $response.= '<td><span class="psx-property-description">' . $property->getDescription() . '</span></td>';
+                    $response.= '<td><span class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</span></td>';
                     $response.= '<td>' . $constraints . '</td>';
                     $response.= '</tr>';
                 }
-
-                if ($additionalProps === true) {
-                    $response.= '<tr>';
-                    $response.= '<td colspan="4"><span class="psx-property-description">Additional properties are allowed</span></td>';
-                    $response.= '</tr>';
-                } elseif ($additionalProps instanceof PropertyInterface) {
-                    list($type, $constraints) = $this->getValueDescription($additionalProps);
-
-                    $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name ' . ($additionalProps->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">*</span></td>';
-                    $response.= '<td>' . $type . '</td>';
-                    $response.= '<td><span class="psx-property-description">Additional properties must be of this type</span></td>';
-                    $response.= '<td>' . $constraints . '</td>';
-                    $response.= '</tr>';
-                }
-
-                $response.= '</tbody>';
-                $response.= '</table>';
             }
 
-            $response.= '</div>';
+            if ($additionalProps === true) {
+                $response.= '<tr>';
+                $response.= '<td colspan="4"><span class="psx-property-description">Additional properties are allowed</span></td>';
+                $response.= '</tr>';
+            } elseif ($additionalProps instanceof PropertyInterface) {
+                list($type, $constraints) = $this->getValueDescription($additionalProps);
+
+                $response.= '<tr>';
+                $response.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
+                $response.= '<td>' . $type . '</td>';
+                $response.= '<td><span class="psx-property-description">Additional properties must be of this type</span></td>';
+                $response.= '<td>' . $constraints . '</td>';
+                $response.= '</tr>';
+            }
+
+            $response.= '</tbody>';
+            $response.= '</table>';
         }
 
-        if ($type instanceof Property\ArrayType) {
-            $prototype = $type->getPrototype();
-            if ($prototype instanceof PropertyInterface) {
-                $response.= $this->generateProperty($prototype);
-            }
-        } elseif ($type instanceof Property\ChoiceType) {
-            $choices = $type->getChoices();
-            foreach ($choices as $property) {
-                $response.= $this->generateProperty($property);
-            }
-        } elseif ($type instanceof Property\ComplexType) {
-            foreach ($properties as $property) {
-                $response.= $this->generateProperty($property);
-            }
+        $response.= '</div>';
 
-            foreach ($patternProps as $property) {
-                $response.= $this->generateProperty($property);
-            }
-
-            if ($additionalProps instanceof PropertyInterface) {
-                $response.= $this->generateProperty($additionalProps);
-            }
+        foreach ($this->references as $prop) {
+            $response.= $this->generateType($prop);
         }
 
         return $response;
     }
 
-    protected function generateProperty(PropertyInterface $property)
+    /**
+     * Returns teh type and description column for a property
+     * 
+     * @param PropertyInterface $property
+     * @return array
+     */
+    protected function getValueDescription(PropertyInterface $property)
     {
-        if ($property instanceof Property\ArrayType) {
-            $prototype = $property->getPrototype();
-            if ($prototype instanceof PropertyInterface) {
-                return $this->generateType($property->getPrototype());
-            }
-        } elseif ($property instanceof Property\ChoiceType) {
-            $choices = $property->getChoices();
-            foreach ($choices as $choice) {
-                return $this->generateType($choice);
-            }
-        } elseif ($property instanceof Property\ComplexType) {
-            return $this->generateType($property);
-        }
+        $type = $this->getRealType($property);
 
-        return '';
-    }
-
-    protected function getValueDescription(PropertyInterface $type)
-    {
-        if ($type instanceof Property\ArrayType) {
+        if ($type === PropertyType::TYPE_ARRAY) {
             $constraints = array();
 
-            $min = $type->getMinLength();
-            if ($min !== null) {
-                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
+            $minItems = $property->getMinItems();
+            if ($minItems !== null) {
+                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minItems . '</span>';
             }
 
-            $max = $type->getMaxLength();
-            if ($max !== null) {
-                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
+            $maxItems = $property->getMaxItems();
+            if ($maxItems !== null) {
+                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maxItems . '</span>';
             }
 
+            $types      = [];
             $constraint = $this->constraintToString($constraints);
-            $prototype  = $type->getPrototype();
+            $items      = $property->getItems();
 
-            if ($prototype instanceof PropertyInterface) {
-                $property = $this->getValueDescription($prototype);
-                $span     = '<span class="psx-property-type psx-property-type-array">Array&lt;' . $property[0] . '&gt;</span>';
-
-                return [$span, $constraint];
-            } else {
-                throw new RuntimeException('Array property has no prototype');
-            }
-        } elseif ($type instanceof Property\ChoiceType) {
-            $choice  = array();
-            $choices = $type->getChoices();
-
-            foreach ($choices as $prop) {
-                $property = $this->getValueDescription($prop);
-                $choice[] = $property[0];
+            if ($items instanceof PropertyInterface) {
+                $property = $this->getValueDescription($items);
+                $types[] = $property[0];
+            } elseif (is_array($items)) {
+                foreach ($items as $item) {
+                    $property = $this->getValueDescription($item);
+                    $types[] = $property[0];
+                }
             }
 
-            $span = '<span class="psx-property-type psx-property-type-choice">' . implode('|', $choice) . '</span>';
+            $span = '<span class="psx-property-type psx-property-type-array">Array (' . implode(', ', $types) . ')</span>';
+
+            return [$span, $constraint];
+        } elseif ($type === PropertyType::TYPE_OBJECT) {
+            $constraintId = $property->getConstraintId();
+            
+            if (!isset($this->types[$constraintId])) {
+                $this->references[] = $property;
+            }
+
+            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $constraintId . '">' . ($property->getTitle() ?: 'Object') . '</a></span>';
 
             return [$span, null];
-        } elseif ($type instanceof Property\ComplexType) {
-            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $type->getId() . '">' . $type->getName() . '</a></span>';
-
-            return [$span, null];
-        } elseif ($type instanceof PropertySimpleAbstract) {
-            $typeName    = ucfirst($type->getTypeName());
+        } elseif (!empty($type)) {
+            $typeName    = $this->getTypeName($property, $type);
             $constraints = array();
 
-            if ($type->getPattern() !== null) {
-                $constraints['pattern'] = '<span class="psx-constraint-pattern">' . $type->getPattern() .'</span>';
+            $pattern = $property->getPattern();
+            if ($pattern !== null) {
+                $constraints['pattern'] = '<span class="psx-constraint-pattern">' . $pattern .'</span>';
             }
 
-            if ($type->getEnumeration() !== null) {
+            $enum = $property->getEnum();
+            if ($enum !== null) {
                 $enumeration = '<ul class="psx-property-enumeration">';
-                foreach ($type->getEnumeration() as $enum) {
-                    $enumeration.= '<li><span class="psx-constraint-enumeration-value">' . $enum . '</span></li>';
+                foreach ($enum as $enu) {
+                    $enumeration.= '<li><span class="psx-constraint-enumeration-value">' . $enu . '</span></li>';
                 }
                 $enumeration.= '</ul>';
 
                 $constraints['enumeration'] = '<span class="psx-constraint-enumeration">' . $enumeration .'</span>';
             }
 
-            if ($type instanceof Property\DecimalType) {
-                $min = $type->getMin();
-                if ($min !== null) {
-                    $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
-                }
-
-                $max = $type->getMax();
-                if ($max !== null) {
-                    $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
-                }
-            } elseif ($type instanceof Property\StringType) {
-                $min = $type->getMinLength();
-                if ($min !== null) {
-                    $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $min . '</span>';
-                }
-
-                $max = $type->getMaxLength();
-                if ($max !== null) {
-                    $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $max . '</span>';
-                }
+            $minimum = $property->getMinimum();
+            if ($minimum !== null) {
+                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minimum . '</span>';
             }
 
+            $maximum = $property->getMaximum();
+            if ($maximum !== null) {
+                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maximum . '</span>';
+            }
+
+            $multipleOf = $property->getMultipleOf();
+            if ($multipleOf !== null) {
+                $constraints['multipleOf'] = '<span class="psx-constraint-multipleof">' . $multipleOf . '</span>';
+            }
+
+            $minLength = $property->getMinLength();
+            if ($minLength !== null) {
+                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minLength . '</span>';
+            }
+
+            $maxLength = $property->getMaxLength();
+            if ($maxLength !== null) {
+                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maxLength . '</span>';
+            }
+            
             $constraint = $this->constraintToString($constraints);
-            $cssClass   = 'psx-property-type-' . strtolower($typeName);
 
-            if ($type instanceof Property\DateType) {
-                $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Date</a>';
-            } elseif ($type instanceof Property\DateTimeType) {
-                $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTime</a>';
-            } elseif ($type instanceof Property\TimeType) {
-                $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
-            } elseif ($type instanceof Property\DurationType) {
-                $typeName = '<span title="ISO 8601">Duration</span>';
-            } elseif ($type instanceof Property\UriType) {
-                $typeName = '<a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>';
-            } elseif ($type instanceof Property\BinaryType) {
-                $typeName = '<a href="http://tools.ietf.org/html/rfc4648" title="RFC4648">Base64</a>';
-            }
-
-            $span = '<span class="psx-property-type ' . $cssClass . '">' . $typeName . '</span>';
+            $span = '<span class="psx-property-type">' . $typeName . '</span>';
 
             return [$span, $constraint];
+        } else {
+            $allOf = $property->getAllOf();
+            $anyOf = $property->getAnyOf();
+            $oneOf = $property->getOneOf();
+
+            if (!empty($allOf)) {
+                return $this->combinationToString($allOf, 'AllOf');
+            } elseif (!empty($anyOf)) {
+                return $this->combinationToString($anyOf, 'AnyOf');
+            } elseif (!empty($oneOf)) {
+                return $this->combinationToString($oneOf, 'OneOf');
+            }
         }
+
+        return ['', ''];
     }
 
+    protected function combinationToString(array $props, $title)
+    {
+        $data = [];
+        foreach ($props as $prop) {
+            $value = $this->getValueDescription($prop);
+            $data[] = $value[0];
+        }
+
+        $span = '<span class="psx-property-type">' . $title . ' (' . implode(' | ', $data) . ')</span>';
+
+        return [$span, ''];
+    }
+    
     protected function constraintToString(array $constraints)
     {
         $constraint = '';
@@ -318,5 +311,27 @@ class Html implements GeneratorInterface
         }
 
         return $constraint;
+    }
+
+    protected function getTypeName(PropertyInterface $property, $type)
+    {
+        $typeName = !empty($type) ? ucfirst($type) : 'Unknown';
+        $format   = $property->getFormat();
+
+        if ($format === PropertyType::FORMAT_DATE) {
+            $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Date</a>';
+        } elseif ($format === PropertyType::FORMAT_DATETIME) {
+            $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">DateTime</a>';
+        } elseif ($format === PropertyType::FORMAT_TIME) {
+            $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
+        } elseif ($format === PropertyType::FORMAT_DURATION) {
+            $typeName = '<span title="ISO 8601">Duration</span>';
+        } elseif ($format === PropertyType::FORMAT_URI) {
+            $typeName = '<a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>';
+        } elseif ($format === PropertyType::FORMAT_BINARY) {
+            $typeName = '<a href="http://tools.ietf.org/html/rfc4648" title="RFC4648">Base64</a>';
+        }
+
+        return $typeName;
     }
 }

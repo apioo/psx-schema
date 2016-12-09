@@ -24,6 +24,7 @@ use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 use PSX\Json\Parser;
 
@@ -37,6 +38,8 @@ use PSX\Json\Parser;
  */
 class JsonSchema implements GeneratorInterface
 {
+    use GeneratorTrait;
+    
     const SCHEMA = 'http://json-schema.org/draft-04/schema#';
 
     protected $targetNamespace;
@@ -63,11 +66,11 @@ class JsonSchema implements GeneratorInterface
         return $this->generateRootElement($schema->getDefinition());
     }
 
-    protected function generateRootElement(Property\ComplexType $type)
+    protected function generateRootElement(PropertyInterface $type)
     {
         $this->definitions = array();
 
-        $object = $this->generateComplexType($type);
+        $object = $this->generateObjectType($type);
 
         $result = [
             '$schema' => self::SCHEMA,
@@ -83,216 +86,69 @@ class JsonSchema implements GeneratorInterface
         return $result;
     }
 
-    protected function generateType(PropertyInterface $type)
+    protected function generateObjectType(PropertyInterface $type)
     {
-        if ($type instanceof Property\ArrayType) {
-            $result = array(
-                'type'  => 'array',
-                'items' => $this->generateType($type->getPrototype()),
-            );
+        $result = $type->toArray();
 
-            $name = $type->getName();
-            if (!empty($name)) {
-                $result['title'] = $name;
-            }
-
-            $description = $type->getDescription();
-            if (!empty($description)) {
-                $result['description'] = $description;
-            }
-
-            $minLength = $type->getMinLength();
-            if ($minLength) {
-                $result['minItems'] = $minLength;
-            }
-
-            $maxLength = $type->getMaxLength();
-            if ($maxLength) {
-                $result['maxItems'] = $maxLength;
-            }
-
-            return $result;
-        } elseif ($type instanceof Property\ChoiceType) {
-            $result = [];
-
-            $name = $type->getName();
-            if (!empty($name)) {
-                $result['title'] = $name;
-            }
-
-            $description = $type->getDescription();
-            if (!empty($description)) {
-                $result['description'] = $description;
-            }
-
-            $choices = $type->getChoices();
-            if (!empty($choices)) {
-                $result['oneOf'] = [];
-                foreach ($choices as $property) {
-                    $result['oneOf'][] = $this->generateType($property);
-                }
-            }
-
-            return $this->generateRef($type, $result);
-        } elseif ($type instanceof Property\ComplexType) {
-            $result = $this->generateComplexType($type);
-
-            return $this->generateRef($type, $result);
-        } else {
-            $result = [];
-
-            $description = $type->getDescription();
-            if (!empty($description)) {
-                $result['description'] = $description;
-            }
-
-            if ($type instanceof PropertyAbstract) {
-                $result['type'] = $this->getPropertyTypeName($type);
-            }
-
-            if ($type instanceof Property\DateTimeType) {
-                $result['format'] = 'date-time';
-            } elseif ($type instanceof Property\DateType) {
-                $result['format'] = 'date';
-            } elseif ($type instanceof Property\TimeType) {
-                $result['format'] = 'time';
-            } elseif ($type instanceof Property\DurationType) {
-                $result['format'] = 'duration';
-            } elseif ($type instanceof Property\UriType) {
-                $result['format'] = 'uri';
-            } elseif ($type instanceof Property\BinaryType) {
-                $result['format'] = 'base64';
-            }
-
-            if ($type instanceof Property\StringType) {
-                $minLength = $type->getMinLength();
-                if ($minLength) {
-                    $result['minLength'] = $minLength;
-                }
-
-                $maxLength = $type->getMaxLength();
-                if ($maxLength) {
-                    $result['maxLength'] = $maxLength;
-                }
-
-                $pattern = $type->getPattern();
-                if ($pattern) {
-                    $result['pattern'] = $pattern;
-                }
-            } elseif ($type instanceof Property\DecimalType) {
-                $min = $type->getMin();
-                if ($min) {
-                    $result['minimum'] = $min;
-                }
-
-                $max = $type->getMax();
-                if ($max) {
-                    $result['maximum'] = $max;
-                }
-            }
-
-            $enumeration = $type->getEnumeration();
-            if ($enumeration) {
-                $result['enum'] = $enumeration;
-            }
-
-            return $result;
-        }
-    }
-
-    protected function generateComplexType(Property\ComplexType $type)
-    {
-        $result = [];
-
-        $name = $type->getName();
-        if (!empty($name)) {
-            $result['title'] = $name;
-        }
-
-        $description = $type->getDescription();
-        if (!empty($description)) {
-            $result['description'] = $description;
-        }
-
-        $result['type'] = 'object';
-
-        $properties = $type->getProperties();
-        $required   = [];
-        if (!empty($properties)) {
-            $props = [];
-            foreach ($properties as $name => $property) {
-                $props[$name] = $this->generateType($property);
-
-                if ($property->isRequired()) {
-                    $required[] = $name;
-                }
-            }
-            $result['properties'] = $props;
-        }
-
-        $patternProperties = $type->getPatternProperties();
-        if (!empty($patternProperties)) {
-            $patternProps = [];
-            foreach ($patternProperties as $pattern => $prop) {
-                $patternProps[$pattern] = $this->generateType($prop);
-            }
-            $result['patternProperties'] = $patternProps;
-        }
-
-        $addProps = $type->getAdditionalProperties();
-        if ($addProps !== null) {
-            if (is_bool($addProps)) {
-                $result['additionalProperties'] = $addProps;
-            } elseif ($addProps instanceof PropertyInterface) {
-                $result['additionalProperties'] = $this->generateType($addProps);
+        if (isset($result['properties'])) {
+            foreach ($result['properties'] as $index => $property) {
+                $result['properties'][$index] = $this->getRef($property);
             }
         }
 
-        $minProperties = $type->getMinProperties();
-        if ($minProperties !== null) {
-            $result['minProperties'] = $minProperties;
+        if (isset($result['patternProperties'])) {
+            foreach ($result['patternProperties'] as $pattern => $property) {
+                $result['patternProperties'][$pattern] = $this->getRef($property);
+            }
         }
 
-        $maxProperties = $type->getMaxProperties();
-        if ($maxProperties !== null) {
-            $result['maxProperties'] = $maxProperties;
+        if (isset($result['additionalProperties']) && $result['additionalProperties'] instanceof PropertyInterface) {
+            $result['additionalProperties'] = $this->getRef($result['additionalProperties']);
         }
 
-        if (!empty($required)) {
-            $result['required'] = $required;
+        if (isset($result['items'])) {
+            if ($result['items'] instanceof PropertyInterface) {
+                $result['items'] = $this->getRef($result['items']);
+            }
         }
 
-        $reference = $type->getReference();
-        if (!empty($reference)) {
-            $result['reference'] = $reference;
+        if (isset($result['allOf'])) {
+            foreach ($result['allOf'] as $index => $property) {
+                $result['allOf'][$index] = $this->getRef($property);
+            }
+        }
+
+        if (isset($result['anyOf'])) {
+            foreach ($result['anyOf'] as $index => $property) {
+                $result['anyOf'][$index] = $this->getRef($property);
+            }
+        }
+
+        if (isset($result['oneOf'])) {
+            foreach ($result['oneOf'] as $index => $property) {
+                $result['oneOf'][$index] = $this->getRef($property);
+            }
+        }
+
+        $class = $type->getClass();
+        if (!empty($class)) {
+            $result['class'] = $class;
         }
 
         return $result;
     }
 
-    protected function getPropertyTypeName(PropertyAbstract $type)
+    protected function getRef(PropertyInterface $property)
     {
-        switch ($type->getTypeName()) {
-            case 'float':
-                return 'number';
+        $type = $this->getRealType($property);
+        $key  = $this->getIdentifierForProperty($property);
 
-            case 'integer':
-                return 'integer';
+        if ($type === PropertyType::TYPE_OBJECT) {
+            $this->definitions[$key] = $this->generateObjectType($property);
 
-            case 'boolean':
-                return 'boolean';
-
-            default:
-                return 'string';
+            return ['$ref' => '#/definitions/' . $key];
+        } else {
+            return $this->generateObjectType($property);;
         }
-    }
-
-    protected function generateRef(PropertyInterface $type, array $result)
-    {
-        $key = 'ref' . $type->getId();
-
-        $this->definitions[$key] = $result;
-
-        return ['$ref' => '#/definitions/' . $key];
     }
 }

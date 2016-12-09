@@ -21,7 +21,7 @@
 namespace PSX\Schema;
 
 /**
- * Builder
+ * Builder to create an object type with specific constraints
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -30,14 +30,15 @@ namespace PSX\Schema;
 class Builder
 {
     /**
-     * @var \PSX\Schema\Property\ComplexType
+     * @var \PSX\Schema\PropertyInterface
      */
     protected $property;
 
     public function __construct($name)
     {
-        $this->property = Property::getComplex();
-        $this->property->setName($name);
+        $this->property = new PropertyType();
+        $this->property->setType(PropertyType::TYPE_OBJECT);
+        $this->property->setTitle($name);
     }
 
     /**
@@ -52,10 +53,10 @@ class Builder
     }
 
     /**
-     * @param boolean $required
+     * @param array $required
      * @return $this
      */
-    public function setRequired($required)
+    public function setRequired(array $required)
     {
         $this->property->setRequired($required);
 
@@ -108,12 +109,12 @@ class Builder
     }
 
     /**
-     * @param string $reference
+     * @param string $class
      * @return $this
      */
-    public function setReference($reference)
+    public function setClass($class)
     {
-        $this->property->setReference($reference);
+        $this->property->setClass($class);
 
         return $this;
     }
@@ -124,22 +125,22 @@ class Builder
      */
     public function add($name, PropertyInterface $property = null)
     {
-        $this->property->add($name, $property);
+        $this->property->addProperty($name, $property);
 
         return $this;
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\AnyType
-     * @deprecated
+     * @param PropertyInterface $template
+     * @return \PSX\Schema\PropertyInterface
      */
-    public function anyType($name, Property\AnyType $type = null)
+    public function property($name, PropertyInterface $template = null)
     {
-        if ($type !== null) {
-            $this->add($name, $property = clone $type);
+        if ($template !== null) {
+            $this->add($name, $property = clone $template);
         } else {
-            $this->add($name, $property = Property::getAny());
+            $this->add($name, $property = new PropertyType());
         }
 
         return $property;
@@ -147,162 +148,134 @@ class Builder
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\ArrayType
+     * @param PropertyInterface $template
+     * @return \PSX\Schema\PropertyInterface
      */
-    public function arrayType($name, Property\ArrayType $type = null)
+    public function arrayType($name, PropertyInterface $template = null)
     {
-        if ($type !== null) {
-            $this->add($name, $property = clone $type);
-        } else {
-            $this->add($name, $property = Property::getArray());
-        }
-
-        return $property;
+        return $this->property($name, $template)
+            ->setType(PropertyType::TYPE_ARRAY);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\BinaryType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function binary($name)
     {
-        $this->add($name, $property = Property::getBinary());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_BINARY);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\BooleanType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function boolean($name)
     {
-        $this->add($name, $property = Property::getBoolean());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_BOOLEAN);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\ChoiceType
+     * @param \PSX\Schema\PropertyInterface $template
+     * @return \PSX\Schema\PropertyInterface
      */
-    public function choiceType($name, Property\ChoiceType $type = null)
+    public function objectType($name, PropertyInterface $template = null)
     {
-        if ($type !== null) {
-            $this->add($name, $property = clone $type);
-        } else {
-            $this->add($name, $property = Property::getChoice());
-        }
-
-        return $property;
+        return $this->property($name, $template)
+            ->setType(PropertyType::TYPE_OBJECT);
     }
 
     /**
      * @param string $name
-     * @param \PSX\Schema\Property\ComplexType $template
-     * @return \PSX\Schema\Property\ComplexType
-     */
-    public function complexType($name, Property\ComplexType $type = null)
-    {
-        if ($type !== null) {
-            $this->add($name, $property = clone $type);
-        } else {
-            $this->add($name, $property = Property::getComplex());
-        }
-
-        return $property;
-    }
-
-    /**
-     * @param string $name
-     * @return \PSX\Schema\Property\DateType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function date($name)
     {
-        $this->add($name, $property = Property::getDate());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DATE);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\DateTimeType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function dateTime($name)
     {
-        $this->add($name, $property = Property::getDateTime());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DATETIME);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\DurationType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function duration($name)
     {
-        $this->add($name, $property = Property::getDuration());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_DURATION);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\FloatType
+     * @return \PSX\Schema\PropertyInterface
      */
-    public function float($name)
+    public function number($name)
     {
-        $this->add($name, $property = Property::getFloat());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_NUMBER);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\IntegerType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function integer($name)
     {
-        $this->add($name, $property = Property::getInteger());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_INTEGER);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\StringType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function string($name)
     {
-        $this->add($name, $property = Property::getString());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\TimeType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function time($name)
     {
-        $this->add($name, $property = Property::getTime());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_TIME);
     }
 
     /**
      * @param string $name
-     * @return \PSX\Schema\Property\UriType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function uri($name)
     {
-        $this->add($name, $property = Property::getUri());
-
-        return $property;
+        return $this->property($name)
+            ->setType(PropertyType::TYPE_STRING)
+            ->setFormat(PropertyType::FORMAT_URI);
     }
 
     /**
-     * @return \PSX\Schema\Property\ComplexType
+     * @return \PSX\Schema\PropertyInterface
      */
     public function getProperty()
     {

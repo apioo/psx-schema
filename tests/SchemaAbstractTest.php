@@ -61,20 +61,20 @@ class SchemaAbstractTest extends \PHPUnit_Framework_TestCase
         $schemaA = $this->schemaManager->getSchema('PSX\Schema\Tests\SchemaA')->getDefinition();
         $schemaB = $this->schemaManager->getSchema('PSX\Schema\Tests\SchemaB')->getDefinition();
 
-        $this->assertNull($schemaC->get('long')->isRequired());
-        $this->assertNull($schemaC->get('long')->isRequired());
-        $this->assertNull($schemaC->get('entry')->getPrototype()->get('title')->isRequired());
-        $this->assertNull($schemaC->get('author')->get('name')->isRequired());
+        $this->assertNull($schemaC->getProperty('lat')->getTitle());
+        $this->assertNull($schemaC->getProperty('long')->getTitle());
+        $this->assertNull($schemaC->getProperty('entry')->getItems()->getProperty('title')->getTitle());
+        $this->assertNull($schemaC->getProperty('author')->getProperty('name')->getTitle());
 
-        $this->assertTrue($schemaA->get('lat')->isRequired());
-        $this->assertNull($schemaA->get('long')->isRequired());
-        $this->assertTrue($schemaA->get('entry')->getPrototype()->get('title')->isRequired());
-        $this->assertNull($schemaA->get('author')->get('name')->isRequired());
+        $this->assertEquals('foo', $schemaA->getProperty('lat')->getTitle());
+        $this->assertEquals(null, $schemaA->getProperty('long')->getTitle());
+        $this->assertEquals('foo', $schemaA->getProperty('entry')->getItems()->getProperty('title')->getTitle());
+        $this->assertEquals(null, $schemaA->getProperty('author')->getProperty('name')->getTitle());
 
-        $this->assertNull($schemaB->get('lat')->isRequired());
-        $this->assertTrue($schemaB->get('long')->isRequired());
-        $this->assertNull($schemaB->get('entry')->getPrototype()->get('title')->isRequired());
-        $this->assertTrue($schemaB->get('author')->get('name')->isRequired());
+        $this->assertEquals(null, $schemaB->getProperty('lat')->getTitle());
+        $this->assertEquals('bar', $schemaB->getProperty('long')->getTitle());
+        $this->assertEquals(null, $schemaB->getProperty('entry')->getItems()->getProperty('title')->getTitle());
+        $this->assertEquals('bar', $schemaB->getProperty('author')->getProperty('name')->getTitle());
     }
 }
 
@@ -94,8 +94,8 @@ class SchemaCommon extends SchemaAbstract
             ->setDescription('Location of the person');
         $sb->integer('lat');
         $sb->integer('long');
-        $sb->arrayType('entry')->setPrototype($entry);
-        $sb->complexType('author', $author);
+        $sb->arrayType('entry')->setItems($entry);
+        $sb->objectType('author', $author);
 
         return $sb->getProperty();
     }
@@ -106,8 +106,8 @@ class SchemaA extends SchemaAbstract
     public function getDefinition()
     {
         $property = $this->getSchema('PSX\Schema\Tests\SchemaCommon');
-        $property->get('lat')->setRequired(true);
-        $property->get('entry')->getPrototype()->get('title')->setRequired(true);
+        $property->getProperty('lat')->setTitle('foo');
+        $property->getProperty('entry')->getItems()->getProperty('title')->setTitle('foo');
         
         return $property;
     }
@@ -118,8 +118,8 @@ class SchemaB extends SchemaAbstract
     public function getDefinition()
     {
         $property = $this->getSchema('PSX\Schema\Tests\SchemaCommon');
-        $property->get('long')->setRequired(true);
-        $property->get('author')->get('name')->setRequired(true);
+        $property->getProperty('long')->setTitle('bar');
+        $property->getProperty('author')->getProperty('name')->setTitle('bar');
 
         return $property;
     }

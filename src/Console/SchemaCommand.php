@@ -90,11 +90,6 @@ class SchemaCommand extends Command
                 $response = serialize($schema);
                 break;
 
-            case 'xsd':
-                $generator = new Generator\Xsd($this->targetNamespace);
-                $response  = $generator->generate($schema);
-                break;
-
             default:
             case 'jsonschema':
                 $generator = new Generator\JsonSchema();

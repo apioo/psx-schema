@@ -50,13 +50,13 @@ class ObjectReader
             }
 
             // check whether we have an exclude annotation
-            $exclude = $reader->getPropertyAnnotation($property, '\\PSX\\Schema\\Parser\\Popo\\Annotation\\Exclude');
+            $exclude = $reader->getPropertyAnnotation($property, Annotation\Exclude::class);
             if ($exclude !== null) {
                 continue;
             }
 
             // get the property name
-            $key  = $reader->getPropertyAnnotation($property, '\\PSX\\Schema\\Parser\\Popo\\Annotation\\Key');
+            $key  = $reader->getPropertyAnnotation($property, Annotation\Key::class);
             $name = null;
 
             if ($key !== null) {

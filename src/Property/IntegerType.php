@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Property;
 
+use PSX\Schema\PropertyType;
+
 /**
  * IntegerType
  *
@@ -27,6 +29,10 @@ namespace PSX\Schema\Property;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class IntegerType extends DecimalType
+class IntegerType extends PropertyType
 {
+    public function __construct()
+    {
+        $this->type = 'integer';
+    }
 }

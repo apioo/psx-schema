@@ -42,26 +42,82 @@ class PhpTest extends GeneratorTestCase
 namespace PSX\Schema\Tests\Generator;
 
 /**
- * @AdditionalProperties("string")
+ * @Title("meta")
+ * @Description("Some meta data")
+ * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
+ * @PatternProperties(pattern="^location_\d$", property=@Ref("PSX\Schema\Tests\Generator\Location"))
+ * @AdditionalProperties(false)
  */
-class Complex5525537f extends \ArrayObject
+class Meta extends \ArrayObject
 {
+    /**
+     * @Key("createDate")
+     * @Type("string")
+     * @Format("date-time")
+     */
+    public $createDate;
+    public function setCreateDate($createDate)
+    {
+        $this->createDate = $createDate;
+    }
+    public function getCreateDate()
+    {
+        return $this->createDate;
+    }
+}
+/**
+ * @Title("web")
+ * @Description("An application")
+ * @AdditionalProperties(@Schema(type="string"))
+ * @Required({"name", "url"})
+ * @MinProperties(2)
+ * @MaxProperties(8)
+ */
+class Web extends \ArrayObject
+{
+    /**
+     * @Key("name")
+     * @Type("string")
+     */
+    public $name;
+    /**
+     * @Key("url")
+     * @Type("string")
+     */
+    public $url;
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }
 /**
  * @Title("location")
  * @Description("Location of the person")
  * @AdditionalProperties(true)
+ * @Required({"lat", "long"})
  */
-class Complex73afba2a extends \ArrayObject
+class Location extends \ArrayObject
 {
     /**
      * @Key("lat")
-     * @Type("float")
+     * @Type("number")
      */
     public $lat;
     /**
      * @Key("long")
-     * @Type("float")
+     * @Type("number")
      */
     public $long;
     public function setLat($lat)
@@ -85,38 +141,39 @@ class Complex73afba2a extends \ArrayObject
  * @Title("author")
  * @Description("An simple author element with some description")
  * @AdditionalProperties(false)
+ * @Required({"title"})
  */
-class Complex3b735bb1
+class Author
 {
     /**
      * @Key("title")
      * @Type("string")
-     * @Required
      * @Pattern("[A-z]{3,16}")
      */
     public $title;
     /**
      * @Key("email")
-     * @Type("string")
      * @Description("We will send no spam to this addresss")
+     * @Type("string")
      */
     public $email;
     /**
      * @Key("categories")
-     * @Type("array<string>")
+     * @Type("array")
+     * @Items(@Schema(type="string"))
      * @MaxItems(8)
      */
     public $categories;
     /**
      * @Key("locations")
-     * @Type("array<PSX\Schema\Tests\Generator\Complex73afba2a>")
      * @Description("Array of locations")
+     * @Type("array")
+     * @Items(@Ref("PSX\Schema\Tests\Generator\Location"))
      */
     public $locations;
     /**
      * @Key("origin")
-     * @Type("PSX\Schema\Tests\Generator\Complex73afba2a")
-     * @Description("Location of the person")
+     * @Ref("PSX\Schema\Tests\Generator\Location")
      */
     public $origin;
     public function setTitle($title)
@@ -161,98 +218,49 @@ class Complex3b735bb1
     }
 }
 /**
- * @Title("web")
- * @Description("An application")
- * @AdditionalProperties("string")
- * @MinProperties(2)
- * @MaxProperties(8)
+ * @AdditionalProperties(@Schema(type="string"))
  */
-class Complex55c16924 extends \ArrayObject
+class Object79a542c6 extends \ArrayObject
 {
-    /**
-     * @Key("name")
-     * @Type("string")
-     */
-    public $name;
-    /**
-     * @Key("url")
-     * @Type("string")
-     */
-    public $url;
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-    public function getName()
-    {
-        return $this->name;
-    }
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-    public function getUrl()
-    {
-        return $this->url;
-    }
-}
-/**
- * @Title("meta")
- * @Description("Some meta data")
- * @AdditionalProperties(false)
- * @PatternProperty(pattern="^tags_\d$", type="string")
- * @PatternProperty(pattern="^location_\d$", type="PSX\Schema\Tests\Generator\Complex73afba2a")
- */
-class Complexa8078859 extends \ArrayObject
-{
-    /**
-     * @Key("createDate")
-     * @Type("dateTime")
-     */
-    public $createDate;
-    public function setCreateDate($createDate)
-    {
-        $this->createDate = $createDate;
-    }
-    public function getCreateDate()
-    {
-        return $this->createDate;
-    }
 }
 /**
  * @Title("news")
  * @Description("An general news entry")
  * @AdditionalProperties(false)
+ * @Required({"receiver", "price", "content"})
  */
-class Complexb35219bc
+class News
 {
     /**
      * @Key("config")
-     * @Type("PSX\Schema\Tests\Generator\Complex5525537f")
+     * @Ref("PSX\Schema\Tests\Generator\Object79a542c6")
      */
     public $config;
     /**
      * @Key("tags")
-     * @Type("array<string>")
-     * @MinItems(1)
+     * @Type("array")
+     * @Items(@Schema(type="string"))
      * @MaxItems(6)
+     * @MinItems(1)
      */
     public $tags;
     /**
      * @Key("receiver")
-     * @Type("array<PSX\Schema\Tests\Generator\Complex3b735bb1>")
-     * @Required
+     * @Type("array")
+     * @Items(@Ref("PSX\Schema\Tests\Generator\Author"))
      * @MinItems(1)
      */
     public $receiver;
     /**
      * @Key("resources")
-     * @Type("array<choice<PSX\Schema\Tests\Generator\Complex73afba2a,PSX\Schema\Tests\Generator\Complex55c16924>>")
+     * @Type("array")
+     * @Items(@Schema(oneOf={@Ref("PSX\Schema\Tests\Generator\Location"), @Ref("PSX\Schema\Tests\Generator\Web")}))
      */
     public $resources;
     /**
      * @Key("profileImage")
-     * @Type("binary")
+     * @Type("string")
+     * @Format("base64")
      */
     public $profileImage;
     /**
@@ -262,74 +270,75 @@ class Complexb35219bc
     public $read;
     /**
      * @Key("source")
-     * @Type("choice<PSX\Schema\Tests\Generator\Complex3b735bb1,PSX\Schema\Tests\Generator\Complex55c16924>")
+     * @OneOf(@Ref("PSX\Schema\Tests\Generator\Author"), @Ref("PSX\Schema\Tests\Generator\Web"))
      */
     public $source;
     /**
      * @Key("author")
-     * @Type("PSX\Schema\Tests\Generator\Complex3b735bb1")
-     * @Description("An simple author element with some description")
+     * @Ref("PSX\Schema\Tests\Generator\Author")
      */
     public $author;
     /**
      * @Key("meta")
-     * @Type("PSX\Schema\Tests\Generator\Complexa8078859")
-     * @Description("Some meta data")
+     * @Ref("PSX\Schema\Tests\Generator\Meta")
      */
     public $meta;
     /**
      * @Key("sendDate")
-     * @Type("date")
+     * @Type("string")
+     * @Format("date")
      */
     public $sendDate;
     /**
      * @Key("readDate")
-     * @Type("dateTime")
+     * @Type("string")
+     * @Format("date-time")
      */
     public $readDate;
     /**
      * @Key("expires")
-     * @Type("duration")
+     * @Type("string")
+     * @Format("duration")
      */
     public $expires;
     /**
      * @Key("price")
-     * @Type("float")
-     * @Required
-     * @Minimum(1)
+     * @Type("number")
      * @Maximum(100)
+     * @Minimum(1)
      */
     public $price;
     /**
      * @Key("rating")
      * @Type("integer")
-     * @Minimum(1)
      * @Maximum(5)
+     * @Minimum(1)
      */
     public $rating;
     /**
      * @Key("content")
-     * @Type("string")
-     * @Required
      * @Description("Contains the main content of the news entry")
-     * @MinLength(3)
+     * @Type("string")
      * @MaxLength(512)
+     * @MinLength(3)
      */
     public $content;
     /**
      * @Key("question")
-     * @Type("string")
      * @Enum({"foo", "bar"})
+     * @Type("string")
      */
     public $question;
     /**
      * @Key("coffeeTime")
-     * @Type("time")
+     * @Type("string")
+     * @Format("time")
      */
     public $coffeeTime;
     /**
      * @Key("profileUri")
-     * @Type("uri")
+     * @Type("string")
+     * @Format("uri")
      */
     public $profileUri;
     public function setConfig($config)
@@ -495,7 +504,7 @@ PHP;
 
         include_once $file;
 
-        $schema = $this->schemaManager->getSchema(__NAMESPACE__ . '\\Complexb35219bc');
+        $schema = $this->schemaManager->getSchema(__NAMESPACE__ . '\\News');
 
         $this->assertSchema($schema, $source);
     }

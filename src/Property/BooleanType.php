@@ -31,4 +31,8 @@ use PSX\Schema\PropertySimpleAbstract;
  */
 class BooleanType extends PropertySimpleAbstract
 {
+    public function __construct()
+    {
+        $this->type = 'boolean';
+    }
 }

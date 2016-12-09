@@ -20,10 +20,9 @@
 
 namespace PSX\Schema\Tests\Parser;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Parser;
-use PSX\Schema\Tests\Parser\Popo\Complexb35219bc;
-use PSX\Model\ActivityStream\Activity;
+use PSX\Schema\Tests\Parser\Popo\News;
+use PSX\Schema\Tests\Parser\Popo\RecursiveTest;
 
 /**
  * PopoTest
@@ -37,15 +36,15 @@ class PopoTest extends ParserTestCase
     public function testParse()
     {
         $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Complexb35219bc::class);
+        $schema = $parser->parse(News::class);
 
         $this->assertSchema($this->getSchema(), $schema);
     }
-    
+
     public function testParseRecursive()
     {
         $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Activity::class);
+        $schema = $parser->parse(RecursiveTest::class);
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }

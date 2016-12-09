@@ -22,6 +22,7 @@ namespace PSX\Schema\Property;
 
 use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 
 /**
  * RecursionType
@@ -30,26 +31,24 @@ use PSX\Schema\PropertyInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RecursionType extends PropertyAbstract
+class RecursionType extends PropertyType
 {
-    protected $property;
+    protected $origin;
 
-    public function __construct(PropertyInterface $property)
+    public function __construct(PropertyInterface $origin)
     {
-        parent::__construct($property->getName());
-
-        $this->setDescription($property->getDescription());
-
-        $this->property = $property;
+        $this->title = $origin->getTitle();
+        $this->description = $origin->getDescription();
+        $this->origin = $origin;
     }
 
     public function getOrigin()
     {
-        return $this->property;
+        return $this->origin;
     }
 
-    public function setOrigin(PropertyInterface $property)
+    public function setOrigin(PropertyInterface $origin)
     {
-        $this->property = $property;
+        $this->origin = $origin;
     }
 }
