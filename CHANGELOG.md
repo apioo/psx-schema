@@ -1,4 +1,11 @@
 
+### 2.0.0
+
+* Improved parse and generator
+* Proper handling of oneOf, anyOf, allOf and not
+* Removed XSD generator
+* Added JSON Schema Test Suite
+
 ### 1.0.5 (2016-10-30)
 
 * Allow symfony 3.0 components
