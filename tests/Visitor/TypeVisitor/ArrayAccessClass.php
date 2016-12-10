@@ -20,9 +20,6 @@
 
 namespace PSX\Schema\Tests\Visitor\TypeVisitor;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\VisitorInterface;
-
 /**
  * ArrayAccessClass
  *

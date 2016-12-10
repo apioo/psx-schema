@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Property;
-use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaAbstract;
 
 /**

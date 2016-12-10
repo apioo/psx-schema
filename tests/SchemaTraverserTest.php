@@ -25,8 +25,8 @@ use PSX\Data\Record\Transformer;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\SchemaTraverser\RecursionModel;
-use PSX\Schema\Visitor\OutgoingVisitor;
 use PSX\Schema\Visitor\IncomingVisitor;
+use PSX\Schema\Visitor\OutgoingVisitor;
 
 /**
  * SchemaTraverserTest
