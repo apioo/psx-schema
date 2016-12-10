@@ -30,7 +30,7 @@ use PSX\Schema\Visitor\TypeVisitor;
 use PSX\Uri\Uri;
 
 /**
- * IncomingVisitorTest
+ * TypeVisitorTest
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
