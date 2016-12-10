@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node;
+use PhpParser\PrettyPrinter;
 use PSX\Data\Processor;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\Property;
@@ -28,9 +31,6 @@ use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
 use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
-use PhpParser\BuilderFactory;
-use PhpParser\PrettyPrinter;
-use PhpParser\Node;
 use RuntimeException;
 
 /**

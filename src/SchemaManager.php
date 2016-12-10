@@ -22,9 +22,9 @@ namespace PSX\Schema;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
+use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
-use InvalidArgumentException;
 use PSX\Http\Client;
 use PSX\Http\ClientInterface;
 use PSX\Schema\Parser\JsonSchema\RefResolver;

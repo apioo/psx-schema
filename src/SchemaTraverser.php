@@ -31,8 +31,6 @@ use PSX\Schema\Visitor\AllOfVisitor;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\NullVisitor;
 use Traversable;
-use ReflectionClass;
-use RuntimeException;
 
 /**
  * SchemaTraverser

@@ -26,7 +26,6 @@ use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
 use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
-use RuntimeException;
 
 /**
  * Generates html tables containing all informations from the provided schema

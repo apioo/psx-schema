@@ -22,14 +22,13 @@ namespace PSX\Schema\Console;
 
 use Doctrine\Common\Annotations\Reader;
 use PSX\Http\Client;
-use PSX\Schema\Parser;
 use PSX\Schema\Generator;
+use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use RuntimeException;
 
 /**
  * SchemaCommand

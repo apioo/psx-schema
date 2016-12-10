@@ -22,19 +22,16 @@ namespace PSX\Schema\Parser;
 
 use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
+use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\Parser\Popo\TypeParser;
-use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyAbstract;
-use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertySimpleAbstract;
 use PSX\Schema\PropertyType;
 use PSX\Schema\Schema;
 use ReflectionClass;
-use ReflectionProperty;
-use RuntimeException;
 
 /**
  * Tries to import the data into a plain old php object

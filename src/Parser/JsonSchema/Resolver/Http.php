@@ -20,12 +20,12 @@
 
 namespace PSX\Schema\Parser\JsonSchema\Resolver;
 
-use PSX\Schema\Parser\JsonSchema\Document;
-use PSX\Schema\Parser\JsonSchema\RefResolver;
-use PSX\Schema\Parser\JsonSchema\ResolverInterface;
 use PSX\Http\Client as HttpClient;
 use PSX\Http\GetRequest;
 use PSX\Json\Parser;
+use PSX\Schema\Parser\JsonSchema\Document;
+use PSX\Schema\Parser\JsonSchema\RefResolver;
+use PSX\Schema\Parser\JsonSchema\ResolverInterface;
 use PSX\Uri\Uri;
 use PSX\Uri\UriResolver;
 use RuntimeException;
