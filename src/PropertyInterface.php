@@ -439,7 +439,7 @@ interface PropertyInterface
     public function setClass($class);
 
     /**
-     * Returns whether a property has constraints. If no constraints are 
+     * Returns whether a property has constraints. If no constraints are
      * available every data is allowed
      *
      * @return boolean
@@ -447,9 +447,9 @@ interface PropertyInterface
     public function hasConstraints();
 
     /**
-     * Returns a unique id which represents the available constraints. 
+     * Returns a unique id which represents the available constraints.
      * Properties with the same constraints produce also the same id
-     * 
+     *
      * @return string
      */
     public function getConstraintId();

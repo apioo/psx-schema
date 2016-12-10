@@ -198,7 +198,7 @@ class Php implements GeneratorInterface
 
         $required = $property->getRequired();
         if (!empty($required)) {
-            $required = array_map(function($value){
+            $required = array_map(function ($value) {
                 return '"' . $this->escapeString($value) . '"';
             }, $required);
             $comment.= ' * @Required({' . implode(', ', $required) . '})' . "\n";
@@ -240,7 +240,7 @@ class Php implements GeneratorInterface
 
             $enum = $property->getEnum();
             if (!empty($enum)) {
-                $values = array_map(function($value){
+                $values = array_map(function ($value) {
                     return '"' . $this->escapeString($value) . '"';
                 }, $enum);
 
@@ -422,7 +422,7 @@ class Php implements GeneratorInterface
                 
                 // array
                 case 'enum':
-                    $values = array_map(function($value){
+                    $values = array_map(function ($value) {
                         return '"' . $this->escapeString($value) . '"';
                     }, $value);
 
@@ -432,7 +432,7 @@ class Php implements GeneratorInterface
                 
                 case 'allOf':
                 case 'anyOf':
-                case 'oneOf': 
+                case 'oneOf':
                     $values = [];
                     foreach ($value as $row) {
                         $values[] = $this->getSubSchema($row);

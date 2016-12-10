@@ -45,8 +45,8 @@ class SchemaTraverser
     protected $recCount;
 
     /**
-     * Traverses through the data and validate it according to the provided 
-     * schema. Calls for the visitor methods for each type which can return 
+     * Traverses through the data and validate it according to the provided
+     * schema. Calls for the visitor methods for each type which can return
      * different objects for the type
      *
      * @param mixed $data
@@ -239,7 +239,7 @@ class SchemaTraverser
         $patternProperties = $property->getPatternProperties();
         if (!empty($patternProperties)) {
             foreach ($patternProperties as $pattern => $prop) {
-                // check whether we have keys which match this pattern and 
+                // check whether we have keys which match this pattern and
                 // are not already a fixed property
 
                 foreach ($data as $key => $value) {

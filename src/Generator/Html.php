@@ -39,7 +39,7 @@ class Html implements GeneratorInterface
 
     /**
      * Contains all objects which are already rendered
-     * 
+     *
      * @var array
      */
     protected $types;
@@ -47,7 +47,7 @@ class Html implements GeneratorInterface
     /**
      * Contains properties which are referenced by an object and which we need
      * to render
-     * 
+     *
      * @var array
      */
     protected $references;
@@ -173,7 +173,7 @@ class Html implements GeneratorInterface
 
     /**
      * Returns teh type and description column for a property
-     * 
+     *
      * @param PropertyInterface $property
      * @return array
      */

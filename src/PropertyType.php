@@ -1070,7 +1070,7 @@ class PropertyType implements PropertyInterface
             'minLength' => $this->minLength,
             'maxLength' => $this->maxLength,
             'format' => $this->format,
-        ], function($value){
+        ], function ($value) {
             return $value !== null;
         });
     }

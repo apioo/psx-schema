@@ -21,8 +21,8 @@
 namespace PSX\Schema;
 
 /**
- * If you have an object which allows additional or pattern properties and you 
- * dont want to implement the ArrayAccess interface you can implement this 
+ * If you have an object which allows additional or pattern properties and you
+ * dont want to implement the ArrayAccess interface you can implement this
  * interface to give PSX the option to set those properties on the object
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
