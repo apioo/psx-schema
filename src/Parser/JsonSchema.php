@@ -25,6 +25,7 @@ use PSX\Schema\Parser\JsonSchema\Document;
 use PSX\Schema\Parser\JsonSchema\RefResolver;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
+use PSX\Uri\Uri;
 use RuntimeException;
 
 /**
@@ -65,7 +66,9 @@ class JsonSchema implements ParserInterface
 
         $this->resolver->setRootDocument($document);
 
-        return new Schema($document->getProperty());
+        $property = $this->resolver->resolve($document, new Uri('#'), null, 0);
+
+        return new Schema($property);
     }
 
     public static function fromFile($file, RefResolver $resolver = null)

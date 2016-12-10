@@ -21,8 +21,6 @@
 namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Http\Client;
-use PSX\Schema\Property\ComplexType;
-use PSX\Schema\Property\ObjectType;
 use PSX\Schema\Property\RecursionType;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
@@ -40,14 +38,16 @@ use RuntimeException;
 class RefResolver
 {
     protected $resolver;
-    protected $documents = array();
-    protected $resolvers = array();
-
-    protected $objects = array();
+    protected $documents;
+    protected $resolvers;
+    protected $objects;
 
     public function __construct(UriResolver $uriResolver = null)
     {
-        $this->resolver = $uriResolver ?: new UriResolver();
+        $this->resolver  = $uriResolver ?: new UriResolver();
+        $this->documents = [];
+        $this->resolvers = [];
+        $this->objects   = [];
     }
 
     public function setRootDocument(Document $document)
@@ -79,14 +79,13 @@ class RefResolver
 
         if ($property === null) {
             $property = new PropertyType();
+            $property->setRef($uri->toString());
         }
 
         $this->objects[$uri->toString()] = $property;
 
         $doc  = $this->getDocument($uri, $document);
         $doc->getProperty($uri->getFragment(), $name, $depth, $property);
-
-        array_pop($this->objects);
 
         return $property;
     }

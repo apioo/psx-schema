@@ -140,6 +140,10 @@ class JsonSchema implements GeneratorInterface
 
     protected function getRef(PropertyInterface $property)
     {
+        if ($property instanceof Property\RecursionType) {
+            $property = $property->getOrigin();
+        }
+
         $type = $this->getRealType($property);
         $key  = $this->getIdentifierForProperty($property);
 
@@ -148,7 +152,7 @@ class JsonSchema implements GeneratorInterface
 
             return ['$ref' => '#/definitions/' . $key];
         } else {
-            return $this->generateObjectType($property);;
+            return $this->generateObjectType($property);
         }
     }
 }

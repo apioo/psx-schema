@@ -95,6 +95,7 @@ class Popo implements ParserInterface
         $annotations = $this->reader->getClassAnnotations($class);
         $property    = new PropertyType();
         $property->setType('object');
+        $property->setRef('urn:phpsx.org:schema:class:' . strtolower($className));
         $property->setClass($class->getName());
 
         $this->objects[$className] = $property;
