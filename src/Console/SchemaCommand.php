@@ -45,20 +45,13 @@ class SchemaCommand extends Command
     protected $schemaManager;
 
     /**
-     * @var string
-     */
-    protected $targetNamespace;
-
-    /**
      * @param \PSX\Schema\SchemaManager $schemaManager
-     * @param string $targetNamespace
      */
-    public function __construct(SchemaManager $schemaManager, $targetNamespace)
+    public function __construct(SchemaManager $schemaManager)
     {
         parent::__construct();
 
-        $this->schemaManager   = $schemaManager;
-        $this->targetNamespace = $targetNamespace;
+        $this->schemaManager = $schemaManager;
     }
 
     protected function configure()

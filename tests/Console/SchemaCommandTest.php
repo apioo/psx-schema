@@ -920,6 +920,6 @@ HTML;
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
 
-        return new SchemaCommand(new SchemaManager($reader), 'urn:phpsx.org');
+        return new SchemaCommand(new SchemaManager($reader));
     }
 }
