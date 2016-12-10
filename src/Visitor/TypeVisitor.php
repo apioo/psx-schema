@@ -21,7 +21,6 @@
 namespace PSX\Schema\Visitor;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use PSX\Data\GraphTraverser;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
@@ -34,7 +33,6 @@ use PSX\Schema\PropertyInterface;
 use PSX\Schema\ValidationException;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
-use PSX\Validate\ValidatorInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
