@@ -1,7 +1,7 @@
 {
   "name": "psx/schema",
   "description": "Parse and generate data schema formats",
-  "keywords": ["schema", "xsd", "jsonschema"],
+  "keywords": ["schema", "json", "jsonschema"],
   "homepage": "http://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
