@@ -68,7 +68,7 @@ class SchemaCommand extends Command
             ->setName('schema')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
             ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
-            ->addArgument('format', InputArgument::OPTIONAL, 'Optional the output format possible values are: html, php, serialize, xsd, jsonschema');
+            ->addArgument('format', InputArgument::OPTIONAL, 'Optional the output format possible values are: html, php, serialize, jsonschema');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
