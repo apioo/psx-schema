@@ -218,9 +218,10 @@ class Author
     }
 }
 /**
+ * @Title("config")
  * @AdditionalProperties(@Schema(type="string"))
  */
-class Object79a542c6 extends \ArrayObject
+class Config extends \ArrayObject
 {
 }
 /**
@@ -233,7 +234,7 @@ class News
 {
     /**
      * @Key("config")
-     * @Ref("PSX\Schema\Tests\Generator\Object79a542c6")
+     * @Ref("PSX\Schema\Tests\Generator\Config")
      */
     public $config;
     /**

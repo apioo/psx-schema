@@ -51,4 +51,9 @@ class RecursionType extends PropertyType
     {
         $this->origin = $origin;
     }
+
+    public function getConstraintId()
+    {
+        return $this->origin->getConstraintId();
+    }
 }

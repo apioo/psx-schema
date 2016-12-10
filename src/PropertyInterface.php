@@ -419,6 +419,17 @@ interface PropertyInterface
     /**
      * @return string
      */
+    public function getRef();
+
+    /**
+     * @param string $ref
+     * @return PropertyInterface
+     */
+    public function setRef($ref);
+
+    /**
+     * @return string
+     */
     public function getClass();
 
     /**

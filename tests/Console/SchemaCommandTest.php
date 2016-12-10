@@ -23,6 +23,7 @@ namespace PSX\Schema\Tests\Console;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
 use PSX\Schema\Parser\Popo;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -36,7 +37,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaCommandTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCommandPopo()
+    public function testGenerateJsonSchemaPopo()
     {
         $command = $this->getSchemaCommand();
 
@@ -52,12 +53,13 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "definitions": {
-        "Object79a542c6": {
+        "Config": {
             "type": "object",
+            "title": "config",
             "additionalProperties": {
                 "type": "string"
             },
-            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Object79a542c6"
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Config"
         },
         "Location": {
             "type": "object",
@@ -165,7 +167,7 @@ class SchemaCommandTest extends \PHPUnit_Framework_TestCase
     "description": "An general news entry",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/Object79a542c6"
+            "$ref": "#\/definitions\/Config"
         },
         "tags": {
             "type": "array",
@@ -275,7 +277,7 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testCommandSwagger()
+    public function testGenerateJsonSchemaSwagger()
     {
         $command = $this->getSchemaCommand();
 
@@ -300,7 +302,7 @@ JSON;
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }
 
-    public function testCommandJsonSchema()
+    public function testGenerateJsonSchemaJsonSchema()
     {
         $command = $this->getSchemaCommand();
 
@@ -320,9 +322,602 @@ JSON;
         $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
 
         $parser = new Popo($reader);
-        $schema = $parser->parse(\PSX\Generation\Object395f73e8::class);
+        $schema = $parser->parse(\PSX\Generation\Json_schema::class);
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+    }
+
+    public function testCommandGenerateHtml()
+    {
+        $command = $this->getSchemaCommand();
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'source' => __DIR__ . '/../Parser/JsonSchema/schema.json',
+            'format' => 'html',
+        ));
+
+        $actual = $commandTester->getDisplay();
+        $actual = preg_replace('/psx-type-([0-9A-Fa-f]{32})/', 'psx-type-[id]', $actual);
+        
+        $expect = <<<'HTML'
+<?xml version="1.0"?>
+<div>
+  <div class="psx-complex-type" id="psx-type-[id]">
+    <h1>json schema</h1>
+    <small>http://json-schema.org/draft-04/schema</small>
+    <div class="psx-type-description">Core schema meta-schema</div>
+    <table class="table psx-type-properties">
+      <colgroup>
+        <col width="20%"/>
+        <col width="20%"/>
+        <col width="40%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">id</span>
+          </td>
+          <td>
+            <span class="psx-property-type">
+              <a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">$schema</span>
+          </td>
+          <td>
+            <span class="psx-property-type">
+              <a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">title</span>
+          </td>
+          <td>
+            <span class="psx-property-type">String</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">description</span>
+          </td>
+          <td>
+            <span class="psx-property-type">String</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">default</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">multipleOf</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Number</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">0</span>
+              </dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">maximum</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Number</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">exclusiveMaximum</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Boolean</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">minimum</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Number</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">exclusiveMinimum</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Boolean</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">maxLength</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Integer</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">0</span>
+              </dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">minLength</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AllOf ( | )</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">pattern</span>
+          </td>
+          <td>
+            <span class="psx-property-type">String</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">additionalItems</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | )</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">items</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AnyOf ( | <span class="psx-property-type psx-property-type-array">Array ()</span>)</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">maxItems</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">minItems</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">uniqueItems</span>
+          </td>
+          <td>
+            <span class="psx-property-type">Boolean</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">maxProperties</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">minProperties</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">required</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">String</span>)</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">1</span>
+              </dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">additionalProperties</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | )</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">definitions</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">Object</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">properties</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">Object</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">patternProperties</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">Object</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">dependencies</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">Object</a>
+            </span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">enum</span>
+          </td>
+          <td>
+            <span class="psx-property-type psx-property-type-array">Array ()</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">1</span>
+              </dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">type</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AnyOf ( | <span class="psx-property-type psx-property-type-array">Array ()</span>)</span>
+          </td>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">allOf</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">anyOf</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">oneOf</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description"/>
+          </td>
+          <td/>
+        </tr>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">not</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description">Core schema meta-schema</span>
+          </td>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="psx-complex-type" id="psx-type-[id]">
+    <h1>Object</h1>
+    <table class="table psx-type-properties">
+      <colgroup>
+        <col width="20%"/>
+        <col width="20%"/>
+        <col width="40%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">*</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description">Additional properties must be of this type</span>
+          </td>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="psx-complex-type" id="psx-type-[id]">
+    <h1>Object</h1>
+    <table class="table psx-type-properties">
+      <colgroup>
+        <col width="20%"/>
+        <col width="20%"/>
+        <col width="40%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">*</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description">Additional properties must be of this type</span>
+          </td>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="psx-complex-type" id="psx-type-[id]">
+    <h1>Object</h1>
+    <table class="table psx-type-properties">
+      <colgroup>
+        <col width="20%"/>
+        <col width="20%"/>
+        <col width="40%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">*</span>
+          </td>
+          <td/>
+          <td>
+            <span class="psx-property-description">Additional properties must be of this type</span>
+          </td>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="psx-complex-type" id="psx-type-[id]">
+    <h1>Object</h1>
+    <table class="table psx-type-properties">
+      <colgroup>
+        <col width="20%"/>
+        <col width="20%"/>
+        <col width="40%"/>
+        <col width="20%"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="psx-property-name psx-property-optional">*</span>
+          </td>
+          <td>
+            <span class="psx-property-type">AnyOf ( | )</span>
+          </td>
+          <td>
+            <span class="psx-property-description">Additional properties must be of this type</span>
+          </td>
+          <td/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+HTML;
+
+        $this->assertXmlStringEqualsXmlString($expect, '<div>' . $actual . '</div>', $actual);
+    }
+
+    public function testCommandGenerateSerialize()
+    {
+        $command = $this->getSchemaCommand();
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'source' => __DIR__ . '/../Parser/JsonSchema/schema.json',
+            'format' => 'serialize',
+        ));
+
+        $actual = $commandTester->getDisplay();
+        $schema = unserialize($actual);
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     protected function getSchemaCommand()

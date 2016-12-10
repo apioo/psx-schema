@@ -81,6 +81,7 @@ class TestSchema extends SchemaAbstract
         $sb = $this->getSchemaBuilder('news')
             ->setDescription('An general news entry');
         $sb->objectType('config')
+            ->setTitle('config')
             ->setAdditionalProperties(Property::getString());
         $sb->arrayType('tags')
             ->setItems(Property::getString())

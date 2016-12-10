@@ -29,7 +29,7 @@ use InvalidArgumentException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyType implements PropertyInterface, \JsonSerializable
+class PropertyType implements PropertyInterface
 {
     const TYPE_NULL = 'null';
     const TYPE_BOOLEAN = 'boolean';
@@ -192,14 +192,9 @@ class PropertyType implements PropertyInterface, \JsonSerializable
     protected $oneOf;
 
     /**
-     * @var array
+     * @var PropertyInterface
      */
     protected $not;
-
-    /**
-     * @var string
-     */
-    protected $id;
 
     /**
      * @var string
@@ -903,6 +898,25 @@ class PropertyType implements PropertyInterface, \JsonSerializable
     /**
      * @return string
      */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * @param string $ref
+     * @return string
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getClass()
     {
         return $this->class;
@@ -910,7 +924,7 @@ class PropertyType implements PropertyInterface, \JsonSerializable
 
     /**
      * @param string $class
-     * @return PropertyInterface
+     * @return string
      */
     public function setClass($class)
     {
@@ -918,7 +932,7 @@ class PropertyType implements PropertyInterface, \JsonSerializable
 
         return $this;
     }
-    
+
     /**
      * @return boolean
      */
@@ -948,7 +962,71 @@ class PropertyType implements PropertyInterface, \JsonSerializable
      */
     public function getConstraintId()
     {
-        return md5(json_encode($this->toArray()));
+        $hash = '';
+        $hash.= $this->type . json_encode($this->enum) . "\n";
+        $hash.= $this->minProperties . $this->maxProperties . json_encode($this->required) . "\n";
+        $hash.= $this->minItems . $this->maxItems . $this->uniqueItems . "\n";
+        $hash.= $this->minimum . $this->maximum . $this->exclusiveMinimum . $this->exclusiveMaximum . $this->multipleOf . "\n";
+        $hash.= $this->pattern . $this->minLength . $this->maxLength . $this->format . "\n";
+
+        if ($this->allOf !== null) {
+            foreach ($this->allOf as $property) {
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if ($this->anyOf !== null) {
+            foreach ($this->anyOf as $property) {
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if ($this->oneOf !== null) {
+            foreach ($this->oneOf as $property) {
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if ($this->not !== null) {
+            $hash.= spl_object_hash($this->not) . "\n";
+        }
+
+        if ($this->properties !== null) {
+            foreach ($this->properties as $name => $property) {
+                $hash.= $name . "\n";
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if ($this->patternProperties !== null) {
+            foreach ($this->patternProperties as $pattern => $property) {
+                $hash.= $pattern . "\n";
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if (is_bool($this->additionalProperties)) {
+            $hash.= $this->additionalProperties . "\n";
+        } elseif ($this->additionalProperties instanceof PropertyInterface) {
+            $hash.= spl_object_hash($this->additionalProperties) . "\n";
+        }
+
+        if ($this->items instanceof PropertyInterface) {
+            $hash.= spl_object_hash($this->items) . "\n";
+        } elseif (is_array($this->items)) {
+            foreach ($this->items as $index => $property) {
+                $hash.= $index . "\n";
+                $hash.= spl_object_hash($property) . "\n";
+            }
+        }
+
+        if (is_bool($this->additionalItems)) {
+            $hash.= $this->additionalItems . "\n";
+        } elseif ($this->additionalItems instanceof PropertyInterface) {
+            $hash.= spl_object_hash($this->additionalItems) . "\n";
+        }
+
+        return md5($hash);
     }
 
     public function toArray()
@@ -995,11 +1073,6 @@ class PropertyType implements PropertyInterface, \JsonSerializable
         ], function($value){
             return $value !== null;
         });
-    }
-    
-    public function jsonSerialize()
-    {
-        return $this->toArray();
     }
 
     public function __clone()

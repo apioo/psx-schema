@@ -41,8 +41,9 @@ class JsonSchemaTest extends GeneratorTestCase
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
     "definitions": {
-        "Object79a542c6": {
+        "Config": {
             "type": "object",
+            "title": "config",
             "additionalProperties": {
                 "type": "string"
             }
@@ -149,7 +150,7 @@ class JsonSchemaTest extends GeneratorTestCase
     "description": "An general news entry",
     "properties": {
         "config": {
-            "$ref": "#\/definitions\/Object79a542c6"
+            "$ref": "#\/definitions\/Config"
         },
         "tags": {
             "type": "array",
