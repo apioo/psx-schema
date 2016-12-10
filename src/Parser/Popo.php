@@ -82,7 +82,7 @@ class Popo implements ParserInterface
     protected function parseClass($className)
     {
         if (isset($this->objects[$className])) {
-            return new Property\RecursionType($this->objects[$className]);
+            return $this->objects[$className];
         }
 
         $class       = new ReflectionClass($className);

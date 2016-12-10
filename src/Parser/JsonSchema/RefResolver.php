@@ -21,7 +21,6 @@
 namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Http\Client;
-use PSX\Schema\Property\RecursionType;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
@@ -75,7 +74,7 @@ class RefResolver
         $uri = $this->resolver->resolve($document->getBaseUri(), $ref);
 
         if (isset($this->objects[$uri->toString()])) {
-            return new RecursionType($this->objects[$uri->toString()]);
+            return $this->objects[$uri->toString()];
         }
 
         if ($property === null) {

@@ -516,7 +516,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">minLength</span>
           </td>
           <td>
-            <span class="psx-property-type">AllOf ( | )</span>
+            <span class="psx-property-type">AllOf (<span class="psx-property-type">Integer</span> | )</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -540,7 +540,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">additionalItems</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | )</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -552,7 +552,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">items</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf ( | <span class="psx-property-type psx-property-type-array">Array ()</span>)</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -563,17 +563,28 @@ JSON;
           <td>
             <span class="psx-property-name psx-property-optional">maxItems</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type">Integer</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
-          <td/>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">0</span>
+              </dd>
+            </dl>
+          </td>
         </tr>
         <tr>
           <td>
             <span class="psx-property-name psx-property-optional">minItems</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type">AllOf (<span class="psx-property-type">Integer</span> | )</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
@@ -595,17 +606,28 @@ JSON;
           <td>
             <span class="psx-property-name psx-property-optional">maxProperties</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type">Integer</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
-          <td/>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">0</span>
+              </dd>
+            </dl>
+          </td>
         </tr>
         <tr>
           <td>
             <span class="psx-property-name psx-property-optional">minProperties</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type">AllOf (<span class="psx-property-type">Integer</span> | )</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
@@ -635,7 +657,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">additionalProperties</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | )</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -733,37 +755,68 @@ JSON;
           <td>
             <span class="psx-property-name psx-property-optional">allOf</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
-          <td/>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">1</span>
+              </dd>
+            </dl>
+          </td>
         </tr>
         <tr>
           <td>
             <span class="psx-property-name psx-property-optional">anyOf</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
-          <td/>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">1</span>
+              </dd>
+            </dl>
+          </td>
         </tr>
         <tr>
           <td>
             <span class="psx-property-name psx-property-optional">oneOf</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+          </td>
           <td>
             <span class="psx-property-description"/>
           </td>
-          <td/>
+          <td>
+            <dl class="psx-property-constraint">
+              <dt>Minimum</dt>
+              <dd>
+                <span class="psx-constraint-minimum">1</span>
+              </dd>
+            </dl>
+          </td>
         </tr>
         <tr>
           <td>
             <span class="psx-property-name psx-property-optional">not</span>
           </td>
-          <td/>
+          <td>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">json schema</a>
+            </span>
+          </td>
           <td>
             <span class="psx-property-description">Core schema meta-schema</span>
           </td>
@@ -794,69 +847,11 @@ JSON;
           <td>
             <span class="psx-property-name psx-property-optional">*</span>
           </td>
-          <td/>
           <td>
-            <span class="psx-property-description">Additional properties must be of this type</span>
+            <span class="psx-property-type psx-property-type-complex">
+              <a href="#psx-type-[id]">json schema</a>
+            </span>
           </td>
-          <td/>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
-    <h1>Object</h1>
-    <table class="table psx-type-properties">
-      <colgroup>
-        <col width="20%"/>
-        <col width="20%"/>
-        <col width="40%"/>
-        <col width="20%"/>
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Constraints</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <span class="psx-property-name psx-property-optional">*</span>
-          </td>
-          <td/>
-          <td>
-            <span class="psx-property-description">Additional properties must be of this type</span>
-          </td>
-          <td/>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
-    <h1>Object</h1>
-    <table class="table psx-type-properties">
-      <colgroup>
-        <col width="20%"/>
-        <col width="20%"/>
-        <col width="40%"/>
-        <col width="20%"/>
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Constraints</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <span class="psx-property-name psx-property-optional">*</span>
-          </td>
-          <td/>
           <td>
             <span class="psx-property-description">Additional properties must be of this type</span>
           </td>
@@ -888,7 +883,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">*</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf ( | )</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">String</span>)</span>)</span>
           </td>
           <td>
             <span class="psx-property-description">Additional properties must be of this type</span>

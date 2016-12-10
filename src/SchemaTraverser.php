@@ -39,7 +39,7 @@ use Traversable;
  */
 class SchemaTraverser
 {
-    const MAX_RECURSION_DEPTH = 6;
+    const MAX_RECURSION_DEPTH = 16;
 
     protected $pathStack;
     protected $recCount;
@@ -56,8 +56,8 @@ class SchemaTraverser
      */
     public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null)
     {
-        $this->pathStack = array();
-        $this->recCount  = 0;
+        $this->pathStack = [];
+        $this->recCount  = -1;
         
         if ($visitor === null) {
             $visitor = new NullVisitor();
@@ -68,21 +68,10 @@ class SchemaTraverser
 
     protected function recTraverse($data, PropertyInterface $property, VisitorInterface $visitor)
     {
-        // check recursion
-        if ($property instanceof Property\RecursionType) {
-            if (!empty($data)) {
-                if ($this->recCount > self::MAX_RECURSION_DEPTH) {
-                    throw new ValidationException($this->getCurrentPath() . ' max recursion depth reached');
-                }
+        $this->recCount++;
 
-                $this->recCount++;
-
-                $result = $this->recTraverse($data, $property->getOrigin(), $visitor);
-
-                $this->recCount--;
-
-                return $result;
-            }
+        if ($this->recCount > self::MAX_RECURSION_DEPTH) {
+            throw new ValidationException($this->getCurrentPath() . ' max recursion depth reached');
         }
 
         // if we have no constraints everything is allowed
@@ -147,6 +136,8 @@ class SchemaTraverser
                 throw new ValidationException($this->getCurrentPath() . ' must not match the schema');
             }
         }
+
+        $this->recCount--;
 
         return $result;
     }

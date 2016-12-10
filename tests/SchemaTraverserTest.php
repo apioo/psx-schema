@@ -308,87 +308,43 @@ class SchemaTraverserTest extends SchemaTestCase
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
-        $data = (object) [
-            'title' => 'level1',
-            'model' => (object) [
-                'title' => 'level2',
-                'model' => (object) [
-                    'title' => 'level3',
-                    'model' => (object) [
-                        'title' => 'level4',
-                        'model' => (object) [
-                            'title' => 'level5',
-                            'model' => (object) [
-                                'title' => 'level6',
-                                'model' => (object) [
-                                    'title' => 'level7',
-                                    'model' => (object) [
-                                        'title' => 'level8'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        $data = $this->getRecData(16);
 
         $traverser = new SchemaTraverser();
         $result    = $traverser->traverse($data, $schema);
 
         $this->assertEquals('level1', $result->title);
         $this->assertEquals('level2', $result->model->title);
-        $this->assertEquals('level3', $result->model->model->title);
-        $this->assertEquals('level4', $result->model->model->model->title);
-        $this->assertEquals('level5', $result->model->model->model->model->title);
-        $this->assertEquals('level6', $result->model->model->model->model->model->title);
-        $this->assertEquals('level7', $result->model->model->model->model->model->model->title);
-        $this->assertEquals('level8', $result->model->model->model->model->model->model->model->title);
-        $this->assertEquals(false, isset($result->model->model->model->model->model->model->model->model));
     }
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /model/model/model/model/model/model/model/model max recursion depth reached
+     * @expectedExceptionMessage /model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/title max recursion depth reached
      */
     public function testMaxRecursion()
     {
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursionModel::class);
 
-        $data = (object) [
-            'title' => 'level1',
-            'model' => (object) [
-                'title' => 'level2',
-                'model' => (object) [
-                    'title' => 'level3',
-                    'model' => (object) [
-                        'title' => 'level4',
-                        'model' => (object) [
-                            'title' => 'level5',
-                            'model' => (object) [
-                                'title' => 'level6',
-                                'model' => (object) [
-                                    'title' => 'level7',
-                                    'model' => (object) [
-                                        'title' => 'level8',
-                                        'model' => (object) [
-                                            'title' => 'level9',
-                                            'model' => (object) [
-                                                'title' => 'level10',
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        $data = $this->getRecData(17);
 
         $traverser = new SchemaTraverser();
         $traverser->traverse($data, $schema);
+    }
+
+    protected function getRecData($maxDepth, $depth = 1)
+    {
+        if ($depth > $maxDepth) {
+            return null;
+        }
+
+        $data  = ['title' => 'level' . $depth];
+        $model = $this->getRecData($maxDepth, $depth + 1);
+        if ($model !== null) {
+            $data['model'] = $model;
+        }
+
+        return (object) $data;
     }
 
     protected function getData()
