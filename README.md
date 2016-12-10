@@ -4,20 +4,8 @@ PSX Schema
 ## About
 
 This library helps to generate PHP classes from JsonSchema definitions and vice 
-versa. The generated POPOs can be filled with json data. It was inspired by 
-the Apache CXF project where it is possible simply generate POJOs to XSD. The 
-following parser and generator classes are available:
-
-### Parser
-
-- JsonSchema (Parses a [JsonSchema](http://json-schema.org/) file)
-- Popo (Parses the annotations of a class)
-
-### Generator
-
-- HTML (Generates a HTML representation of the schema)
-- JsonSchema (Generates a [JsonSchema](http://json-schema.org/) specification)
-- PHP (Generates PHP classes representing the schema using annotations)
+versa. You can then use those POPOs to import and validate json data. It was 
+inspired by JAXB where it is possible generate POJOs from XSD files.
 
 ## Usage
 
@@ -108,7 +96,6 @@ class Example_Schema
 Now we can use this class to read json data which fits to the schema
 
 ```php
-
 // the data which we want to import
 $data = json_decode({"firstName": "foo", "lastName": "bar"});
 
@@ -135,7 +122,6 @@ try {
 
 ```
 
-
 ## Annotations
 
 The following annotations are available:
@@ -144,7 +130,7 @@ The following annotations are available:
 |-----------------------|----------------|---------------------------------------------------|
 | @AdditionalItems      | Property       | @AdditionalItems(true)                            |
 | @AdditionalProperties | Class          | @AdditionalProperties(true)                       |
-| @AllOf                | Property       | @AllOf(@Schema(type="integer", minimum=0), @Schema(type="integer", maximum=64)) |
+| @AllOf                | Property       | @AllOf(@Ref("FooClass"), @Ref("BarClass"))        |
 | @AnyOf                | Property       | @AnyOf(@Schema(type="integer", minimum=0), @Schema(type="string", maxLength=64)) |
 | @Dependencies         | Class          | @Dependencies(property="name", value={"age", "gender"}) |
 | @Description          | Class/Property | @Description("content")                           |
@@ -173,3 +159,21 @@ The following annotations are available:
 | @Title                | Class          | @Title("foo")                                     |
 | @Type                 | Property       | @Type("string")                                   |
 | @UniqueItems          | Property       | @UniqueItems(true)                                |
+
+## Architecture
+
+### Parser
+
+The following parser classes are available which produce a schema object:
+
+- JsonSchema (Parses a [JsonSchema](http://json-schema.org/) file)
+- Popo (Parses the annotations of a class)
+
+### Generator
+
+The following generator classes are available which generate a representation of
+a schema object:
+
+- HTML (Generates a HTML representation of the schema)
+- JsonSchema (Generates a [JsonSchema](http://json-schema.org/) specification)
+- PHP (Generates PHP classes representing the schema using annotations)
