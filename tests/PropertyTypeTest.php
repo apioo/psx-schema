@@ -34,11 +34,9 @@ class PropertyTypeTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstraintId()
     {
-        
     }
     
     public function testJsonSerialize()
     {
-        
     }
 }

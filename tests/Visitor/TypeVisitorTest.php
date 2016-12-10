@@ -36,7 +36,7 @@ use PSX\Uri\Uri;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class IncomingVisitorTest extends \PHPUnit_Framework_TestCase
+class TypeVisitorTest extends \PHPUnit_Framework_TestCase
 {
     public function testVisitArray()
     {

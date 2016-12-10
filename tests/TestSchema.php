@@ -89,7 +89,7 @@ class TestSchema extends SchemaAbstract
         $sb->arrayType('receiver')
             ->setItems($author)
             ->setMinItems(1);
-        $sb->arrayType('resources') 
+        $sb->arrayType('resources')
             ->setItems(Property::get()->setOneOf([$location, $web]));
         $sb->binary('profileImage');
         $sb->boolean('read');

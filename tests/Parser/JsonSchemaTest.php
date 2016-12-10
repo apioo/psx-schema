@@ -131,5 +131,4 @@ class JsonSchemaTest extends ParserTestCase
     {
         JsonSchema::fromFile(__DIR__ . '/JsonSchema/invalid_document_ref_schema.json');
     }
-
 }
