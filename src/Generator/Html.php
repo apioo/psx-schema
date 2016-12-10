@@ -92,6 +92,11 @@ class Html implements GeneratorInterface
         $response = '<div id="psx-type-' . $property->getConstraintId() . '" class="psx-complex-type">';
         $response.= '<h1>' . (htmlspecialchars($property->getTitle()) ?: 'Object') . '</h1>';
 
+        $ref = $property->getRef();
+        if (!empty($ref)) {
+            $response.= '<small>' . $ref . '</small>';
+        }
+
         if (!empty($description)) {
             $response.= '<div class="psx-type-description">' . htmlspecialchars($description) . '</div>';
         }
