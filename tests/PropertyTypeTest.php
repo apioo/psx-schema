@@ -20,9 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Cache\Pool;
-
+use PSX\Schema\Parser;
 /**
  * PropertyTypeTest
  *
@@ -32,11 +30,17 @@ use PSX\Cache\Pool;
  */
 class PropertyTypeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstraintId()
+    /**
+     * Test whether we can serialize a recursive schema
+     */
+    public function testSerialize()
     {
-    }
-    
-    public function testJsonSerialize()
-    {
+        $parser = new Parser\JsonSchema();
+        $schema = $parser->parse(file_get_contents(__DIR__ . '/Parser/JsonSchema/schema.json'));
+
+        $data = serialize($schema);
+        $newSchema = unserialize($data);
+
+        $this->assertEquals($schema, $newSchema);
     }
 }
