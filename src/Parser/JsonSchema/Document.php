@@ -97,6 +97,7 @@ class Document
      * @param string $pointer
      * @param string $name
      * @param integer $depth
+     * @param \PSX\Schema\PropertyInterface $property
      * @return \PSX\Schema\PropertyInterface
      */
     public function getProperty($pointer = null, $name = null, $depth = 0, PropertyInterface $property = null)

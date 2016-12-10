@@ -35,6 +35,7 @@ class ObjectReader
     /**
      * Returns all available properties of an object
      *
+     * @param \Doctrine\Common\Annotations\Reader $reader
      * @param \ReflectionClass $class
      * @return \ReflectionProperty[]
      */

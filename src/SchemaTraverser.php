@@ -27,8 +27,6 @@ use PSX\DateTime\Time;
 use PSX\Json\Comparator;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
-use PSX\Schema\Visitor\AllOfVisitor;
-use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\NullVisitor;
 use Traversable;
 

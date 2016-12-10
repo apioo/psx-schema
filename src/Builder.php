@@ -120,6 +120,7 @@ class Builder
     }
 
     /**
+     * @param string $name
      * @param \PSX\Schema\PropertyInterface $property
      * @return $this
      */

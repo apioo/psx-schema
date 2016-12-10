@@ -216,7 +216,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string|array $type
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setType($type)
     {
@@ -235,7 +235,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $properties
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setProperties(array $properties)
     {
@@ -247,7 +247,7 @@ class PropertyType implements PropertyInterface
     /**
      * @param string $name
      * @param \PSX\Schema\PropertyInterface $property
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function addProperty($name, PropertyInterface $property)
     {
@@ -259,7 +259,7 @@ class PropertyType implements PropertyInterface
     /**
      * @param string $name
      * @return \PSX\Schema\PropertyInterface
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function getProperty($name)
     {
@@ -277,7 +277,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $name
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function removeProperty($name)
     {
@@ -298,7 +298,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $patternProperties
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setPatternProperties(array $patternProperties)
     {
@@ -310,7 +310,7 @@ class PropertyType implements PropertyInterface
     /**
      * @param string $pattern
      * @param \PSX\Schema\PropertyInterface $property
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function addPatternProperty($pattern, PropertyInterface $property)
     {
@@ -351,7 +351,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param bool|PropertyInterface $additionalProperties
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setAdditionalProperties($additionalProperties)
     {
@@ -374,7 +374,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $minProperties
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMinProperties($minProperties)
     {
@@ -393,7 +393,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $maxProperties
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMaxProperties($maxProperties)
     {
@@ -412,7 +412,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $required
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setRequired(array $required)
     {
@@ -431,7 +431,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $dependencies
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setDependencies(array $dependencies)
     {
@@ -443,7 +443,7 @@ class PropertyType implements PropertyInterface
     /**
      * @param string $name
      * @param array|PropertyInterface $value
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function addDependency($name, $value)
     {
@@ -462,7 +462,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array|PropertyInterface $items
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setItems($items)
     {
@@ -485,7 +485,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param bool|PropertyInterface $additionalItems
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setAdditionalItems($additionalItems)
     {
@@ -508,7 +508,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param boolean $uniqueItems
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setUniqueItems($uniqueItems)
     {
@@ -527,7 +527,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int|float $minimum
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMinimum($minimum)
     {
@@ -550,7 +550,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int|float $maximum
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMaximum($maximum)
     {
@@ -573,7 +573,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param boolean $exclusiveMinimum
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setExclusiveMinimum($exclusiveMinimum)
     {
@@ -592,7 +592,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param boolean $exclusiveMaximum
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setExclusiveMaximum($exclusiveMaximum)
     {
@@ -611,7 +611,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $minItems
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMinItems($minItems)
     {
@@ -630,7 +630,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $maxItems
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMaxItems($maxItems)
     {
@@ -649,7 +649,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $pattern
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setPattern($pattern)
     {
@@ -668,7 +668,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $minLength
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMinLength($minLength)
     {
@@ -687,7 +687,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int $maxLength
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMaxLength($maxLength)
     {
@@ -706,7 +706,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $enum
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setEnum(array $enum)
     {
@@ -725,7 +725,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $default
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setDefault($default)
     {
@@ -744,7 +744,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $title
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setTitle($title)
     {
@@ -763,7 +763,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $description
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setDescription($description)
     {
@@ -782,7 +782,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param string $format
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setFormat($format)
     {
@@ -801,7 +801,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param int|float $multipleOf
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setMultipleOf($multipleOf)
     {
@@ -820,7 +820,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $allOf
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setAllOf(array $allOf)
     {
@@ -839,7 +839,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $anyOf
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setAnyOf(array $anyOf)
     {
@@ -858,7 +858,7 @@ class PropertyType implements PropertyInterface
 
     /**
      * @param array $oneOf
-     * @return PropertyInterface
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setOneOf(array $oneOf)
     {
@@ -876,8 +876,8 @@ class PropertyType implements PropertyInterface
     }
 
     /**
-     * @param array $not
-     * @return PropertyInterface
+     * @param \PSX\Schema\PropertyInterface $not
+     * @return \PSX\Schema\PropertyInterface
      */
     public function setNot(PropertyInterface $not)
     {

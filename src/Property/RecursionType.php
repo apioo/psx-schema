@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Property;
 
-use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 

@@ -67,6 +67,7 @@ class RefResolver
      * @param \PSX\Uri\Uri $ref
      * @param string $name
      * @param integer $depth
+     * @param \PSX\Schema\PropertyInterface $property
      * @return \PSX\Schema\PropertyInterface
      */
     public function resolve(Document $document, Uri $ref, $name, $depth, PropertyInterface $property = null)
