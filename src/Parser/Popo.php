@@ -124,46 +124,6 @@ class Popo implements ParserInterface
         return $property;
     }
 
-    protected function parseArray(array $data)
-    {
-        $property = new PropertyType();
-
-        foreach ($data as $key => $value) {
-            switch ($key) {
-                case 'title': $property->setTitle($value); break;
-                case 'description': $property->setDescription($value); break;
-                case 'enum': $property->setEnum($value); break;
-                case 'type': $property->setType($value); break;
-                case 'allOf': $property->setAllOf($value); break;
-                case 'anyOf': $property->setAnyOf($value); break;
-                case 'oneOf': $property->setOneOf($value); break;
-                case 'not': $property->setNot($value); break;
-
-                // number
-                case 'maximum': $property->setMaximum($value); break;
-                case 'minimum': $property->setMinimum($value); break;
-                case 'exclusiveMaximum': $property->setExclusiveMaximum($value); break;
-                case 'exclusiveMinimum': $property->setExclusiveMinimum($value); break;
-                case 'multipleOf': $property->setMultipleOf($value); break;
-
-                // string
-                case 'maxLength': $property->setMaxLength($value); break;
-                case 'minLength': $property->setMinLength($value); break;
-                case 'pattern': $property->setPattern($value); break;
-                case 'format': $property->setFormat($value); break;
-
-                // array
-                case 'items': $property->setItems($value); break;
-                case 'additionalItems': $property->setAdditionalItems($value); break;
-                case 'uniqueItems': $property->setUniqueItems($value); break;
-                case 'maxItems': $property->setMaxItems($value); break;
-                case 'minItems': $property->setMinItems($value); break;
-            }
-        }
-
-        return $property;
-    }
-
     protected function parseClassAnnotations(PropertyType $property, array $annotations)
     {
         foreach ($annotations as $annotation) {
@@ -269,27 +229,13 @@ class Popo implements ParserInterface
         if ($value instanceof Annotation\Ref) {
             return $this->parseClass($value->getRef());
         } elseif ($value instanceof Annotation\Schema) {
-            return $this->parseArray($this->resolveValues($value->getValues()));
+            $property = new PropertyType();
+            $this->parsePropertyAnnotations($property, $value->getAnnotations());
+            return $property;
         } elseif ($allowBoolean && is_bool($value)) {
             return $value;
         }
 
         return null;
-    }
-
-    protected function resolveValues(array $values)
-    {
-        $result = [];
-        foreach ($values as $key => $row) {
-            if ($row instanceof Annotation\Ref || $row instanceof Annotation\Schema) {
-                $result[$key] = $this->parseRef($row);
-            } elseif (is_array($row)) {
-                $result[$key] = $this->resolveValues($row);
-            } else {
-                $result[$key] = $row;
-            }
-        }
-
-        return $result;
     }
 }

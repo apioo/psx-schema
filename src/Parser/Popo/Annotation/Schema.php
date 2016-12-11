@@ -45,4 +45,45 @@ class Schema
     {
         return $this->values;
     }
+
+    public function getAnnotations()
+    {
+        $annotations = [];
+
+        foreach ($this->values as $key => $value) {
+            $value = [$value];
+            switch ($key) {
+                case 'title': $annotations[] = new Title($value); break;
+                case 'description': $annotations[] = new Description($value); break;
+                case 'enum': $annotations[] = new Enum($value); break;
+                case 'type': $annotations[] = new Type($value); break;
+                case 'allOf': $annotations[] = new AllOf($value); break;
+                case 'anyOf': $annotations[] = new AnyOf($value); break;
+                case 'oneOf': $annotations[] = new OneOf($value); break;
+                case 'not': $annotations[] = new Not($value); break;
+
+                // number
+                case 'maximum': $annotations[] = new Maximum($value); break;
+                case 'minimum': $annotations[] = new Minimum($value); break;
+                case 'exclusiveMaximum': $annotations[] = new ExclusiveMaximum($value); break;
+                case 'exclusiveMinimum': $annotations[] = new ExclusiveMinimum($value); break;
+                case 'multipleOf': $annotations[] = new MultipleOf($value); break;
+
+                // string
+                case 'maxLength': $annotations[] = new MaxLength($value); break;
+                case 'minLength': $annotations[] = new MinLength($value); break;
+                case 'pattern': $annotations[] = new Pattern($value); break;
+                case 'format': $annotations[] = new Format($value); break;
+
+                // array
+                case 'items': $annotations[] = new Items($value); break;
+                case 'additionalItems': $annotations[] = new AdditionalItems($value); break;
+                case 'uniqueItems': $annotations[] = new UniqueItems($value); break;
+                case 'maxItems': $annotations[] = new MaxItems($value); break;
+                case 'minItems': $annotations[] = new MinItems($value); break;
+            }
+        }
+
+        return $annotations;
+    }
 }
