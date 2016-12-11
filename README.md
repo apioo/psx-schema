@@ -111,7 +111,7 @@ try {
     $traverser = new SchemaTraverser();
     $example   = $traverser->traverse($data, $schema, new TypeVisitor());
     
-    // $result contains now an instance of the Example_Schema class containing 
+    // $example contains now an instance of the Example_Schema class containing 
     // the firstName and lastName property
     echo $example->getFirstName();
 
@@ -119,6 +119,28 @@ try {
     // the validation failed
     echo $e->getMessage();
 }
+
+```
+
+You can use the dumper to create a JSON representation based on your POPO 
+objects:
+
+```php
+$schema = new Example_Schema();
+$schema->setFirstName('foo');
+$schema->setLastName('bar');
+$schema->setAge(12);
+
+$reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
+$reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+$dumper = new \PSX\Schema\Parser\Popo\Dumper($reader);
+$data   = $dumper->dump($schema);
+
+echo json_encode($data);
+
+// would result in
+// {"firstName": "foo", "lastName": "bar", "age": 12}
 
 ```
 
