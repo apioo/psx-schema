@@ -30,7 +30,7 @@ namespace PSX\Schema;
 interface GeneratorInterface
 {
     /**
-     * Generates an representation of this schema in another schema format
+     * Generates a representation of this schema in another schema format
      *
      * @param \PSX\Schema\SchemaInterface $schema
      * @return string
