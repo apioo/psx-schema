@@ -45,9 +45,8 @@ class SchemaTraverser
     protected $recCount;
 
     /**
-     * Traverses through the data and validate it according to the provided
-     * schema. Calls for the visitor methods for each type which can return
-     * different objects for the type
+     * Traverses through the data and validates it according to the provided
+     * schema. Calls also the visitor methods for each type
      *
      * @param mixed $data
      * @param \PSX\Schema\SchemaInterface $schema
@@ -100,11 +99,11 @@ class SchemaTraverser
             $result = $this->traverseString($data, $property, $visitor);
         } elseif (is_bool($data)) {
             $result = $visitor->visitBoolean($data, $property, $this->getCurrentPath());
-        } elseif (is_array($data) || $data instanceof Traversable) {
+        } elseif (is_array($data)) {
             $this->assertArrayConstraints($data, $property);
 
             $result = $this->traverseArray($data, $property, $visitor);
-        } elseif ($data instanceof \stdClass || $data instanceof RecordInterface) {
+        } elseif ($data instanceof \stdClass) {
             $this->assertObjectConstraints($data, $property, $visitor);
 
             $result = $this->traverseObject($data, $property, $visitor);
@@ -142,9 +141,8 @@ class SchemaTraverser
         return $result;
     }
 
-    protected function traverseArray($data, PropertyInterface $property, VisitorInterface $visitor)
+    protected function traverseArray(array $data, PropertyInterface $property, VisitorInterface $visitor)
     {
-        $data   = $this->normalizeArray($data);
         $result = [];
         $keys   = [];
 
@@ -207,9 +205,9 @@ class SchemaTraverser
         return $visitor->visitArray($result, $property, $this->getCurrentPath());
     }
 
-    protected function traverseObject($data, PropertyInterface $property, VisitorInterface $visitor)
+    protected function traverseObject(\stdClass $data, PropertyInterface $property, VisitorInterface $visitor)
     {
-        $data   = $this->normalizeObject($data);
+        $data   = (array) $data;
         $result = new \stdClass();
         $keys   = [];
 
@@ -434,13 +432,13 @@ class SchemaTraverser
         $type = $property->getType();
         if ($type !== null) {
             if (is_string($type)) {
-                if ($this->isNotOfType($type, $data)) {
+                if (!$this->isOfType($type, $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be of type ' . $type);
                 }
             } elseif (is_array($type)) {
                 $found = false;
                 foreach ($type as $typ) {
-                    if (!$this->isNotOfType($typ, $data)) {
+                    if ($this->isOfType($typ, $data)) {
                         $found = true;
                         break;
                     }
@@ -615,46 +613,26 @@ class SchemaTraverser
         }
     }
 
-    private function normalizeArray($data)
-    {
-        if ($data instanceof Traversable) {
-            $data = iterator_to_array($data, false);
-        }
-
-        return $data;
-    }
-
-    private function normalizeObject($data)
-    {
-        if ($data instanceof RecordInterface) {
-            $data = $data->getProperties();
-        } elseif ($data instanceof \stdClass) {
-            $data = (array) $data;
-        }
-
-        return $data;
-    }
-
     private function getCurrentPath()
     {
         return '/' . implode('/', $this->pathStack);
     }
 
-    private function isNotOfType($type, $data)
+    private function isOfType($type, $data)
     {
-        if ($type === PropertyType::TYPE_NULL && $data !== null) {
+        if ($type === PropertyType::TYPE_NULL && $data === null) {
             return true;
-        } elseif ($type === PropertyType::TYPE_BOOLEAN && !is_bool($data)) {
+        } elseif ($type === PropertyType::TYPE_BOOLEAN && is_bool($data)) {
             return true;
-        } elseif ($type === PropertyType::TYPE_OBJECT && !$data instanceof \stdClass) {
+        } elseif ($type === PropertyType::TYPE_OBJECT && $data instanceof \stdClass) {
             return true;
-        } elseif ($type === PropertyType::TYPE_ARRAY && !is_array($data)) {
+        } elseif ($type === PropertyType::TYPE_ARRAY && is_array($data)) {
             return true;
-        } elseif ($type === PropertyType::TYPE_NUMBER && !(is_int($data) || is_float($data))) {
+        } elseif ($type === PropertyType::TYPE_NUMBER && (is_int($data) || is_float($data))) {
             return true;
-        } elseif ($type === PropertyType::TYPE_INTEGER && !is_int($data)) {
+        } elseif ($type === PropertyType::TYPE_INTEGER && is_int($data)) {
             return true;
-        } elseif ($type === PropertyType::TYPE_STRING && !is_string($data)) {
+        } elseif ($type === PropertyType::TYPE_STRING && is_string($data)) {
             return true;
         }
 
