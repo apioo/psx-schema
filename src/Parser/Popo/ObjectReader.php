@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 
 /**
- * The exporter takes an arbitrary object and returns a record
+ * ObjectReader
  *
  * @author  Christoph Kappestein <k42b3.x@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
