@@ -36,7 +36,8 @@ We use the example schema from the json schema website.
 }
 ```
 
-Based on the schema we can generate the following PHP class
+Based on the schema we can generate the PHP classes with the following
+command: `vendor/bin/schema schema schema.json php`
 
 ```php
 <?php
