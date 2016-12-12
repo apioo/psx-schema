@@ -21,6 +21,7 @@
 namespace PSX\Schema\Parser\Popo;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use InvalidArgumentException;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
@@ -51,8 +52,13 @@ class Dumper
     /**
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(Reader $reader = null)
     {
+        if ($reader === null) {
+            $reader = new SimpleAnnotationReader();
+            $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+        }
+
         $this->reader = $reader;
     }
 

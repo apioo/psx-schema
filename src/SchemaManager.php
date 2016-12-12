@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use Doctrine\Common\Cache\ArrayCache;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -58,9 +59,14 @@ class SchemaManager implements SchemaManagerInterface
      */
     protected $httpClient;
 
-    public function __construct(Reader $annotationReader, CacheItemPoolInterface $cache = null, $debug = false)
+    public function __construct(Reader $reader = null, CacheItemPoolInterface $cache = null, $debug = false)
     {
-        $this->popoParser = new Parser\Popo($annotationReader);
+        if ($reader === null) {
+            $reader = new SimpleAnnotationReader();
+            $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+        }
+
+        $this->popoParser = new Parser\Popo($reader);
         $this->cache      = $cache === null ? new Pool(new ArrayCache()) : $cache;
         $this->debug      = $debug;
         $this->httpClient = new Client();

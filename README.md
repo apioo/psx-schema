@@ -100,10 +100,7 @@ Now we can use this class to read json data which fits to the schema
 // the data which we want to import
 $data = json_decode({"firstName": "foo", "lastName": "bar"});
 
-$reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-$reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
-$schemaManager = new \PSX\Schema\SchemaManager($reader);
+$schemaManager = new \PSX\Schema\SchemaManager();
 
 // we read the schema annotations from the class
 $schema = $schemaManager->getSchema(Example_Schema::class);
@@ -132,10 +129,7 @@ $schema->setFirstName('foo');
 $schema->setLastName('bar');
 $schema->setAge(12);
 
-$reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-$reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
-$dumper = new \PSX\Schema\Parser\Popo\Dumper($reader);
+$dumper = new \PSX\Schema\Parser\Popo\Dumper();
 $data   = $dumper->dump($schema);
 
 echo json_encode($data);
