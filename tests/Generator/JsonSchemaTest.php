@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\JsonSchema;
+use PSX\Schema\Parser;
 
 /**
  * JsonSchemaTest
@@ -34,9 +35,8 @@ class JsonSchemaTest extends GeneratorTestCase
     public function testGenerate()
     {
         $generator = new JsonSchema();
-        $result    = $generator->generate($this->getSchema());
-
-        $expect = <<<'JSON'
+        $actual    = $generator->generate($this->getSchema());
+        $expect    = <<<'JSON'
 {
     "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
     "id": "urn:schema.phpsx.org#",
@@ -256,6 +256,254 @@ class JsonSchemaTest extends GeneratorTestCase
 }
 JSON;
 
-        $this->assertJsonStringEqualsJsonString($expect, $result, $result);
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateRecursive()
+    {
+        $schema    = Parser\JsonSchema::fromFile(__DIR__ . '/../Parser/JsonSchema/schema.json');
+        $generator = new JsonSchema();
+        $actual    = $generator->generate($schema);
+        $expect    = <<<'JSON'
+{
+    "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+    "id": "urn:schema.phpsx.org#",
+    "definitions": {
+        "ObjectId": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#"
+            }
+        },
+        "ObjectId": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    }
+                ]
+            }
+        }
+    },
+    "type": "object",
+    "title": "json schema",
+    "description": "Core schema meta-schema",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": {},
+        "multipleOf": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "boolean"
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "boolean"
+        },
+        "maxLength": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "minLength": {
+            "allOf": [
+                {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                {}
+            ]
+        },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": {
+            "anyOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "$ref": "#"
+                }
+            ]
+        },
+        "items": {
+            "anyOf": [
+                {
+                    "$ref": "#"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#"
+                    },
+                    "minItems": 1
+                }
+            ]
+        },
+        "maxItems": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "minItems": {
+            "allOf": [
+                {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                {}
+            ]
+        },
+        "uniqueItems": {
+            "type": "boolean"
+        },
+        "maxProperties": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "minProperties": {
+            "allOf": [
+                {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                {}
+            ]
+        },
+        "required": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "additionalProperties": {
+            "anyOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "$ref": "#"
+                }
+            ]
+        },
+        "definitions": {
+            "$ref": "#\/definitions\/ObjectId"
+        },
+        "properties": {
+            "$ref": "#\/definitions\/ObjectId"
+        },
+        "patternProperties": {
+            "$ref": "#\/definitions\/ObjectId"
+        },
+        "dependencies": {
+            "$ref": "#\/definitions\/ObjectId"
+        },
+        "enum": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                {
+                    "enum": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "null",
+                        "number",
+                        "object",
+                        "string"
+                    ]
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "enum": [
+                            "array",
+                            "boolean",
+                            "integer",
+                            "null",
+                            "number",
+                            "object",
+                            "string"
+                        ]
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "allOf": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            },
+            "minItems": 1
+        },
+        "anyOf": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            },
+            "minItems": 1
+        },
+        "oneOf": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            },
+            "minItems": 1
+        },
+        "not": {
+            "$ref": "#"
+        }
+    },
+    "dependencies": {
+        "exclusiveMaximum": [
+            "maximum"
+        ],
+        "exclusiveMinimum": [
+            "minimum"
+        ]
+    }
+}
+JSON;
+
+        $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
+        
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 }

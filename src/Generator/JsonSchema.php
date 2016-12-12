@@ -43,6 +43,7 @@ class JsonSchema implements GeneratorInterface
 
     protected $targetNamespace;
     protected $definitions;
+    protected $root;
 
     public function __construct($targetNamespace = null)
     {
@@ -67,7 +68,8 @@ class JsonSchema implements GeneratorInterface
 
     protected function generateRootElement(PropertyInterface $type)
     {
-        $this->definitions = array();
+        $this->root        = $this->getIdentifierForProperty($type);
+        $this->definitions = [];
 
         $object = $this->generateObjectType($type);
 
@@ -108,7 +110,15 @@ class JsonSchema implements GeneratorInterface
         if (isset($result['items'])) {
             if ($result['items'] instanceof PropertyInterface) {
                 $result['items'] = $this->getRef($result['items']);
+            } elseif (is_array($result['items'])) {
+                foreach ($result['items'] as $index => $property) {
+                    $result['items'][$index] = $this->getRef($property);
+                }
             }
+        }
+
+        if (isset($result['additionalItems']) && $result['additionalItems'] instanceof PropertyInterface) {
+            $result['additionalItems'] = $this->getRef($result['additionalItems']);
         }
 
         if (isset($result['allOf'])) {
@@ -134,7 +144,11 @@ class JsonSchema implements GeneratorInterface
             $result['class'] = $class;
         }
 
-        return $result;
+        if (empty($result)) {
+            return new \stdClass();
+        } else {
+            return $result;
+        }
     }
 
     protected function getRef(PropertyInterface $property)
@@ -143,7 +157,14 @@ class JsonSchema implements GeneratorInterface
         $key  = $this->getIdentifierForProperty($property);
 
         if ($type === PropertyType::TYPE_OBJECT) {
-            $this->definitions[$key] = $this->generateObjectType($property);
+            if ($this->root === $key) {
+                return ['$ref' => '#'];
+            }
+
+            if (!isset($this->definitions[$key])) {
+                $this->definitions[$key] = true;
+                $this->definitions[$key] = $this->generateObjectType($property);
+            }
 
             return ['$ref' => '#/definitions/' . $key];
         } else {

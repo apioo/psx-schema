@@ -1031,7 +1031,7 @@ class PropertyType implements PropertyInterface
 
     public function toArray()
     {
-        return array_filter([
+        $map = [
             'type' => $this->type,
             'enum' => $this->enum,
             'title' => $this->title,
@@ -1050,14 +1050,14 @@ class PropertyType implements PropertyInterface
             'maxProperties' => $this->maxProperties,
             'required' => $this->required,
             'dependencies' => $this->dependencies,
-            
+
             // array
             'items' => $this->items,
             'additionalItems' => $this->additionalItems,
             'minItems' => $this->minItems,
             'maxItems' => $this->maxItems,
             'uniqueItems' => $this->uniqueItems,
-            
+
             // number
             'minimum' => $this->minimum,
             'maximum' => $this->maximum,
@@ -1070,9 +1070,13 @@ class PropertyType implements PropertyInterface
             'minLength' => $this->minLength,
             'maxLength' => $this->maxLength,
             'format' => $this->format,
-        ], function ($value) {
+        ];
+
+        $map = array_filter($map, function ($value) {
             return $value !== null;
         });
+
+        return $map;
     }
 
     public function __clone()
