@@ -1,5 +1,10 @@
 
-### 2.0.0
+### 2.0.1 (2016-12-12)
+
+* Add dumper class
+* Add schema bin script
+
+### 2.0.0 (2016-12-10)
 
 * Improved parse and generator
 * Proper handling of oneOf, anyOf, allOf and not
