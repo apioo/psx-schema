@@ -166,6 +166,10 @@ class Dumper
 
     protected function dumpValue($value, array $annotations)
     {
+        if ($value === null) {
+            return null;
+        }
+
         $type   = null;
         $format = null;
         $items  = null;
