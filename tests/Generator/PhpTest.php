@@ -56,7 +56,7 @@ class Meta extends \ArrayObject
      * @Type("string")
      * @Format("date-time")
      */
-    public $createDate;
+    protected $createDate;
     public function setCreateDate($createDate)
     {
         $this->createDate = $createDate;
@@ -80,12 +80,12 @@ class Web extends \ArrayObject
      * @Key("name")
      * @Type("string")
      */
-    public $name;
+    protected $name;
     /**
      * @Key("url")
      * @Type("string")
      */
-    public $url;
+    protected $url;
     public function setName($name)
     {
         $this->name = $name;
@@ -115,12 +115,12 @@ class Location extends \ArrayObject
      * @Key("lat")
      * @Type("number")
      */
-    public $lat;
+    protected $lat;
     /**
      * @Key("long")
      * @Type("number")
      */
-    public $long;
+    protected $long;
     public function setLat($lat)
     {
         $this->lat = $lat;
@@ -151,32 +151,32 @@ class Author
      * @Type("string")
      * @Pattern("[A-z]{3,16}")
      */
-    public $title;
+    protected $title;
     /**
      * @Key("email")
      * @Description("We will send no spam to this addresss")
      * @Type("string")
      */
-    public $email;
+    protected $email;
     /**
      * @Key("categories")
      * @Type("array")
      * @Items(@Schema(type="string"))
      * @MaxItems(8)
      */
-    public $categories;
+    protected $categories;
     /**
      * @Key("locations")
      * @Description("Array of locations")
      * @Type("array")
      * @Items(@Ref("PSX\Schema\Tests\Generator\Location"))
      */
-    public $locations;
+    protected $locations;
     /**
      * @Key("origin")
      * @Ref("PSX\Schema\Tests\Generator\Location")
      */
-    public $origin;
+    protected $origin;
     public function setTitle($title)
     {
         $this->title = $title;
@@ -237,7 +237,7 @@ class News
      * @Key("config")
      * @Ref("PSX\Schema\Tests\Generator\Config")
      */
-    public $config;
+    protected $config;
     /**
      * @Key("tags")
      * @Type("array")
@@ -245,78 +245,78 @@ class News
      * @MaxItems(6)
      * @MinItems(1)
      */
-    public $tags;
+    protected $tags;
     /**
      * @Key("receiver")
      * @Type("array")
      * @Items(@Ref("PSX\Schema\Tests\Generator\Author"))
      * @MinItems(1)
      */
-    public $receiver;
+    protected $receiver;
     /**
      * @Key("resources")
      * @Type("array")
      * @Items(@Schema(oneOf={@Ref("PSX\Schema\Tests\Generator\Location"), @Ref("PSX\Schema\Tests\Generator\Web")}))
      */
-    public $resources;
+    protected $resources;
     /**
      * @Key("profileImage")
      * @Type("string")
      * @Format("base64")
      */
-    public $profileImage;
+    protected $profileImage;
     /**
      * @Key("read")
      * @Type("boolean")
      */
-    public $read;
+    protected $read;
     /**
      * @Key("source")
      * @OneOf(@Ref("PSX\Schema\Tests\Generator\Author"), @Ref("PSX\Schema\Tests\Generator\Web"))
      */
-    public $source;
+    protected $source;
     /**
      * @Key("author")
      * @Ref("PSX\Schema\Tests\Generator\Author")
      */
-    public $author;
+    protected $author;
     /**
      * @Key("meta")
      * @Ref("PSX\Schema\Tests\Generator\Meta")
      */
-    public $meta;
+    protected $meta;
     /**
      * @Key("sendDate")
      * @Type("string")
      * @Format("date")
      */
-    public $sendDate;
+    protected $sendDate;
     /**
      * @Key("readDate")
      * @Type("string")
      * @Format("date-time")
      */
-    public $readDate;
+    protected $readDate;
     /**
      * @Key("expires")
      * @Type("string")
      * @Format("duration")
      */
-    public $expires;
+    protected $expires;
     /**
      * @Key("price")
      * @Type("number")
      * @Maximum(100)
      * @Minimum(1)
      */
-    public $price;
+    protected $price;
     /**
      * @Key("rating")
      * @Type("integer")
      * @Maximum(5)
      * @Minimum(1)
      */
-    public $rating;
+    protected $rating;
     /**
      * @Key("content")
      * @Description("Contains the main content of the news entry")
@@ -324,25 +324,25 @@ class News
      * @MaxLength(512)
      * @MinLength(3)
      */
-    public $content;
+    protected $content;
     /**
      * @Key("question")
      * @Enum({"foo", "bar"})
      * @Type("string")
      */
-    public $question;
+    protected $question;
     /**
      * @Key("coffeeTime")
      * @Type("string")
      * @Format("time")
      */
-    public $coffeeTime;
+    protected $coffeeTime;
     /**
      * @Key("profileUri")
      * @Type("string")
      * @Format("uri")
      */
-    public $profileUri;
+    protected $profileUri;
     public function setConfig($config)
     {
         $this->config = $config;
@@ -528,108 +528,108 @@ class Json_schema
      * @Type("string")
      * @Format("uri")
      */
-    public $id;
+    protected $id;
     /**
      * @Key("$schema")
      * @Type("string")
      * @Format("uri")
      */
-    public $_schema;
+    protected $_schema;
     /**
      * @Key("title")
      * @Type("string")
      */
-    public $title;
+    protected $title;
     /**
      * @Key("description")
      * @Type("string")
      */
-    public $description;
+    protected $description;
     /**
      * @Key("default")
      */
-    public $default;
+    protected $default;
     /**
      * @Key("multipleOf")
      * @Type("number")
      * @Minimum(0)
      * @ExclusiveMinimum(true)
      */
-    public $multipleOf;
+    protected $multipleOf;
     /**
      * @Key("maximum")
      * @Type("number")
      */
-    public $maximum;
+    protected $maximum;
     /**
      * @Key("exclusiveMaximum")
      * @Type("boolean")
      */
-    public $exclusiveMaximum;
+    protected $exclusiveMaximum;
     /**
      * @Key("minimum")
      * @Type("number")
      */
-    public $minimum;
+    protected $minimum;
     /**
      * @Key("exclusiveMinimum")
      * @Type("boolean")
      */
-    public $exclusiveMinimum;
+    protected $exclusiveMinimum;
     /**
      * @Key("maxLength")
      * @Type("integer")
      * @Minimum(0)
      */
-    public $maxLength;
+    protected $maxLength;
     /**
      * @Key("minLength")
      * @AllOf(@Schema(type="integer", minimum=0), @Schema())
      */
-    public $minLength;
+    protected $minLength;
     /**
      * @Key("pattern")
      * @Type("string")
      * @Format("regex")
      */
-    public $pattern;
+    protected $pattern;
     /**
      * @Key("additionalItems")
      * @AnyOf(@Schema(type="boolean"), @Ref("PSX\Generation\Json_schema"))
      */
-    public $additionalItems;
+    protected $additionalItems;
     /**
      * @Key("items")
      * @AnyOf(@Ref("PSX\Generation\Json_schema"), @Schema(type="array", items=@Ref("PSX\Generation\Json_schema"), minItems=1))
      */
-    public $items;
+    protected $items;
     /**
      * @Key("maxItems")
      * @Type("integer")
      * @Minimum(0)
      */
-    public $maxItems;
+    protected $maxItems;
     /**
      * @Key("minItems")
      * @AllOf(@Schema(type="integer", minimum=0), @Schema())
      */
-    public $minItems;
+    protected $minItems;
     /**
      * @Key("uniqueItems")
      * @Type("boolean")
      */
-    public $uniqueItems;
+    protected $uniqueItems;
     /**
      * @Key("maxProperties")
      * @Type("integer")
      * @Minimum(0)
      */
-    public $maxProperties;
+    protected $maxProperties;
     /**
      * @Key("minProperties")
      * @AllOf(@Schema(type="integer", minimum=0), @Schema())
      */
-    public $minProperties;
+    protected $minProperties;
     /**
      * @Key("required")
      * @Type("array")
@@ -637,70 +637,70 @@ class Json_schema
      * @UniqueItems(true)
      * @MinItems(1)
      */
-    public $required;
+    protected $required;
     /**
      * @Key("additionalProperties")
      * @AnyOf(@Schema(type="boolean"), @Ref("PSX\Generation\Json_schema"))
      */
-    public $additionalProperties;
+    protected $additionalProperties;
     /**
      * @Key("definitions")
      * @Ref("PSX\Generation\ObjectId")
      */
-    public $definitions;
+    protected $definitions;
     /**
      * @Key("properties")
      * @Ref("PSX\Generation\ObjectId")
      */
-    public $properties;
+    protected $properties;
     /**
      * @Key("patternProperties")
      * @Ref("PSX\Generation\ObjectId")
      */
-    public $patternProperties;
+    protected $patternProperties;
     /**
      * @Key("dependencies")
      * @Ref("PSX\Generation\ObjectId")
      */
-    public $dependencies;
+    protected $dependencies;
     /**
      * @Key("enum")
      * @Type("array")
      * @UniqueItems(true)
      * @MinItems(1)
      */
-    public $enum;
+    protected $enum;
     /**
      * @Key("type")
      * @AnyOf(@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}), @Schema(type="array", items=@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}), minItems=1, uniqueItems=true))
      */
-    public $type;
+    protected $type;
     /**
      * @Key("allOf")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)
      */
-    public $allOf;
+    protected $allOf;
     /**
      * @Key("anyOf")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)
      */
-    public $anyOf;
+    protected $anyOf;
     /**
      * @Key("oneOf")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)
      */
-    public $oneOf;
+    protected $oneOf;
     /**
      * @Key("not")
      * @Ref("PSX\Generation\Json_schema")
      */
-    public $not;
+    protected $not;
     public function setId($id)
     {
         $this->id = $id;
