@@ -107,7 +107,9 @@ class Dumper
                     $value = $reflection->getMethod($getter)->invoke($data);
                     $value = $this->dumpValue($value, $annotations);
 
-                    $result->setProperty($name, $value);
+                    if ($value !== null) {
+                        $result->setProperty($name, $value);
+                    }
                     break;
                 }
             }
@@ -117,7 +119,10 @@ class Dumper
             foreach ($patternProperties as $pattern => $property) {
                 foreach ($data as $key => $value) {
                     if (preg_match('~' . $pattern . '~', $key)) {
-                        $result->setProperty($key, $this->getRef($value, $property));
+                        $ref = $this->getRef($value, $property);
+                        if ($ref !== null) {
+                            $result->setProperty($key, $ref);
+                        }
                     }
                 }
             }
@@ -126,13 +131,18 @@ class Dumper
         if ($additionalProperties === true) {
             foreach ($data as $key => $value) {
                 if (!$result->hasProperty($key)) {
-                    $result->setProperty($key, $value);
+                    if ($value !== null) {
+                        $result->setProperty($key, $value);
+                    }
                 }
             }
         } elseif ($additionalProperties instanceof Annotation\Ref || $additionalProperties instanceof Annotation\Schema) {
             foreach ($data as $key => $value) {
                 if (!$result->hasProperty($key)) {
-                    $result->setProperty($key, $this->getRef($value, $additionalProperties));
+                    $ref = $this->getRef($value, $additionalProperties);
+                    if ($ref !== null) {
+                        $result->setProperty($key, $ref);
+                    }
                 }
             }
         }
@@ -212,6 +222,14 @@ class Dumper
         } elseif ($type === PropertyType::TYPE_STRING) {
             if ($format === PropertyType::FORMAT_BINARY && is_resource($value)) {
                 return base64_encode(stream_get_contents($value, -1, 0));
+            } elseif ($format === PropertyType::FORMAT_DATETIME && $value instanceof \DateTime) {
+                return DateTime::fromDateTime($value)->toString();
+            } elseif ($format === PropertyType::FORMAT_DATE && $value instanceof \DateTime) {
+                return Date::fromDateTime($value)->toString();
+            } elseif ($format === PropertyType::FORMAT_TIME && $value instanceof \DateTime) {
+                return Time::fromDateTime($value)->toString();
+            } elseif ($format === PropertyType::FORMAT_DURATION && $value instanceof \DateInterval) {
+                return Duration::fromDateInterval($value)->toString();
             } else {
                 return (string) $value;
             }
