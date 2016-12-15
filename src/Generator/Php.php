@@ -124,7 +124,7 @@ class Php implements GeneratorInterface
             // add properties
             foreach ($properties as $name => $property) {
                 $class->addStmt($this->factory->property($this->normalizeParameterName($name))
-                    ->makePublic()
+                    ->makeProtected()
                     ->setDocComment($this->getDocCommentForProperty($property, $name)));
             }
 
