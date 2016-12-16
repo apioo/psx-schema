@@ -1,4 +1,15 @@
 
+### 2.0.3 (2016-12-16)
+
+* Use array instead of doctrine ArrayCollection
+* Increased doctrine annotation dependency to 1.3
+
+### 2.0.2 (2016-12-15)
+
+* Make properties protected
+* Ignore null values
+* Handle date types
+
 ### 2.0.1 (2016-12-12)
 
 * Add dumper class
