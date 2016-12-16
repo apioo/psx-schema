@@ -48,7 +48,7 @@ class TypeVisitor implements VisitorInterface
 {
     public function visitArray(array $data, PropertyInterface $property, $path)
     {
-        return new ArrayCollection($data);
+        return $data;
     }
 
     public function visitBinary($data, PropertyInterface $property, $path)

@@ -44,8 +44,8 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getArray();
         $data     = $visitor->visitArray([10], $property, '');
 
-        $this->assertInstanceOf(Collection::class, $data);
-        $this->assertSame([10], $data->toArray());
+        $this->assertInternalType('array', $data);
+        $this->assertSame([10], $data);
     }
 
     public function testVisitBinary()
