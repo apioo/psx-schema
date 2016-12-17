@@ -1,4 +1,8 @@
 
+### 2.0.4 (2016-12-17)
+
+* Use constraint id in html generator
+
 ### 2.0.3 (2016-12-16)
 
 * Use array instead of doctrine ArrayCollection
