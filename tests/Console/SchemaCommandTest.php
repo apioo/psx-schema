@@ -338,12 +338,12 @@ JSON;
         ));
 
         $actual = $commandTester->getDisplay();
-        $actual = preg_replace('/psx-type-([0-9A-Fa-f]{32})/', 'psx-type-[id]', $actual);
-        
+        $actual = preg_replace('/psx_model_Object([0-9A-Fa-f]{8})/', '[dynamic_id]', $actual);
+
         $expect = <<<'HTML'
 <?xml version="1.0"?>
 <div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Json_schema">
     <h1>json schema</h1>
     <small>http://json-schema.org/draft-04/schema</small>
     <div class="psx-type-description">Core schema meta-schema</div>
@@ -540,7 +540,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">additionalItems</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -552,7 +552,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">items</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>)</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -657,7 +657,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">additionalProperties</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type">Boolean</span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -670,7 +670,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">Object</a>
+              <a href="#[dynamic_id]">Object</a>
             </span>
           </td>
           <td>
@@ -684,7 +684,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">Object</a>
+              <a href="#[dynamic_id]">Object</a>
             </span>
           </td>
           <td>
@@ -698,7 +698,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">Object</a>
+              <a href="#[dynamic_id]">Object</a>
             </span>
           </td>
           <td>
@@ -712,7 +712,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">Object</a>
+              <a href="#[dynamic_id]">Object</a>
             </span>
           </td>
           <td>
@@ -756,7 +756,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">allOf</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -775,7 +775,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">anyOf</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -794,7 +794,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">oneOf</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -814,7 +814,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">json schema</a>
+              <a href="#psx_model_Json_schema">json schema</a>
             </span>
           </td>
           <td>
@@ -825,7 +825,7 @@ JSON;
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="[dynamic_id]">
     <h1>Object</h1>
     <table class="table psx-type-properties">
       <colgroup>
@@ -849,7 +849,7 @@ JSON;
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">json schema</a>
+              <a href="#psx_model_Json_schema">json schema</a>
             </span>
           </td>
           <td>
@@ -860,7 +860,7 @@ JSON;
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="[dynamic_id]">
     <h1>Object</h1>
     <table class="table psx-type-properties">
       <colgroup>
@@ -883,7 +883,7 @@ JSON;
             <span class="psx-property-name psx-property-optional">*</span>
           </td>
           <td>
-            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">String</span>)</span>)</span>
+            <span class="psx-property-type">AnyOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Json_schema">json schema</a></span> | <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">String</span>)</span>)</span>
           </td>
           <td>
             <span class="psx-property-description">Additional properties must be of this type</span>
