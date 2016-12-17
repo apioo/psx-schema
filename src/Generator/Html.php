@@ -87,7 +87,7 @@ class Html implements GeneratorInterface
             return '';
         }
 
-        $response = '<div id="psx-type-' . $property->getConstraintId() . '" class="psx-complex-type">';
+        $response = '<div id="' . $this->getIdForProperty($property) . '" class="psx-object">';
         $response.= '<h1>' . (htmlspecialchars($property->getTitle()) ?: 'Object') . '</h1>';
 
         $ref = $property->getRef();
@@ -218,7 +218,7 @@ class Html implements GeneratorInterface
                 $this->references[] = $property;
             }
 
-            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-' . $constraintId . '">' . ($property->getTitle() ?: 'Object') . '</a></span>';
+            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#' . $this->getIdForProperty($property) . '">' . ($property->getTitle() ?: 'Object') . '</a></span>';
 
             return [$span, null];
         } elseif (!empty($type)) {
@@ -336,5 +336,10 @@ class Html implements GeneratorInterface
         }
 
         return $typeName;
+    }
+
+    protected function getIdForProperty(PropertyInterface $property)
+    {
+        return 'psx_model_' . $this->getIdentifierForProperty($property);
     }
 }
