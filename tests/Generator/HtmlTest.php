@@ -36,11 +36,10 @@ class HtmlTest extends GeneratorTestCase
         $generator = new Html();
         $actual    = $generator->generate($this->getSchema());
 
-        $actual = preg_replace('/psx-type-([0-9A-Fa-f]{32})/', 'psx-type-[id]', $actual);
         $expect = <<<'HTML'
 <?xml version="1.0"?>
 <div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_News">
     <h1>news</h1>
     <div class="psx-type-description">An general news entry</div>
     <table class="table psx-type-properties">
@@ -65,7 +64,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">config</a>
+              <a href="#psx_model_Config">config</a>
             </span>
           </td>
           <td>
@@ -101,7 +100,7 @@ class HtmlTest extends GeneratorTestCase
             <span class="psx-property-name psx-property-required">receiver</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">author</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Author">author</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -120,7 +119,7 @@ class HtmlTest extends GeneratorTestCase
             <span class="psx-property-name psx-property-optional">resources</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">OneOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">location</a></span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">web</a></span>)</span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type">OneOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Location">location</a></span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Web">web</a></span>)</span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -158,7 +157,7 @@ class HtmlTest extends GeneratorTestCase
             <span class="psx-property-name psx-property-optional">source</span>
           </td>
           <td>
-            <span class="psx-property-type">OneOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">author</a></span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">web</a></span>)</span>
+            <span class="psx-property-type">OneOf (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Author">author</a></span> | <span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Web">web</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description"/>
@@ -171,7 +170,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">author</a>
+              <a href="#psx_model_Author">author</a>
             </span>
           </td>
           <td>
@@ -185,7 +184,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">meta</a>
+              <a href="#psx_model_Meta">meta</a>
             </span>
           </td>
           <td>
@@ -363,7 +362,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Config">
     <h1>config</h1>
     <table class="table psx-type-properties">
       <colgroup>
@@ -396,7 +395,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Author">
     <h1>author</h1>
     <div class="psx-type-description">An simple author element with some description</div>
     <table class="table psx-type-properties">
@@ -470,7 +469,7 @@ class HtmlTest extends GeneratorTestCase
             <span class="psx-property-name psx-property-optional">locations</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">location</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Location">location</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description">Array of locations</span>
@@ -483,7 +482,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">location</a>
+              <a href="#psx_model_Location">location</a>
             </span>
           </td>
           <td>
@@ -494,7 +493,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Location">
     <h1>location</h1>
     <div class="psx-type-description">Location of the person</div>
     <table class="table psx-type-properties">
@@ -545,7 +544,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Web">
     <h1>web</h1>
     <div class="psx-type-description">An application</div>
     <table class="table psx-type-properties">
@@ -603,7 +602,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Author">
     <h1>author</h1>
     <div class="psx-type-description">An simple author element with some description</div>
     <table class="table psx-type-properties">
@@ -677,7 +676,7 @@ class HtmlTest extends GeneratorTestCase
             <span class="psx-property-name psx-property-optional">locations</span>
           </td>
           <td>
-            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx-type-[id]">location</a></span>)</span>
+            <span class="psx-property-type psx-property-type-array">Array (<span class="psx-property-type psx-property-type-complex"><a href="#psx_model_Location">location</a></span>)</span>
           </td>
           <td>
             <span class="psx-property-description">Array of locations</span>
@@ -690,7 +689,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">location</a>
+              <a href="#psx_model_Location">location</a>
             </span>
           </td>
           <td>
@@ -701,7 +700,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Meta">
     <h1>meta</h1>
     <div class="psx-type-description">Some meta data</div>
     <table class="table psx-type-properties">
@@ -752,7 +751,7 @@ class HtmlTest extends GeneratorTestCase
           </td>
           <td>
             <span class="psx-property-type psx-property-type-complex">
-              <a href="#psx-type-[id]">location</a>
+              <a href="#psx_model_Location">location</a>
             </span>
           </td>
           <td>
@@ -763,7 +762,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Location">
     <h1>location</h1>
     <div class="psx-type-description">Location of the person</div>
     <table class="table psx-type-properties">
@@ -814,7 +813,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Location">
     <h1>location</h1>
     <div class="psx-type-description">Location of the person</div>
     <table class="table psx-type-properties">
@@ -865,7 +864,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Location">
     <h1>location</h1>
     <div class="psx-type-description">Location of the person</div>
     <table class="table psx-type-properties">
@@ -916,7 +915,7 @@ class HtmlTest extends GeneratorTestCase
       </tbody>
     </table>
   </div>
-  <div class="psx-complex-type" id="psx-type-[id]">
+  <div class="psx-object" id="psx_model_Location">
     <h1>location</h1>
     <div class="psx-type-description">Location of the person</div>
     <table class="table psx-type-properties">
