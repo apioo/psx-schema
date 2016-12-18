@@ -280,7 +280,7 @@ class Php implements GeneratorInterface
 
             $not = $property->getNot();
             if ($not instanceof PropertyInterface) {
-                $comment.= ' * @OneOf(' . $this->getSubSchema($not) . ')' . "\n";
+                $comment.= ' * @Not(' . $this->getSubSchema($not) . ')' . "\n";
             }
 
             // number
