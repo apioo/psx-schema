@@ -21,13 +21,21 @@
 namespace PSX\Schema\Tests\Visitor;
 
 use Doctrine\Common\Collections\Collection;
+use PSX\DateTime\Date;
+use PSX\DateTime\DateTime;
+use PSX\DateTime\Duration;
+use PSX\DateTime\Time;
+use PSX\Record\RecordInterface;
 use PSX\Schema\Property;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\StdClass;
+use PSX\Schema\Validation\Field;
+use PSX\Schema\Validation\Validator;
 use PSX\Schema\Visitor\TypeVisitor;
 use PSX\Uri\Uri;
+use PSX\Validate\Filter;
 
 /**
  * TypeVisitorTest
@@ -48,6 +56,22 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame([10], $data);
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitArrayValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(array $data){
+                return count($data) < 2;
+            }])
+        ]);
+
+        $property = Property::getArray();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitArray([10, 8, 6], $property, '/foo/bar');
+    }
+
     public function testVisitBinary()
     {
         $visitor  = new TypeVisitor();
@@ -58,12 +82,44 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo', stream_get_contents($data));
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitBinaryValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function($data){
+                return fstat($data)['size'] < 2;
+            }])
+        ]);
+
+        $property = Property::getBinary();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitBinary(base64_encode('foo'), $property, '/foo/bar');
+    }
+
     public function testVisitBoolean()
     {
         $visitor  = new TypeVisitor();
-        $property = Property::getBinary();
+        $property = Property::getBoolean();
 
         $this->assertSame(true, $visitor->visitBoolean(true, $property, ''));
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitBooleanValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function($data){
+                return $data === true;
+            }])
+        ]);
+
+        $property = Property::getBoolean();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitBoolean(false, $property, '/foo/bar');
     }
 
     public function testVisitObject()
@@ -106,6 +162,39 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], (array) $record);
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitObjectValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(RecordInterface $data){
+                return isset($data->foo);
+            }])
+        ]);
+
+        $property = Property::getObject();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitObject((object) ['bar' => 'foo'], $property, '/foo/bar');
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitObjectValidatePopo()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(PopoClass $data){
+                return $data->getFoo() == 'foo';
+            }])
+        ]);
+
+        $property = Property::getObject();
+        $property->setClass(PopoClass::class);
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '/foo/bar');
+    }
+
     public function testVisitDateTime()
     {
         $visitor  = new TypeVisitor();
@@ -125,6 +214,22 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $property = Property::getDateTime();
 
         $visitor->visitDateTime('foo', $property, '');
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitDateTimeValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(DateTime $data){
+                return $data->format('d') == 8;
+            }])
+        ]);
+
+        $property = Property::getDateTime();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitDateTime('2002-10-10T17:00:00Z', $property, '/foo/bar');
     }
 
     public function testVisitDate()
@@ -148,6 +253,22 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->visitDate('foo', $property, '');
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitDateValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(Date $data){
+                return $data->format('d') == 8;
+            }])
+        ]);
+
+        $property = Property::getDate();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitDate('2002-10-10', $property, '/foo/bar');
+    }
+
     public function testVisitDuration()
     {
         $visitor  = new TypeVisitor();
@@ -169,12 +290,44 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->visitDuration('foo', $property, '');
     }
 
-    public function testVisitFloat()
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitDurationValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(Duration $data){
+                return $data->d == 2;
+            }])
+        ]);
+
+        $property = Property::getDuration();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitDuration('P1D', $property, '/foo/bar');
+    }
+
+    public function testVisitNumber()
     {
         $visitor  = new TypeVisitor();
         $property = Property::getNumber();
 
         $this->assertSame(1.1, $visitor->visitNumber(1.1, $property, ''));
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitNumberValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function($data){
+                return $data < 2.2;
+            }])
+        ]);
+
+        $property = Property::getNumber();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitNumber(12.34, $property, '/foo/bar');
     }
 
     public function testVisitInteger()
@@ -185,12 +338,43 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $visitor->visitNumber(1, $property, ''));
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitIntegerValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function($data){
+                return $data < 2;
+            }])
+        ]);
+
+        $property = Property::getInteger();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitInteger(12, $property, '/foo/bar');
+    }
+
     public function testVisitString()
     {
         $visitor  = new TypeVisitor();
         $property = Property::getString();
 
         $this->assertSame('foo', $visitor->visitString('foo', $property, ''));
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     * @expectedExceptionMessage /foo/bar has an invalid length min 8 and max 16 signs
+     */
+    public function testVisitStringValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [new Filter\Length(8, 16)])
+        ]);
+
+        $property = Property::getString();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitString('foo', $property, '/foo/bar');
     }
 
     public function testVisitTime()
@@ -214,6 +398,22 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->visitTime('foo', $property, '');
     }
 
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitTimeValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(Time $data){
+                return $data->format('H') == 11;
+            }])
+        ]);
+
+        $property = Property::getTime();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitTime('10:00:00', $property, '/foo/bar');
+    }
+
     public function testVisitUri()
     {
         $visitor  = new TypeVisitor();
@@ -221,5 +421,21 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('PSX\Uri\Uri', $visitor->visitUri('/foo', $property, ''));
         $this->assertInstanceOf('PSX\Uri\Uri', $visitor->visitUri('http://foo.com?foo=bar', $property, ''));
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
+     */
+    public function testVisitUriValidate()
+    {
+        $validator = new Validator([
+            new Field('/foo/bar', [function(Uri $data){
+                return $data->getAuthority() == 'bar.com';
+            }])
+        ]);
+
+        $property = Property::getUri();
+        $visitor  = new TypeVisitor($validator);
+        $visitor->visitUri('http://foo.com?foo=bar', $property, '/foo/bar');
     }
 }

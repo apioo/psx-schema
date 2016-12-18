@@ -1,4 +1,8 @@
 
+### 2.0.5 (2016-12-18)
+
+* Added validator class to type visitor
+
 ### 2.0.4 (2016-12-17)
 
 * Use constraint id in html generator

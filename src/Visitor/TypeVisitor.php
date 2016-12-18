@@ -30,6 +30,7 @@ use PSX\Record\RecordInterface;
 use PSX\Schema\AdditionalPropertiesInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\ValidationException;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
@@ -46,8 +47,25 @@ use ReflectionMethod;
  */
 class TypeVisitor implements VisitorInterface
 {
+    /**
+     * @var \PSX\Schema\Validation\ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * @param \PSX\Schema\Validation\ValidatorInterface|null $validator
+     */
+    public function __construct(ValidatorInterface $validator = null)
+    {
+        $this->validator = $validator;
+    }
+
     public function visitArray(array $data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return $data;
     }
 
@@ -62,11 +80,19 @@ class TypeVisitor implements VisitorInterface
         fwrite($resource, $binary);
         rewind($resource);
 
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $resource);
+        }
+
         return $resource;
     }
 
     public function visitBoolean($data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return $data;
     }
 
@@ -75,7 +101,13 @@ class TypeVisitor implements VisitorInterface
         // if we have no class reference we simply create a record
         $className = $property->getClass();
         if (empty($className)) {
-            return Record::fromStdClass($data, $property->getTitle() ?: null);
+            $result = Record::fromStdClass($data, $property->getTitle() ?: null);
+
+            if ($this->validator !== null) {
+                $this->validator->validate($path, $result);
+            }
+
+            return $result;
         }
 
         $class  = new \ReflectionClass($className);
@@ -124,51 +156,101 @@ class TypeVisitor implements VisitorInterface
             }
         }
 
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $record);
+        }
+
         return $record;
     }
 
     public function visitDateTime($data, PropertyInterface $property, $path)
     {
-        return new DateTime($data);
+        $result = new DateTime($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
     }
 
     public function visitDate($data, PropertyInterface $property, $path)
     {
-        return new Date($data);
+        $result = new Date($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
     }
 
     public function visitDuration($data, PropertyInterface $property, $path)
     {
-        return new Duration($data);
+        $result = new Duration($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
     }
 
     public function visitNumber($data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return $data;
     }
 
     public function visitInteger($data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return $data;
     }
 
     public function visitString($data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return $data;
     }
 
     public function visitTime($data, PropertyInterface $property, $path)
     {
-        return new Time($data);
+        $result = new Time($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
     }
 
     public function visitUri($data, PropertyInterface $property, $path)
     {
-        return new Uri($data);
+        $result = new Uri($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
     }
 
     public function visitNull($data, PropertyInterface $property, $path)
     {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
         return null;
     }
 }
