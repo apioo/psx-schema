@@ -28,7 +28,6 @@ use PSX\Json\Comparator;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Visitor\NullVisitor;
-use Traversable;
 
 /**
  * SchemaTraverser
