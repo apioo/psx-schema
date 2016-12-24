@@ -1,4 +1,13 @@
 
+### 2.0.7 (2016-12-24)
+
+* Dumper parses also traversable objects
+
+### 2.0.6 (2016-12-22)
+
+* Use nikic parser 3.0
+* Add validation test
+
 ### 2.0.5 (2016-12-18)
 
 * Added validator class to type visitor
