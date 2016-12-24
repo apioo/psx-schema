@@ -219,13 +219,17 @@ JSON;
         $subLocation = new Location();
         $subLocation->setLat(12.34);
         $subLocation->setLong(56.78);
+        $subLocation['foo'] = 'bar';
+
+        $resource = fopen('php://memory', 'r+');
+        fwrite($resource, 'foobar');
 
         $location = new Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
-        $location['assoc_array'] = ['foo' => $subLocation];
-        $location['stdclass'] = (object) ['foo' => $subLocation];
-        $location['array'] = [$subLocation];
+        $location['assoc_array'] = ['foo' => $subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
+        $location['stdclass'] = (object) ['foo' => $subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
+        $location['array'] = [$subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
 
         $locations = [
             $location,
@@ -253,20 +257,32 @@ JSON;
             "assoc_array": {
                 "foo": {
                     "lat": 12.34,
-                    "long": 56.78
-                }
+                    "long": 56.78,
+                    "foo": "bar"
+                },
+                "date": "2016-12-24T00:00:00Z",
+                "string": "bar",
+                "resource": "foobar"
             },
             "stdclass": {
                 "foo": {
                     "lat": 12.34,
-                    "long": 56.78
-                }
+                    "long": 56.78,
+                    "foo": "bar"
+                },
+                "date": "2016-12-24T00:00:00Z",
+                "string": "bar",
+                "resource": "foobar"
             },
             "array": [
                 {
                     "lat": 12.34,
-                    "long": 56.78
-                }
+                    "long": 56.78,
+                    "foo": "bar"
+                },
+                "2016-12-24T00:00:00Z",
+                "bar",
+                "foobar"
             ]
         },
         {

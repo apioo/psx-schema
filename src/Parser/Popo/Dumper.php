@@ -64,14 +64,20 @@ class Dumper
 
     /**
      * @param object $object
-     * @return \PSX\Record\RecordInterface
+     * @return mixed
      */
     public function dump($data)
     {
         if ($data instanceof RecordInterface || $data instanceof \stdClass || is_array($data)) {
             return $this->dumpTraversable($data);
+        } elseif ($data instanceof \DateTime) {
+            return DateTime::fromDateTime($data)->toString();
+        } elseif ($data instanceof \DateInterval) {
+            return Duration::fromDateInterval($data)->toString();
         } elseif (is_object($data)) {
             return $this->dumpObject($data);
+        } elseif (is_resource($data)) {
+            return stream_get_contents($data, -1, 0);
         } else {
             return $data;
         }
