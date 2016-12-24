@@ -1,4 +1,8 @@
 
+### 2.0.8 (2016-12-24)
+
+* Dumper handle datetime and resource values
+
 ### 2.0.7 (2016-12-24)
 
 * Dumper parses also traversable objects
