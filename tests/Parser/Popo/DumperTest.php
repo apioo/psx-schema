@@ -26,6 +26,7 @@ use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Http;
+use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Generator;
 use PSX\Schema\Parser\JsonSchema;
@@ -206,5 +207,84 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 JSON;
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    /**
+     * @dataProvider traversableProvider
+     */
+    public function testDumpTraversable()
+    {
+        include_once __DIR__ . '/News.php';
+
+        $subLocation = new Location();
+        $subLocation->setLat(12.34);
+        $subLocation->setLong(56.78);
+
+        $location = new Location();
+        $location->setLat(12.34);
+        $location->setLong(56.78);
+        $location['assoc_array'] = ['foo' => $subLocation];
+        $location['stdclass'] = (object) ['foo' => $subLocation];
+        $location['array'] = [$subLocation];
+
+        $locations = [
+            $location,
+            Record::fromArray(['lat' => 12, 'long' => 12]),
+        ];
+
+        $author = new Author();
+        $author->setLocations($locations);
+
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $dumper = new Dumper($reader);
+        $actual = $dumper->dump($author);
+
+        $this->assertInstanceOf(RecordInterface::class, $actual);
+
+        $actual = json_encode($actual, JSON_PRETTY_PRINT);
+        $expect = <<<JSON
+{
+    "locations": [
+        {
+            "lat": 12.34,
+            "long": 56.78,
+            "assoc_array": {
+                "foo": {
+                    "lat": 12.34,
+                    "long": 56.78
+                }
+            },
+            "stdclass": {
+                "foo": {
+                    "lat": 12.34,
+                    "long": 56.78
+                }
+            },
+            "array": [
+                {
+                    "lat": 12.34,
+                    "long": 56.78
+                }
+            ]
+        },
+        {
+            "lat": 12,
+            "long": 12
+        }
+    ]
+}
+JSON;
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function traversableProvider()
+    {
+        return [
+            [],
+            [],
+        ];
     }
 }

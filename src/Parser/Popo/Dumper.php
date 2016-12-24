@@ -68,15 +68,17 @@ class Dumper
      */
     public function dump($data)
     {
-        return $this->dumpObject($data);
+        if ($data instanceof RecordInterface || $data instanceof \stdClass || is_array($data)) {
+            return $this->dumpTraversable($data);
+        } elseif (is_object($data)) {
+            return $this->dumpObject($data);
+        } else {
+            return $data;
+        }
     }
 
     protected function dumpObject($data)
     {
-        if (!is_object($data)) {
-            throw new InvalidArgumentException('Data must be an object');
-        }
-
         $reflection  = new \ReflectionClass(get_class($data));
         $annotations = $this->reader->getClassAnnotations($reflection);
 
@@ -132,7 +134,7 @@ class Dumper
             foreach ($data as $key => $value) {
                 if (!$result->hasProperty($key)) {
                     if ($value !== null) {
-                        $result->setProperty($key, $value);
+                        $result->setProperty($key, $this->dump($value));
                     }
                 }
             }
@@ -161,7 +163,7 @@ class Dumper
             }
         } elseif ($items instanceof Annotation\Ref) {
             foreach ($data as $value) {
-                $result[] = $this->dumpObject($value);
+                $result[] = $this->dump($value);
             }
         } elseif (is_array($items)) {
             foreach ($data as $index => $value) {
@@ -210,7 +212,7 @@ class Dumper
         }
 
         if ($type === PropertyType::TYPE_OBJECT) {
-            return $this->dumpObject($value);
+            return $this->dump($value);
         } elseif ($type === PropertyType::TYPE_ARRAY) {
             return $this->dumpArray($value, $items);
         } elseif ($type === PropertyType::TYPE_BOOLEAN) {
@@ -251,11 +253,25 @@ class Dumper
     protected function getRef($value, $annotation)
     {
         if ($annotation instanceof Annotation\Ref) {
-            return $this->dumpObject($value);
+            return $this->dump($value);
         } elseif ($annotation instanceof Annotation\Schema) {
             return $this->dumpValue($value, $annotation->getAnnotations());
         }
 
         return null;
+    }
+
+    protected function dumpTraversable($data)
+    {
+        $values = [];
+        foreach ($data as $key => $value) {
+            $values[$key] = $this->dump($value);
+        }
+
+        if (isset($values[0])) {
+            return array_values($values);
+        } else {
+            return Record::fromArray($values);
+        }
     }
 }
