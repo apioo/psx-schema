@@ -62,7 +62,7 @@ class Html implements GeneratorInterface
 
     protected function generateType(PropertyInterface $type)
     {
-        $constraintId = $type->getConstraintId();
+        $constraintId = $this->getIdentifierForProperty($type);
 
         if (isset($this->types[$constraintId])) {
             return '';
@@ -90,43 +90,48 @@ class Html implements GeneratorInterface
         $response = '<div id="' . $this->getIdForProperty($property) . '" class="psx-object">';
         $response.= '<h1>' . (htmlspecialchars($property->getTitle()) ?: 'Object') . '</h1>';
 
-        $ref = $property->getRef();
-        if (!empty($ref)) {
-            $response.= '<small>' . $ref . '</small>';
+        if (!empty($description)) {
+            $response.= '<div class="psx-object-description">' . htmlspecialchars($description) . '</div>';
         }
 
-        if (!empty($description)) {
-            $response.= '<div class="psx-type-description">' . htmlspecialchars($description) . '</div>';
-        }
+        $json = null;
+        $prop = null;
 
         if (!empty($properties) || !empty($patternProps) || !empty($additionalProps)) {
-            $response.= '<table class="table psx-type-properties">';
-            $response.= '<colgroup>';
-            $response.= '<col width="20%" />';
-            $response.= '<col width="20%" />';
-            $response.= '<col width="40%" />';
-            $response.= '<col width="20%" />';
-            $response.= '</colgroup>';
-            $response.= '<thead>';
-            $response.= '<tr>';
-            $response.= '<th>Property</th>';
-            $response.= '<th>Type</th>';
-            $response.= '<th>Description</th>';
-            $response.= '<th>Constraints</th>';
-            $response.= '</tr>';
-            $response.= '</thead>';
-            $response.= '<tbody>';
+            $prop = '<table class="table psx-object-properties">';
+            $prop.= '<colgroup>';
+            $prop.= '<col width="30%" />';
+            $prop.= '<col width="70%" />';
+            $prop.= '</colgroup>';
+            $prop.= '<thead>';
+            $prop.= '<tr>';
+            $prop.= '<th>Field</th>';
+            $prop.= '<th>Description</th>';
+            $prop.= '</tr>';
+            $prop.= '</thead>';
+            $prop.= '<tbody>';
+
+            $json = '<span class="psx-object-json-pun">{</span>' . "\n";
 
             if (!empty($properties)) {
                 foreach ($properties as $name => $property) {
-                    list($subType, $constraints) = $this->getValueDescription($property);
+                    list($type, $constraints) = $this->getValueDescription($property);
 
-                    $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name ' . (in_array($name, $required) ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
-                    $response.= '<td>' . $subType . '</td>';
-                    $response.= '<td><span class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</span></td>';
-                    $response.= '<td>' . $constraints . '</td>';
-                    $response.= '</tr>';
+                    $prop.= '<tr>';
+                    $prop.= '<td><span class="psx-property-name ' . (in_array($name, $required) ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
+                    $prop.= '<td>';
+                    $prop.= '<span class="psx-property-type">' . $type . '</span><br />';
+                    $prop.= '<div class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</div>';
+                    $prop.= $constraints;
+                    $prop.= '</td>';
+                    $prop.= '</tr>';
+
+                    $json.= '  ';
+                    $json.= '<span class="psx-object-json-key">"' . $name . '"</span>';
+                    $json.= '<span class="psx-object-json-pun">: </span>';
+                    $json.= $type;
+                    $json.= '<span class="psx-object-json-pun">,</span>';
+                    $json.= "\n";
                 }
             }
 
@@ -134,34 +139,65 @@ class Html implements GeneratorInterface
                 foreach ($patternProps as $pattern => $property) {
                     list($type, $constraints) = $this->getValueDescription($property);
 
-                    $response.= '<tr>';
-                    $response.= '<td><span class="psx-property-name psx-property-optional">' . $pattern . '</span></td>';
-                    $response.= '<td>' . $type . '</td>';
-                    $response.= '<td><span class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</span></td>';
-                    $response.= '<td>' . $constraints . '</td>';
-                    $response.= '</tr>';
+                    $prop.= '<tr>';
+                    $prop.= '<td><span class="psx-property-name psx-property-optional">' . $pattern . '</span></td>';
+                    $prop.= '<td>';
+                    $prop.= '<span class="psx-property-type">' . $type . '</span><br />';
+                    $prop.= '<div class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</div>';
+                    $prop.= $constraints;
+                    $prop.= '</td>';
+                    $prop.= '</tr>';
+
+                    $json.= '  ';
+                    $json.= '<span class="psx-object-json-key">"' . $pattern . '"</span>';
+                    $json.= '<span class="psx-object-json-pun">: </span>';
+                    $json.= $type;
+                    $json.= '<span class="psx-object-json-pun">,</span>';
+                    $json.= "\n";
                 }
             }
 
             if ($additionalProps === true) {
-                $response.= '<tr>';
-                $response.= '<td colspan="4"><span class="psx-property-description">Additional properties are allowed</span></td>';
-                $response.= '</tr>';
+                $prop.= '<tr>';
+                $prop.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
+                $prop.= '<td><span class="psx-property-description">Additional properties are allowed</span></td>';
+                $prop.= '</tr>';
+
+                $json.= '  ';
+                $json.= '<span class="psx-object-json-key">"*"</span>';
+                $json.= '<span class="psx-object-json-pun">: </span>';
+                $json.= '<span class="psx-property-type">Mixed</span>';
+                $json.= '<span class="psx-object-json-pun">,</span>';
+                $json.= "\n";
+                
             } elseif ($additionalProps instanceof PropertyInterface) {
                 list($type, $constraints) = $this->getValueDescription($additionalProps);
 
-                $response.= '<tr>';
-                $response.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
-                $response.= '<td>' . $type . '</td>';
-                $response.= '<td><span class="psx-property-description">Additional properties must be of this type</span></td>';
-                $response.= '<td>' . $constraints . '</td>';
-                $response.= '</tr>';
+                $prop.= '<tr>';
+                $prop.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
+                $prop.= '<td>';
+                $prop.= '<span class="psx-property-type">' . $type . '</span><br />';
+                $prop.= '<div class="psx-property-description">' . htmlspecialchars($additionalProps->getDescription()) . '</div>';
+                $prop.= $constraints;
+                $prop.= '</td>';
+                $prop.= '</tr>';
+
+                $json.= '  ';
+                $json.= '<span class="psx-object-json-key">"*"</span>';
+                $json.= '<span class="psx-object-json-pun">: </span>';
+                $json.= $type;
+                $json.= '<span class="psx-object-json-pun">,</span>';
+                $json.= "\n";
             }
 
-            $response.= '</tbody>';
-            $response.= '</table>';
+            $json.= '<span class="psx-object-json-pun">}</span>';
+
+            $prop.= '</tbody>';
+            $prop.= '</table>';
         }
 
+        $response.= '<pre class="psx-object-json">' . $json . '</pre>';
+        $response.= $prop;
         $response.= '</div>';
 
         foreach ($this->references as $prop) {
@@ -218,7 +254,7 @@ class Html implements GeneratorInterface
                 $this->references[] = $property;
             }
 
-            $span = '<span class="psx-property-type psx-property-type-complex"><a href="#' . $this->getIdForProperty($property) . '">' . ($property->getTitle() ?: 'Object') . '</a></span>';
+            $span = '<span class="psx-property-type psx-property-type-object">Object (<a href="#' . $this->getIdForProperty($property) . '">' . ($property->getTitle() ?: 'Object') . '</a>)</span>';
 
             return [$span, null];
         } elseif (!empty($type)) {
@@ -328,7 +364,7 @@ class Html implements GeneratorInterface
         } elseif ($format === PropertyType::FORMAT_TIME) {
             $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Time</a>';
         } elseif ($format === PropertyType::FORMAT_DURATION) {
-            $typeName = '<span title="ISO 8601">Duration</span>';
+            $typeName = '<a href="https://en.wikipedia.org/wiki/ISO_8601#Durations" title="ISO8601">Duration</a>';
         } elseif ($format === PropertyType::FORMAT_URI) {
             $typeName = '<a href="http://tools.ietf.org/html/rfc3986" title="RFC3339">URI</a>';
         } elseif ($format === PropertyType::FORMAT_BINARY) {
