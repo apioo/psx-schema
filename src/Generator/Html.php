@@ -351,9 +351,17 @@ class Html implements GeneratorInterface
 
     protected function getTypeName(PropertyInterface $property, $type)
     {
-        $typeName = !empty($type) ? ucfirst($type) : 'Mixed';
-        $format   = $property->getFormat();
+        if (empty($type)) {
+            $typeName = 'Mixed';
+        } elseif (is_array($type)) {
+            $typeName = implode(', ', array_map('ucfirst', $type));
+        } elseif (is_string($type)) {
+            $typeName = ucfirst($type);
+        } else {
+            $typeName = 'Mixed';
+        }
 
+        $format = $property->getFormat();
         if ($format === PropertyType::FORMAT_DATE) {
             $typeName = '<a href="http://tools.ietf.org/html/rfc3339#section-5.6" title="RFC3339">Date</a>';
         } elseif ($format === PropertyType::FORMAT_DATETIME) {
