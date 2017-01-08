@@ -215,24 +215,12 @@ class Html implements GeneratorInterface
      */
     protected function getValueDescription(PropertyInterface $property)
     {
-        $type = $this->getRealType($property);
+        $type       = $this->getRealType($property);
+        $constraint = $this->constraintToString($property);
 
         if ($type === PropertyType::TYPE_ARRAY) {
-            $constraints = array();
-
-            $minItems = $property->getMinItems();
-            if ($minItems !== null) {
-                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minItems . '</span>';
-            }
-
-            $maxItems = $property->getMaxItems();
-            if ($maxItems !== null) {
-                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maxItems . '</span>';
-            }
-
-            $types      = [];
-            $constraint = $this->constraintToString($constraints);
-            $items      = $property->getItems();
+            $types = [];
+            $items = $property->getItems();
 
             if ($items instanceof PropertyInterface) {
                 $property = $this->getValueDescription($items);
@@ -256,89 +244,86 @@ class Html implements GeneratorInterface
 
             $span = '<span class="psx-property-type psx-property-type-object">Object (<a href="#' . $this->getIdForProperty($property) . '">' . ($property->getTitle() ?: 'Object') . '</a>)</span>';
 
-            return [$span, null];
-        } elseif (!empty($type)) {
-            $typeName    = $this->getTypeName($property, $type);
-            $constraints = array();
-
-            $pattern = $property->getPattern();
-            if ($pattern !== null) {
-                $constraints['pattern'] = '<span class="psx-constraint-pattern">' . $pattern .'</span>';
-            }
-
-            $enum = $property->getEnum();
-            if ($enum !== null) {
-                $enumeration = '<ul class="psx-property-enumeration">';
-                foreach ($enum as $enu) {
-                    $enumeration.= '<li><span class="psx-constraint-enumeration-value">' . $enu . '</span></li>';
-                }
-                $enumeration.= '</ul>';
-
-                $constraints['enumeration'] = '<span class="psx-constraint-enumeration">' . $enumeration .'</span>';
-            }
-
-            $minimum = $property->getMinimum();
-            if ($minimum !== null) {
-                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minimum . '</span>';
-            }
-
-            $maximum = $property->getMaximum();
-            if ($maximum !== null) {
-                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maximum . '</span>';
-            }
-
-            $multipleOf = $property->getMultipleOf();
-            if ($multipleOf !== null) {
-                $constraints['multipleOf'] = '<span class="psx-constraint-multipleof">' . $multipleOf . '</span>';
-            }
-
-            $minLength = $property->getMinLength();
-            if ($minLength !== null) {
-                $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minLength . '</span>';
-            }
-
-            $maxLength = $property->getMaxLength();
-            if ($maxLength !== null) {
-                $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maxLength . '</span>';
-            }
-            
-            $constraint = $this->constraintToString($constraints);
-
-            $span = '<span class="psx-property-type">' . $typeName . '</span>';
-
             return [$span, $constraint];
         } else {
-            $allOf = $property->getAllOf();
-            $anyOf = $property->getAnyOf();
-            $oneOf = $property->getOneOf();
+            $span = '<span class="psx-property-type">' . $this->getTypeName($property, $type) . '</span>';
 
-            if (!empty($allOf)) {
-                return $this->combinationToString($allOf, 'AllOf');
-            } elseif (!empty($anyOf)) {
-                return $this->combinationToString($anyOf, 'AnyOf');
-            } elseif (!empty($oneOf)) {
-                return $this->combinationToString($oneOf, 'OneOf');
+            return [$span, $constraint];
+        }
+    }
+
+    protected function constraintToString(PropertyInterface $property)
+    {
+        $constraints = [];
+
+        // array
+        $minItems = $property->getMinItems();
+        if ($minItems !== null) {
+            $constraints['minItems'] = '<span class="psx-constraint-minimum">' . $minItems . '</span>';
+        }
+
+        $maxItems = $property->getMaxItems();
+        if ($maxItems !== null) {
+            $constraints['maxItems'] = '<span class="psx-constraint-maximum">' . $maxItems . '</span>';
+        }
+
+        // number
+        $minimum = $property->getMinimum();
+        if ($minimum !== null) {
+            $constraints['minimum'] = '<span class="psx-constraint-minimum">' . $minimum . '</span>';
+        }
+
+        $maximum = $property->getMaximum();
+        if ($maximum !== null) {
+            $constraints['maximum'] = '<span class="psx-constraint-maximum">' . $maximum . '</span>';
+        }
+
+        $multipleOf = $property->getMultipleOf();
+        if ($multipleOf !== null) {
+            $constraints['multipleOf'] = '<span class="psx-constraint-multipleof">' . $multipleOf . '</span>';
+        }
+
+        // string
+        $minLength = $property->getMinLength();
+        if ($minLength !== null) {
+            $constraints['minLength'] = '<span class="psx-constraint-minimum">' . $minLength . '</span>';
+        }
+
+        $maxLength = $property->getMaxLength();
+        if ($maxLength !== null) {
+            $constraints['maxLength'] = '<span class="psx-constraint-maximum">' . $maxLength . '</span>';
+        }
+
+        $pattern = $property->getPattern();
+        if ($pattern !== null) {
+            $constraints['pattern'] = '<span class="psx-constraint-pattern">' . $pattern .'</span>';
+        }
+
+        $enum = $property->getEnum();
+        if ($enum !== null) {
+            $enumeration = '<ul class="psx-property-enum">';
+            foreach ($enum as $enu) {
+                $enumeration.= '<li><span class="psx-constraint-enum-value">' . $enu . '</span></li>';
             }
+            $enumeration.= '</ul>';
+
+            $constraints['enum'] = '<span class="psx-constraint-enum">' . $enumeration .'</span>';
         }
 
-        return ['', ''];
-    }
+        // combination
+        $allOf = $property->getAllOf();
+        $anyOf = $property->getAnyOf();
+        $oneOf = $property->getOneOf();
 
-    protected function combinationToString(array $props, $title)
-    {
-        $data = [];
-        foreach ($props as $prop) {
-            $value = $this->getValueDescription($prop);
-            $data[] = $value[0];
+        if (!empty($allOf)) {
+            $constraints['allOf'] = $this->combinationToString($allOf);
+        } elseif (!empty($anyOf)) {
+            $constraints['anyOf'] = $this->combinationToString($anyOf);
+        } elseif (!empty($oneOf)) {
+            $constraints['oneOf'] = $this->combinationToString($oneOf);
         }
 
-        $span = '<span class="psx-property-type">' . $title . ' (' . implode(' | ', $data) . ')</span>';
-
-        return [$span, ''];
-    }
-    
-    protected function constraintToString(array $constraints)
-    {
+        // build string
         $constraint = '';
         if (!empty($constraints)) {
             $constraint.= '<dl class="psx-property-constraint">';
@@ -352,9 +337,21 @@ class Html implements GeneratorInterface
         return $constraint;
     }
 
+    protected function combinationToString(array $props)
+    {
+        $combination = '<ul class="psx-property-combination">';
+        foreach ($props as $prop) {
+            $value = $this->getValueDescription($prop);
+            $combination.= '<li>' . $value[0] . '</li>';
+        }
+        $combination.= '</ul>';
+
+        return $combination;
+    }
+
     protected function getTypeName(PropertyInterface $property, $type)
     {
-        $typeName = !empty($type) ? ucfirst($type) : 'Unknown';
+        $typeName = !empty($type) ? ucfirst($type) : 'Mixed';
         $format   = $property->getFormat();
 
         if ($format === PropertyType::FORMAT_DATE) {

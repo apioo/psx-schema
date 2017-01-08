@@ -1,5 +1,9 @@
 
-### 2.0.9
+### 2.0.10
+
+* Html generator add combination type to constraints
+
+### 2.0.9 (2016-01-08)
 
 * Improved html generator
 
