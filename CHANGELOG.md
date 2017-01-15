@@ -1,6 +1,8 @@
 
-### 2.0.10
+### 2.0.10 (2016-01-15)
 
+* Fixed rec count in case of many oneOf misses
+* Fix handling type array
 * Html generator add combination type to constraints
 
 ### 2.0.9 (2016-01-08)
