@@ -127,6 +127,7 @@ class SchemaTraverser
                 $this->recTraverse($data, $not, $visitor);
                 $match = true;
             } catch (ValidationException $e) {
+                $this->recCount--;
                 $match = false;
             }
 
@@ -363,6 +364,7 @@ class SchemaTraverser
 
                 $match++;
             } catch (ValidationException $e) {
+                $this->recCount--;
             }
         }
 
@@ -395,6 +397,7 @@ class SchemaTraverser
                 $match++;
                 break;
             } catch (ValidationException $e) {
+                $this->recCount--;
             }
         }
 
@@ -416,6 +419,7 @@ class SchemaTraverser
 
                 $match++;
             } catch (ValidationException $e) {
+                $this->recCount--;
             }
         }
 
