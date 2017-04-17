@@ -1,4 +1,8 @@
 
+### 2.0.11
+
+* Fixed annotation autoloading in the bin schema script #4
+
 ### 2.0.10 (2016-01-15)
 
 * Fixed rec count in case of many oneOf misses
