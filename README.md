@@ -194,3 +194,23 @@ a schema object:
 - HTML (Generates a HTML representation of the schema)
 - JsonSchema (Generates a [JsonSchema](http://json-schema.org/) specification)
 - PHP (Generates PHP classes representing the schema using annotations)
+
+## Code generation
+
+This library tries to generate useful PHP classes based on a defined JsonSchema.
+That being said the main goal of JsonSchema is to validate JSON data and not to 
+__model__ a JSON structure. Because of this nature it is difficult to generate a 
+proper class hierarchy using inheritance based on the validation keywords 
+(`@OneOf`, `@AllOf`, etc). To avoid these complications we use the following 
+simple logic to generate a class: 
+
+If a JsonSchema has a `properties` keyword we generate a class which contains
+the properties which are defined. Each property contains annotations which
+describe the defined validation keywords. If the property reference another 
+schema we use the `@Ref` annotation otherwise we use the inline `@Schema` 
+annotation.
+
+So developers should see the generated classes only as a starting point. If 
+inheritance is needed it must be manually implemented. Despite that this 
+approach is pretty robust and allows us to also generate classes for recursive 
+schemas like i.e. the JsonSchema spec itself.
