@@ -46,7 +46,7 @@ to build JSONSchemas which can also be used for code generation.
             "type": "object",
             "properties": {
               "forname": {
-              "type": "string"
+                "type": "string"
               },
               "lastname": {
                 "type": "string"
