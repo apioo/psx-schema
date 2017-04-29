@@ -1,0 +1,256 @@
+{
+  "title": "schema",
+  "description": "A strict JsonSchema schema which describes JSON data",
+  "type": "object",
+  "oneOf": [{
+    "$ref": "#/definitions/object"
+  }, {
+    "$ref": "#/definitions/array"
+  }, {
+    "$ref": "#/definitions/boolean"
+  }, {
+    "$ref": "#/definitions/number"
+  }, {
+    "$ref": "#/definitions/string"
+  }],
+  "definitions": {
+    "common": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Distinct word which represents this property, may be used to generate i.e. class names or other identifier"
+        },
+        "description": {
+          "type": "string",
+          "description": "General description of this property"
+        },
+        "type": {
+          "type": "string",
+          "description": "JSON type of the property",
+          "enum": ["object", "array", "boolean", "integer", "number", "string"]
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Whether it is possible to use a null value on this property"
+        },
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/object"
+          }
+        },
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/object"
+          }
+        },
+        "oneOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/object"
+          }
+        }
+      }
+    },
+    "commonScalar": {
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "Describes the specific format of this type i.e. date-time or int64"
+          },
+          "enum": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        }
+      }]
+    },
+    "commonContainer": {
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "type": "object",
+        "properties": {
+          "title": {
+          },
+          "type": {
+            "type": "string",
+            "enum": ["object"]
+          },
+          "required": {
+            "$ref": "#/definitions/stringArray",
+            "description": ""
+          },
+          "discriminator": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "type"]
+      }]
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "object": {
+      "title": "object",
+      "type": "object",
+      "oneOf": [{
+        "$ref": "#/definitions/objectStruct"
+      }, {
+        "$ref": "#/definitions/objectMap"
+      }]
+    },
+    "objectStruct": {
+      "title": "object",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/commonContainer"
+      }, {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" }
+          }
+        },
+        "required": ["properties"]
+      }]
+    },
+    "objectMap": {
+      "title": "map",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/commonContainer"
+      }, {
+        "type": "object",
+        "properties": {
+          "additionalProperties": { "$ref": "#" }
+        },
+        "required": ["additionalProperties"]
+      }]
+    },
+    "array": {
+      "title": "array",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["array"]
+          },
+          "items": {
+            "allOf": [{
+              "$ref": "#"
+            }, {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["object", "number", "integer", "string"]
+                }
+              },
+              "required": ["type"]
+            }]
+          },
+          "maxItems": { "$ref": "#/definitions/positiveInteger" },
+          "minItems": { "$ref": "#/definitions/positiveInteger" }
+        },
+        "required": ["type", "items"]
+      }]
+    },
+    "boolean": {
+      "title": "boolean",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/commonScalar"
+      }, {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["boolean"]
+          }
+        },
+        "required": ["type"]
+      }]
+    },
+    "number": {
+      "title": "number",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/commonScalar"
+      }, {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["number", "integer"]
+          },
+          "multipleOf": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "maximum": {
+            "type": "number"
+          },
+          "exclusiveMaximum": {
+            "type": "boolean",
+            "default": false
+          },
+          "minimum": {
+            "type": "number"
+          },
+          "exclusiveMinimum": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["type"]
+      }]
+    },
+    "string": {
+      "title": "string",
+      "type": "object",
+      "allOf": [{
+        "$ref": "#/definitions/commonScalar"
+      }, {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string"]
+          },
+          "maxLength": { "$ref": "#/definitions/positiveInteger" },
+          "minLength": { "$ref": "#/definitions/positiveInteger" },
+          "pattern": {
+            "type": "string",
+            "format": "regex"
+          }
+        },
+        "required": ["type"]
+      }]
+    }
+  }
+}
