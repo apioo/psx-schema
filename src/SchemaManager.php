@@ -27,7 +27,6 @@ use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
 use PSX\Http\Client;
-use PSX\Http\ClientInterface;
 use PSX\Schema\Parser\JsonSchema\RefResolver;
 
 /**

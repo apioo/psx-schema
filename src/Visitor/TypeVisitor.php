@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Visitor;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
@@ -28,15 +27,11 @@ use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\AdditionalPropertiesInterface;
-use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\ValidationException;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
 
 /**
  * TypeVisitor

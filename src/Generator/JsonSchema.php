@@ -22,7 +22,6 @@ namespace PSX\Schema\Generator;
 
 use PSX\Json\Parser;
 use PSX\Schema\GeneratorInterface;
-use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;

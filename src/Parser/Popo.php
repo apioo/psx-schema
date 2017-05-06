@@ -25,7 +25,6 @@ use InvalidArgumentException;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\ParserInterface;
-use PSX\Schema\Property;
 use PSX\Schema\PropertyType;
 use PSX\Schema\Schema;
 use ReflectionClass;

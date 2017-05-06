@@ -22,17 +22,14 @@ namespace PSX\Schema\Parser\Popo;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use InvalidArgumentException;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
-use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\PropertyType;
-use PSX\Uri\Uri;
 
 /**
  * The dumper extracts all data from POPOs containing annotations so that the 

@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Validation;
 
-use PSX\Data\Visitor\ValidationVisitor;
 use PSX\Schema\ValidationException;
 use PSX\Validate\FilterInterface;
 

@@ -20,10 +20,8 @@
 
 namespace PSX\Schema\Parser\JsonSchema;
 
-use PSX\Json;
 use PSX\Json\Pointer;
 use PSX\Schema\Parser\JsonSchema;
-use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
