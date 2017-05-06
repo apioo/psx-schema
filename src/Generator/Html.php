@@ -168,7 +168,6 @@ class Html implements GeneratorInterface
                 $json.= '<span class="psx-property-type">Mixed</span>';
                 $json.= '<span class="psx-object-json-pun">,</span>';
                 $json.= "\n";
-                
             } elseif ($additionalProps instanceof PropertyInterface) {
                 list($type, $constraints) = $this->getValueDescription($additionalProps);
 

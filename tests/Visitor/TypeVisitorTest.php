@@ -61,7 +61,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitArrayValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(array $data){
+            new Field('/foo/bar', [function (array $data) {
                 return count($data) < 2;
             }])
         ]);
@@ -87,7 +87,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBinaryValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function($data){
+            new Field('/foo/bar', [function ($data) {
                 return fstat($data)['size'] < 2;
             }])
         ]);
@@ -111,7 +111,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitBooleanValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function($data){
+            new Field('/foo/bar', [function ($data) {
                 return $data === true;
             }])
         ]);
@@ -167,7 +167,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitObjectValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(RecordInterface $data){
+            new Field('/foo/bar', [function (RecordInterface $data) {
                 return isset($data->foo);
             }])
         ]);
@@ -183,7 +183,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitObjectValidatePopo()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(PopoClass $data){
+            new Field('/foo/bar', [function (PopoClass $data) {
                 return $data->getFoo() == 'foo';
             }])
         ]);
@@ -221,7 +221,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitDateTimeValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(DateTime $data){
+            new Field('/foo/bar', [function (DateTime $data) {
                 return $data->format('d') == 8;
             }])
         ]);
@@ -258,7 +258,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitDateValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(Date $data){
+            new Field('/foo/bar', [function (Date $data) {
                 return $data->format('d') == 8;
             }])
         ]);
@@ -295,7 +295,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitDurationValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(Duration $data){
+            new Field('/foo/bar', [function (Duration $data) {
                 return $data->d == 2;
             }])
         ]);
@@ -319,7 +319,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitNumberValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function($data){
+            new Field('/foo/bar', [function ($data) {
                 return $data < 2.2;
             }])
         ]);
@@ -343,7 +343,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitIntegerValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function($data){
+            new Field('/foo/bar', [function ($data) {
                 return $data < 2;
             }])
         ]);
@@ -403,7 +403,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitTimeValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(Time $data){
+            new Field('/foo/bar', [function (Time $data) {
                 return $data->format('H') == 11;
             }])
         ]);
@@ -428,7 +428,7 @@ class TypeVisitorTest extends \PHPUnit_Framework_TestCase
     public function testVisitUriValidate()
     {
         $validator = new Validator([
-            new Field('/foo/bar', [function(Uri $data){
+            new Field('/foo/bar', [function (Uri $data) {
                 return $data->getAuthority() == 'bar.com';
             }])
         ]);

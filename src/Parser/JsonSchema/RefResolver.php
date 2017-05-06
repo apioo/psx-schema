@@ -108,11 +108,9 @@ class RefResolver
         // resolve all $ref keys to the base uri so that the root document knows
         // where to find the $ref values
         array_walk_recursive($result, function (&$item, $key) use ($baseUri) {
-
             if ($key == '$ref') {
                 $item = $this->resolver->resolve($baseUri, new Uri($item))->toString();
             }
-
         });
 
         return $result;
