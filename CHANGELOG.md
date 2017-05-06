@@ -1,15 +1,19 @@
 
-### 2.0.11
+### 2.1.0 (2017-05-06)
+
+* Added protobuf generator
+
+### 2.0.11 (2017-04-21)
 
 * Fixed annotation autoloading in the bin schema script #4
 
-### 2.0.10 (2016-01-15)
+### 2.0.10 (2017-01-15)
 
 * Fixed rec count in case of many oneOf misses
 * Fix handling type array
 * Html generator add combination type to constraints
 
-### 2.0.9 (2016-01-08)
+### 2.0.9 (2017-01-08)
 
 * Improved html generator
 
