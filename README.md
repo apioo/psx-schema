@@ -196,6 +196,7 @@ a schema object:
 - HTML (Generates a HTML representation of the schema)
 - JsonSchema (Generates a [JsonSchema](http://json-schema.org/) specification)
 - PHP (Generates PHP classes representing the schema using annotations)
+- Proto (Generates a [proto3](https://developers.google.com/protocol-buffers/) definition)
 
 ## Code generation
 
