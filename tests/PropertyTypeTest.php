@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Parser;
+
 /**
  * PropertyTypeTest
  *

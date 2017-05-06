@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Data\Record\Transformer;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\SchemaTraverser\RecursionModel;

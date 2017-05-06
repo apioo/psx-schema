@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests\Parser;
 
 use PSX\Http;
-use PSX\Schema\Generator;
 use PSX\Schema\Parser\JsonSchema;
 
 /**

@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Visitor;
 
-use Doctrine\Common\Collections\Collection;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;

@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PSX\Cache\Pool;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaManager;
 

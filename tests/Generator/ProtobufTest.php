@@ -20,10 +20,8 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\JsonSchema;
 use PSX\Schema\Generator\Proto;
 use PSX\Schema\Generator\Protobuf;
-use PSX\Schema\Parser;
 
 /**
  * ProtobufTest

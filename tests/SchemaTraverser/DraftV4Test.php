@@ -22,12 +22,10 @@ namespace PSX\Schema\Tests\SchemaTraverser;
 
 use PSX\Http\Client;
 use PSX\Schema\Parser\JsonSchema;
-use PSX\Schema\Property;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\AssimilationVisitor;
 use PSX\Schema\Visitor\IncomingVisitor;
-use PSX\Uri\Uri;
 
 /**
  * DraftV4Test

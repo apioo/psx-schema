@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Tests\Visitor\TypeVisitor;
 
-use PSX\Record\RecordObject;
-
 /**
  * StdClass
  *
