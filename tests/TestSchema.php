@@ -90,11 +90,11 @@ class TestSchema extends SchemaAbstract
             ->setItems($author)
             ->setMinItems(1);
         $sb->arrayType('resources')
-            ->setItems(Property::get()->setOneOf([$location, $web]));
+            ->setItems(Property::get()->setOneOf([$location, $web])->setTitle('resource'));
         $sb->binary('profileImage');
         $sb->boolean('read');
         $sb->property('source')
-            ->setOneOf([$author, $web]);
+            ->setOneOf([$author, $web])->setTitle('source');
         $sb->objectType('author', $author);
         $sb->objectType('meta', $meta);
         $sb->date('sendDate');

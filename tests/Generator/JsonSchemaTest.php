@@ -48,24 +48,6 @@ class JsonSchemaTest extends GeneratorTestCase
                 "type": "string"
             }
         },
-        "Location": {
-            "type": "object",
-            "title": "location",
-            "description": "Location of the person",
-            "properties": {
-                "lat": {
-                    "type": "number"
-                },
-                "long": {
-                    "type": "number"
-                }
-            },
-            "additionalProperties": true,
-            "required": [
-                "lat",
-                "long"
-            ]
-        },
         "Author": {
             "type": "object",
             "title": "author",
@@ -100,6 +82,24 @@ class JsonSchemaTest extends GeneratorTestCase
             "additionalProperties": false,
             "required": [
                 "title"
+            ]
+        },
+        "Location": {
+            "type": "object",
+            "title": "location",
+            "description": "Location of the person",
+            "properties": {
+                "lat": {
+                    "type": "number"
+                },
+                "long": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "lat",
+                "long"
             ]
         },
         "Web": {
@@ -170,6 +170,7 @@ class JsonSchemaTest extends GeneratorTestCase
         "resources": {
             "type": "array",
             "items": {
+                "title": "resource",
                 "oneOf": [
                     {
                         "$ref": "#\/definitions\/Location"
@@ -188,6 +189,7 @@ class JsonSchemaTest extends GeneratorTestCase
             "type": "boolean"
         },
         "source": {
+            "title": "source",
             "oneOf": [
                 {
                     "$ref": "#\/definitions\/Author"

@@ -256,7 +256,7 @@ class News
     /**
      * @Key("resources")
      * @Type("array")
-     * @Items(@Schema(oneOf={@Ref("PSX\Schema\Tests\Generator\Location"), @Ref("PSX\Schema\Tests\Generator\Web")}))
+     * @Items(@Schema(title="resource", oneOf={@Ref("PSX\Schema\Tests\Generator\Location"), @Ref("PSX\Schema\Tests\Generator\Web")}))
      */
     protected $resources;
     /**
@@ -272,6 +272,7 @@ class News
     protected $read;
     /**
      * @Key("source")
+     * @Title("source")
      * @OneOf(@Ref("PSX\Schema\Tests\Generator\Author"), @Ref("PSX\Schema\Tests\Generator\Web"))
      */
     protected $source;
