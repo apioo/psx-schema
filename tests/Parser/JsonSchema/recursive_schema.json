@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://example.phpsx.org/population#",
+  "title": "collection",
+  "description": "Collection result",
+  "type": "object",
+  "definitions": {
+    "foo": {
+      "$ref": "#/definitions/bar"
+    },
+    "bar": {
+      "$ref": "#/definitions/foo"
+    }
+  },
+  "properties": {
+    "totalResults": {
+      "type": "integer"
+    },
+    "entry": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/foo"
+      }
+    }
+  }
+}

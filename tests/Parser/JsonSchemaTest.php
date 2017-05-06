@@ -131,4 +131,13 @@ class JsonSchemaTest extends ParserTestCase
     {
         JsonSchema::fromFile(__DIR__ . '/JsonSchema/invalid_document_ref_schema.json');
     }
+
+    public function testRecursiveSchema()
+    {
+        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/recursive_schema.json');
+        $property = $schema->getDefinition();
+
+        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property->getProperty('entry')->getItems());
+    }
 }
