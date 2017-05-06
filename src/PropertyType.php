@@ -868,7 +868,7 @@ class PropertyType implements PropertyInterface
     }
 
     /**
-     * @return array
+     * @return \PSX\Schema\PropertyInterface
      */
     public function getNot()
     {
