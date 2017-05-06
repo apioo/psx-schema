@@ -39,6 +39,8 @@ class PropertyType implements PropertyInterface
     const TYPE_INTEGER = 'integer';
     const TYPE_STRING = 'string';
 
+    const FORMAT_INT32 = 'int32';
+    const FORMAT_INT64 = 'int64';
     const FORMAT_BINARY = 'base64';
     const FORMAT_DATETIME = 'date-time';
     const FORMAT_DATE = 'date';
