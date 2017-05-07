@@ -30,11 +30,12 @@ namespace PSX\Schema;
 interface SchemaManagerInterface
 {
     /**
-     * The schema manager knows howto create an schema instance from the given
-     * schema name. Returns an schema interface or must throw an exception
+     * The schema manager knows how to create a schema instance from the given
+     * schema name. Returns a schema interface or must throw an exception
      *
      * @param string $schemaName
+     * @param string $type
      * @return \PSX\Schema\SchemaInterface
      */
-    public function getSchema($schemaName);
+    public function getSchema($schemaName, $type = null);
 }

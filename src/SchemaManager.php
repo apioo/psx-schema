@@ -38,6 +38,10 @@ use PSX\Schema\Parser\JsonSchema\RefResolver;
  */
 class SchemaManager implements SchemaManagerInterface
 {
+    const TYPE_JSONSCHEMA = 'jsonschema';
+    const TYPE_CLASS      = 'class';
+    const TYPE_ANNOTATION = 'annotation';
+
     /**
      * @var \PSX\Schema\Parser\Popo
      */
@@ -58,6 +62,11 @@ class SchemaManager implements SchemaManagerInterface
      */
     protected $httpClient;
 
+    /**
+     * @param \Doctrine\Common\Annotations\Reader|null $reader
+     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
+     * @param boolean $debug
+     */
     public function __construct(Reader $reader = null, CacheItemPoolInterface $cache = null, $debug = false)
     {
         if ($reader === null) {
@@ -71,7 +80,10 @@ class SchemaManager implements SchemaManagerInterface
         $this->httpClient = new Client();
     }
 
-    public function getSchema($schemaName)
+    /**
+     * @inheritdoc
+     */
+    public function getSchema($schemaName, $type = null)
     {
         if (!is_string($schemaName)) {
             throw new InvalidArgumentException('Schema name must be a string');
@@ -85,15 +97,17 @@ class SchemaManager implements SchemaManagerInterface
             }
         }
 
-        if (strpos($schemaName, '.') !== false) {
+        if ($type === null) {
+            $type = $this->guessTypeFromSchema($schemaName);
+        }
+
+        if ($type === self::TYPE_JSONSCHEMA) {
             $resolver = RefResolver::createDefault($this->httpClient);
-            $schema   = Parser\JsonSchema::fromFile($schemaName, $resolver);
-        } elseif (class_exists($schemaName)) {
-            if (in_array(SchemaInterface::class, class_implements($schemaName))) {
-                $schema = new $schemaName($this);
-            } else {
-                $schema = $this->popoParser->parse($schemaName);
-            }
+            $schema = Parser\JsonSchema::fromFile($schemaName, $resolver);
+        } elseif ($type === self::TYPE_CLASS) {
+            $schema = new $schemaName($this);
+        } elseif ($type === self::TYPE_ANNOTATION) {
+            $schema = $this->popoParser->parse($schemaName);
         } else {
             throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
         }
@@ -105,5 +119,24 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         return $schema;
+    }
+
+    /**
+     * @param string $schemaName
+     * @return string|null
+     */
+    private function guessTypeFromSchema($schemaName)
+    {
+        if (strpos($schemaName, '.') !== false) {
+            return self::TYPE_JSONSCHEMA;
+        } elseif (class_exists($schemaName)) {
+            if (in_array(SchemaInterface::class, class_implements($schemaName))) {
+                return self::TYPE_CLASS;
+            } else {
+                return self::TYPE_ANNOTATION;
+            }
+        } else {
+            return null;
+        }
     }
 }
