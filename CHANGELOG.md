@@ -1,4 +1,10 @@
 
+### 2.1.1
+
+* Schema manager add type parameter to explicit specify the schema parser 
+* Validation exception contains now the depending validation keyword and path to
+  the element
+
 ### 2.1.0 (2017-05-06)
 
 * Added protobuf generator
