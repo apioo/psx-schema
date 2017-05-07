@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Validation;
 
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
+use PSX\Schema\ValidationException;
 use PSX\Validate\Filter;
 
 /**
@@ -60,6 +61,20 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new Validator($fields);
 
         $this->assertEquals($fields, $validator->getFields());
+    }
+
+    public function testValidateExceptionValues()
+    {
+        try {
+            $validator = $this->getValidator();
+            $validator->validate('/author/name', 'foooo');
+
+            $this->fail('Validator must throw an exception');
+        } catch (ValidationException $e) {
+            $this->assertEquals('/author/name has an invalid length min 1 and max 2 signs', $e->getMessage());
+            $this->assertEquals('filter', $e->getKeyword());
+            $this->assertEquals(['author', 'name'], $e->getPath());
+        }
     }
 
     protected function getValidator()

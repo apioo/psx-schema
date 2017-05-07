@@ -264,7 +264,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta property "foo_0" does not exist
+     * @expectedExceptionMessage /meta property "foo_0" is not allowed
      */
     public function testInvalidAdditionalPatternProperties()
     {
@@ -316,7 +316,7 @@ class SchemaTraverserTest extends SchemaTestCase
     }
 
     /**
-     * @expectedException \PSX\Schema\ValidationException
+     * @expectedException \RuntimeException
      * @expectedExceptionMessage /model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/title max recursion depth reached
      */
     public function testMaxRecursion()

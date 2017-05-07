@@ -26,6 +26,7 @@ use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Json\Comparator;
 use PSX\Schema\Visitor\NullVisitor;
+use RuntimeException;
 
 /**
  * SchemaTraverser
@@ -67,7 +68,7 @@ class SchemaTraverser
         $this->recCount++;
 
         if ($this->recCount > self::MAX_RECURSION_DEPTH) {
-            throw new ValidationException($this->getCurrentPath() . ' max recursion depth reached');
+            throw new RuntimeException($this->getCurrentPath() . ' max recursion depth reached');
         }
 
         // if we have no constraints everything is allowed
@@ -130,7 +131,7 @@ class SchemaTraverser
             }
 
             if ($match) {
-                throw new ValidationException($this->getCurrentPath() . ' must not match the schema');
+                throw new ValidationException($this->getCurrentPath() . ' must not match the schema', 'not', $this->pathStack);
             }
         }
 
@@ -162,7 +163,7 @@ class SchemaTraverser
         } elseif (is_array($items)) {
             foreach ($items as $index => $prop) {
                 if (!array_key_exists($index, $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' property "' . $index . '" does not exist');
+                    throw new ValidationException($this->getCurrentPath() . ' property "' . $index . '" does not exist', 'items', $this->pathStack);
                 }
 
                 array_push($this->pathStack, $index);
@@ -187,7 +188,7 @@ class SchemaTraverser
                         $result[$key] = $data[$key];
                     }
                 } else {
-                    throw new ValidationException($this->getCurrentPath() . ' property "' . implode(', ', $remainingKeys) . '" does not exist');
+                    throw new ValidationException($this->getCurrentPath() . ' property "' . implode(', ', $remainingKeys) . '" is not allowed', 'additionalItems', $this->pathStack);
                 }
             } elseif ($additionalItems instanceof PropertyInterface) {
                 foreach ($remainingKeys as $key) {
@@ -255,7 +256,7 @@ class SchemaTraverser
                         $result->{$key} = $data[$key];
                     }
                 } else {
-                    throw new ValidationException($this->getCurrentPath() . ' property "' . implode(', ', $remainingKeys) . '" does not exist');
+                    throw new ValidationException($this->getCurrentPath() . ' property "' . implode(', ', $remainingKeys) . '" is not allowed', 'additionalProperties', $this->pathStack);
                 }
             } elseif ($additionalProperties instanceof PropertyInterface) {
                 foreach ($remainingKeys as $key) {
@@ -276,7 +277,7 @@ class SchemaTraverser
         switch ($property->getFormat()) {
             case PropertyType::FORMAT_BINARY:
                 if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]');
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitBinary($data, $property, $this->getCurrentPath());
@@ -284,7 +285,7 @@ class SchemaTraverser
 
             case PropertyType::FORMAT_DATETIME:
                 if (!preg_match('/^' . DateTime::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]');
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitDateTime($data, $property, $this->getCurrentPath());
@@ -292,7 +293,7 @@ class SchemaTraverser
 
             case PropertyType::FORMAT_DATE:
                 if (!preg_match('/^' . Date::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]');
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitDate($data, $property, $this->getCurrentPath());
@@ -300,7 +301,7 @@ class SchemaTraverser
 
             case PropertyType::FORMAT_DURATION:
                 if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]');
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitDuration($data, $property, $this->getCurrentPath());
@@ -308,7 +309,7 @@ class SchemaTraverser
 
             case PropertyType::FORMAT_TIME:
                 if (!preg_match('/^' . Time::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]');
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitTime($data, $property, $this->getCurrentPath());
@@ -322,7 +323,7 @@ class SchemaTraverser
 
             case 'email':
                 if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address');
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitString($data, $property, $this->getCurrentPath());
@@ -330,7 +331,7 @@ class SchemaTraverser
 
             case 'ipv4':
                 if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address');
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitString($data, $property, $this->getCurrentPath());
@@ -338,7 +339,7 @@ class SchemaTraverser
 
             case 'ipv6':
                 if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address');
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address', 'format', $this->pathStack);
                 }
 
                 return $visitor->visitString($data, $property, $this->getCurrentPath());
@@ -367,7 +368,7 @@ class SchemaTraverser
         }
 
         if ($count !== $match) {
-            throw new ValidationException($this->getCurrentPath() . ' must match all required schemas (matched only ' . $match . ' out of ' . $count . ')');
+            throw new ValidationException($this->getCurrentPath() . ' must match all required schemas (matched only ' . $match . ' out of ' . $count . ')', 'allOf', $this->pathStack);
         }
 
         // we must merge the result
@@ -400,7 +401,7 @@ class SchemaTraverser
         }
 
         if ($match === 0) {
-            throw new ValidationException($this->getCurrentPath() . ' must match any required schema');
+            throw new ValidationException($this->getCurrentPath() . ' must match any required schema', 'anyOf', $this->pathStack);
         }
 
         return $result;
@@ -422,7 +423,7 @@ class SchemaTraverser
         }
 
         if ($match !== 1) {
-            throw new ValidationException($this->getCurrentPath() . ' must match one required schema');
+            throw new ValidationException($this->getCurrentPath() . ' must match one required schema', 'oneOf', $this->pathStack);
         }
 
         return $result;
@@ -434,7 +435,7 @@ class SchemaTraverser
         if ($type !== null) {
             if (is_string($type)) {
                 if (!$this->isOfType($type, $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be of type ' . $type);
+                    throw new ValidationException($this->getCurrentPath() . ' must be of type ' . $type, 'type', $this->pathStack);
                 }
             } elseif (is_array($type)) {
                 $found = false;
@@ -446,7 +447,7 @@ class SchemaTraverser
                 }
 
                 if ($found === false) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be of type [' . implode(', ', $type) . ']');
+                    throw new ValidationException($this->getCurrentPath() . ' must be of type [' . implode(', ', $type) . ']', 'type', $this->pathStack);
                 }
             }
         }
@@ -467,7 +468,7 @@ class SchemaTraverser
             if (!$found) {
                 $enum = json_encode($enum);
 
-                throw new ValidationException($this->getCurrentPath() . ' is not in enum ' . $enum);
+                throw new ValidationException($this->getCurrentPath() . ' is not in enum ' . $enum, 'enum', $this->pathStack);
             }
         }
     }
@@ -477,14 +478,14 @@ class SchemaTraverser
         $minItems = $property->getMinItems();
         if ($minItems !== null) {
             if (count($data) < $minItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minItems . ' items');
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minItems . ' items', 'minItems', $this->pathStack);
             }
         }
 
         $maxItems = $property->getMaxItems();
         if ($maxItems !== null) {
             if (count($data) > $maxItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxItems . ' items');
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxItems . ' items', 'maxItems', $this->pathStack);
             }
         }
 
@@ -500,7 +501,7 @@ class SchemaTraverser
                 }
 
                 if ($found) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain only unique items');
+                    throw new ValidationException($this->getCurrentPath() . ' must contain only unique items', 'uniqueItems', $this->pathStack);
                 }
             }
         }
@@ -513,14 +514,14 @@ class SchemaTraverser
         $minProperties = $property->getMinProperties();
         if ($minProperties !== null) {
             if (count($keys) < $minProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minProperties . ' properties');
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minProperties . ' properties', 'minProperties', $this->pathStack);
             }
         }
 
         $maxProperties = $property->getMaxProperties();
         if ($maxProperties !== null) {
             if (count($keys) > $maxProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxProperties . ' properties');
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxProperties . ' properties', 'maxProperties', $this->pathStack);
             }
         }
 
@@ -528,7 +529,7 @@ class SchemaTraverser
         if ($required !== null) {
             $diff = array_diff($required, $keys);
             if (count($diff) > 0) {
-                throw new ValidationException($this->getCurrentPath() . ' the following properties are required: ' . implode(', ', $diff));
+                throw new ValidationException($this->getCurrentPath() . ' the following properties are required: ' . implode(', ', $diff), 'required', $this->pathStack);
             }
         }
 
@@ -541,7 +542,7 @@ class SchemaTraverser
                     } elseif (is_array($prop)) {
                         $diff = array_diff($prop, $keys);
                         if (count($diff) > 0) {
-                            throw new ValidationException($this->getCurrentPath() . ' the property ' . $name . ' depends on the following properties: ' . implode(', ', $diff));
+                            throw new ValidationException($this->getCurrentPath() . ' the property ' . $name . ' depends on the following properties: ' . implode(', ', $diff), 'dependencies', $this->pathStack);
                         }
                     }
                 }
@@ -555,11 +556,11 @@ class SchemaTraverser
         if ($maximum !== null) {
             if ($property->getExclusiveMaximum()) {
                 if ($data >= $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower then ' . $maximum);
+                    throw new ValidationException($this->getCurrentPath() . ' must be lower then ' . $maximum, 'maximum', $this->pathStack);
                 }
             } else {
                 if ($data > $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower or equal then ' . $maximum);
+                    throw new ValidationException($this->getCurrentPath() . ' must be lower or equal then ' . $maximum, 'maximum', $this->pathStack);
                 }
             }
         }
@@ -568,11 +569,11 @@ class SchemaTraverser
         if ($minimum !== null) {
             if ($property->getExclusiveMinimum()) {
                 if ($data <= $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater then ' . $minimum);
+                    throw new ValidationException($this->getCurrentPath() . ' must be greater then ' . $minimum, 'minimum', $this->pathStack);
                 }
             } else {
                 if ($data < $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater or equal then ' . $minimum);
+                    throw new ValidationException($this->getCurrentPath() . ' must be greater or equal then ' . $minimum, 'minimum', $this->pathStack);
                 }
             }
         }
@@ -584,7 +585,7 @@ class SchemaTraverser
 
             // its important to make a loose comparison
             if ($data > 0 && $result - $base != 0) {
-                throw new ValidationException($this->getCurrentPath() . ' must be a multiple of ' . $multipleOf);
+                throw new ValidationException($this->getCurrentPath() . ' must be a multiple of ' . $multipleOf, 'multipleOf', $this->pathStack);
             }
         }
     }
@@ -594,14 +595,14 @@ class SchemaTraverser
         $minLength = $property->getMinLength();
         if ($minLength !== null) {
             if (strlen($data) < $minLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minLength . ' characters');
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minLength . ' characters', 'minLength', $this->pathStack);
             }
         }
 
         $maxLength = $property->getMaxLength();
         if ($maxLength !== null) {
             if (strlen($data) > $maxLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxLength . ' characters');
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxLength . ' characters', 'maxLength', $this->pathStack);
             }
         }
 
@@ -609,7 +610,7 @@ class SchemaTraverser
         if ($pattern !== null) {
             $result = preg_match('/' . $pattern . '/', $data);
             if (!$result) {
-                throw new ValidationException($this->getCurrentPath() . ' does not match pattern [' . $pattern . ']');
+                throw new ValidationException($this->getCurrentPath() . ' does not match pattern [' . $pattern . ']', 'pattern', $this->pathStack);
             }
         }
     }

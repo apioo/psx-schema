@@ -66,12 +66,9 @@ class TypeVisitor implements VisitorInterface
 
     public function visitBinary($data, PropertyInterface $property, $path)
     {
-        $binary = base64_decode($data);
-        if ($binary === false) {
-            throw new ValidationException($path . ' must be a valid Base64 encoded string [RFC4648]');
-        }
-
+        $binary   = base64_decode($data);
         $resource = fopen('php://temp', 'r+');
+
         fwrite($resource, $binary);
         rewind($resource);
 

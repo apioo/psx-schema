@@ -88,7 +88,7 @@ class Validator implements ValidatorInterface
                         $error = '%s is not valid';
                     }
 
-                    throw new ValidationException(sprintf($error, $path));
+                    throw new ValidationException(sprintf($error, $path), 'filter', explode('/', ltrim($path, '/')));
                 }
             }
         }
