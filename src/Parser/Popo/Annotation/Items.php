@@ -24,7 +24,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * Items
  *
  * @Annotation
- * @Target("CLASS")
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
