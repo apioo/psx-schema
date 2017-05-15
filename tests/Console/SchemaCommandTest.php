@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Console;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Console\SchemaCommand;
 use PSX\Schema\Parser\Popo;
@@ -1141,9 +1142,6 @@ HTML;
 
     protected function getSchemaCommand()
     {
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
-        return new SchemaCommand(new SchemaManager($reader));
+        return new SchemaCommand(new SchemaManager(new AnnotationReader()));
     }
 }

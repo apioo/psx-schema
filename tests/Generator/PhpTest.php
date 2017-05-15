@@ -20,8 +20,10 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\Parser;
+use PSX\Schema\SchemaManager;
 
 /**
  * PhpTest
@@ -978,7 +980,8 @@ PHP;
 
         include_once $file;
 
-        $schema = $this->schemaManager->getSchema(__NAMESPACE__ . '\\News');
+        $schemaManager = new SchemaManager(new SimpleAnnotationReader());
+        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
 
         $this->assertSchema($schema, $source);
     }

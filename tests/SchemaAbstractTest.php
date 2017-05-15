@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Doctrine\Common\Annotations\AnnotationReader;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaManager;
 
@@ -45,9 +45,7 @@ class SchemaAbstractTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->reader = new SimpleAnnotationReader();
-        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
+        $this->reader        = new AnnotationReader();
         $this->schemaManager = new SchemaManager($this->reader);
     }
 

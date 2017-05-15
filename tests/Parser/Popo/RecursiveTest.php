@@ -3,12 +3,12 @@
 namespace PSX\Schema\Tests\Parser\Popo;
 
 /**
- * @AdditionalProperties(false)
+ * @JS\AdditionalProperties(false)
  */
 class RecursiveTest
 {
     /**
-     * @Ref("PSX\Schema\Tests\Parser\Popo\RecursiveTest")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\RecursiveTest")
      */
     protected $foo;
 }

@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Doctrine\Common\Annotations\AnnotationReader;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
@@ -92,9 +92,7 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         $news->setCoffeeTime(new Time('10:49:00'));
         $news->setProfileUri(new Uri('urn:foo:image'));
 
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
+        $reader = new AnnotationReader();
         $dumper = new Dumper($reader);
         $actual = $dumper->dump($news);
 
@@ -236,9 +234,7 @@ JSON;
         $author = new Author();
         $author->setLocations($locations);
 
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
+        $reader = new AnnotationReader();
         $dumper = new Dumper($reader);
         $actual = $dumper->dump($author);
 

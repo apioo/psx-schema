@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Doctrine\Common\Annotations\AnnotationReader;
 use PSX\Schema\Property\ArrayType;
 use PSX\Schema\Property\ComplexType;
 use PSX\Schema\Property\CompositeTypeAbstract;
@@ -48,9 +48,7 @@ abstract class SchemaTestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->reader = new SimpleAnnotationReader();
-        $this->reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
+        $this->reader        = new AnnotationReader();
         $this->schemaManager = new SchemaManager($this->reader);
     }
 

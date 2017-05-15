@@ -3,18 +3,18 @@
 namespace PSX\Schema\Tests\Parser\Popo;
 
 /**
- * @Title("meta")
- * @Description("Some meta data")
- * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
- * @PatternProperties(pattern="^location_\d$", property=@Ref("PSX\Schema\Tests\Parser\Popo\Location"))
- * @AdditionalProperties(false)
+ * @JS\Title("meta")
+ * @JS\Description("Some meta data")
+ * @JS\PatternProperties(pattern="^tags_\d$", property=@JS\Schema(type="string"))
+ * @JS\PatternProperties(pattern="^location_\d$", property=@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"))
+ * @JS\AdditionalProperties(false)
  */
 class Meta extends \ArrayObject
 {
     /**
-     * @Key("createDate")
-     * @Type("string")
-     * @Format("date-time")
+     * @JS\Key("createDate")
+     * @JS\Type("string")
+     * @JS\Format("date-time")
      */
     public $createDate;
     public function setCreateDate($createDate)
@@ -27,23 +27,23 @@ class Meta extends \ArrayObject
     }
 }
 /**
- * @Title("web")
- * @Description("An application")
- * @AdditionalProperties(@Schema(type="string"))
- * @Required({"name", "url"})
- * @MinProperties(2)
- * @MaxProperties(8)
+ * @JS\Title("web")
+ * @JS\Description("An application")
+ * @JS\AdditionalProperties(@JS\Schema(type="string"))
+ * @JS\Required({"name", "url"})
+ * @JS\MinProperties(2)
+ * @JS\MaxProperties(8)
  */
 class Web extends \ArrayObject
 {
     /**
-     * @Key("name")
-     * @Type("string")
+     * @JS\Key("name")
+     * @JS\Type("string")
      */
     public $name;
     /**
-     * @Key("url")
-     * @Type("string")
+     * @JS\Key("url")
+     * @JS\Type("string")
      */
     public $url;
     public function setName($name)
@@ -64,21 +64,21 @@ class Web extends \ArrayObject
     }
 }
 /**
- * @Title("location")
- * @Description("Location of the person")
- * @AdditionalProperties(true)
- * @Required({"lat", "long"})
+ * @JS\Title("location")
+ * @JS\Description("Location of the person")
+ * @JS\AdditionalProperties(true)
+ * @JS\Required({"lat", "long"})
  */
 class Location extends \ArrayObject
 {
     /**
-     * @Key("lat")
-     * @Type("number")
+     * @JS\Key("lat")
+     * @JS\Type("number")
      */
     public $lat;
     /**
-     * @Key("long")
-     * @Type("number")
+     * @JS\Key("long")
+     * @JS\Type("number")
      */
     public $long;
     public function setLat($lat)
@@ -99,42 +99,42 @@ class Location extends \ArrayObject
     }
 }
 /**
- * @Title("author")
- * @Description("An simple author element with some description")
- * @AdditionalProperties(false)
- * @Required({"title"})
+ * @JS\Title("author")
+ * @JS\Description("An simple author element with some description")
+ * @JS\AdditionalProperties(false)
+ * @JS\Required({"title"})
  */
 class Author
 {
     /**
-     * @Key("title")
-     * @Type("string")
-     * @Pattern("[A-z]{3,16}")
+     * @JS\Key("title")
+     * @JS\Type("string")
+     * @JS\Pattern("[A-z]{3,16}")
      */
     public $title;
     /**
-     * @Key("email")
-     * @Description("We will send no spam to this addresss")
-     * @Type("string")
+     * @JS\Key("email")
+     * @JS\Description("We will send no spam to this addresss")
+     * @JS\Type("string")
      */
     public $email;
     /**
-     * @Key("categories")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(8)
+     * @JS\Key("categories")
+     * @JS\Type("array")
+     * @JS\Items(@JS\Schema(type="string"))
+     * @JS\MaxItems(8)
      */
     public $categories;
     /**
-     * @Key("locations")
-     * @Description("Array of locations")
-     * @Type("array")
-     * @Items(@Ref("PSX\Schema\Tests\Parser\Popo\Location"))
+     * @JS\Key("locations")
+     * @JS\Description("Array of locations")
+     * @JS\Type("array")
+     * @JS\Items(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"))
      */
     public $locations;
     /**
-     * @Key("origin")
-     * @Ref("PSX\Schema\Tests\Parser\Popo\Location")
+     * @JS\Key("origin")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Location")
      */
     public $origin;
     public function setTitle($title)
@@ -179,128 +179,128 @@ class Author
     }
 }
 /**
- * @Title("config")
- * @AdditionalProperties(@Schema(type="string"))
+ * @JS\Title("config")
+ * @JS\AdditionalProperties(@JS\Schema(type="string"))
  */
 class Config extends \ArrayObject
 {
 }
 /**
- * @Title("news")
- * @Description("An general news entry")
- * @AdditionalProperties(false)
- * @Required({"receiver", "price", "content"})
+ * @JS\Title("news")
+ * @JS\Description("An general news entry")
+ * @JS\AdditionalProperties(false)
+ * @JS\Required({"receiver", "price", "content"})
  */
 class News
 {
     /**
-     * @Key("config")
-     * @Ref("PSX\Schema\Tests\Parser\Popo\Config")
+     * @JS\Key("config")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Config")
      */
     public $config;
     /**
-     * @Key("tags")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(6)
-     * @MinItems(1)
+     * @JS\Key("tags")
+     * @JS\Type("array")
+     * @JS\Items(@JS\Schema(type="string"))
+     * @JS\MaxItems(6)
+     * @JS\MinItems(1)
      */
     public $tags;
     /**
-     * @Key("receiver")
-     * @Type("array")
-     * @Items(@Ref("PSX\Schema\Tests\Parser\Popo\Author"))
-     * @MinItems(1)
+     * @JS\Key("receiver")
+     * @JS\Type("array")
+     * @JS\Items(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Author"))
+     * @JS\MinItems(1)
      */
     public $receiver;
     /**
-     * @Key("resources")
-     * @Type("array")
-     * @Items(@Schema(oneOf={@Ref("PSX\Schema\Tests\Parser\Popo\Location"), @Ref("PSX\Schema\Tests\Parser\Popo\Web")}))
+     * @JS\Key("resources")
+     * @JS\Type("array")
+     * @JS\Items(@JS\Schema(oneOf={@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web")}))
      */
     public $resources;
     /**
-     * @Key("profileImage")
-     * @Type("string")
-     * @Format("base64")
+     * @JS\Key("profileImage")
+     * @JS\Type("string")
+     * @JS\Format("base64")
      */
     public $profileImage;
     /**
-     * @Key("read")
-     * @Type("boolean")
+     * @JS\Key("read")
+     * @JS\Type("boolean")
      */
     public $read;
     /**
-     * @Key("source")
-     * @OneOf(@Ref("PSX\Schema\Tests\Parser\Popo\Author"), @Ref("PSX\Schema\Tests\Parser\Popo\Web"))
+     * @JS\Key("source")
+     * @JS\OneOf(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Author"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web"))
      */
     public $source;
     /**
-     * @Key("author")
-     * @Ref("PSX\Schema\Tests\Parser\Popo\Author")
+     * @JS\Key("author")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Author")
      */
     public $author;
     /**
-     * @Key("meta")
-     * @Ref("PSX\Schema\Tests\Parser\Popo\Meta")
+     * @JS\Key("meta")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Meta")
      */
     public $meta;
     /**
-     * @Key("sendDate")
-     * @Type("string")
-     * @Format("date")
+     * @JS\Key("sendDate")
+     * @JS\Type("string")
+     * @JS\Format("date")
      */
     public $sendDate;
     /**
-     * @Key("readDate")
-     * @Type("string")
-     * @Format("date-time")
+     * @JS\Key("readDate")
+     * @JS\Type("string")
+     * @JS\Format("date-time")
      */
     public $readDate;
     /**
-     * @Key("expires")
-     * @Type("string")
-     * @Format("duration")
+     * @JS\Key("expires")
+     * @JS\Type("string")
+     * @JS\Format("duration")
      */
     public $expires;
     /**
-     * @Key("price")
-     * @Type("number")
-     * @Maximum(100)
-     * @Minimum(1)
+     * @JS\Key("price")
+     * @JS\Type("number")
+     * @JS\Maximum(100)
+     * @JS\Minimum(1)
      */
     public $price;
     /**
-     * @Key("rating")
-     * @Type("integer")
-     * @Maximum(5)
-     * @Minimum(1)
+     * @JS\Key("rating")
+     * @JS\Type("integer")
+     * @JS\Maximum(5)
+     * @JS\Minimum(1)
      */
     public $rating;
     /**
-     * @Key("content")
-     * @Description("Contains the main content of the news entry")
-     * @Type("string")
-     * @MaxLength(512)
-     * @MinLength(3)
+     * @JS\Key("content")
+     * @JS\Description("Contains the main content of the news entry")
+     * @JS\Type("string")
+     * @JS\MaxLength(512)
+     * @JS\MinLength(3)
      */
     public $content;
     /**
-     * @Key("question")
-     * @Enum({"foo", "bar"})
-     * @Type("string")
+     * @JS\Key("question")
+     * @JS\Enum({"foo", "bar"})
+     * @JS\Type("string")
      */
     public $question;
     /**
-     * @Key("coffeeTime")
-     * @Type("string")
-     * @Format("time")
+     * @JS\Key("coffeeTime")
+     * @JS\Type("string")
+     * @JS\Format("time")
      */
     public $coffeeTime;
     /**
-     * @Key("profileUri")
-     * @Type("string")
-     * @Format("uri")
+     * @JS\Key("profileUri")
+     * @JS\Type("string")
+     * @JS\Format("uri")
      */
     public $profileUri;
     public function setConfig($config)
