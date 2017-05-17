@@ -1,5 +1,10 @@
 
-### 2.1.1
+### 2.1.2 (2017-05-17)
+
+* Fixed Items annotation #5
+* Use annotation reader in tests
+
+### 2.1.1 (2017-05-07)
 
 * Schema manager add type parameter to explicit specify the schema parser 
 * Validation exception contains now the depending validation keyword and path to
