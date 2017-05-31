@@ -1,4 +1,8 @@
 
+### 2.1.3 (2017-05-31)
+
+* Added support for "default" metadata keyword #7
+
 ### 2.1.2 (2017-05-17)
 
 * Fixed Items annotation #5
