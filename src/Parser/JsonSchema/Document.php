@@ -166,6 +166,10 @@ class Document
             $property->setEnum($data['enum']);
         }
 
+        if (isset($data['default'])) {
+            $property->setDefault($data['default']);
+        }
+
         $this->parseObjectType($property, $data, $depth);
         $this->parseArrayType($property, $data, $depth);
         $this->parseScalar($property, $data);
