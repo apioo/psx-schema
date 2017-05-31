@@ -273,6 +273,7 @@ JSON;
     "definitions": {
         "ObjectId": {
             "type": "object",
+            "default": [],
             "additionalProperties": {
                 "$ref": "#"
             }
@@ -299,6 +300,7 @@ JSON;
     "type": "object",
     "title": "json schema",
     "description": "Core schema meta-schema",
+    "default": [],
     "properties": {
         "id": {
             "type": "string",
@@ -324,13 +326,15 @@ JSON;
             "type": "number"
         },
         "exclusiveMaximum": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
         },
         "minimum": {
             "type": "number"
         },
         "exclusiveMinimum": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
         },
         "maxLength": {
             "type": "integer",
@@ -342,7 +346,9 @@ JSON;
                     "type": "integer",
                     "minimum": 0
                 },
-                {}
+                {
+                    "default": 0
+                }
             ]
         },
         "pattern": {
@@ -350,6 +356,7 @@ JSON;
             "format": "regex"
         },
         "additionalItems": {
+            "default": [],
             "anyOf": [
                 {
                     "type": "boolean"
@@ -360,6 +367,7 @@ JSON;
             ]
         },
         "items": {
+            "default": [],
             "anyOf": [
                 {
                     "$ref": "#"
@@ -383,11 +391,14 @@ JSON;
                     "type": "integer",
                     "minimum": 0
                 },
-                {}
+                {
+                    "default": 0
+                }
             ]
         },
         "uniqueItems": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
         },
         "maxProperties": {
             "type": "integer",
@@ -399,7 +410,9 @@ JSON;
                     "type": "integer",
                     "minimum": 0
                 },
-                {}
+                {
+                    "default": 0
+                }
             ]
         },
         "required": {
@@ -411,6 +424,7 @@ JSON;
             "uniqueItems": true
         },
         "additionalProperties": {
+            "default": [],
             "anyOf": [
                 {
                     "type": "boolean"
