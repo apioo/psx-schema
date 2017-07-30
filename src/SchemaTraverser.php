@@ -234,7 +234,7 @@ class SchemaTraverser
                     if (preg_match('~' . $pattern . '~', $key)) {
                         array_push($this->pathStack, $key);
 
-                        $result->{$key} = $this->recTraverse($data[$key], $prop, $visitor);
+                        $result->{$key} = $this->recTraverse($value, $prop, $visitor);
                         $keys[] = $key;
 
                         array_pop($this->pathStack);
