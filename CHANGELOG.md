@@ -1,4 +1,8 @@
 
+### 2.1.4 (2017-07-30)
+
+* Use foreach value in pattern properties
+
 ### 2.1.3 (2017-05-31)
 
 * Added support for "default" metadata keyword #7
