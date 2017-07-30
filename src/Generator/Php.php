@@ -224,6 +224,9 @@ class Php implements GeneratorInterface
 
         $type = $this->getRealType($property);
         if ($type === PropertyType::TYPE_OBJECT) {
+            // @TODO in case the referenced schema is a oneOf schema use the
+            // annotation @OneOf and dont create a new class
+
             $comment.= ' * ' . $this->getSubSchema($property) . "\n";
         } else {
             $title = $property->getTitle();
