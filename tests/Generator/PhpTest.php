@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use PhpParser\Node\Stmt\Namespace_;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
@@ -984,5 +985,16 @@ PHP;
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
 
         $this->assertSchema($schema, $source);
+    }
+
+    public function testGetNode()
+    {
+        $generator = new Php(__NAMESPACE__);
+
+        $this->assertNull($generator->getNode());
+
+        $generator->generate($this->getSchema());
+
+        $this->assertInstanceOf(Namespace_::class, $generator->getNode());
     }
 }
