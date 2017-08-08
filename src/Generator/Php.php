@@ -88,6 +88,11 @@ class Php implements GeneratorInterface
         return $this->printer->prettyPrintFile([$this->root->getNode()]);
     }
 
+    public function getNode()
+    {
+        return $this->root ? $this->root->getNode() : null;
+    }
+
     protected function generateObject(PropertyInterface $type)
     {
         if ($this->getRealType($type) !== PropertyType::TYPE_OBJECT) {
