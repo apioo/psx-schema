@@ -1,4 +1,8 @@
 
+### 2.1.5 (2017-08-09)
+
+* Add getNode method to PHP generator
+
 ### 2.1.4 (2017-07-30)
 
 * Use foreach value in pattern properties
