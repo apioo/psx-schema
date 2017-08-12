@@ -1,4 +1,8 @@
 
+### 2.1.6 (2017-08-12)
+
+* Json schema parse remove strict version 04 check
+
 ### 2.1.5 (2017-08-09)
 
 * Add getNode method to PHP generator
