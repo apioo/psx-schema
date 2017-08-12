@@ -21,7 +21,6 @@
 namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Json\Pointer;
-use PSX\Schema\Parser\JsonSchema;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
@@ -36,16 +35,39 @@ use RuntimeException;
  */
 class Document
 {
+    /**
+     * @var array
+     */
     protected $data;
+
+    /**
+     * @var \PSX\Schema\Parser\JsonSchema\RefResolver
+     */
     protected $resolver;
+
+    /**
+     * @var string
+     */
     protected $basePath;
+
+    /**
+     * @var \PSX\Uri\Uri
+     */
     protected $source;
+
+    /**
+     * @var \PSX\Uri\Uri
+     */
     protected $baseUri;
 
+    /**
+     * @param array $data
+     * @param \PSX\Schema\Parser\JsonSchema\RefResolver $resolver
+     * @param string|null $basePath
+     * @param \PSX\Uri\Uri|null $source
+     */
     public function __construct(array $data, RefResolver $resolver, $basePath = null, Uri $source = null)
     {
-        $this->assertVersion($data);
-
         $this->data     = $data;
         $this->resolver = $resolver;
         $this->basePath = $basePath;
@@ -358,13 +380,6 @@ class Document
     {
         if (isset($data['not']) && is_array($data['not'])) {
             $property->setNot($this->getRecProperty($data['not'], null, $depth + 1));
-        }
-    }
-
-    protected function assertVersion(array $data)
-    {
-        if (isset($data['$schema']) && $data['$schema'] != JsonSchema::SCHEMA_04) {
-            throw new UnsupportedVersionException('Invalid version requires ' . JsonSchema::SCHEMA_04);
         }
     }
 }
