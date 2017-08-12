@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Http;
 use PSX\Schema\Parser\JsonSchema;
+use PSX\Schema\SchemaInterface;
 
 /**
  * JsonSchemaTest
@@ -81,13 +82,11 @@ class JsonSchemaTest extends ParserTestCase
         JsonSchema::fromFile(__DIR__ . '/JsonSchema/foo.json');
     }
 
-    /**
-     * @expectedException \PSX\Schema\Parser\JsonSchema\UnsupportedVersionException
-     * @expectedExceptionMessage Invalid version requires http://json-schema.org/draft-04/schema#
-     */
     public function testParseInvalidVersion()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/wrong_version_schema.json');
+        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/wrong_version_schema.json');
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     /**
