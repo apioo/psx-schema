@@ -40,10 +40,7 @@
           "type": "boolean",
           "description": "Whether this property is deprecated",
           "default": false
-        },
-        "allOf": { "$ref": "#/definitions/of" },
-        "anyOf": { "$ref": "#/definitions/of" },
-        "oneOf": { "$ref": "#/definitions/of" }
+        }
       }
     },
     "commonScalar": {
@@ -86,7 +83,10 @@
             "enum": ["object"]
           },
           "required": { "$ref": "#/definitions/stringArray" },
-          "discriminator": { "$ref": "#/definitions/discriminator" }
+          "discriminator": { "$ref": "#/definitions/discriminator" },
+          "allOf": { "$ref": "#/definitions/of" },
+          "anyOf": { "$ref": "#/definitions/of" },
+          "oneOf": { "$ref": "#/definitions/of" }
         },
         "required": ["title", "type"]
       }]
