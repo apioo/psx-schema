@@ -1,6 +1,6 @@
 {
   "title": "schema",
-  "description": "A strict JsonSchema schema which describes JSON data",
+  "description": "A strict JsonSchema meta schema which describes JSON data",
   "type": "object",
   "oneOf": [{
     "$ref": "#/definitions/object"
@@ -15,6 +15,7 @@
   }],
   "definitions": {
     "common": {
+      "title": "common",
       "type": "object",
       "properties": {
         "title": {
@@ -32,29 +33,21 @@
         },
         "nullable": {
           "type": "boolean",
-          "description": "Whether it is possible to use a null value on this property"
+          "description": "Whether it is possible to use a null value on this property",
+          "default": false
         },
-        "allOf": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/object"
-          }
+        "deprecated": {
+          "type": "boolean",
+          "description": "Whether this property is deprecated",
+          "default": false
         },
-        "anyOf": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/object"
-          }
-        },
-        "oneOf": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/object"
-          }
-        }
+        "allOf": { "$ref": "#/definitions/of" },
+        "anyOf": { "$ref": "#/definitions/of" },
+        "oneOf": { "$ref": "#/definitions/of" }
       }
     },
     "commonScalar": {
+      "title": "scalar",
       "type": "object",
       "allOf": [{
         "$ref": "#/definitions/common"
@@ -67,7 +60,7 @@
           },
           "enum": {
             "type": "array",
-            "description": "",
+            "description": "A list of possible enumeration values",
             "items": {
               "type": "string"
             },
@@ -77,6 +70,7 @@
       }]
     },
     "commonContainer": {
+      "title": "container",
       "type": "object",
       "allOf": [{
         "$ref": "#/definitions/common"
@@ -84,34 +78,23 @@
         "type": "object",
         "properties": {
           "title": {
+            "type": "string",
+            "description": "Distinct word which represents this property, may be used to generate i.e. class names or other identifier"
           },
           "type": {
             "type": "string",
             "enum": ["object"]
           },
-          "required": {
-            "$ref": "#/definitions/stringArray",
-            "description": ""
-          },
-          "discriminator": {
-            "type": "string"
-          }
+          "required": { "$ref": "#/definitions/stringArray" },
+          "discriminator": { "$ref": "#/definitions/discriminator" }
         },
         "required": ["title", "type"]
       }]
     },
-    "positiveInteger": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "stringArray": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 1
-    },
     "object": {
       "title": "object",
       "type": "object",
+      "description": "An object represents either a struct or map",
       "oneOf": [{
         "$ref": "#/definitions/objectStruct"
       }, {
@@ -119,8 +102,9 @@
       }]
     },
     "objectStruct": {
-      "title": "object",
+      "title": "struct",
       "type": "object",
+      "description": "A struct contains a fix set of defined properties",
       "allOf": [{
         "$ref": "#/definitions/commonContainer"
       }, {
@@ -137,12 +121,15 @@
     "objectMap": {
       "title": "map",
       "type": "object",
+      "description": "A map contains variable key value entries",
       "allOf": [{
         "$ref": "#/definitions/commonContainer"
       }, {
         "type": "object",
         "properties": {
-          "additionalProperties": { "$ref": "#" }
+          "additionalProperties": { "$ref": "#" },
+          "maxProperties": { "$ref": "#/definitions/positiveInteger" },
+          "minProperties": { "$ref": "#/definitions/positiveInteger" }
         },
         "required": ["additionalProperties"]
       }]
@@ -174,7 +161,10 @@
             }]
           },
           "maxItems": { "$ref": "#/definitions/positiveInteger" },
-          "minItems": { "$ref": "#/definitions/positiveInteger" }
+          "minItems": { "$ref": "#/definitions/positiveInteger" },
+          "uniqueItems": { 
+            "type": "boolean"
+          }
         },
         "required": ["type", "items"]
       }]
@@ -182,6 +172,7 @@
     "boolean": {
       "title": "boolean",
       "type": "object",
+      "description": "Represents a boolean value",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
@@ -198,6 +189,7 @@
     "number": {
       "title": "number",
       "type": "object",
+      "description": "Represents a number value which contains also integer",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
@@ -233,6 +225,7 @@
     "string": {
       "title": "string",
       "type": "object",
+      "description": "Represents a string value",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
@@ -251,6 +244,41 @@
         },
         "required": ["type"]
       }]
+    },
+    "discriminator": {
+      "title": "discriminator",
+      "type": "object",
+      "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
+      "properties": {
+        "propertyName": {
+          "type": "string",
+          "description": "The name of the property in the payload that will hold the discriminator value"
+        },
+        "mapping": {
+          "type": "object",
+          "description": "An object to hold mappings between payload values and schema names or references",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["propertyName"]
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "of": {
+      "type": "array",
+      "description": "An array of object values",
+      "items": {
+        "$ref": "#/definitions/object"
+      }
     }
   }
 }
