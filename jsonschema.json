@@ -1,6 +1,6 @@
 {
   "title": "schema",
-  "description": "A strict JsonSchema meta schema which describes JSON data",
+  "description": "A strict JsonSchema meta schema to simplify code generation",
   "type": "object",
   "oneOf": [{
     "$ref": "#/definitions/object"
@@ -59,7 +59,11 @@
             "type": "array",
             "description": "A list of possible enumeration values",
             "items": {
-              "type": "string"
+              "oneOf": [{
+                "type": "string"
+              },{
+                "type": "number"
+              }]
             },
             "minItems": 1
           }
