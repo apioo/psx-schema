@@ -585,17 +585,17 @@
                     </t>
                     <t>
                         The all of array should be used to express inheritance. The array
-                        should list the most generic definition is at the first position of
+                        should list the most generic definition at the first position of
                         the array and the most specific definition at the bottom.
                     </t>
                     <t>
                         Through this code generators could implement inheritance alongside
-                        the array. Also it is possible to aggregate all schemas into
-                        a single schema.
+                        the array.
                     </t>
                     <t>
-                        Since the all of array can only contain schemas of type "object"
-                        it is clear that the result is also always an schema of type "object".
+                        Also it is possible to aggregate all schemas into a single schema. Since the 
+                        all of array can only contain schemas of type "object" it is clear that 
+                        the result is also always an schema of type "object".
                     </t>
                     <figure>
                         <artwork>
@@ -681,8 +681,9 @@
         <section title="Ambiguities">
             <t>
                 In JSON Schema there are many edge cases to create schemas which have 
-                ambiguities and are inherent invalid. If a JSON Schema follows these 
-                rules it is free of these inconsistencies. Like for example:
+                ambiguities and are inherent invalid. If a JSON Schema follows the rules
+                defined in this specification it is automatically free of these 
+                inconsistencies. Like for example:
             </t>
             <figure>
                 <artwork>
