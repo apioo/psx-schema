@@ -3,15 +3,9 @@
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC3339 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3339.xml">
 <!ENTITY RFC3986 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3986.xml">
-<!ENTITY RFC5988 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5988.xml">
-<!ENTITY RFC6839 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6839.xml">
 <!ENTITY RFC6901 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6901.xml">
-<!ENTITY RFC6906 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6906.xml">
-<!ENTITY RFC7049 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7049.xml">
 <!ENTITY RFC7159 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7159.xml">
 <!ENTITY RFC7231 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7231.xml">
-<!ENTITY ldp SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml4/reference.W3C.REC-ldp-20150226.xml">
-<!ENTITY fragid-best-practices SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml4/reference.W3C.WD-fragid-best-practices-20121025.xml">
 ]>
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
@@ -55,17 +49,28 @@
                 maintainability of a schema.
             </t>
             <t>
-                This specification should be seen as extension to the JSON Schema 
-                draft-04 specification.
+                This specification should be seen as extension to the JSON Schema
+                draft-wright-json-schema-validation-00 specification.
             </t>
             <t>
-                The goal is to not introduce new keywords so that all existing schema
-                processors also work with this specification.
+                This specification has the following goals:
             </t>
             <t>
-                Another goal of this specification is to build a JSON Schema standard 
-                which can also be used in the OpenAPI specification where code
-                generation is a concern.
+                <list style="symbols">
+                    <t>
+                        To not introduce new keywords so that all existing schema
+                        processors also work with this specification.
+                    </t>
+                    <t>
+                        To build a JSON Schema standard which can also be used in 
+                        the OpenAPI specification where code generation is a big concern.
+                    </t>
+                    <t>
+                        Not to build a JSON Schema to describe every possible JSON 
+                        structure. Instead to focus on the 80% use case and describe
+                        these structures in a clean way.
+                    </t>
+                </list>
             </t>
         </section>
         <section title="Conventions and Terminology">
@@ -87,8 +92,7 @@
         <section title="Overview">
             <t>
                 This document describes the JSON Schema restriction rules and all available 
-                validation keywords and their corresponding behaviour. It should be
-                seen as extension to the draft-04 JSON Schema specification. It contains
+                validation keywords and their corresponding behaviour. It contains
                 also a JSON Schema to validate whether a JSON Schema complies to these
                 rules.
             </t>
@@ -140,8 +144,8 @@
                             "allOf", "anyOf" or "oneOf"
                         </t>
                         <t>
-                            The value must be an array which can contain only definition
-                            schemas of type "object".
+                            The value must be an array which can contain only definition 
+                            (of type "object") or reference schemas.
                         </t>
                     </list>
                 </t>
@@ -167,9 +171,9 @@
                 possible to decide which validation keywords should be used depending on the actual data.
             </t>
             <t>
-                If a schema follows these rules it can be used independently of the actual data. This 
-                means that it is possible to generate i.e. a class representation of the JSON Schema only 
-                based on the schema.
+                If a schema follows the rules defined in this specification it can be used independently 
+                of the actual data. This means that it is possible to generate i.e. a class representation 
+                of the JSON Schema only based on the schema.
             </t>
             <t>
                 Because of this critical design change the schema keywords must have some restrictions.
@@ -1087,17 +1091,11 @@
             &RFC2119;
             &RFC3339;
             &RFC3986;
-            &RFC6839;
             &RFC6901;
             &RFC7159;
-            &ldp;
         </references>
         <references title="Informative References">
-            &RFC5988;
-            &RFC6906;
-            &RFC7049;
             &RFC7231;
-            &fragid-best-practices;
             <reference anchor="json-schema-validation">
                 <front>
                     <title>JSON Schema Validation: A Vocabulary for Structural Validation of JSON</title>
@@ -1114,12 +1112,7 @@
         </references>
         <section title="Acknowledgments">
             <t>
-                Thanks to
-                Gary Court,
-                Francis Galiegue,
-                Kris Zyp,
-                and Geraint Luff
-                for their work on the initial drafts of JSON Schema.
+                Thanks to the JSON Schema and OpenAPI team and contributors.
             </t>
         </section>
         <section title="ChangeLog">
