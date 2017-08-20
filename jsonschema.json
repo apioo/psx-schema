@@ -1,7 +1,5 @@
 {
-  "title": "schema",
   "description": "A strict JsonSchema meta schema to simplify code generation",
-  "type": "object",
   "oneOf": [{
     "$ref": "#/definitions/object"
   }, {
@@ -12,9 +10,18 @@
     "$ref": "#/definitions/number"
   }, {
     "$ref": "#/definitions/string"
+  }, {
+    "$ref": "#/definitions/allOf"
+  }, {
+    "$ref": "#/definitions/anyOf"
+  }, {
+    "$ref": "#/definitions/oneOf"
+  }, {
+    "$ref": "#/definitions/reference"
   }],
   "definitions": {
     "common": {
+      "description": "Common properties which can be used in any schema",
       "title": "common",
       "type": "object",
       "properties": {
@@ -44,11 +51,11 @@
       }
     },
     "commonScalar": {
-      "title": "scalar",
-      "type": "object",
+      "description": "Properties for scalar values",
       "allOf": [{
         "$ref": "#/definitions/common"
       }, {
+        "title": "scalar",
         "type": "object",
         "properties": {
           "format": {
@@ -71,11 +78,11 @@
       }]
     },
     "commonContainer": {
-      "title": "container",
-      "type": "object",
+      "description": "Properties for object values",
       "allOf": [{
         "$ref": "#/definitions/common"
       }, {
+        "title": "container",
         "type": "object",
         "properties": {
           "title": {
@@ -86,18 +93,12 @@
             "type": "string",
             "enum": ["object"]
           },
-          "required": { "$ref": "#/definitions/stringArray" },
-          "discriminator": { "$ref": "#/definitions/discriminator" },
-          "allOf": { "$ref": "#/definitions/of" },
-          "anyOf": { "$ref": "#/definitions/of" },
-          "oneOf": { "$ref": "#/definitions/of" }
+          "required": { "$ref": "#/definitions/stringArray" }
         },
         "required": ["title", "type"]
       }]
     },
     "object": {
-      "title": "object",
-      "type": "object",
       "description": "An object represents either a struct or map",
       "oneOf": [{
         "$ref": "#/definitions/objectStruct"
@@ -106,12 +107,11 @@
       }]
     },
     "objectStruct": {
-      "title": "struct",
-      "type": "object",
       "description": "A struct contains a fix set of defined properties",
       "allOf": [{
         "$ref": "#/definitions/commonContainer"
       }, {
+        "title": "struct",
         "type": "object",
         "properties": {
           "properties": {
@@ -123,12 +123,11 @@
       }]
     },
     "objectMap": {
-      "title": "map",
-      "type": "object",
       "description": "A map contains variable key value entries",
       "allOf": [{
         "$ref": "#/definitions/commonContainer"
       }, {
+        "title": "map",
         "type": "object",
         "properties": {
           "additionalProperties": { "$ref": "#" },
@@ -139,11 +138,11 @@
       }]
     },
     "array": {
-      "title": "array",
-      "type": "object",
+      "description": "An array contains an ordered list of variable values",
       "allOf": [{
         "$ref": "#/definitions/common"
       }, {
+        "title": "array",
         "type": "object",
         "properties": {
           "type": {
@@ -151,18 +150,7 @@
             "enum": ["array"]
           },
           "items": {
-            "allOf": [{
-              "$ref": "#"
-            }, {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": ["object", "number", "integer", "string"]
-                }
-              },
-              "required": ["type"]
-            }]
+            "$ref": "#/definitions/arrayItem"
           },
           "maxItems": { "$ref": "#/definitions/positiveInteger" },
           "minItems": { "$ref": "#/definitions/positiveInteger" },
@@ -174,12 +162,11 @@
       }]
     },
     "boolean": {
-      "title": "boolean",
-      "type": "object",
       "description": "Represents a boolean value",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
+        "title": "boolean",
         "type": "object",
         "properties": {
           "type": {
@@ -191,12 +178,11 @@
       }]
     },
     "number": {
-      "title": "number",
-      "type": "object",
       "description": "Represents a number value which contains also integer",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
+        "title": "number",
         "type": "object",
         "properties": {
           "type": {
@@ -227,12 +213,11 @@
       }]
     },
     "string": {
-      "title": "string",
-      "type": "object",
       "description": "Represents a string value",
       "allOf": [{
         "$ref": "#/definitions/commonScalar"
       }, {
+        "title": "string",
         "type": "object",
         "properties": {
           "type": {
@@ -249,10 +234,50 @@
         "required": ["type"]
       }]
     },
+    "allOf": {
+      "description": "Combination keyword to validate all containing schemas",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "title": "allOf",
+        "type": "object",
+        "properties": {
+          "allOf": { "$ref": "#/definitions/of" }
+        },
+        "required": ["allOf"]
+      }]
+    },
+    "anyOf": {
+      "description": "Combination keyword to validate any containing schemas",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "title": "anyOf",
+        "type": "object",
+        "properties": {
+          "anyOf": { "$ref": "#/definitions/of" }
+        },
+        "required": ["anyOf"]
+      }]
+    },
+    "oneOf": {
+      "description": "Combination keyword to validate exactly one containing schemas",
+      "allOf": [{
+        "$ref": "#/definitions/common"
+      }, {
+        "title": "oneOf",
+        "type": "object",
+        "properties": {
+          "discriminator": { "$ref": "#/definitions/discriminator" },
+          "oneOf": { "$ref": "#/definitions/of" }
+        },
+        "required": ["oneOf"]
+      }]
+    },
     "discriminator": {
+      "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
       "title": "discriminator",
       "type": "object",
-      "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
       "properties": {
         "propertyName": {
           "type": "string",
@@ -269,20 +294,55 @@
       "required": ["propertyName"]
     },
     "positiveInteger": {
+      "description": "Positive integer value",
       "type": "integer",
       "minimum": 0
     },
     "stringArray": {
+      "description": "Array string values",
       "type": "array",
       "items": { "type": "string" },
       "minItems": 1
     },
     "of": {
+      "description": "Combination keyword values",
       "type": "array",
-      "description": "An array of object values",
       "items": {
-        "$ref": "#/definitions/object"
+        "$ref": "#/definitions/objectOrReference"
       }
+    },
+    "reference": {
+      "description": "Reference object",
+      "title": "reference",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string"
+        }
+      },
+      "required": ["$ref"]
+    },
+    "objectOrReference": {
+      "description": "Object or reference value",
+      "oneOf": [{
+        "$ref": "#/definitions/object"
+      }, {
+        "$ref": "#/definitions/reference"
+      }]
+    },
+    "arrayItem": {
+      "description": "Allowed values of an array item",
+      "oneOf": [{
+        "$ref": "#/definitions/object"
+      }, {
+        "$ref": "#/definitions/boolean"
+      }, {
+        "$ref": "#/definitions/number"
+      }, {
+        "$ref": "#/definitions/string"
+      }, {
+        "$ref": "#/definitions/reference"
+      }]
     }
   }
 }
