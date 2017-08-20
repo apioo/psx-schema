@@ -1,21 +1,9 @@
 {
   "description": "A strict JsonSchema meta schema to simplify code generation",
   "oneOf": [{
-    "$ref": "#/definitions/object"
+    "$ref": "#/definitions/definition"
   }, {
-    "$ref": "#/definitions/array"
-  }, {
-    "$ref": "#/definitions/boolean"
-  }, {
-    "$ref": "#/definitions/number"
-  }, {
-    "$ref": "#/definitions/string"
-  }, {
-    "$ref": "#/definitions/allOf"
-  }, {
-    "$ref": "#/definitions/anyOf"
-  }, {
-    "$ref": "#/definitions/oneOf"
+    "$ref": "#/definitions/combination"
   }, {
     "$ref": "#/definitions/reference"
   }],
@@ -305,22 +293,11 @@
       "minItems": 1
     },
     "of": {
-      "description": "Combination keyword values",
+      "description": "Combination values",
       "type": "array",
       "items": {
         "$ref": "#/definitions/objectOrReference"
       }
-    },
-    "reference": {
-      "description": "Reference object",
-      "title": "reference",
-      "type": "object",
-      "properties": {
-        "$ref": {
-          "type": "string"
-        }
-      },
-      "required": ["$ref"]
     },
     "objectOrReference": {
       "description": "Object or reference value",
@@ -343,6 +320,41 @@
       }, {
         "$ref": "#/definitions/reference"
       }]
+    },
+    "definition": {
+      "description": "Represents a concrete type definition",
+      "oneOf": [{
+        "$ref": "#/definitions/object"
+      }, {
+        "$ref": "#/definitions/array"
+      }, {
+        "$ref": "#/definitions/boolean"
+      }, {
+        "$ref": "#/definitions/number"
+      }, {
+        "$ref": "#/definitions/string"
+      }]
+    },
+    "combination": {
+      "description": "Represents a combination of schemas",
+      "oneOf": [{
+        "$ref": "#/definitions/allOf"
+      }, {
+        "$ref": "#/definitions/anyOf"
+      }, {
+        "$ref": "#/definitions/oneOf"
+      }]
+    },
+    "reference": {
+      "description": "Represents a reference to another schema",
+      "title": "reference",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string"
+        }
+      },
+      "required": ["$ref"]
     }
   }
 }
