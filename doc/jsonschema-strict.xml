@@ -108,7 +108,7 @@
             <section title="Definition">
                 <t>
                     A definition schema is a schema which describes a concrete type. 
-                    It must follow the following rules:
+                    It must follow the rules:
                 </t>
                 <t>
                     <list style="symbols">
@@ -117,17 +117,20 @@
                             "object", "array", "boolean", "number", "integer" or "string"
                         </t>
                         <t>
-                            Every schema from type "object" MUST have a "title" keyword.
+                            Every schema of type "object" MUST have a "title" keyword.
                         </t>
                         <t>
-                            Every schema from type "object" is either a struct (MUST have
+                            Every schema of type "object" is either a struct (MUST have
                             a "properties" keyword) or a map (MUST have a "additionalProperties" 
                             keyword)
                         </t>
                         <t>
-                            Every schema from type "array" MUST have an "items" keyword.
+                            Every schema of type "array" MUST have an "items" keyword.
                             The items can only contain definition ("object", "boolean", 
                             "number", "string") or reference schemas.
+                        </t>
+                        <t>
+                            The "patternProperties" keyword is not supported.
                         </t>
                     </list>
                 </t>
@@ -135,7 +138,7 @@
             <section title="Combination">
                 <t>
                     A combination schema combines multiple schemas in a specific way. 
-                    It must follow the following rules:
+                    It must follow the rules:
                 </t>
                 <t>
                     <list style="symbols">
@@ -153,12 +156,18 @@
             <section title="Reference">
                 <t>
                     A reference schema makes a reference to another schema. 
-                    It must follow the following rules:
+                    It must follow the rules:
                 </t>
                 <t>
                     <list style="symbols">
                         <t>
                             Every schema MUST have the keyword "$ref".
+                        </t>
+                        <t>
+                            A reference schema MUST follow the same rules as a 
+                            definition schema. That means i.e. if a reference is used 
+                            inside the "allOf" keyword it MUST only reference object
+                            types.
                         </t>
                     </list>
                 </t>
@@ -690,27 +699,6 @@
                     </t>
                 </section>
             </section>
-        </section>
-        <section title="Ambiguities">
-            <t>
-                In JSON Schema there are many edge cases to create schemas which have 
-                ambiguities and are inherent invalid. If a JSON Schema follows the rules
-                defined in this specification it is automatically free of these 
-                inconsistencies. Like for example:
-            </t>
-            <figure>
-                <artwork>
-                    <![CDATA[
-{
-    "allOf": [{
-        "type": "string"
-    }, {
-        "type": "number"
-    }]
-}
-]]>
-                </artwork>
-            </figure>
         </section>
         <section title="Schema">
             <t>
