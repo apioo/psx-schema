@@ -395,11 +395,10 @@
 <link href="#rfc.section.5.2.4" rel="Chapter" title="5.2.4 discriminator">
 <link href="#rfc.section.5.3" rel="Chapter" title="5.3 Reference keywords">
 <link href="#rfc.section.5.3.1" rel="Chapter" title="5.3.1 $ref">
-<link href="#rfc.section.6" rel="Chapter" title="6 Ambiguities">
-<link href="#rfc.section.7" rel="Chapter" title="7 Schema">
-<link href="#rfc.references" rel="Chapter" title="8 References">
-<link href="#rfc.references.1" rel="Chapter" title="8.1 Normative References">
-<link href="#rfc.references.2" rel="Chapter" title="8.2 Informative References">
+<link href="#rfc.section.6" rel="Chapter" title="6 Schema">
+<link href="#rfc.references" rel="Chapter" title="7 References">
+<link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References">
 <link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgments">
 <link href="#rfc.appendix.B" rel="Chapter" title="B ChangeLog">
 <link href="#rfc.authors" rel="Chapter">
@@ -410,7 +409,7 @@
 
   <meta name="dct.creator" content="Kappestein, C., Ed." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-kappestein-json-schema-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2017-8-20" />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-8-21" />
   <meta name="dct.abstract" content="JSON Schema provides many ways to describe a JSON structure. The price of this flexibility is that it is difficult for code generators to understand a JSON Schema. This specification restricts the JSON Schema keywords to a subset with a deterministic behaviour.  " />
   <meta name="description" content="JSON Schema provides many ways to describe a JSON structure. The price of this flexibility is that it is difficult for code generators to understand a JSON Schema. This specification restricts the JSON Schema keywords to a subset with a deterministic behaviour.  " />
 
@@ -427,14 +426,14 @@
 </tr>
 <tr>
 <td class="left">Internet-Draft</td>
-<td class="right">August 20, 2017</td>
+<td class="right">August 21, 2017</td>
 </tr>
 <tr>
 <td class="left">Intended status: Informational</td>
 <td class="right"></td>
 </tr>
 <tr>
-<td class="left">Expires: February 21, 2018</td>
+<td class="left">Expires: February 22, 2018</td>
 <td class="right"></td>
 </tr>
 
@@ -451,7 +450,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on February 21, 2018.</p>
+<p>This Internet-Draft will expire on February 22, 2018.</p>
 <h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
 <p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
@@ -501,15 +500,13 @@
 </li>
 <ul><li>5.3.1.   <a href="#rfc.section.5.3.1">$ref</a>
 </li>
-</ul></ul><li>6.   <a href="#rfc.section.6">Ambiguities</a>
+</ul></ul><li>6.   <a href="#rfc.section.6">Schema</a>
 </li>
-<li>7.   <a href="#rfc.section.7">Schema</a>
+<li>7.   <a href="#rfc.references">References</a>
 </li>
-<li>8.   <a href="#rfc.references">References</a>
+<ul><li>7.1.   <a href="#rfc.references.1">Normative References</a>
 </li>
-<ul><li>8.1.   <a href="#rfc.references.1">Normative References</a>
-</li>
-<li>8.2.   <a href="#rfc.references.2">Informative References</a>
+<li>7.2.   <a href="#rfc.references.2">Informative References</a>
 </li>
 </ul><li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgments</a>
 </li>
@@ -549,20 +546,21 @@
 <p id="rfc.section.4.p.2">The distinction is made based on the used keywords.  </p>
 <h1 id="rfc.section.4.1">
 <a href="#rfc.section.4.1">4.1.</a> Definition</h1>
-<p id="rfc.section.4.1.p.1">A definition schema is a schema which describes a concrete type.  It must follow the following rules: </p>
+<p id="rfc.section.4.1.p.1">A definition schema is a schema which describes a concrete type.  It must follow the rules: </p>
 <p></p>
 
 <ul>
 <li>Every schema MUST have a "type" keyword. The type must be one of: "object", "array", "boolean", "number", "integer" or "string" </li>
-<li>Every schema from type "object" MUST have a "title" keyword.  </li>
-<li>Every schema from type "object" is either a struct (MUST have a "properties" keyword) or a map (MUST have a "additionalProperties" keyword) </li>
-<li>Every schema from type "array" MUST have an "items" keyword.  The items can only contain definition ("object", "boolean", "number", "string") or reference schemas.  </li>
+<li>Every schema of type "object" MUST have a "title" keyword.  </li>
+<li>Every schema of type "object" is either a struct (MUST have a "properties" keyword) or a map (MUST have a "additionalProperties" keyword) </li>
+<li>Every schema of type "array" MUST have an "items" keyword.  The items can only contain definition ("object", "boolean", "number", "string") or reference schemas.  </li>
+<li>The "patternProperties" keyword is not supported.  </li>
 </ul>
 
 <p> </p>
 <h1 id="rfc.section.4.2">
 <a href="#rfc.section.4.2">4.2.</a> Combination</h1>
-<p id="rfc.section.4.2.p.1">A combination schema combines multiple schemas in a specific way.  It must follow the following rules: </p>
+<p id="rfc.section.4.2.p.1">A combination schema combines multiple schemas in a specific way.  It must follow the rules: </p>
 <p></p>
 
 <ul>
@@ -573,10 +571,13 @@
 <p> </p>
 <h1 id="rfc.section.4.3">
 <a href="#rfc.section.4.3">4.3.</a> Reference</h1>
-<p id="rfc.section.4.3.p.1">A reference schema makes a reference to another schema.  It must follow the following rules: </p>
+<p id="rfc.section.4.3.p.1">A reference schema makes a reference to another schema.  It must follow the rules: </p>
 <p></p>
 
-<ul><li>Every schema MUST have the keyword "$ref".  </li></ul>
+<ul>
+<li>Every schema MUST have the keyword "$ref".  </li>
+<li>A reference schema MUST follow the same rules as a definition schema. That means i.e. if a reference is used inside the "allOf" keyword it MUST only reference object types.  </li>
+</ul>
 
 <p> </p>
 <h1 id="rfc.section.5">
@@ -818,22 +819,8 @@
 <p id="rfc.section.5.3.1.p.3">The URI is not a network locator, only an identifier. A schema need not be downloadable from the address if it is a network-addressable URL, and implementations SHOULD NOT assume they should perform a network operation when they encounter a network-addressable URI.  </p>
 <p id="rfc.section.5.3.1.p.4">A schema MUST NOT be run into an infinite loop against a schema. For example, if two schemas "#alice" and "#bob" both have an "allOf" property that refers to the other, a naive validator might get stuck in an infinite recursive loop trying to validate the instance.  Schemas SHOULD NOT make use of infinite recursive nesting like this; the behavior is undefined.  </p>
 <h1 id="rfc.section.6">
-<a href="#rfc.section.6">6.</a> Ambiguities</h1>
-<p id="rfc.section.6.p.1">In JSON Schema there are many edge cases to create schemas which have ambiguities and are inherent invalid. If a JSON Schema follows the rules defined in this specification it is automatically free of these inconsistencies. Like for example: </p>
-<pre>
-                    
-{
-    "allOf": [{
-        "type": "string"
-    }, {
-        "type": "number"
-    }]
-}
-
-                </pre>
-<h1 id="rfc.section.7">
-<a href="#rfc.section.7">7.</a> Schema</h1>
-<p id="rfc.section.7.p.1">The following JSON Schema can be used to validate whether a JSON Schema follows these rules.  </p>
+<a href="#rfc.section.6">6.</a> Schema</h1>
+<p id="rfc.section.6.p.1">The following JSON Schema can be used to validate whether a JSON Schema follows these rules.  </p>
 <pre>
                     
 {
@@ -1199,9 +1186,9 @@
 
                 </pre>
 <h1 id="rfc.references">
-<a href="#rfc.references">8.</a> References</h1>
+<a href="#rfc.references">7.</a> References</h1>
 <h1 id="rfc.references.1">
-<a href="#rfc.references.1">8.1.</a> Normative References</h1>
+<a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>
@@ -1230,7 +1217,7 @@
 </tr>
 </tbody></table>
 <h1 id="rfc.references.2">
-<a href="#rfc.references.2">8.2.</a> Informative References</h1>
+<a href="#rfc.references.2">7.2.</a> Informative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="json-schema-validation">[json-schema-validation]</b></td>
