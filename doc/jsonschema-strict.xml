@@ -15,7 +15,7 @@
 <?rfc rfcedstyle="yes"?>
 <?rfc comments="yes"?>
 <?rfc inline="yes" ?>
-<rfc category="info" docName="draft-kappestein-json-schema-00" ipr="trust200902">
+<rfc category="info" docName="draft-kappestein-json-schema-code-00" ipr="trust200902">
     <front>
         <title abbrev="JSON Schema Strict">JSON Schema Strict: JSON Schema rules to simplify code generation</title>
         <author fullname="Christoph Kappestein" initials="C" surname="Kappestein" role="editor">
