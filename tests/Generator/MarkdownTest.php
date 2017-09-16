@@ -20,24 +20,26 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\Html;
+use PSX\Schema\Generator\Markdown;
 
 /**
- * HtmlTest
+ * MarkdownTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class HtmlTest extends GeneratorTestCase
+class MarkdownTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new Html();
+        $generator = new Markdown();
 
-        $actual = '<div>' . $generator->generate($this->getSchema()) . '</div>';
-        $expect = '<div>' . file_get_contents(__DIR__ . '/html.htm') . '</div>';
+        $actual = $generator->generate($this->getSchema());
 
-        $this->assertXmlStringEqualsXmlString($expect, $actual, $actual);
+        $expect = file_get_contents(__DIR__ . '/markdown.md');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
     }
 }
