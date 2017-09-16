@@ -29,7 +29,6 @@ use PSX\Record\RecordInterface;
 use PSX\Schema\AdditionalPropertiesInterface;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\Validation\ValidatorInterface;
-use PSX\Schema\ValidationException;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
 
