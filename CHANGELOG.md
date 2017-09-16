@@ -1,4 +1,8 @@
 
+### 2.2.0
+
+* Add text abstract and markdown generator
+
 ### 2.1.6 (2017-08-12)
 
 * Json schema parse remove strict version 04 check
