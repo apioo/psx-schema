@@ -30,6 +30,19 @@ namespace PSX\Schema\Generator;
 class Markdown extends TextAbstract
 {
     /**
+     * @var integer
+     */
+    private $heading;
+
+    /**
+     * @param integer $heading
+     */
+    public function __construct($heading = 1)
+    {
+        $this->heading = $heading;
+    }
+
+    /**
      * @param string $id
      * @param string $title
      * @param string $description
@@ -38,7 +51,7 @@ class Markdown extends TextAbstract
      */
     protected function writeObject($id, $title, $description, array $properties)
     {
-        $result = '# ' . $title . "\n";
+        $result = str_repeat('#', $this->heading) . ' ' . $title . "\n";
         $result.= '' . "\n";
 
         if (!empty($description)) {
