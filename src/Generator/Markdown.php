@@ -27,21 +27,8 @@ namespace PSX\Schema\Generator;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Markdown extends TextAbstract
+class Markdown extends MarkupAbstract
 {
-    /**
-     * @var integer
-     */
-    private $heading;
-
-    /**
-     * @param integer $heading
-     */
-    public function __construct($heading = 1)
-    {
-        $this->heading = $heading;
-    }
-
     /**
      * @param string $id
      * @param string $title

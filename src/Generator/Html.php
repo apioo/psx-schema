@@ -32,7 +32,7 @@ use PSX\Schema\SchemaInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Html extends TextAbstract
+class Html extends MarkupAbstract
 {
     /**
      * @param string $id
@@ -44,7 +44,7 @@ class Html extends TextAbstract
     protected function writeObject($id, $title, $description, array $properties)
     {
         $result = '<div id="' . $id . '" class="psx-object">';
-        $result.= '<h1>' . htmlspecialchars($title) . '</h1>';
+        $result.= '<h' . $this->heading . '>' . htmlspecialchars($title) . '</h' . $this->heading . '>';
 
         if (!empty($description)) {
             $result.= '<div class="psx-object-description">' . htmlspecialchars($description) . '</div>';

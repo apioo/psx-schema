@@ -26,13 +26,13 @@ use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 
 /**
- * TextAbstract
+ * MarkupAbstract
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class TextAbstract implements GeneratorInterface
+abstract class MarkupAbstract implements GeneratorInterface
 {
     use GeneratorTrait;
 
@@ -50,6 +50,19 @@ abstract class TextAbstract implements GeneratorInterface
      * @var array
      */
     protected $references;
+
+    /**
+     * @var integer
+     */
+    protected $heading;
+
+    /**
+     * @param integer $heading
+     */
+    public function __construct($heading = 1)
+    {
+        $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
+    }
 
     public function generate(SchemaInterface $schema)
     {
