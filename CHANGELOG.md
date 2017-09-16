@@ -1,5 +1,9 @@
 
-### 2.2.0
+### 2.2.1 (2017-09-16)
+
+* Add heading indicator to html generator
+
+### 2.2.0 (2017-09-16)
 
 * Add text abstract and markdown generator
 
