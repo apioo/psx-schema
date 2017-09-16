@@ -42,4 +42,16 @@ class MarkdownTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateHeading()
+    {
+        $generator = new Markdown(4);
+
+        $actual = $generator->generate($this->getSchema());
+
+        $expect = file_get_contents(__DIR__ . '/markdown_heading.md');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }
