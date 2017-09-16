@@ -35,9 +35,9 @@ class HtmlTest extends GeneratorTestCase
     {
         $generator = new Html();
 
-        $actual = '<div>' . $generator->generate($this->getSchema()) . '</div>';
-        $expect = '<div>' . file_get_contents(__DIR__ . '/html.htm') . '</div>';
+        $actual = $generator->generate($this->getSchema());
+        $expect = file_get_contents(__DIR__ . '/html.htm');
 
-        $this->assertXmlStringEqualsXmlString($expect, $actual, $actual);
+        $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }
 }
