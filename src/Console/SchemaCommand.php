@@ -25,6 +25,7 @@ use PSX\Schema\SchemaManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -56,6 +57,7 @@ class SchemaCommand extends Command
         $this
             ->setName('schema')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
+            ->addOption('namespace',null,InputOption::VALUE_REQUIRED,'Namespace for generated PHP classes')
             ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
             ->addArgument('format', InputArgument::OPTIONAL, 'Optional the output format possible values are: html, php, serialize, jsonschema');
     }
@@ -71,7 +73,7 @@ class SchemaCommand extends Command
                 break;
 
             case 'php':
-                $generator = new Generator\Php();
+                $generator = new Generator\Php($input->getOption('namespace'));
                 $response  = $generator->generate($schema);
                 break;
 
