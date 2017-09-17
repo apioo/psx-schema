@@ -227,4 +227,4 @@ JsonSchema we have developed a JsonSchema code specification which restricts the
 JsonSchema keywords. This specification contains also a JsonSchema meta schema 
 to validate a schema against those rules.
 
-https://rawgit.com/apioo/psx-schema/master/doc/jsonschema-code.html
+https://cdn.rawgit.com/apioo/psx-schema/1192d888/doc/jsonschema-code.html
