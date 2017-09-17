@@ -223,8 +223,6 @@ schemas like i.e. the JsonSchema spec itself.
 
 While developing this library we have experienced many pitfalls with the 
 JsonSchema specification. In order to avoid those and to help to write better 
-JsonSchema we have developed a JsonSchema code specification which restricts the 
-JsonSchema keywords. This specification contains also a JsonSchema meta schema 
-to validate a schema against those rules.
-
-https://cdn.rawgit.com/apioo/psx-schema/1192d888/doc/jsonschema-code.html
+JsonSchema schemas we have developed a [JsonSchema code specification](https://cdn.rawgit.com/apioo/psx-schema/1192d888/doc/jsonschema-code.html) 
+which restricts the JsonSchema keywords. This specification contains also a 
+JsonSchema meta schema to validate a schema against those rules.
