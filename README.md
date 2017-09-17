@@ -219,13 +219,12 @@ inheritance is needed it must be manually implemented. Despite that this
 approach is pretty robust and allows us to also generate classes for recursive 
 schemas like i.e. the JsonSchema spec itself.
 
-# JSON Schema (strict)
+# JSON Schema code
 
 While developing this library we have experienced many pitfalls with the 
-JsonSchema specification. In order to avoid those and to help you to write 
-better JsonSchema we have developed a JsonSchema strict specification which 
-restricts the JsonSchema keywords to a deterministic behaviour. This 
-specification contains also a JsonSchema meta schema to validate a schema 
-against those rules.
+JsonSchema specification. In order to avoid those and to help to write better 
+JsonSchema we have developed a JsonSchema code specification which restricts the 
+JsonSchema keywords. This specification contains also a JsonSchema meta schema 
+to validate a schema against those rules.
 
-https://rawgit.com/apioo/psx-schema/master/doc/jsonschema-strict.html
+https://rawgit.com/apioo/psx-schema/master/doc/jsonschema-code.html
