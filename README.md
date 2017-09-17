@@ -6,7 +6,7 @@ PSX Schema
 This library helps to generate PHP classes from JsonSchema definitions and vice 
 versa. You can then use those POPOs to import and validate json data. It was 
 inspired by JAXB where it is possible generate POJOs from XSD files. We have 
-also created an [online tool](http://phpsx.org/schema/generator) to test the 
+also created an [online tool](http://phpsx.org/tools/jsonschema) to test the 
 JsonSchema to PHP conversion.
 
 ## Usage
