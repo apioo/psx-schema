@@ -1,4 +1,8 @@
 
+### 2.2.2 (2017-09-30)
+
+* Add const constraint
+
 ### 2.2.1 (2017-09-16)
 
 * Add heading indicator to html generator
