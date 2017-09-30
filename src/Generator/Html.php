@@ -113,30 +113,31 @@ class Html extends MarkupAbstract
             }
 
             $result.= '<dt>' . htmlspecialchars(ucfirst($name)) . '</dt>';
+            $result.= '<dd>';
 
             $type = strtolower($name);
             if ($name == 'enum') {
-                $result.= '<span class="psx-constraint-enum">';
-                $result.= '<ul>';
+                $result.= '<ul class="psx-constraint-enum">';
                 foreach ($constraint as $prop) {
                     $result.= '<li><code>' . htmlspecialchars(json_encode($prop)) . '</code></li>';
                 }
                 $result.= '</ul>';
+            } elseif ($name == 'const') {
+                $result.= '<span class="psx-constraint-const">';
+                $result.= '<code>' . htmlspecialchars(json_encode($constraint)) . '</code>';
                 $result.= '</span>';
             } elseif (in_array($name, ['oneOf', 'anyOf', 'allOf'])) {
-                $result.= '<span class="psx-constraint-' . $type . '">';
-                $result.= '<ul>';
+                $result.= '<ul class="psx-constraint-' . $type . '">';
                 foreach ($constraint as $prop) {
                     /** @var Text\Property $prop */
                     $result.= '<li>' . $prop->getType() . '</li>';
                 }
                 $result.= '</ul>';
-                $result.= '</span>';
             } else {
-                $result.= '<dd>';
                 $result.= '<span class="psx-constraint-' . $type . '">' . htmlspecialchars($constraint) . '</span>';
-                $result.= '</dd>';
             }
+
+            $result.= '</dd>';
         }
         $result.= '</dl>';
 
