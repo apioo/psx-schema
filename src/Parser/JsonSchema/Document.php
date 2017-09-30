@@ -188,6 +188,10 @@ class Document
             $property->setEnum($data['enum']);
         }
 
+        if (isset($data['const'])) {
+            $property->setConst($data['const']);
+        }
+
         if (isset($data['default'])) {
             $property->setDefault($data['default']);
         }

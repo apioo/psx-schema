@@ -154,6 +154,11 @@ class PropertyType implements PropertyInterface
     protected $enum;
 
     /**
+     * @var mixed
+     */
+    protected $const;
+
+    /**
      * @var string
      */
     protected $default;
@@ -718,6 +723,25 @@ class PropertyType implements PropertyInterface
     }
 
     /**
+     * @return mixed
+     */
+    public function getConst()
+    {
+        return $this->const;
+    }
+
+    /**
+     * @param mixed $const
+     * @return \PSX\Schema\PropertyInterface
+     */
+    public function setConst($const)
+    {
+        $this->const = $const;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDefault()
@@ -1036,6 +1060,7 @@ class PropertyType implements PropertyInterface
         $map = [
             'type' => $this->type,
             'enum' => $this->enum,
+            'const' => $this->const,
             'title' => $this->title,
             'description' => $this->description,
             'default' => $this->default,

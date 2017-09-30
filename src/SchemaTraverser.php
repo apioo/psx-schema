@@ -79,6 +79,7 @@ class SchemaTraverser
         // check constraints
         $this->assertTypeConstraints($data, $property);
         $this->assertEnumConstraints($data, $property);
+        $this->assertConstConstraints($data, $property);
 
         $result = null;
         if ($data === null) {
@@ -469,6 +470,18 @@ class SchemaTraverser
                 $enum = json_encode($enum);
 
                 throw new ValidationException($this->getCurrentPath() . ' is not in enum ' . $enum, 'enum', $this->pathStack);
+            }
+        }
+    }
+
+    protected function assertConstConstraints($data, PropertyInterface $property)
+    {
+        $const = $property->getConst();
+        if ($const !== null) {
+            if (!Comparator::compare($const, $data)) {
+                $const = json_encode($const);
+
+                throw new ValidationException($this->getCurrentPath() . ' must contain the constant value ' . $const, 'const', $this->pathStack);
             }
         }
     }

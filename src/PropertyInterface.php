@@ -312,6 +312,17 @@ interface PropertyInterface
     public function setEnum(array $enum);
 
     /**
+     * @return mixed
+     */
+    public function getConst();
+
+    /**
+     * @param mixed $const
+     * @return \PSX\Schema\PropertyInterface
+     */
+    public function setConst($const);
+
+    /**
      * @return string
      */
     public function getDefault();

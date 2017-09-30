@@ -238,6 +238,11 @@ abstract class MarkupAbstract implements GeneratorInterface
             $constraints['enum'] = $enum;
         }
 
+        $const = $property->getConst();
+        if ($const !== null) {
+            $constraints['const'] = $const;
+        }
+
         // combination
         $allOf = $property->getAllOf();
         $anyOf = $property->getAnyOf();
