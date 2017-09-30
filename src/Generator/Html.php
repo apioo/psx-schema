@@ -87,7 +87,7 @@ class Html extends MarkupAbstract
         $result.= $prop;
         $result.= '</div>';
 
-        return $result;
+        return $result . "\n";
     }
 
     /**
