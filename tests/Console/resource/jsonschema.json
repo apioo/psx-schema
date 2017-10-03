@@ -1,0 +1,223 @@
+{
+    "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
+    "id": "urn:schema.phpsx.org#",
+    "definitions": {
+        "Config": {
+            "type": "object",
+            "title": "config",
+            "additionalProperties": {
+                "type": "string"
+            },
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Config"
+        },
+        "Author": {
+            "type": "object",
+            "title": "author",
+            "description": "An simple author element with some description",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "pattern": "[A-z]{3,16}"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "We will send no spam to this addresss"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "maxItems": 8
+                },
+                "locations": {
+                    "type": "array",
+                    "description": "Array of locations",
+                    "items": {
+                        "$ref": "#\/definitions\/Location"
+                    }
+                },
+                "origin": {
+                    "$ref": "#\/definitions\/Location"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "title"
+            ],
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Author"
+        },
+        "Location": {
+            "type": "object",
+            "title": "location",
+            "description": "Location of the person",
+            "properties": {
+                "lat": {
+                    "type": "number"
+                },
+                "long": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": true,
+            "required": [
+                "lat",
+                "long"
+            ],
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Location"
+        },
+        "Web": {
+            "type": "object",
+            "title": "web",
+            "description": "An application",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {
+                "type": "string"
+            },
+            "minProperties": 2,
+            "maxProperties": 8,
+            "required": [
+                "name",
+                "url"
+            ],
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Web"
+        },
+        "Meta": {
+            "type": "object",
+            "title": "meta",
+            "description": "Some meta data",
+            "properties": {
+                "createDate": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "patternProperties": {
+                "^tags_\\d$": {
+                    "type": "string"
+                },
+                "^location_\\d$": {
+                    "$ref": "#\/definitions\/Location"
+                }
+            },
+            "additionalProperties": false,
+            "class": "PSX\\Schema\\Tests\\Parser\\Popo\\Meta"
+        }
+    },
+    "type": "object",
+    "title": "news",
+    "description": "An general news entry",
+    "properties": {
+        "config": {
+            "$ref": "#\/definitions\/Config"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 6
+        },
+        "receiver": {
+            "type": "array",
+            "items": {
+                "$ref": "#\/definitions\/Author"
+            },
+            "minItems": 1
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "#\/definitions\/Location"
+                    },
+                    {
+                        "$ref": "#\/definitions\/Web"
+                    }
+                ]
+            }
+        },
+        "profileImage": {
+            "type": "string",
+            "format": "base64"
+        },
+        "read": {
+            "type": "boolean"
+        },
+        "source": {
+            "oneOf": [
+                {
+                    "$ref": "#\/definitions\/Author"
+                },
+                {
+                    "$ref": "#\/definitions\/Web"
+                }
+            ]
+        },
+        "author": {
+            "$ref": "#\/definitions\/Author"
+        },
+        "meta": {
+            "$ref": "#\/definitions\/Meta"
+        },
+        "sendDate": {
+            "type": "string",
+            "format": "date"
+        },
+        "readDate": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "expires": {
+            "type": "string",
+            "format": "duration"
+        },
+        "price": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+        },
+        "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+        },
+        "content": {
+            "type": "string",
+            "description": "Contains the main content of the news entry",
+            "minLength": 3,
+            "maxLength": 512
+        },
+        "question": {
+            "type": "string",
+            "enum": [
+                "foo",
+                "bar"
+            ]
+        },
+        "coffeeTime": {
+            "type": "string",
+            "format": "time"
+        },
+        "profileUri": {
+            "type": "string",
+            "format": "uri"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "receiver",
+        "price",
+        "content"
+    ],
+    "class": "PSX\\Schema\\Tests\\Parser\\Popo\\News"
+}

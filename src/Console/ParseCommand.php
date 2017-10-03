@@ -20,21 +20,22 @@
 
 namespace PSX\Schema\Console;
 
-use PSX\Schema\Generator;
+use PSX\Schema\GeneratorFactory;
 use PSX\Schema\SchemaManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * SchemaCommand
+ * ParseCommand
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class SchemaCommand extends Command
+class ParseCommand extends Command
 {
     /**
      * @var \PSX\Schema\SchemaManager
@@ -54,37 +55,21 @@ class SchemaCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('schema')
+            ->setName('schema:generate')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
             ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
-            ->addArgument('format', InputArgument::OPTIONAL, 'Optional the output format possible values are: html, php, serialize, jsonschema');
+            ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Optional the output format possible values are: ' . implode(', ', GeneratorFactory::getPossibleTypes()))
+            ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Optional a config value which gets passed to the generator');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $schema = $this->schemaManager->getSchema($input->getArgument('source'));
+        $source = $input->getArgument('source');
+        $schema = $this->schemaManager->getSchema($source);
 
-        switch ($input->getArgument('format')) {
-            case 'html':
-                $generator = new Generator\Html();
-                $response  = $generator->generate($schema);
-                break;
-
-            case 'php':
-                $generator = new Generator\Php();
-                $response  = $generator->generate($schema);
-                break;
-
-            case 'serialize':
-                $response = serialize($schema);
-                break;
-
-            default:
-            case 'jsonschema':
-                $generator = new Generator\JsonSchema();
-                $response  = $generator->generate($schema);
-                break;
-        }
+        $factory   = new GeneratorFactory();
+        $generator = $factory->getGenerator($input->getOption('format'), $input->getOption('config'));
+        $response  = $generator->generate($schema);
 
         $output->write($response);
     }

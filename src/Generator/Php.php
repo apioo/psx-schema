@@ -102,6 +102,10 @@ class Php implements GeneratorInterface
         $className = $type->getClass();
         if (empty($className)) {
             $className = $this->getIdentifierForProperty($type);
+        } elseif (strpos($className, '\\') !== false) {
+            // in case we an absolute class name remove the namespace
+            $parts = explode('\\', $className);
+            $className = array_pop($parts);
         }
 
         if (in_array($className, $this->generated)) {

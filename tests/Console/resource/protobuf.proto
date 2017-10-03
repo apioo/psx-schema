@@ -1,0 +1,35 @@
+syntax = "proto3";
+message News {
+  map<string, string> config = 1;
+  repeated string tags = 2;
+  repeated Author receiver = 3;
+  repeated oneof ObjectId { Location location = 4; map<string, string> web = 5; }
+  bytes profileImage = 6;
+  bool read = 7;
+  oneof ObjectId { Author author = 8; map<string, string> web = 9; }
+  Author author = 10;
+  Meta meta = 11;
+  string sendDate = 12;
+  string readDate = 13;
+  string expires = 14;
+  float price = 15;
+  int32 rating = 16;
+  string content = 17;
+  string question = 18;
+  string coffeeTime = 19;
+  string profileUri = 20;
+}
+message Author {
+  string title = 1;
+  string email = 2;
+  repeated string categories = 3;
+  repeated Location locations = 4;
+  Location origin = 5;
+}
+message Location {
+  float lat = 1;
+  float long = 2;
+}
+message Meta {
+  string createDate = 1;
+}
