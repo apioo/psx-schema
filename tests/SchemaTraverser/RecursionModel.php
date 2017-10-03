@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Tests\SchemaTraverser;
 
-use PSX\Schema\Parser\Popo\Annotation as JS;
-
 /**
  * RecursionModel
  *

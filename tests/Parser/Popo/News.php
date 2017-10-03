@@ -2,8 +2,6 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use PSX\Schema\Parser\Popo\Annotation as JS;
-
 /**
  * @JS\Title("meta")
  * @JS\Description("Some meta data")
