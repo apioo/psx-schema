@@ -41,7 +41,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/php.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -55,7 +55,7 @@ class PhpTest extends GeneratorTestCase
         $actual = $generator->generate($schema);
         $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
 
-        $expect = $expect = file_get_contents(__DIR__ . '/php_recursive.php');
+        $expect = $expect = file_get_contents(__DIR__ . '/resource/php_recursive.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

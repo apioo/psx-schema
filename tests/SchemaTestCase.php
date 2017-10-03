@@ -25,6 +25,8 @@ use PSX\Schema\Property\ArrayType;
 use PSX\Schema\Property\ComplexType;
 use PSX\Schema\Property\CompositeTypeAbstract;
 use PSX\Schema\PropertyAbstract;
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 
 /**
@@ -54,19 +56,19 @@ abstract class SchemaTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getSchema()
     {
-        return $this->schemaManager->getSchema('PSX\Schema\Tests\TestSchema');
+        return $this->schemaManager->getSchema(TestSchema::class);
     }
 
     protected function assertSchema($leftSchema, $rightSchema)
     {
-        $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $leftSchema);
-        $this->assertInstanceOf('PSX\\Schema\\SchemaInterface', $rightSchema);
+        $this->assertInstanceOf(SchemaInterface::class, $leftSchema);
+        $this->assertInstanceOf(SchemaInterface::class, $rightSchema);
 
         $leftProperty  = $leftSchema->getDefinition();
         $rightProperty = $rightSchema->getDefinition();
 
-        $this->assertInstanceOf('PSX\\Schema\\PropertyInterface', $leftProperty);
-        $this->assertInstanceOf('PSX\\Schema\\PropertyInterface', $rightProperty);
+        $this->assertInstanceOf(PropertyInterface::class, $leftProperty);
+        $this->assertInstanceOf(PropertyInterface::class, $rightProperty);
 
         $expect = json_encode($leftProperty, JSON_PRETTY_PRINT);
         $actual = json_encode($rightProperty, JSON_PRETTY_PRINT);

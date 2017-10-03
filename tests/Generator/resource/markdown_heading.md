@@ -20,6 +20,7 @@ price | Number |  | Minimum: 1, Maximum: 100
 rating | Integer |  | Minimum: 1, Maximum: 5
 content | String | Contains the main content of the news entry | MinLength: 3, MaxLength: 512
 question | String |  | 
+version | String |  | Const: http://foo.bar
 coffeeTime | [Time](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 profileUri | [URI](http://tools.ietf.org/html/rfc3986) |  | 
 

@@ -37,7 +37,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = $generator->generate($this->getSchema());
-        $expect = file_get_contents(__DIR__ . '/jsonschema.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -50,7 +50,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $actual = $generator->generate($schema);
         $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
 
-        $expect = file_get_contents(__DIR__ . '/jsonschema_recursion.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_recursion.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

@@ -251,6 +251,19 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
+     * @expectedExceptionMessage /version must contain the constant value "http:\/\/foo.bar"
+     */
+    public function testInvalidConst()
+    {
+        $data = $this->getData();
+        $data->version = 'baz';
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse($data, $this->getSchema());
+    }
+
+    /**
+     * @expectedException \PSX\Schema\ValidationException
      * @expectedExceptionMessage /receiver/0/title does not match pattern [[A-z]{3,16}]
      */
     public function testInvalidPattern()

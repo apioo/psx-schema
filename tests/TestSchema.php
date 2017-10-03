@@ -112,6 +112,8 @@ class TestSchema extends SchemaAbstract
             ->setMaxLength(512);
         $sb->string('question')
             ->setEnum(['foo', 'bar']);
+        $sb->string('version')
+            ->setConst('http://foo.bar');
         $sb->time('coffeeTime');
         $sb->uri('profileUri');
         $sb->setRequired(['receiver', 'price', 'content']);

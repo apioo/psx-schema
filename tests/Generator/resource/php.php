@@ -293,6 +293,11 @@ class News
      */
     protected $question;
     /**
+     * @Key("version")
+     * @Type("string")
+     */
+    protected $version;
+    /**
      * @Key("coffeeTime")
      * @Type("string")
      * @Format("time")
@@ -431,6 +436,14 @@ class News
     public function getQuestion()
     {
         return $this->question;
+    }
+    public function setVersion($version)
+    {
+        $this->version = $version;
+    }
+    public function getVersion()
+    {
+        return $this->version;
     }
     public function setCoffeeTime($coffeeTime)
     {
