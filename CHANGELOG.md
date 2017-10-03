@@ -1,4 +1,8 @@
 
+### 2.3.0 (2017-10-03)
+
+* Add generator factory
+
 ### 2.2.2 (2017-09-30)
 
 * Add const constraint
