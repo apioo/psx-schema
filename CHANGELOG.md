@@ -1,4 +1,8 @@
 
+### 2.3.1 (2017-10-04)
+
+* Renamed command generate to parse
+
 ### 2.3.0 (2017-10-03)
 
 * Add generator factory
