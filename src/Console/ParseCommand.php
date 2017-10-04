@@ -55,7 +55,7 @@ class ParseCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('schema:generate')
+            ->setName('schema:parse')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
             ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Optional the output format possible values are: ' . implode(', ', GeneratorFactory::getPossibleTypes()))
