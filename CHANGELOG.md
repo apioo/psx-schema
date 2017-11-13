@@ -1,4 +1,8 @@
 
+### 2.3.2 (2017-11-13)
+
+* Dumper handle array in one of
+
 ### 2.3.1 (2017-10-04)
 
 * Renamed command generate to parse
