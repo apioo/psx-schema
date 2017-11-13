@@ -243,11 +243,11 @@ class Dumper
         }
 
         if (!empty($allOf)) {
-            return $this->dumpObject($value);
+            return $this->dump($value);
         } elseif (!empty($anyOf)) {
-            return $this->dumpObject($value);
+            return $this->dump($value);
         } elseif (!empty($oneOf)) {
-            return $this->dumpObject($value);
+            return $this->dump($value);
         }
 
         return $value;
