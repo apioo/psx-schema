@@ -64,7 +64,7 @@ class Html extends MarkupAbstract
             $prop.= '<tr>';
             $prop.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
             $prop.= '<td>';
-            $prop.= '<span class="psx-property-type">' . $property->getType() . '</span><br />';
+            $prop.= '<span class="psx-property-type">' . (is_array($property->getType()) ? implode(', ', $property->getType()) : $property->getType()) . '</span><br />';
             $prop.= '<div class="psx-property-description">' . htmlspecialchars($property->getDescription()) . '</div>';
             $prop.= $property->hasConstraints() ? $this->writeConstraints($property->getConstraints()) : '';
             $prop.= '</td>';
@@ -73,7 +73,7 @@ class Html extends MarkupAbstract
             $json.= '  ';
             $json.= '<span class="psx-object-json-key">"' . $name . '"</span>';
             $json.= '<span class="psx-object-json-pun">: </span>';
-            $json.= '<span class="psx-property-type">' . $property->getType() . '</span>';
+            $json.= '<span class="psx-property-type">' . (is_array($property->getType()) ? implode(', ', $property->getType()) : $property->getType()) . '</span>';
             $json.= '<span class="psx-object-json-pun">,</span>';
             $json.= "\n";
         }

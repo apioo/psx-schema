@@ -114,8 +114,8 @@ class Author
     protected $title;
     /**
      * @Key("email")
-     * @Description("We will send no spam to this addresss")
-     * @Type("string")
+     * @Description("We will send no spam to this address")
+     * @Type({"string", "null"})
      */
     protected $email;
     /**

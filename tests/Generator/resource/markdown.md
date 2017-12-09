@@ -37,7 +37,7 @@ An simple author element with some description
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 title | String |  | Pattern: [A-z]{3,16}
-email | String | We will send no spam to this addresss | 
+email | String, Null | We will send no spam to this address | 
 categories | Array (String) |  | MaxItems: 8
 locations | Array (Object ([location](#psx_model_Location))) | Array of locations | 
 origin | Object ([location](#psx_model_Location)) | Location of the person | 

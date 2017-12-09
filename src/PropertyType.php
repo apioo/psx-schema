@@ -214,7 +214,7 @@ class PropertyType implements PropertyInterface
     protected $class;
 
     /**
-     * @return string
+     * @return string|array
      */
     public function getType()
     {
@@ -989,7 +989,7 @@ class PropertyType implements PropertyInterface
     public function getConstraintId()
     {
         $hash = '';
-        $hash.= $this->type . json_encode($this->enum) . "\n";
+        $hash.= (is_array($this->type) ? json_encode($this->type) : $this->type) . json_encode($this->enum) . "\n";
         $hash.= $this->minProperties . $this->maxProperties . json_encode($this->required) . "\n";
         $hash.= $this->minItems . $this->maxItems . $this->uniqueItems . "\n";
         $hash.= $this->minimum . $this->maximum . $this->exclusiveMinimum . $this->exclusiveMaximum . $this->multipleOf . "\n";

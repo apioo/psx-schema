@@ -69,8 +69,12 @@ class Protobuf implements GeneratorInterface
 
             foreach ($properties as $name => $property) {
                 /** @var PropertyInterface $property */
-                $result.= $this->getTypeOfProperty($property, $name, $index, 2) . "\n";
-                $index++;
+                $type = $this->getTypeOfProperty($property, $name, $index, 2);
+
+                if ($type !== null) {
+                    $result.= $type . "\n";
+                    $index++;
+                }
             }
 
             $result.= '}' . "\n";
@@ -85,6 +89,9 @@ class Protobuf implements GeneratorInterface
 
     protected function getTypeOfProperty(PropertyInterface $property, $name, &$index, $indent)
     {
+        if ($name == 'email') {
+            $foo = null;
+        }
         $type  = $this->getRealType($property);
         $proto = $this->getTypeForProperty($type, $property);
         $oneOf = $property->getOneOf();

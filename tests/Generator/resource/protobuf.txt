@@ -22,10 +22,9 @@ message News {
 }
 message Author {
   string title = 1;
-  string email = 2;
-  repeated string categories = 3;
-  repeated Location locations = 4;
-  Location origin = 5;
+  repeated string categories = 2;
+  repeated Location locations = 3;
+  Location origin = 4;
 }
 message Location {
   float lat = 1;

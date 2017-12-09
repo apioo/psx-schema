@@ -56,8 +56,9 @@ class TestSchema extends SchemaAbstract
             ->setDescription('An simple author element with some description');
         $sb->string('title')
             ->setPattern('[A-z]{3,16}');
-        $sb->string('email')
-            ->setDescription('We will send no spam to this addresss');
+        $sb->property('email')
+            ->setType(['string', 'null'])
+            ->setDescription('We will send no spam to this address');
         $sb->arrayType('categories')
             ->setItems(Property::getString())
             ->setMaxItems(8);

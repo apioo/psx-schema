@@ -30,7 +30,7 @@ namespace PSX\Schema;
 interface PropertyInterface
 {
     /**
-     * @return string
+     * @return string|array
      */
     public function getType();
 

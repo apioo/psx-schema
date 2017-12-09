@@ -205,10 +205,7 @@ class Php implements GeneratorInterface
 
         $required = $property->getRequired();
         if (!empty($required)) {
-            $required = array_map(function ($value) {
-                return '"' . $this->escapeString($value) . '"';
-            }, $required);
-            $comment.= ' * @Required({' . implode(', ', $required) . '})' . "\n";
+            $comment.= ' * @Required({' . $this->arrayList($required) . '})' . "\n";
         }
 
         $minProperties = $property->getMinProperties();
@@ -250,16 +247,16 @@ class Php implements GeneratorInterface
 
             $enum = $property->getEnum();
             if (!empty($enum)) {
-                $values = array_map(function ($value) {
-                    return '"' . $this->escapeString($value) . '"';
-                }, $enum);
-
-                $comment.= ' * @Enum({' . implode(', ', $values) . '})' . "\n";
+                $comment.= ' * @Enum({' . $this->arrayList($enum) . '})' . "\n";
             }
 
             $type = $property->getType();
             if (!empty($type)) {
-                $comment.= ' * @Type("' . $type . '")' . "\n";
+                if (is_array($type)) {
+                    $comment.= ' * @Type({' . $this->arrayList($type) . '})' . "\n";
+                } else {
+                    $comment.= ' * @Type("' . $type . '")' . "\n";
+                }
             }
 
             $allOf = $property->getAllOf();
@@ -372,6 +369,15 @@ class Php implements GeneratorInterface
         $comment.= ' */';
 
         return $comment;
+    }
+
+    protected function arrayList(array $values)
+    {
+        $values = array_map(function ($value) {
+            return '"' . $this->escapeString($value) . '"';
+        }, $values);
+
+        return implode(', ', $values);
     }
 
     protected function escapeString($data)
