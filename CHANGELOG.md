@@ -1,4 +1,8 @@
 
+### 2.3.3 (2017-12-09)
+
+* Improved handling of the array type notation
+
 ### 2.3.2 (2017-11-13)
 
 * Dumper handle array in one of
