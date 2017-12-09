@@ -89,9 +89,6 @@ class Protobuf implements GeneratorInterface
 
     protected function getTypeOfProperty(PropertyInterface $property, $name, &$index, $indent)
     {
-        if ($name == 'email') {
-            $foo = null;
-        }
         $type  = $this->getRealType($property);
         $proto = $this->getTypeForProperty($type, $property);
         $oneOf = $property->getOneOf();
