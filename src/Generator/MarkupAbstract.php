@@ -274,7 +274,7 @@ abstract class MarkupAbstract implements GeneratorInterface
         if (empty($type)) {
             $typeName = 'Mixed';
         } elseif (is_array($type)) {
-            $typeName = implode(', ', array_map('ucfirst', $type));
+            $typeName = implode(' / ', array_map('ucfirst', $type));
         } elseif (is_string($type)) {
             $typeName = ucfirst($type);
         } else {
