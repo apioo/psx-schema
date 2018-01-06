@@ -43,8 +43,8 @@ if (!empty($autoloadFile)) {
 
     $schemaManager = new \PSX\Schema\SchemaManager($reader);
 
-    $application = new Symfony\Component\Console\Application();
-    $application->add(new \PSX\Schema\Console\SchemaCommand($schemaManager));
+    $application = new Symfony\Component\Console\Application('PSX Schema');
+    $application->add(new \PSX\Schema\Console\ParseCommand($schemaManager));
     $application->run();
 } else {
     die('You need to set up the project dependencies through composer');
