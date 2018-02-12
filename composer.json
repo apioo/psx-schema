@@ -18,7 +18,7 @@
     "psr/cache": "^1.0",
     "psx/cache": "^1.0",
     "psx/datetime": "^1.0",
-    "psx/http": "^1.0",
+    "psx/http": "^2.0",
     "psx/json": "^1.0",
     "psx/record": "^1.0",
     "psx/uri": "^1.0",

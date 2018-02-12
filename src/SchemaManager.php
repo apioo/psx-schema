@@ -26,7 +26,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
-use PSX\Http\Client;
+use PSX\Http\Client\Client;
 use PSX\Schema\Parser\JsonSchema\RefResolver;
 
 /**
@@ -58,7 +58,7 @@ class SchemaManager implements SchemaManagerInterface
     protected $debug;
 
     /**
-     * @var \PSX\Http\ClientInterface
+     * @var \PSX\Http\Client\ClientInterface
      */
     protected $httpClient;
 

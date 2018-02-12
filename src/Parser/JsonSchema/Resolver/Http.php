@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Parser\JsonSchema\Resolver;
 
-use PSX\Http\Client as HttpClient;
+use PSX\Http\Client\ClientInterface;
 use PSX\Http\GetRequest;
 use PSX\Json\Parser;
 use PSX\Schema\Parser\JsonSchema\Document;
@@ -41,7 +41,7 @@ class Http implements ResolverInterface
 {
     protected $httpClient;
 
-    public function __construct(HttpClient $httpClient)
+    public function __construct(ClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }

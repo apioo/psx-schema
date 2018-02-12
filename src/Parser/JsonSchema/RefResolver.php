@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Parser\JsonSchema;
 
-use PSX\Http\Client;
+use PSX\Http\Client\ClientInterface;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Uri\Uri;
@@ -165,7 +165,7 @@ class RefResolver
         return $uri->getScheme() . '-' . $uri->getHost() . '-' . $uri->getPath();
     }
 
-    public static function createDefault(Client $httpClient = null)
+    public static function createDefault(ClientInterface $httpClient = null)
     {
         $resolver = new self();
         $resolver->addResolver('file', new Resolver\File());
