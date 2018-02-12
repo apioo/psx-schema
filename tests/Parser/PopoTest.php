@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\Parser;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\Parser\Popo\News;
 use PSX\Schema\Tests\Parser\Popo\RecursiveTest;
 
@@ -46,6 +47,6 @@ class PopoTest extends ParserTestCase
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(RecursiveTest::class);
 
-        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 }

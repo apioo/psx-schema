@@ -21,7 +21,7 @@
 namespace PSX\Schema\Parser\JsonSchema\Resolver;
 
 use PSX\Http\Client\ClientInterface;
-use PSX\Http\GetRequest;
+use PSX\Http\Client\GetRequest;
 use PSX\Json\Parser;
 use PSX\Schema\Parser\JsonSchema\Document;
 use PSX\Schema\Parser\JsonSchema\RefResolver;

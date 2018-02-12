@@ -20,8 +20,9 @@
 
 namespace PSX\Schema\Tests\Parser;
 
-use PSX\Http;
+use PSX\Http\Client;
 use PSX\Schema\Parser\JsonSchema;
+use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaInterface;
 
 /**
@@ -49,7 +50,7 @@ class JsonSchemaTest extends ParserTestCase
         $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/schema.json');
         $property = $schema->getDefinition();
 
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+        $this->assertInstanceOf(PropertyInterface::class, $property);
     }
 
     public function testParseSwagger()
@@ -57,20 +58,20 @@ class JsonSchemaTest extends ParserTestCase
         $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/swagger.json');
         $property = $schema->getDefinition();
 
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+        $this->assertInstanceOf(PropertyInterface::class, $property);
     }
 
     public function testParseExternalResource()
     {
-        $handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
-        $http     = new Http\Client($handler);
+        $handler  = Client\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
+        $http     = new Client\Client($handler);
         $resolver = JsonSchema\RefResolver::createDefault($http);
 
         $parser   = new JsonSchema(__DIR__ . '/JsonSchema', $resolver);
         $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema_external.json'));
         $property = $schema->getDefinition();
 
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
+        $this->assertInstanceOf(PropertyInterface::class, $property);
     }
 
     /**
@@ -104,8 +105,8 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidHttpRef()
     {
-        $handler  = Http\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
-        $http     = new Http\Client($handler);
+        $handler  = Client\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
+        $http     = new Client\Client($handler);
         $resolver = JsonSchema\RefResolver::createDefault($http);
 
         $parser   = new JsonSchema(__DIR__, $resolver);
@@ -135,7 +136,7 @@ class JsonSchemaTest extends ParserTestCase
         $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/recursive_schema.json');
         $property = $schema->getDefinition();
 
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property);
-        $this->assertInstanceOf('PSX\Schema\PropertyInterface', $property->getProperty('entry')->getItems());
+        $this->assertInstanceOf(PropertyInterface::class, $property);
+        $this->assertInstanceOf(PropertyInterface::class, $property->getProperty('entry')->getItems());
     }
 }
