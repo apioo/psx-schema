@@ -20,6 +20,10 @@
 
 namespace PSX\Schema\Tests\Parser;
 
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
 use PSX\Schema\Parser\JsonSchema;
 use PSX\Schema\PropertyInterface;
@@ -63,15 +67,30 @@ class JsonSchemaTest extends ParserTestCase
 
     public function testParseExternalResource()
     {
-        $handler  = Client\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
-        $http     = new Client\Client($handler);
-        $resolver = JsonSchema\RefResolver::createDefault($http);
+        $mock = new MockHandler([
+            new Response(200, [], file_get_contents(__DIR__ . '/JsonSchema/schema.json')),
+        ]);
+
+        $container = [];
+        $history = Middleware::history($container);
+
+        $stack = HandlerStack::create($mock);
+        $stack->push($history);
+
+        $client   = new Client\Client(['handler' => $stack]);
+        $resolver = JsonSchema\RefResolver::createDefault($client);
 
         $parser   = new JsonSchema(__DIR__ . '/JsonSchema', $resolver);
         $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema_external.json'));
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf(PropertyInterface::class, $property);
+
+        $this->assertEquals(1, count($container));
+        $transaction = array_shift($container);
+
+        $this->assertEquals('GET', $transaction['request']->getMethod());
+        $this->assertEquals(['json-schema.org'], $transaction['request']->getHeader('Host'));
     }
 
     /**
@@ -105,9 +124,14 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidHttpRef()
     {
-        $handler  = Client\Handler\Mock::getByXmlDefinition(__DIR__ . '/JsonSchema/http_mock.xml');
-        $http     = new Client\Client($handler);
-        $resolver = JsonSchema\RefResolver::createDefault($http);
+        $mock = new MockHandler([
+            new Response(404, [], 'Nothing is here ...'),
+        ]);
+
+        $stack = HandlerStack::create($mock);
+
+        $client   = new Client\Client(['handler' => $stack]);
+        $resolver = JsonSchema\RefResolver::createDefault($client);
 
         $parser   = new JsonSchema(__DIR__, $resolver);
         $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/invalid_http_ref_schema.json'));
