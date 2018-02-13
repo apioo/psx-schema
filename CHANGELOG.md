@@ -1,4 +1,8 @@
 
+### 2.4.0 (2018-02-13)
+
+* Upgrade http dependency
+
 ### 2.3.4 (2018-01-06)
 
 * Fixed schema bin and add test case #12
