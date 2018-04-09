@@ -1,4 +1,8 @@
 
+### 2.4.1 (2018-04-09)
+
+* Add symfony 4.0 support
+
 ### 2.4.0 (2018-02-13)
 
 * Upgrade http dependency
