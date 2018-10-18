@@ -22,6 +22,7 @@ namespace PSX\Schema;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Cache\ArrayCache;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -72,6 +73,19 @@ class SchemaManager implements SchemaManagerInterface
         if ($reader === null) {
             $reader = new SimpleAnnotationReader();
             $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+            AnnotationRegistry::registerLoader(
+                function ($class) {
+                    if (\strpos($class, __NAMESPACE__) === 0) {
+                        $file = substr($class, strlen(__NAMESPACE__)) . ".php";
+                        $classPath = __DIR__ . \str_replace('\\', \DIRECTORY_SEPARATOR, $file);
+                        if (is_file($classPath)) {
+                            include $classPath;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            );
         }
 
         $this->popoParser = new Parser\Popo($reader);
