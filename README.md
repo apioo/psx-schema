@@ -141,6 +141,13 @@ echo json_encode($data);
 
 ```
 
+Please note that we use the [doctrine/annotations](https://github.com/doctrine/annotations)
+library to parse the annotations. Because of this you need to setup a fitting
+annotation loader which can load the classes. To use the registered autoloader
+you can simply use: `AnnotationRegistry::registerLoader('class_exists')`. More
+information how to configure the loader at the
+[documentation](https://www.doctrine-project.org/projects/doctrine-annotations/en/1.6/annotations.html#registering-annotations).
+
 ## Annotations
 
 The following annotations are available:
