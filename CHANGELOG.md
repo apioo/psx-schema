@@ -1,4 +1,8 @@
 
+### 2.4.2 (2018-12-16)
+
+* Upgrade PHPUnit to 6.0
+
 ### 2.4.1 (2018-04-09)
 
 * Add symfony 4.0 support
