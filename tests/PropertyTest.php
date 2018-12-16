@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
@@ -31,7 +32,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyTest extends \PHPUnit_Framework_TestCase
+class PropertyTest extends TestCase
 {
     public function testArrayType()
     {

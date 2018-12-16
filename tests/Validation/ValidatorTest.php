@@ -20,8 +20,10 @@
 
 namespace PSX\Schema\Tests\Validation;
 
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
+use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\ValidationException;
 use PSX\Validate\Filter;
 
@@ -32,12 +34,14 @@ use PSX\Validate\Filter;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ValidatorTest extends TestCase
 {
     public function testValidate()
     {
         $validator = $this->getValidator();
         $validator->validate('/id', 2);
+
+        $this->assertInstanceOf(ValidatorInterface::class, $validator);
     }
 
     /**
@@ -53,6 +57,8 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $validator = $this->getValidator();
         $validator->validate('/foo', 4);
+
+        $this->assertInstanceOf(ValidatorInterface::class, $validator);
     }
 
     public function testGetFields()

@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
@@ -32,7 +33,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class BuilderTest extends \PHPUnit_Framework_TestCase
+class BuilderTest extends TestCase
 {
     public function testBuilder()
     {

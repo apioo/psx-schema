@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Parser;
 
 /**
@@ -29,7 +30,7 @@ use PSX\Schema\Parser;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PropertyTypeTest extends \PHPUnit_Framework_TestCase
+class PropertyTypeTest extends TestCase
 {
     /**
      * Test whether we can serialize a recursive schema

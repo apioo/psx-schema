@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Visitor;
 
+use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
@@ -43,7 +44,7 @@ use PSX\Validate\Filter;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TypeVisitorTest extends \PHPUnit_Framework_TestCase
+class TypeVisitorTest extends TestCase
 {
     public function testVisitArray()
     {

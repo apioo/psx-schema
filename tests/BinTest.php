@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * BinTest
  *
@@ -27,7 +29,7 @@ namespace PSX\Schema\Tests;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class BinTest extends \PHPUnit_Framework_TestCase
+class BinTest extends TestCase
 {
     public function setUp()
     {

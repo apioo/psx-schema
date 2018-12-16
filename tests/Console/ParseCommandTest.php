@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Console;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Console\ParseCommand;
 use PSX\Schema\Parser\Popo;
 use PSX\Schema\SchemaInterface;
@@ -36,7 +37,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ParseCommandTest extends \PHPUnit_Framework_TestCase
+class ParseCommandTest extends TestCase
 {
     public function testGenerateHtml()
     {

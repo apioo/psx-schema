@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\SchemaTraverser;
 
+use PHPUnit\Framework\TestCase;
 use PSX\Http\Client\Client;
 use PSX\Schema\Parser\JsonSchema;
 use PSX\Schema\SchemaTraverser;
@@ -32,13 +33,14 @@ use PSX\Schema\ValidationException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DraftV4Test extends \PHPUnit_Framework_TestCase
+class DraftV4Test extends TestCase
 {
     public function testDarftV4()
     {
         $tests      = json_decode(file_get_contents(__DIR__ . '/draftv4.json'));
         $traverser  = new SchemaTraverser();
         $httpClient = new Client();
+        $count      = 0;
 
         foreach ($tests as $index => $test) {
             // parse schema
@@ -57,6 +59,10 @@ class DraftV4Test extends \PHPUnit_Framework_TestCase
                     $this->fail('Test ' . $index . ' "' . $test->description . '" should be valid got: ' . $e->getMessage());
                 }
             }
+
+            $count++;
         }
+
+        $this->assertEquals(251, $count);
     }
 }

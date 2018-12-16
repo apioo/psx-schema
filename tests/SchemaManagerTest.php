@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;
 
@@ -31,7 +32,7 @@ use PSX\Schema\Tests\Parser\Popo\News;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class SchemaManagerTest extends \PHPUnit_Framework_TestCase
+class SchemaManagerTest extends TestCase
 {
     /**
      * @var \Doctrine\Common\Annotations\Reader

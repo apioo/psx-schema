@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\TestCase;
 use PSX\Schema\Property\ArrayType;
 use PSX\Schema\Property\ComplexType;
 use PSX\Schema\Property\CompositeTypeAbstract;
@@ -36,7 +37,7 @@ use PSX\Schema\SchemaManager;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class SchemaTestCase extends \PHPUnit_Framework_TestCase
+abstract class SchemaTestCase extends TestCase
 {
     /**
      * @var \Doctrine\Common\Annotations\Reader
