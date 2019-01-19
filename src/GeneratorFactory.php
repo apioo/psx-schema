@@ -30,11 +30,12 @@ namespace PSX\Schema;
 class GeneratorFactory
 {
     const TYPE_HTML = 'html';
+    const TYPE_JSONSCHEMA = 'jsonschema';
     const TYPE_MARKDOWN = 'markdown';
     const TYPE_PHP = 'php';
     const TYPE_PROTOBUF = 'protobuf';
     const TYPE_SERIALIZE = 'serialize';
-    const TYPE_JSONSCHEMA = 'jsonschema';
+    const TYPE_TYPESCRIPT = 'typescript';
 
     /**
      * @param string $format
@@ -62,6 +63,10 @@ class GeneratorFactory
 
             case self::TYPE_SERIALIZE:
                 return new Generator\Serialize();
+                break;
+
+            case self::TYPE_TYPESCRIPT:
+                return new Generator\Typescript();
                 break;
 
             default:
