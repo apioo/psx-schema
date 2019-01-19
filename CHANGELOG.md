@@ -1,4 +1,8 @@
 
+### 2.4.3 (2019-01-19)
+
+* Add typescript generator
+
 ### 2.4.2 (2018-12-16)
 
 * Upgrade PHPUnit to 6.0
