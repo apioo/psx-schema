@@ -205,6 +205,7 @@ a schema object:
 - Markdown (Generates a markdown representation of the schema)
 - PHP (Generates PHP classes representing the schema using annotations)
 - Protobuf (Generates a [proto3](https://developers.google.com/protocol-buffers/) definition)
+- Typescript (Generates a [TypeScript](https://www.typescriptlang.org/) interfaces)
 
 ## Code generation
 
