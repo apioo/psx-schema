@@ -147,8 +147,8 @@ class JsonSchemaTest extends ParserTestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Could not resolve pointer /definitions/bar
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Property definitions does not exist at /
      */
     public function testParseInvalidDocumentRef()
     {
