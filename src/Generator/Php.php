@@ -99,7 +99,7 @@ class Php implements GeneratorInterface
             throw new RuntimeException('Property must be an object type');
         }
 
-        $className = $type->getClass();
+        $className = $type->getAttribute(PropertyInterface::ATTR_CLASS);
         if (empty($className)) {
             $className = $this->getIdentifierForProperty($type);
         } elseif (strpos($className, '\\') !== false) {
@@ -128,16 +128,22 @@ class Php implements GeneratorInterface
         }
 
         if (!empty($properties)) {
+            $mapping = $type->getAttribute(PropertyInterface::ATTR_MAPPING);
+
             // add properties
-            foreach ($properties as $name => $property) {
+            foreach ($properties as $key => $property) {
+                $name = isset($mapping[$key]) ? $mapping[$key] : $key;
+
                 $class->addStmt($this->factory->property($this->normalizeParameterName($name))
                     ->makeProtected()
                     ->setDocComment($this->getDocCommentForProperty($property, $name)));
             }
 
             // add getter setter
-            foreach ($properties as $name => $property) {
+            foreach ($properties as $key => $property) {
+                $name = isset($mapping[$key]) ? $mapping[$key] : $key;
                 $name = $this->normalizeParameterName($name);
+
                 $class->addStmt($this->factory->method('set' . ucfirst($name))
                     ->makePublic()
                     ->addParam($this->factory->param($name))
@@ -174,7 +180,7 @@ class Php implements GeneratorInterface
 
         return $name;
     }
-    
+
     protected function getDocCommentForClass(PropertyInterface $property)
     {
         $comment = '/**' . "\n";

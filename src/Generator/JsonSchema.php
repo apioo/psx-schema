@@ -138,9 +138,11 @@ class JsonSchema implements GeneratorInterface
             }
         }
 
-        $class = $type->getClass();
-        if (!empty($class)) {
-            $result['class'] = $class;
+        $attributes = $type->getAttributes();
+        if (!empty($attributes)) {
+            foreach ($attributes as $key => $value) {
+                $result['x-psx-' . $key] = $value;
+            }
         }
 
         if (empty($result)) {
