@@ -90,7 +90,9 @@ class TypeVisitor implements VisitorInterface
     public function visitObject(\stdClass $data, PropertyInterface $property, $path)
     {
         // if we have no class reference we simply create a record
-        $className = $property->getClass();
+        $className = $property->getAttribute(PropertyInterface::ATTR_CLASS);
+        $mapping   = $property->getAttribute(PropertyInterface::ATTR_MAPPING);
+
         if (empty($className)) {
             $result = Record::fromStdClass($data, $property->getTitle() ?: null);
 
@@ -122,7 +124,8 @@ class TypeVisitor implements VisitorInterface
             $keys = [];
             foreach ($data as $key => $value) {
                 try {
-                    $methodName = 'set' . ucfirst($key);
+                    $name       = isset($mapping[$key]) ? $mapping[$key] : $key;
+                    $methodName = 'set' . ucfirst($name);
                     $method     = $class->getMethod($methodName);
 
                     if ($method instanceof \ReflectionMethod) {
