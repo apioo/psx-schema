@@ -260,9 +260,11 @@ class Document
             $property->setDependencies($result);
         }
 
-        // PSX specific contains the fitting class for this object
-        if (isset($data['class'])) {
-            $property->setClass($data['class']);
+        // PSX specific attributes
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 6) === 'x-psx-') {
+                $property->setAttribute(substr($key, 6), $value);
+            }
         }
 
         return $property;
