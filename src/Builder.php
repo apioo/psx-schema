@@ -111,10 +111,23 @@ class Builder
     /**
      * @param string $class
      * @return $this
+     * @deprecated
      */
     public function setClass($class)
     {
-        $this->property->setClass($class);
+        $this->property->setAttribute(PropertyInterface::ATTR_CLASS, $class);
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function setAttribute($key, $value)
+    {
+        $this->property->setAttribute($key, $value);
 
         return $this;
     }
