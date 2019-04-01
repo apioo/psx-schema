@@ -25,6 +25,7 @@ use InvalidArgumentException;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\ParserInterface;
+use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Schema\Schema;
 use ReflectionClass;
@@ -89,13 +90,15 @@ class Popo implements ParserInterface
         $property    = new PropertyType();
         $property->setType('object');
         $property->setRef('urn:phpsx.org:schema:class:' . strtolower($className));
-        $property->setClass($class->getName());
+        $property->setAttribute(PropertyInterface::ATTR_CLASS, $class->getName());
 
         $this->objects[$className] = $property;
 
         $this->parseClassAnnotations($property, $annotations);
 
         $properties = ObjectReader::getProperties($this->reader, $class);
+        $mapping    = [];
+
         foreach ($properties as $key => $reflection) {
             $annotations = $this->reader->getPropertyAnnotations($reflection);
 
@@ -115,7 +118,15 @@ class Popo implements ParserInterface
 
             $this->parsePropertyAnnotations($prop, $annotations);
 
+            if ($key != $reflection->getName()) {
+                $mapping[$key] = $reflection->getName();
+            }
+
             $property->addProperty($key, $prop);
+        }
+
+        if (!empty($mapping)) {
+            $property->setAttribute(PropertyInterface::ATTR_MAPPING, $mapping);
         }
 
         array_pop($this->objects);
