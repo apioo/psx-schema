@@ -163,4 +163,16 @@ class JsonSchemaTest extends ParserTestCase
         $this->assertInstanceOf(PropertyInterface::class, $property);
         $this->assertInstanceOf(PropertyInterface::class, $property->getProperty('entry')->getItems());
     }
+
+    public function testParseSchemaMapping()
+    {
+        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/schema_mapping.json');
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
+
+        $property = $schema->getDefinition();
+
+        $this->assertEquals('PSX\Schema\Tests\Parser\JsonSchema\Foo', $property->getAttribute(PropertyInterface::ATTR_CLASS));
+        $this->assertEquals(['$foo' => 'bar'], $property->getAttribute(PropertyInterface::ATTR_MAPPING));
+    }
 }
