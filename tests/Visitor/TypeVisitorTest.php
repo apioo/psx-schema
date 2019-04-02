@@ -27,6 +27,7 @@ use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Property;
+use PSX\Schema\PropertyInterface;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
@@ -126,7 +127,7 @@ class TypeVisitorTest extends TestCase
     {
         $visitor  = new TypeVisitor();
         $property = Property::getObject()
-            ->setClass(ArrayAccessClass::class)
+            ->setAttribute(PropertyInterface::ATTR_CLASS, ArrayAccessClass::class)
             ->addProperty('foo', Property::getString())
             ->addProperty('bar', Property::getString());
 
@@ -137,7 +138,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getArrayCopy());
 
         // popo class
-        $property->setClass(PopoClass::class);
+        $property->setAttribute(PropertyInterface::ATTR_CLASS, PopoClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
@@ -146,7 +147,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals('foo', $record->getBar());
 
         // record class
-        $property->setClass(RecordClass::class);
+        $property->setAttribute(PropertyInterface::ATTR_CLASS, RecordClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
@@ -154,7 +155,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getProperties());
 
         // std class
-        $property->setClass(StdClass::class);
+        $property->setAttribute(PropertyInterface::ATTR_CLASS, StdClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
