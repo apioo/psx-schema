@@ -163,6 +163,25 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], (array) $record);
     }
 
+    public function testVisitObjectMapping()
+    {
+        $visitor  = new TypeVisitor();
+        $property = Property::getObject()
+            ->setAttribute(PropertyInterface::ATTR_CLASS, ArrayAccessClass::class)
+            ->setAttribute(PropertyInterface::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
+            ->addProperty('foo', Property::getString())
+            ->addProperty('bar', Property::getString());
+
+        // popo class
+        $property->setAttribute(PropertyInterface::ATTR_CLASS, PopoClass::class);
+
+        $record = $visitor->visitObject((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $property, '');
+
+        $this->assertInstanceOf(PopoClass::class, $record);
+        $this->assertEquals('bar', $record->getFoo());
+        $this->assertEquals('foo', $record->getBar());
+    }
+
     /**
      * @expectedException \PSX\Schema\ValidationException
      */
