@@ -136,7 +136,7 @@ class Php implements GeneratorInterface
 
                 $class->addStmt($this->factory->property($this->normalizeParameterName($name))
                     ->makeProtected()
-                    ->setDocComment($this->getDocCommentForProperty($property, $name)));
+                    ->setDocComment($this->getDocCommentForProperty($property, $key)));
             }
 
             // add getter setter

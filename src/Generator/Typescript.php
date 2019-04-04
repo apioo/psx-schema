@@ -71,6 +71,10 @@ class Typescript implements GeneratorInterface
                 /** @var PropertyInterface $property */
                 $type = $this->getTypeOfProperty($property);
                 if ($type !== null) {
+                    if (strpos($name, '-') !== false) {
+                        $name = '"' . $name . '"';
+                    }
+
                     $result.= $indent . $name . (in_array($name, $required) ? '' : '?') . ': ' . $type . "\n";
                 }
             }
