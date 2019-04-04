@@ -28,6 +28,7 @@ use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\AdditionalPropertiesInterface;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
@@ -90,8 +91,8 @@ class TypeVisitor implements VisitorInterface
     public function visitObject(\stdClass $data, PropertyInterface $property, $path)
     {
         // if we have no class reference we simply create a record
-        $className = $property->getAttribute(PropertyInterface::ATTR_CLASS);
-        $mapping   = $property->getAttribute(PropertyInterface::ATTR_MAPPING);
+        $className = $property->getAttribute(PropertyType::ATTR_CLASS);
+        $mapping   = $property->getAttribute(PropertyType::ATTR_MAPPING);
 
         if (empty($className)) {
             $result = Record::fromStdClass($data, $property->getTitle() ?: null);

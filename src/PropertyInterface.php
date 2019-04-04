@@ -29,26 +29,6 @@ namespace PSX\Schema;
  */
 interface PropertyInterface
 {
-    const TYPE_NULL = 'null';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_OBJECT = 'object';
-    const TYPE_ARRAY = 'array';
-    const TYPE_NUMBER = 'number';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_STRING = 'string';
-
-    const FORMAT_INT32 = 'int32';
-    const FORMAT_INT64 = 'int64';
-    const FORMAT_BINARY = 'base64';
-    const FORMAT_DATETIME = 'date-time';
-    const FORMAT_DATE = 'date';
-    const FORMAT_DURATION = 'duration';
-    const FORMAT_TIME = 'time';
-    const FORMAT_URI = 'uri';
-
-    const ATTR_CLASS = 'class';
-    const ATTR_MAPPING = 'mapping';
-
     /**
      * @return string|array
      */

@@ -115,7 +115,7 @@ class Builder
      */
     public function setClass($class)
     {
-        $this->property->setAttribute(PropertyInterface::ATTR_CLASS, $class);
+        $this->property->setAttribute(PropertyType::ATTR_CLASS, $class);
 
         return $this;
     }

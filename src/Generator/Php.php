@@ -99,7 +99,7 @@ class Php implements GeneratorInterface
             throw new RuntimeException('Property must be an object type');
         }
 
-        $className = $type->getAttribute(PropertyInterface::ATTR_CLASS);
+        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
         if (empty($className)) {
             $className = $this->getIdentifierForProperty($type);
         } elseif (strpos($className, '\\') !== false) {
@@ -128,7 +128,7 @@ class Php implements GeneratorInterface
         }
 
         if (!empty($properties)) {
-            $mapping = $type->getAttribute(PropertyInterface::ATTR_MAPPING);
+            $mapping = $type->getAttribute(PropertyType::ATTR_MAPPING);
 
             // add properties
             foreach ($properties as $key => $property) {

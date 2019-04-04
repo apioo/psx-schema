@@ -90,7 +90,7 @@ class Popo implements ParserInterface
         $property    = new PropertyType();
         $property->setType('object');
         $property->setRef('urn:phpsx.org:schema:class:' . strtolower($className));
-        $property->setAttribute(PropertyInterface::ATTR_CLASS, $class->getName());
+        $property->setAttribute(PropertyType::ATTR_CLASS, $class->getName());
 
         $this->objects[$className] = $property;
 
@@ -126,7 +126,7 @@ class Popo implements ParserInterface
         }
 
         if (!empty($mapping)) {
-            $property->setAttribute(PropertyInterface::ATTR_MAPPING, $mapping);
+            $property->setAttribute(PropertyType::ATTR_MAPPING, $mapping);
         }
 
         array_pop($this->objects);

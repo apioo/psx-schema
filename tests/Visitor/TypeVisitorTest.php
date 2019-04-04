@@ -28,6 +28,7 @@ use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
@@ -127,7 +128,7 @@ class TypeVisitorTest extends TestCase
     {
         $visitor  = new TypeVisitor();
         $property = Property::getObject()
-            ->setAttribute(PropertyInterface::ATTR_CLASS, ArrayAccessClass::class)
+            ->setAttribute(PropertyType::ATTR_CLASS, ArrayAccessClass::class)
             ->addProperty('foo', Property::getString())
             ->addProperty('bar', Property::getString());
 
@@ -138,7 +139,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getArrayCopy());
 
         // popo class
-        $property->setAttribute(PropertyInterface::ATTR_CLASS, PopoClass::class);
+        $property->setAttribute(PropertyType::ATTR_CLASS, PopoClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
@@ -147,7 +148,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals('foo', $record->getBar());
 
         // record class
-        $property->setAttribute(PropertyInterface::ATTR_CLASS, RecordClass::class);
+        $property->setAttribute(PropertyType::ATTR_CLASS, RecordClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
@@ -155,7 +156,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getProperties());
 
         // std class
-        $property->setAttribute(PropertyInterface::ATTR_CLASS, StdClass::class);
+        $property->setAttribute(PropertyType::ATTR_CLASS, StdClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'bar' => 'foo'], $property, '');
 
@@ -167,13 +168,13 @@ class TypeVisitorTest extends TestCase
     {
         $visitor  = new TypeVisitor();
         $property = Property::getObject()
-            ->setAttribute(PropertyInterface::ATTR_CLASS, ArrayAccessClass::class)
-            ->setAttribute(PropertyInterface::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
+            ->setAttribute(PropertyType::ATTR_CLASS, ArrayAccessClass::class)
+            ->setAttribute(PropertyType::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
             ->addProperty('foo', Property::getString())
             ->addProperty('bar', Property::getString());
 
         // popo class
-        $property->setAttribute(PropertyInterface::ATTR_CLASS, PopoClass::class);
+        $property->setAttribute(PropertyType::ATTR_CLASS, PopoClass::class);
 
         $record = $visitor->visitObject((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $property, '');
 

@@ -27,6 +27,7 @@ use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
 use PSX\Schema\Parser\JsonSchema;
 use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 
 /**
@@ -172,7 +173,7 @@ class JsonSchemaTest extends ParserTestCase
 
         $property = $schema->getDefinition();
 
-        $this->assertEquals('PSX\Schema\Tests\Parser\JsonSchema\Foo', $property->getAttribute(PropertyInterface::ATTR_CLASS));
-        $this->assertEquals(['$foo' => 'bar'], $property->getAttribute(PropertyInterface::ATTR_MAPPING));
+        $this->assertEquals('PSX\Schema\Tests\Parser\JsonSchema\Foo', $property->getAttribute(PropertyType::ATTR_CLASS));
+        $this->assertEquals(['$foo' => 'bar'], $property->getAttribute(PropertyType::ATTR_MAPPING));
     }
 }
