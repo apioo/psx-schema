@@ -21,7 +21,9 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Property;
+use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaAbstract;
+use PSX\Schema\Tests\Parser\Popo;
 
 /**
  * TestSchema
@@ -40,6 +42,7 @@ class TestSchema extends SchemaAbstract
             ->setRequired(['lat', 'long']);
         $sb->number('lat');
         $sb->number('long');
+        $sb->setAttribute(PropertyInterface::ATTR_CLASS, Popo\Location::class);
         $location = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('web')
@@ -50,6 +53,7 @@ class TestSchema extends SchemaAbstract
             ->setRequired(['name', 'url']);
         $sb->string('name');
         $sb->string('url');
+        $sb->setAttribute(PropertyInterface::ATTR_CLASS, Popo\Web::class);
         $web = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('author')
@@ -68,6 +72,7 @@ class TestSchema extends SchemaAbstract
         $sb->objectType('origin', $location);
         $sb->setRequired(['title']);
         $sb->setAdditionalProperties(false);
+        $sb->setAttribute(PropertyInterface::ATTR_CLASS, Popo\Author::class);
         $author = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('meta')
@@ -76,6 +81,7 @@ class TestSchema extends SchemaAbstract
             ->addPatternProperty('^location_\d$', $location);
         $sb->dateTime('createDate');
         $sb->setAdditionalProperties(false);
+        $sb->setAttribute(PropertyInterface::ATTR_CLASS, Popo\Meta::class);
         $meta = $sb->getProperty();
 
         $sb = $this->getSchemaBuilder('news')
@@ -117,8 +123,11 @@ class TestSchema extends SchemaAbstract
             ->setConst('http://foo.bar');
         $sb->time('coffeeTime');
         $sb->uri('profileUri');
+        $sb->string('g-recaptcha-response');
         $sb->setRequired(['receiver', 'price', 'content']);
         $sb->setAdditionalProperties(false);
+        $sb->setAttribute(PropertyInterface::ATTR_CLASS, Popo\News::class);
+        $sb->setAttribute(PropertyInterface::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
 
         return $sb->getProperty();
     }

@@ -305,6 +305,11 @@ class News
      * @JS\Format("uri")
      */
     public $profileUri;
+    /**
+     * @JS\Key("g-recaptcha-response")
+     * @JS\Type("string")
+     */
+    public $captcha;
     public function setConfig($config)
     {
         $this->config = $config;
@@ -448,5 +453,13 @@ class News
     public function getProfileUri()
     {
         return $this->profileUri;
+    }
+    public function getCaptcha()
+    {
+        return $this->captcha;
+    }
+    public function setCaptcha($captcha)
+    {
+        $this->captcha = $captcha;
     }
 }
