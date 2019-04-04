@@ -22,6 +22,7 @@ content | String | Contains the main content of the news entry | MinLength: 3, M
 question | String |  | 
 coffeeTime | [Time](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 profileUri | [URI](http://tools.ietf.org/html/rfc3986) |  | 
+g-recaptcha-response | String |  | 
 
 # config
 

@@ -211,6 +211,9 @@
     "profileUri": {
       "type": "string",
       "format": "uri"
+    },
+    "g-recaptcha-response": {
+      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -219,5 +222,8 @@
     "price",
     "content"
   ],
-  "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\News"
+  "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\News",
+  "x-psx-mapping": {
+    "g-recaptcha-response": "captcha"
+  }
 }

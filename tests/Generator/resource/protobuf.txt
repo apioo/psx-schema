@@ -19,6 +19,7 @@ message News {
   string version = 19;
   string coffeeTime = 20;
   string profileUri = 21;
+  string g-recaptcha-response = 22;
 }
 message Author {
   string title = 1;

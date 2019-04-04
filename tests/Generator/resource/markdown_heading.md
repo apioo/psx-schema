@@ -23,6 +23,7 @@ question | String |  |
 version | String |  | Const: http://foo.bar
 coffeeTime | [Time](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 profileUri | [URI](http://tools.ietf.org/html/rfc3986) |  | 
+g-recaptcha-response | String |  | 
 
 #### config
 

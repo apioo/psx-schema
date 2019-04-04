@@ -18,6 +18,7 @@ interface News {
     version?: string
     coffeeTime?: string
     profileUri?: string
+    "g-recaptcha-response"?: string
 }
 interface Config {
     [index: string]: string
