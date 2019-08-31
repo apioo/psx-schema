@@ -29,6 +29,7 @@ namespace PSX\Schema;
  */
 class GeneratorFactory
 {
+    const TYPE_GO = 'go';
     const TYPE_HTML = 'html';
     const TYPE_JSONSCHEMA = 'jsonschema';
     const TYPE_MARKDOWN = 'markdown';
@@ -45,6 +46,10 @@ class GeneratorFactory
     public function getGenerator($format, $config)
     {
         switch ($format) {
+            case self::TYPE_GO:
+                return new Generator\Go();
+                break;
+
             case self::TYPE_HTML:
                 return new Generator\Html($config ?: 1);
                 break;
@@ -82,6 +87,7 @@ class GeneratorFactory
     public static function getPossibleTypes()
     {
         return [
+            self::TYPE_GO,
             self::TYPE_HTML,
             self::TYPE_MARKDOWN,
             self::TYPE_PHP,
