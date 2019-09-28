@@ -21,6 +21,9 @@ type News struct {
     ProfileUri string `json:"profileUri"`
     GRecaptchaResponse string `json:"g-recaptcha-response"`
 }
+// Config
+type Config struct {
+}
 // Author An simple author element with some description
 type Author struct {
     Title string `json:"title"`
@@ -29,7 +32,17 @@ type Author struct {
     Locations []map[string]interface{} `json:"locations"`
     Origin map[string]interface{} `json:"origin"`
 }
+// Web An application
+type Web struct {
+    Name string `json:"name"`
+    Url string `json:"url"`
+}
 // Meta Some meta data
 type Meta struct {
     CreateDate time.Time `json:"createDate"`
+}
+// Location Location of the person
+type Location struct {
+    Lat float64 `json:"lat"`
+    Long float64 `json:"long"`
 }

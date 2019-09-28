@@ -102,7 +102,7 @@ class Go implements GeneratorInterface, TypeAwareInterface
             return $this->getIdentifierForProperty($property);
         } elseif (!empty($oneOf)) {
             // @TODO handle one of
-        } elseif (!empty($oneOf)) {
+        } elseif (!empty($allOf)) {
             // @TODO handle all of
         }
 
@@ -137,10 +137,11 @@ class Go implements GeneratorInterface, TypeAwareInterface
             foreach ($properties as $name => $property) {
                 /** @var PropertyInterface $property */
                 $type = $this->getType($property);
-                if ($type !== null) {
-                    $key = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
-                    $result.= $indent . $key . ' ' . $type . ' `json:"' . $name . '"`' . "\n";
-                }
+                $key  = $this->normalizeName($name);
+
+                $result.= $indent . $key . ' ' . $type . ' `json:"' . $name . '"`' . "\n";
+
+                $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
             }
         }
 
@@ -151,5 +152,10 @@ class Go implements GeneratorInterface, TypeAwareInterface
         }
 
         return $result;
+    }
+
+    private function normalizeName(string $name)
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
     }
 }
