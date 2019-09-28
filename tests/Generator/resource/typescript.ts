@@ -20,6 +20,7 @@ interface News {
     profileUri?: string
     "g-recaptcha-response"?: string
 }
+type source = Author | Web
 interface Config {
     [index: string]: string
 }
