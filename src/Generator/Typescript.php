@@ -97,7 +97,7 @@ class Typescript implements GeneratorInterface
         $result.= '}' . "\n";
 
         foreach ($this->objects as $property) {
-            $result.= $this->generateObject($property, $depth + 1);
+            $result.= $this->generateObject($property);
         }
 
         return $result;
