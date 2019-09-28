@@ -198,35 +198,35 @@ class Json_schema
      * @Ref("PSX\Generation\Json_schema")
      */
     protected $not;
-    public function setId($id)
+    public function setId(?string $id)
     {
         $this->id = $id;
     }
-    public function getId()
+    public function getId() : ?string
     {
         return $this->id;
     }
-    public function set_schema($_schema)
+    public function set_schema(?string $_schema)
     {
         $this->_schema = $_schema;
     }
-    public function get_schema()
+    public function get_schema() : ?string
     {
         return $this->_schema;
     }
-    public function setTitle($title)
+    public function setTitle(?string $title)
     {
         $this->title = $title;
     }
-    public function getTitle()
+    public function getTitle() : ?string
     {
         return $this->title;
     }
-    public function setDescription($description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
     }
-    public function getDescription()
+    public function getDescription() : ?string
     {
         return $this->description;
     }
@@ -238,51 +238,51 @@ class Json_schema
     {
         return $this->default;
     }
-    public function setMultipleOf($multipleOf)
+    public function setMultipleOf(?float $multipleOf)
     {
         $this->multipleOf = $multipleOf;
     }
-    public function getMultipleOf()
+    public function getMultipleOf() : ?float
     {
         return $this->multipleOf;
     }
-    public function setMaximum($maximum)
+    public function setMaximum(?float $maximum)
     {
         $this->maximum = $maximum;
     }
-    public function getMaximum()
+    public function getMaximum() : ?float
     {
         return $this->maximum;
     }
-    public function setExclusiveMaximum($exclusiveMaximum)
+    public function setExclusiveMaximum(?bool $exclusiveMaximum)
     {
         $this->exclusiveMaximum = $exclusiveMaximum;
     }
-    public function getExclusiveMaximum()
+    public function getExclusiveMaximum() : ?bool
     {
         return $this->exclusiveMaximum;
     }
-    public function setMinimum($minimum)
+    public function setMinimum(?float $minimum)
     {
         $this->minimum = $minimum;
     }
-    public function getMinimum()
+    public function getMinimum() : ?float
     {
         return $this->minimum;
     }
-    public function setExclusiveMinimum($exclusiveMinimum)
+    public function setExclusiveMinimum(?bool $exclusiveMinimum)
     {
         $this->exclusiveMinimum = $exclusiveMinimum;
     }
-    public function getExclusiveMinimum()
+    public function getExclusiveMinimum() : ?bool
     {
         return $this->exclusiveMinimum;
     }
-    public function setMaxLength($maxLength)
+    public function setMaxLength(?int $maxLength)
     {
         $this->maxLength = $maxLength;
     }
-    public function getMaxLength()
+    public function getMaxLength() : ?int
     {
         return $this->maxLength;
     }
@@ -294,11 +294,11 @@ class Json_schema
     {
         return $this->minLength;
     }
-    public function setPattern($pattern)
+    public function setPattern(?string $pattern)
     {
         $this->pattern = $pattern;
     }
-    public function getPattern()
+    public function getPattern() : ?string
     {
         return $this->pattern;
     }
@@ -318,11 +318,11 @@ class Json_schema
     {
         return $this->items;
     }
-    public function setMaxItems($maxItems)
+    public function setMaxItems(?int $maxItems)
     {
         $this->maxItems = $maxItems;
     }
-    public function getMaxItems()
+    public function getMaxItems() : ?int
     {
         return $this->maxItems;
     }
@@ -334,19 +334,19 @@ class Json_schema
     {
         return $this->minItems;
     }
-    public function setUniqueItems($uniqueItems)
+    public function setUniqueItems(?bool $uniqueItems)
     {
         $this->uniqueItems = $uniqueItems;
     }
-    public function getUniqueItems()
+    public function getUniqueItems() : ?bool
     {
         return $this->uniqueItems;
     }
-    public function setMaxProperties($maxProperties)
+    public function setMaxProperties(?int $maxProperties)
     {
         $this->maxProperties = $maxProperties;
     }
-    public function getMaxProperties()
+    public function getMaxProperties() : ?int
     {
         return $this->maxProperties;
     }
@@ -358,11 +358,11 @@ class Json_schema
     {
         return $this->minProperties;
     }
-    public function setRequired($required)
+    public function setRequired(?array $required)
     {
         $this->required = $required;
     }
-    public function getRequired()
+    public function getRequired() : ?array
     {
         return $this->required;
     }
@@ -374,43 +374,43 @@ class Json_schema
     {
         return $this->additionalProperties;
     }
-    public function setDefinitions($definitions)
+    public function setDefinitions(?ObjectId $definitions)
     {
         $this->definitions = $definitions;
     }
-    public function getDefinitions()
+    public function getDefinitions() : ?ObjectId
     {
         return $this->definitions;
     }
-    public function setProperties($properties)
+    public function setProperties(?ObjectId $properties)
     {
         $this->properties = $properties;
     }
-    public function getProperties()
+    public function getProperties() : ?ObjectId
     {
         return $this->properties;
     }
-    public function setPatternProperties($patternProperties)
+    public function setPatternProperties(?ObjectId $patternProperties)
     {
         $this->patternProperties = $patternProperties;
     }
-    public function getPatternProperties()
+    public function getPatternProperties() : ?ObjectId
     {
         return $this->patternProperties;
     }
-    public function setDependencies($dependencies)
+    public function setDependencies(?ObjectId $dependencies)
     {
         $this->dependencies = $dependencies;
     }
-    public function getDependencies()
+    public function getDependencies() : ?ObjectId
     {
         return $this->dependencies;
     }
-    public function setEnum($enum)
+    public function setEnum(?array $enum)
     {
         $this->enum = $enum;
     }
-    public function getEnum()
+    public function getEnum() : ?array
     {
         return $this->enum;
     }
@@ -422,35 +422,35 @@ class Json_schema
     {
         return $this->type;
     }
-    public function setAllOf($allOf)
+    public function setAllOf(?array $allOf)
     {
         $this->allOf = $allOf;
     }
-    public function getAllOf()
+    public function getAllOf() : ?array
     {
         return $this->allOf;
     }
-    public function setAnyOf($anyOf)
+    public function setAnyOf(?array $anyOf)
     {
         $this->anyOf = $anyOf;
     }
-    public function getAnyOf()
+    public function getAnyOf() : ?array
     {
         return $this->anyOf;
     }
-    public function setOneOf($oneOf)
+    public function setOneOf(?array $oneOf)
     {
         $this->oneOf = $oneOf;
     }
-    public function getOneOf()
+    public function getOneOf() : ?array
     {
         return $this->oneOf;
     }
-    public function setNot($not)
+    public function setNot(?Json_schema $not)
     {
         $this->not = $not;
     }
-    public function getNot()
+    public function getNot() : ?Json_schema
     {
         return $this->not;
     }

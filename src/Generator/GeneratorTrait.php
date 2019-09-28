@@ -32,7 +32,7 @@ use PSX\Schema\PropertyType;
  */
 trait GeneratorTrait
 {
-    protected function getIdentifierForProperty(PropertyInterface $property)
+    protected function getIdentifierForProperty(PropertyInterface $property): string
     {
         $title = $property->getTitle();
         if (!empty($title)) {
@@ -43,6 +43,34 @@ trait GeneratorTrait
         }
 
         return $className;
+    }
+
+    protected function getSubSchemas(PropertyInterface $property): array
+    {
+        $result = [];
+
+        if ($this->getRealType($property) == PropertyType::TYPE_OBJECT) {
+            $result[] = $property;
+        } elseif (($additionalProp = $property->getAdditionalProperties()) instanceof PropertyInterface && $this->getRealType($additionalProp) == PropertyType::TYPE_OBJECT) {
+            $result = array_merge($result, $this->getSubSchemas($property->getAdditionalProperties()));
+        } elseif (($items = $property->getItems()) instanceof PropertyInterface && $this->getRealType($items) == PropertyType::TYPE_OBJECT) {
+            $result = array_merge($result, $this->getSubSchemas($property->getItems()));
+        } elseif ($property->getOneOf()) {
+            foreach ($property->getOneOf() as $prop) {
+                if ($this->getRealType($prop) == PropertyType::TYPE_OBJECT) {
+                    $result[] = $prop;
+                }
+            }
+        }
+        if ($property->getAllOf()) {
+            foreach ($property->getAllOf() as $prop) {
+                if ($this->getRealType($prop) == PropertyType::TYPE_OBJECT) {
+                    $result[] = $prop;
+                }
+            }
+        }
+
+        return $result;
     }
 
     protected function getRealType(PropertyInterface $property)

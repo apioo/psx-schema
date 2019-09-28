@@ -20,7 +20,6 @@ interface News {
     profileUri?: string
     "g-recaptcha-response"?: string
 }
-type source = Author | Web
 interface Config {
     [index: string]: string
 }
@@ -31,11 +30,6 @@ interface Author {
     locations?: Array<Location>
     origin?: Location
 }
-interface Location {
-    lat: number
-    long: number
-    [index: string]: any;
-}
 interface Web {
     name: string
     url: string
@@ -43,4 +37,9 @@ interface Web {
 }
 interface Meta {
     createDate?: string
+}
+interface Location {
+    lat: number
+    long: number
+    [index: string]: any;
 }

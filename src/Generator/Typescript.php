@@ -32,7 +32,7 @@ use PSX\Schema\SchemaInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Typescript implements GeneratorInterface
+class Typescript implements GeneratorInterface, TypeAwareInterface
 {
     use GeneratorTrait;
 
@@ -45,6 +45,46 @@ class Typescript implements GeneratorInterface
         $this->objects   = [];
 
         return $this->generateObject($schema->getDefinition());
+    }
+
+    public function getType(PropertyInterface $property): string
+    {
+        $type  = $this->getRealType($property);
+        $oneOf = $property->getOneOf();
+        $allOf = $property->getAllOf();
+
+        if ($type == PropertyType::TYPE_STRING) {
+            return 'string';
+        } elseif ($type == PropertyType::TYPE_INTEGER) {
+            return 'number';
+        } elseif ($type == PropertyType::TYPE_NUMBER) {
+            return 'number';
+        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
+            return 'boolean';
+        } elseif ($type == PropertyType::TYPE_ARRAY) {
+            $items = $property->getItems();
+            if ($items instanceof PropertyInterface) {
+                return 'Array<' . $this->getType($items) . '>';
+            } else {
+                throw new \RuntimeException('Array items must be a schema');
+            }
+        } elseif ($type == PropertyType::TYPE_OBJECT) {
+            return $this->getIdentifierForProperty($property);
+        } elseif (!empty($oneOf)) {
+            $parts = [];
+            foreach ($oneOf as $prop) {
+                $parts[] = $this->getType($prop);
+            }
+            return implode(' | ', $parts);
+        } elseif (!empty($allOf)) {
+            $parts = [];
+            foreach ($allOf as $prop) {
+                $parts[] = $this->getType($prop);
+            }
+            return implode(' & ', $parts);
+        }
+
+        return 'any';
     }
 
     protected function generateObject(PropertyInterface $type)
@@ -69,7 +109,7 @@ class Typescript implements GeneratorInterface
 
             foreach ($properties as $name => $property) {
                 /** @var PropertyInterface $property */
-                $type = $this->getTypeOfProperty($property);
+                $type = $this->getType($property);
                 if ($type !== null) {
                     if (strpos($name, '-') !== false) {
                         $name = '"' . $name . '"';
@@ -77,6 +117,8 @@ class Typescript implements GeneratorInterface
 
                     $result.= $indent . $name . (in_array($name, $required) ? '' : '?') . ': ' . $type . "\n";
                 }
+
+                $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
             }
         }
 
@@ -86,7 +128,7 @@ class Typescript implements GeneratorInterface
             $result.= $indent . '[index: string]: any;' . "\n";
         } elseif ($additional instanceof PropertyInterface) {
             /** @var PropertyInterface $property */
-            $type = $this->getTypeOfProperty($additional);
+            $type = $this->getType($additional);
             if ($type !== null) {
                 $result.= $indent . '[index: string]: ' . $type . "\n";
             } else {
@@ -101,56 +143,5 @@ class Typescript implements GeneratorInterface
         }
 
         return $result;
-    }
-
-    protected function getTypeOfProperty(PropertyInterface $property)
-    {
-        $type  = $this->getRealType($property);
-        $proto = $this->getTypeForProperty($type, $property);
-        $oneOf = $property->getOneOf();
-        $allOf = $property->getAllOf();
-
-        if ($proto !== null) {
-            return $proto;
-        } elseif ($type == PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
-                return 'Array<' . $this->getTypeOfProperty($items) . '>';
-            } else {
-                throw new \RuntimeException('Array items must be a schema');
-            }
-        } elseif ($type == PropertyType::TYPE_OBJECT) {
-            $this->objects[] = $property;
-            return $this->getIdentifierForProperty($property);
-        } elseif (!empty($oneOf)) {
-            $parts = [];
-            foreach ($oneOf as $prop) {
-                $parts[] = $this->getTypeOfProperty($prop);
-            }
-            return implode(' | ', $parts);
-        } elseif (!empty($allOf)) {
-            $parts = [];
-            foreach ($allOf as $prop) {
-                $parts[] = $this->getTypeOfProperty($prop);
-            }
-            return implode(' & ', $parts);
-        }
-
-        return 'any';
-    }
-
-    protected function getTypeForProperty($type, PropertyInterface $property)
-    {
-        if ($type == PropertyType::TYPE_STRING) {
-            return 'string';
-        } elseif ($type == PropertyType::TYPE_INTEGER) {
-            return 'number';
-        } elseif ($type == PropertyType::TYPE_NUMBER) {
-            return 'number';
-        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
-            return 'boolean';
-        }
-
-        return null;
     }
 }

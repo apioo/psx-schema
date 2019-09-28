@@ -36,7 +36,7 @@ use RuntimeException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Php implements GeneratorInterface
+class Php implements GeneratorInterface, TypeAwareInterface
 {
     use GeneratorTrait;
 
@@ -86,6 +86,44 @@ class Php implements GeneratorInterface
         $this->generateObject($schema->getDefinition());
 
         return $this->printer->prettyPrintFile([$this->root->getNode()]);
+    }
+
+    public function getType(PropertyInterface $property): string
+    {
+        $type  = $this->getRealType($property);
+        $oneOf = $property->getOneOf();
+        $allOf = $property->getAllOf();
+
+        if ($type == PropertyType::TYPE_STRING) {
+            if ($property->getFormat() === PropertyType::FORMAT_DATE) {
+                return '\DateTime';
+            } elseif ($property->getFormat() === PropertyType::FORMAT_DATETIME) {
+                return '\DateTime';
+            } elseif ($property->getFormat() === PropertyType::FORMAT_TIME) {
+                return '\DateTime';
+            } elseif ($property->getFormat() === PropertyType::FORMAT_DURATION) {
+                return '\DateInterval';
+            } else {
+                return 'string';
+            }
+        } elseif ($type == PropertyType::TYPE_INTEGER) {
+            return 'int';
+        } elseif ($type == PropertyType::TYPE_NUMBER) {
+            return 'float';
+        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
+            return 'bool';
+        } elseif ($type == PropertyType::TYPE_ARRAY) {
+            return 'array';
+        } elseif ($type == PropertyType::TYPE_OBJECT) {
+            return $this->getIdentifierForProperty($property);
+        } elseif (!empty($oneOf)) {
+            // @TODO if we have union types we can do this https://github.com/php/php-rfcs/pull/1
+            return '';
+        } elseif (!empty($allOf)) {
+            return '';
+        }
+
+        return '';
     }
 
     public function getNode()
@@ -144,27 +182,38 @@ class Php implements GeneratorInterface
                 $name = isset($mapping[$key]) ? $mapping[$key] : $key;
                 $name = $this->normalizeParameterName($name);
 
-                $class->addStmt($this->factory->method('set' . ucfirst($name))
-                    ->makePublic()
-                    ->addParam($this->factory->param($name))
-                    ->addStmt(new Node\Expr\Assign(
-                        new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
-                        new Node\Expr\Variable($name)
-                    ))
-                );
+                $param = $this->factory->param($name);
+                $type = $this->getType($property);
+                if (!empty($type)) {
+                    $param->setTypeHint(new Node\NullableType(($type)));
+                }
 
-                $class->addStmt($this->factory->method('get' . ucfirst($name))
-                    ->makePublic()
-                    ->addStmt(new Node\Stmt\Return_(
-                        new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
-                    )));
+                $setter = $this->factory->method('set' . ucfirst($name));
+                $setter->makePublic();
+                $setter->addParam($param);
+                $setter->addStmt(new Node\Expr\Assign(
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
+                    new Node\Expr\Variable($name)
+                ));
+                $class->addStmt($setter);
+
+                $getter = $this->factory->method('get' . ucfirst($name));
+                if (!empty($type)) {
+                    $getter->setReturnType(new Node\NullableType($type));
+                }
+                $getter->makePublic();
+                $getter->addStmt(new Node\Stmt\Return_(
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
+                ));
+                $class->addStmt($getter);
+
+                $this->refs = array_merge($this->refs, $this->getSubSchemas($property));
             }
         }
 
         // generate other complex types
         foreach ($this->refs as $index => $prop) {
             $this->generateObject($prop);
-            unset($this->refs[$index]);
         }
 
         $this->root->addStmt($class);
@@ -398,10 +447,6 @@ class Php implements GeneratorInterface
         $type = $this->getRealType($property);
         if ($type === PropertyType::TYPE_OBJECT) {
             $className = $this->getIdentifierForProperty($property);
-            if (!in_array($className, $this->generated)) {
-                $this->refs[] = $property;
-            }
-
             return '@Ref("' . $this->namespace . '\\' . $className . '")';
         } else {
             return '@Schema(' . $this->getInlineSchemaForProperty($property) . ')';
