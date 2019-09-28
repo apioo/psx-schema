@@ -47,7 +47,7 @@ class Typescript implements GeneratorInterface
         return $this->generateObject($schema->getDefinition());
     }
 
-    protected function generateObject(PropertyInterface $type, int $depth = 0)
+    protected function generateObject(PropertyInterface $type)
     {
         $result = '';
         $name   = $this->getIdentifierForProperty($type);
@@ -61,7 +61,6 @@ class Typescript implements GeneratorInterface
         $indent     = str_repeat(' ', 4);
         $properties = $type->getProperties();
         $additional = $type->getAdditionalProperties();
-        $composite  = [];
 
         $result.= 'interface ' . $name . ' {' . "\n";
 
@@ -77,10 +76,6 @@ class Typescript implements GeneratorInterface
                     }
 
                     $result.= $indent . $name . (in_array($name, $required) ? '' : '?') . ': ' . $type . "\n";
-                }
-
-                if (!empty($property->getOneOf()) || !empty($property->getAllOf())) {
-                    $composite[$name] = $type;
                 }
             }
         }
@@ -100,14 +95,6 @@ class Typescript implements GeneratorInterface
         }
 
         $result.= '}' . "\n";
-
-        if ($depth === 0) {
-            // for composite types generate at the root level a type definition
-            // which can be used as type hint
-            foreach ($composite as $name => $type) {
-                $result.= 'type ' . $name . ' = ' . $type . '' . "\n";
-            }
-        }
 
         foreach ($this->objects as $property) {
             $result.= $this->generateObject($property, $depth + 1);
