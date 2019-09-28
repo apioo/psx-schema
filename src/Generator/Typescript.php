@@ -110,13 +110,9 @@ class Typescript implements GeneratorInterface, TypeAwareInterface
             foreach ($properties as $name => $property) {
                 /** @var PropertyInterface $property */
                 $type = $this->getType($property);
-                if ($type !== null) {
-                    if (strpos($name, '-') !== false) {
-                        $name = '"' . $name . '"';
-                    }
+                $name = $this->normalizeName($name);
 
-                    $result.= $indent . $name . (in_array($name, $required) ? '' : '?') . ': ' . $type . "\n";
-                }
+                $result.= $indent . $name . (in_array($name, $required) ? '' : '?') . ': ' . $type . "\n";
 
                 $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
             }
@@ -143,5 +139,14 @@ class Typescript implements GeneratorInterface, TypeAwareInterface
         }
 
         return $result;
+    }
+
+    private function normalizeName(string $name)
+    {
+        if (strpos($name, '-') !== false) {
+            $name = '"' . $name . '"';
+        }
+
+        return $name;
     }
 }
