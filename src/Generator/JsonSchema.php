@@ -154,10 +154,9 @@ class JsonSchema implements GeneratorInterface
 
     protected function getRef(PropertyInterface $property)
     {
-        $type = $this->getRealType($property);
-        $key  = $this->getIdentifierForProperty($property);
+        if ($this->isObject($property)) {
+            $key = $this->getIdentifierForProperty($property);
 
-        if ($type === PropertyType::TYPE_OBJECT) {
             if ($this->root === $key) {
                 return ['$ref' => '#'];
             }
