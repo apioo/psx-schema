@@ -40,7 +40,7 @@ class BinTest extends TestCase
 
     public function testBin()
     {
-        $actual = shell_exec('php ' . __DIR__ . '/../bin/schema');
+        $actual = shell_exec('php ' . __DIR__ . '/../bin/schema --no-ansi');
         $expect = <<<TEXT
 PSX Schema
 
