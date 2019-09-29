@@ -3,7 +3,7 @@
 namespace PSX\Generation;
 
 /**
- * @AdditionalProperties(@Schema(anyOf={@Ref("PSX\Generation\Json_schema"), @Schema(type="array", items=@Schema(type="string"), minItems=1, uniqueItems=true)}))
+ * @AdditionalProperties(@Schema(anyOf={@Ref("PSX\Generation\Json_schema"), @Schema(type="array", title="stringArray", items=@Schema(type="string"), minItems=1, uniqueItems=true)}))
  */
 class ObjectId extends \ArrayObject
 {
@@ -75,13 +75,15 @@ class Json_schema
     protected $exclusiveMinimum;
     /**
      * @Key("maxLength")
+     * @Title("positiveInteger")
      * @Type("integer")
      * @Minimum(0)
      */
     protected $maxLength;
     /**
      * @Key("minLength")
-     * @AllOf(@Schema(type="integer", minimum=0), @Schema())
+     * @Title("positiveIntegerDefault0")
+     * @AllOf(@Schema(type="integer", title="positiveInteger", minimum=0), @Schema())
      */
     protected $minLength;
     /**
@@ -97,18 +99,20 @@ class Json_schema
     protected $additionalItems;
     /**
      * @Key("items")
-     * @AnyOf(@Ref("PSX\Generation\Json_schema"), @Schema(type="array", items=@Ref("PSX\Generation\Json_schema"), minItems=1))
+     * @AnyOf(@Ref("PSX\Generation\Json_schema"), @Schema(type="array", title="schemaArray", items=@Ref("PSX\Generation\Json_schema"), minItems=1))
      */
     protected $items;
     /**
      * @Key("maxItems")
+     * @Title("positiveInteger")
      * @Type("integer")
      * @Minimum(0)
      */
     protected $maxItems;
     /**
      * @Key("minItems")
-     * @AllOf(@Schema(type="integer", minimum=0), @Schema())
+     * @Title("positiveIntegerDefault0")
+     * @AllOf(@Schema(type="integer", title="positiveInteger", minimum=0), @Schema())
      */
     protected $minItems;
     /**
@@ -118,17 +122,20 @@ class Json_schema
     protected $uniqueItems;
     /**
      * @Key("maxProperties")
+     * @Title("positiveInteger")
      * @Type("integer")
      * @Minimum(0)
      */
     protected $maxProperties;
     /**
      * @Key("minProperties")
-     * @AllOf(@Schema(type="integer", minimum=0), @Schema())
+     * @Title("positiveIntegerDefault0")
+     * @AllOf(@Schema(type="integer", title="positiveInteger", minimum=0), @Schema())
      */
     protected $minProperties;
     /**
      * @Key("required")
+     * @Title("stringArray")
      * @Type("array")
      * @Items(@Schema(type="string"))
      * @UniqueItems(true)
@@ -169,11 +176,12 @@ class Json_schema
     protected $enum;
     /**
      * @Key("type")
-     * @AnyOf(@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}), @Schema(type="array", items=@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}), minItems=1, uniqueItems=true))
+     * @AnyOf(@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}, title="simpleTypes"), @Schema(type="array", items=@Schema(enum={"array", "boolean", "integer", "null", "number", "object", "string"}, title="simpleTypes"), minItems=1, uniqueItems=true))
      */
     protected $type;
     /**
      * @Key("allOf")
+     * @Title("schemaArray")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)
@@ -181,6 +189,7 @@ class Json_schema
     protected $allOf;
     /**
      * @Key("anyOf")
+     * @Title("schemaArray")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)
@@ -188,6 +197,7 @@ class Json_schema
     protected $anyOf;
     /**
      * @Key("oneOf")
+     * @Title("schemaArray")
      * @Type("array")
      * @Items(@Ref("PSX\Generation\Json_schema"))
      * @MinItems(1)

@@ -3,41 +3,6 @@
 namespace PSX\Schema\Tests\Generator;
 
 /**
- * @Title("location")
- * @Description("Location of the person")
- * @AdditionalProperties(true)
- * @Required({"lat", "long"})
- */
-class Location extends \ArrayObject
-{
-    /**
-     * @Key("lat")
-     * @Type("number")
-     */
-    protected $lat;
-    /**
-     * @Key("long")
-     * @Type("number")
-     */
-    protected $long;
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-/**
  * @Title("meta")
  * @Description("Some meta data")
  * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
@@ -96,6 +61,41 @@ class Web extends \ArrayObject
     public function getUrl() : ?string
     {
         return $this->url;
+    }
+}
+/**
+ * @Title("location")
+ * @Description("Location of the person")
+ * @AdditionalProperties(true)
+ * @Required({"lat", "long"})
+ */
+class Location extends \ArrayObject
+{
+    /**
+     * @Key("lat")
+     * @Type("number")
+     */
+    protected $lat;
+    /**
+     * @Key("long")
+     * @Type("number")
+     */
+    protected $long;
+    public function setLat(?float $lat)
+    {
+        $this->lat = $lat;
+    }
+    public function getLat() : ?float
+    {
+        return $this->lat;
+    }
+    public function setLong(?float $long)
+    {
+        $this->long = $long;
+    }
+    public function getLong() : ?float
+    {
+        return $this->long;
     }
 }
 /**

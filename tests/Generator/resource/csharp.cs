@@ -32,6 +32,11 @@ public class Author
     public Location[] Locations { get; set; }
     public Location Origin { get; set; }
 }
+public class Location : Dictionary<string, object> 
+{
+    public float Lat { get; set; }
+    public float Long { get; set; }
+}
 public class Web : Dictionary<string, string> 
 {
     public string Name { get; set; }
@@ -40,9 +45,4 @@ public class Web : Dictionary<string, string>
 public class Meta 
 {
     public string CreateDate { get; set; }
-}
-public class Location : Dictionary<string, object> 
-{
-    public float Lat { get; set; }
-    public float Long { get; set; }
 }

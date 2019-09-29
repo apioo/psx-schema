@@ -18,6 +18,7 @@
           },
           {
             "type": "array",
+            "title": "stringArray",
             "items": {
               "type": "string"
             },
@@ -69,12 +70,15 @@
     },
     "maxLength": {
       "type": "integer",
+      "title": "positiveInteger",
       "minimum": 0
     },
     "minLength": {
+      "title": "positiveIntegerDefault0",
       "allOf": [
         {
           "type": "integer",
+          "title": "positiveInteger",
           "minimum": 0
         },
         {
@@ -105,6 +109,7 @@
         },
         {
           "type": "array",
+          "title": "schemaArray",
           "items": {
             "$ref": "#"
           },
@@ -114,12 +119,15 @@
     },
     "maxItems": {
       "type": "integer",
+      "title": "positiveInteger",
       "minimum": 0
     },
     "minItems": {
+      "title": "positiveIntegerDefault0",
       "allOf": [
         {
           "type": "integer",
+          "title": "positiveInteger",
           "minimum": 0
         },
         {
@@ -133,12 +141,15 @@
     },
     "maxProperties": {
       "type": "integer",
+      "title": "positiveInteger",
       "minimum": 0
     },
     "minProperties": {
+      "title": "positiveIntegerDefault0",
       "allOf": [
         {
           "type": "integer",
+          "title": "positiveInteger",
           "minimum": 0
         },
         {
@@ -148,6 +159,7 @@
     },
     "required": {
       "type": "array",
+      "title": "stringArray",
       "items": {
         "type": "string"
       },
@@ -193,7 +205,8 @@
             "number",
             "object",
             "string"
-          ]
+          ],
+          "title": "simpleTypes"
         },
         {
           "type": "array",
@@ -206,7 +219,8 @@
               "number",
               "object",
               "string"
-            ]
+            ],
+            "title": "simpleTypes"
           },
           "minItems": 1,
           "uniqueItems": true
@@ -215,6 +229,7 @@
     },
     "allOf": {
       "type": "array",
+      "title": "schemaArray",
       "items": {
         "$ref": "#"
       },
@@ -222,6 +237,7 @@
     },
     "anyOf": {
       "type": "array",
+      "title": "schemaArray",
       "items": {
         "$ref": "#"
       },
@@ -229,6 +245,7 @@
     },
     "oneOf": {
       "type": "array",
+      "title": "schemaArray",
       "items": {
         "$ref": "#"
       },

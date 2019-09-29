@@ -30,6 +30,11 @@ interface Author {
     locations?: Array<Location>
     origin?: Location
 }
+interface Location {
+    lat: number
+    long: number
+    [index: string]: any;
+}
 interface Web {
     name: string
     url: string
@@ -37,9 +42,4 @@ interface Web {
 }
 interface Meta {
     createDate?: string
-}
-interface Location {
-    lat: number
-    long: number
-    [index: string]: any;
 }

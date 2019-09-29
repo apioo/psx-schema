@@ -179,6 +179,22 @@ public static class Author {
         return this.origin;
     }
 }
+public static class Location extends HashMap<String, Object> {
+    private float lat;
+    private float long;
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+    public float getLat() {
+        return this.lat;
+    }
+    public void setLong(float long) {
+        this.long = long;
+    }
+    public float getLong() {
+        return this.long;
+    }
+}
 public static class Web extends HashMap<String, String> {
     private String name;
     private String url;
@@ -202,21 +218,5 @@ public static class Meta {
     }
     public String getCreateDate() {
         return this.createDate;
-    }
-}
-public static class Location extends HashMap<String, Object> {
-    private float lat;
-    private float long;
-    public void setLat(float lat) {
-        this.lat = lat;
-    }
-    public float getLat() {
-        return this.lat;
-    }
-    public void setLong(float long) {
-        this.long = long;
-    }
-    public float getLong() {
-        return this.long;
     }
 }
