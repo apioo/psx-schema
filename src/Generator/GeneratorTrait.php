@@ -49,28 +49,78 @@ trait GeneratorTrait
     {
         $result = [];
 
-        if ($this->getRealType($property) == PropertyType::TYPE_OBJECT) {
+        if ($this->isScalar($property)) {
+            return [];
+        } elseif ($this->isObject($property)) {
             $result[] = $property;
-        } elseif (($additionalProp = $property->getAdditionalProperties()) instanceof PropertyInterface && $this->getRealType($additionalProp) == PropertyType::TYPE_OBJECT) {
-            $result = array_merge($result, $this->getSubSchemas($property->getAdditionalProperties()));
-        } elseif (($items = $property->getItems()) instanceof PropertyInterface && $this->getRealType($items) == PropertyType::TYPE_OBJECT) {
-            $result = array_merge($result, $this->getSubSchemas($property->getItems()));
-        } elseif ($property->getOneOf()) {
-            foreach ($property->getOneOf() as $prop) {
-                if ($this->getRealType($prop) == PropertyType::TYPE_OBJECT) {
-                    $result[] = $prop;
+
+            $patternProperties = $property->getPatternProperties();
+            if ($patternProperties) {
+                foreach ($patternProperties as $prop) {
+                    $result = array_merge($result, $this->getSubSchemas($prop));
                 }
             }
-        }
-        if ($property->getAllOf()) {
-            foreach ($property->getAllOf() as $prop) {
-                if ($this->getRealType($prop) == PropertyType::TYPE_OBJECT) {
-                    $result[] = $prop;
+
+            $additionalProperties = $property->getAdditionalProperties();
+            if ($additionalProperties instanceof PropertyInterface) {
+                $result = array_merge($result, $this->getSubSchemas($additionalProperties));
+            }
+        } elseif ($this->isArray($property)) {
+            $items = $property->getItems();
+            if ($items instanceof PropertyInterface) {
+                $result = array_merge($result, $this->getSubSchemas($items));
+            }
+
+            $additionalItems = $property->getAdditionalItems();
+            if ($additionalItems instanceof PropertyInterface) {
+                $result = array_merge($result, $this->getSubSchemas($additionalItems));
+            }
+        } else {
+            $allOf = $property->getAllOf();
+            $anyOf = $property->getAnyOf();
+            $oneOf = $property->getOneOf();
+            if (!empty($allOf)) {
+                foreach ($allOf as $prop) {
+                    $result = array_merge($result, $this->getSubSchemas($prop));
                 }
+            } elseif (!empty($anyOf)) {
+                foreach ($anyOf as $prop) {
+                    $result = array_merge($result, $this->getSubSchemas($prop));
+                }
+            } elseif (!empty($oneOf)) {
+                foreach ($oneOf as $prop) {
+                    $result = array_merge($result, $this->getSubSchemas($prop));
+                }
+            }
+
+            $not = $property->getNot();
+            if ($not instanceof PropertyInterface) {
+                $result = array_merge($result, $this->getSubSchemas($not));
             }
         }
 
         return $result;
+    }
+
+    protected function isObject(PropertyInterface $property)
+    {
+        return $this->getRealType($property) === PropertyType::TYPE_OBJECT;
+    }
+
+    protected function isArray(PropertyInterface $property)
+    {
+        return $this->getRealType($property) === PropertyType::TYPE_ARRAY;
+    }
+
+    protected function isScalar(PropertyInterface $property)
+    {
+        return in_array($this->getRealType($property), [
+            PropertyType::TYPE_STRING,
+            PropertyType::TYPE_BOOLEAN,
+            PropertyType::TYPE_INTEGER,
+            PropertyType::TYPE_NUMBER,
+            PropertyType::TYPE_NULL,
+        ]);
     }
 
     protected function getRealType(PropertyInterface $property)
