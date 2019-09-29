@@ -17,11 +17,11 @@ class Meta extends \ArrayObject
      * @Format("date-time")
      */
     protected $createDate;
-    public function setCreateDate($createDate)
+    public function setCreateDate(?\DateTime $createDate)
     {
         $this->createDate = $createDate;
     }
-    public function getCreateDate()
+    public function getCreateDate() : ?\DateTime
     {
         return $this->createDate;
     }
@@ -46,19 +46,19 @@ class Web extends \ArrayObject
      * @Type("string")
      */
     protected $url;
-    public function setName($name)
+    public function setName(?string $name)
     {
         $this->name = $name;
     }
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
-    public function setUrl($url)
+    public function setUrl(?string $url)
     {
         $this->url = $url;
     }
-    public function getUrl()
+    public function getUrl() : ?string
     {
         return $this->url;
     }
@@ -81,19 +81,19 @@ class Location extends \ArrayObject
      * @Type("number")
      */
     protected $long;
-    public function setLat($lat)
+    public function setLat(?float $lat)
     {
         $this->lat = $lat;
     }
-    public function getLat()
+    public function getLat() : ?float
     {
         return $this->lat;
     }
-    public function setLong($long)
+    public function setLong(?float $long)
     {
         $this->long = $long;
     }
-    public function getLong()
+    public function getLong() : ?float
     {
         return $this->long;
     }
@@ -137,43 +137,43 @@ class Author
      * @Ref("PSX\Generation\Location")
      */
     protected $origin;
-    public function setTitle($title)
+    public function setTitle(?string $title)
     {
         $this->title = $title;
     }
-    public function getTitle()
+    public function getTitle() : ?string
     {
         return $this->title;
     }
-    public function setEmail($email)
+    public function setEmail(?string $email)
     {
         $this->email = $email;
     }
-    public function getEmail()
+    public function getEmail() : ?string
     {
         return $this->email;
     }
-    public function setCategories($categories)
+    public function setCategories(?array $categories)
     {
         $this->categories = $categories;
     }
-    public function getCategories()
+    public function getCategories() : ?array
     {
         return $this->categories;
     }
-    public function setLocations($locations)
+    public function setLocations(?array $locations)
     {
         $this->locations = $locations;
     }
-    public function getLocations()
+    public function getLocations() : ?array
     {
         return $this->locations;
     }
-    public function setOrigin($origin)
+    public function setOrigin(?Location $origin)
     {
         $this->origin = $origin;
     }
-    public function getOrigin()
+    public function getOrigin() : ?Location
     {
         return $this->origin;
     }
@@ -308,51 +308,51 @@ class News
      * @Type("string")
      */
     protected $captcha;
-    public function setConfig($config)
+    public function setConfig(?Config $config)
     {
         $this->config = $config;
     }
-    public function getConfig()
+    public function getConfig() : ?Config
     {
         return $this->config;
     }
-    public function setTags($tags)
+    public function setTags(?array $tags)
     {
         $this->tags = $tags;
     }
-    public function getTags()
+    public function getTags() : ?array
     {
         return $this->tags;
     }
-    public function setReceiver($receiver)
+    public function setReceiver(?array $receiver)
     {
         $this->receiver = $receiver;
     }
-    public function getReceiver()
+    public function getReceiver() : ?array
     {
         return $this->receiver;
     }
-    public function setResources($resources)
+    public function setResources(?array $resources)
     {
         $this->resources = $resources;
     }
-    public function getResources()
+    public function getResources() : ?array
     {
         return $this->resources;
     }
-    public function setProfileImage($profileImage)
+    public function setProfileImage(?string $profileImage)
     {
         $this->profileImage = $profileImage;
     }
-    public function getProfileImage()
+    public function getProfileImage() : ?string
     {
         return $this->profileImage;
     }
-    public function setRead($read)
+    public function setRead(?bool $read)
     {
         $this->read = $read;
     }
-    public function getRead()
+    public function getRead() : ?bool
     {
         return $this->read;
     }
@@ -364,99 +364,99 @@ class News
     {
         return $this->source;
     }
-    public function setAuthor($author)
+    public function setAuthor(?Author $author)
     {
         $this->author = $author;
     }
-    public function getAuthor()
+    public function getAuthor() : ?Author
     {
         return $this->author;
     }
-    public function setMeta($meta)
+    public function setMeta(?Meta $meta)
     {
         $this->meta = $meta;
     }
-    public function getMeta()
+    public function getMeta() : ?Meta
     {
         return $this->meta;
     }
-    public function setSendDate($sendDate)
+    public function setSendDate(?\DateTime $sendDate)
     {
         $this->sendDate = $sendDate;
     }
-    public function getSendDate()
+    public function getSendDate() : ?\DateTime
     {
         return $this->sendDate;
     }
-    public function setReadDate($readDate)
+    public function setReadDate(?\DateTime $readDate)
     {
         $this->readDate = $readDate;
     }
-    public function getReadDate()
+    public function getReadDate() : ?\DateTime
     {
         return $this->readDate;
     }
-    public function setExpires($expires)
+    public function setExpires(?\DateInterval $expires)
     {
         $this->expires = $expires;
     }
-    public function getExpires()
+    public function getExpires() : ?\DateInterval
     {
         return $this->expires;
     }
-    public function setPrice($price)
+    public function setPrice(?float $price)
     {
         $this->price = $price;
     }
-    public function getPrice()
+    public function getPrice() : ?float
     {
         return $this->price;
     }
-    public function setRating($rating)
+    public function setRating(?int $rating)
     {
         $this->rating = $rating;
     }
-    public function getRating()
+    public function getRating() : ?int
     {
         return $this->rating;
     }
-    public function setContent($content)
+    public function setContent(?string $content)
     {
         $this->content = $content;
     }
-    public function getContent()
+    public function getContent() : ?string
     {
         return $this->content;
     }
-    public function setQuestion($question)
+    public function setQuestion(?string $question)
     {
         $this->question = $question;
     }
-    public function getQuestion()
+    public function getQuestion() : ?string
     {
         return $this->question;
     }
-    public function setCoffeeTime($coffeeTime)
+    public function setCoffeeTime(?\DateTime $coffeeTime)
     {
         $this->coffeeTime = $coffeeTime;
     }
-    public function getCoffeeTime()
+    public function getCoffeeTime() : ?\DateTime
     {
         return $this->coffeeTime;
     }
-    public function setProfileUri($profileUri)
+    public function setProfileUri(?string $profileUri)
     {
         $this->profileUri = $profileUri;
     }
-    public function getProfileUri()
+    public function getProfileUri() : ?string
     {
         return $this->profileUri;
     }
-    public function setCaptcha($captcha)
+    public function setCaptcha(?string $captcha)
     {
         $this->captcha = $captcha;
     }
-    public function getCaptcha()
+    public function getCaptcha() : ?string
     {
         return $this->captcha;
     }
