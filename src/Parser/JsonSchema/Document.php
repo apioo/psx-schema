@@ -160,6 +160,11 @@ class Document
     protected function getRecProperty(array $data, $name, $depth, PropertyInterface $property = null)
     {
         if (isset($data['$ref'])) {
+            // for schemas inside the definitions we use the key as title
+            if (strpos($data['$ref'], '#/definitions/') === 0) {
+                $name = substr($data['$ref'], 14);
+            }
+
             return $this->resolver->resolve($this, new Uri($data['$ref']), $name, $depth, $property);
         }
 
@@ -178,6 +183,8 @@ class Document
 
         if (isset($data['title'])) {
             $property->setTitle($data['title']);
+        } elseif ($name !== null) {
+            $property->setTitle($name);
         }
 
         if (isset($data['description'])) {
@@ -210,7 +217,7 @@ class Document
         if (isset($data['properties']) && is_array($data['properties'])) {
             foreach ($data['properties'] as $name => $row) {
                 if (is_array($row)) {
-                    $prop = $this->getRecProperty($row, $name, $depth + 1);
+                    $prop = $this->getRecProperty($row, null, $depth + 1);
 
                     if ($prop !== null) {
                         $property->addProperty($name, $prop);
