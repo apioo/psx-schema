@@ -75,6 +75,8 @@ class Protobuf implements GeneratorInterface
                     $result.= $type . "\n";
                     $index++;
                 }
+
+                $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
             }
 
             $result.= '}' . "\n";
@@ -111,13 +113,11 @@ class Protobuf implements GeneratorInterface
                 if ($subProto !== null) {
                     return str_repeat(' ', $indent) . 'map<string, ' . $subProto . '> ' . $name . ($index !== null ? ' = ' . $index . ';' : '');
                 } elseif ($subType == PropertyType::TYPE_OBJECT) {
-                    $this->objects[] = $additionalProperties;
                     return str_repeat(' ', $indent) . 'map<string, ' . $this->getIdentifierForProperty($property) . '> ' . $name . ($index !== null ? ' = ' . $index . ';' : '');
                 } else {
                     throw new \RuntimeException('Object additional items must be a scalar or object schema');
                 }
             } else {
-                $this->objects[] = $property;
                 return str_repeat(' ', $indent) . $this->getIdentifierForProperty($property) . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '');
             }
         } elseif (!empty($oneOf)) {

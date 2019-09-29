@@ -31,6 +31,10 @@ message Location {
   float lat = 1;
   float long = 2;
 }
+message Web {
+  string name = 1;
+  string url = 2;
+}
 message Meta {
   string createDate = 1;
 }
