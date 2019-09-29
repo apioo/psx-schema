@@ -168,19 +168,13 @@ class Php implements GeneratorInterface, TypeAwareInterface
         if (!empty($properties)) {
             $mapping = $type->getAttribute(PropertyType::ATTR_MAPPING);
 
-            // add properties
-            foreach ($properties as $key => $property) {
-                $name = isset($mapping[$key]) ? $mapping[$key] : $key;
-
-                $class->addStmt($this->factory->property($this->normalizeParameterName($name))
-                    ->makeProtected()
-                    ->setDocComment($this->getDocCommentForProperty($property, $key)));
-            }
-
-            // add getter setter
             foreach ($properties as $key => $property) {
                 $name = isset($mapping[$key]) ? $mapping[$key] : $key;
                 $name = $this->normalizeParameterName($name);
+
+                $class->addStmt($this->factory->property($name)
+                    ->makeProtected()
+                    ->setDocComment($this->getDocCommentForProperty($property, $key)));
 
                 $param = $this->factory->param($name);
                 $type = $this->getType($property);
@@ -285,9 +279,6 @@ class Php implements GeneratorInterface, TypeAwareInterface
 
         $type = $this->getRealType($property);
         if ($type === PropertyType::TYPE_OBJECT) {
-            // @TODO in case the referenced schema is a oneOf schema use the
-            // annotation @OneOf and dont create a new class
-
             $comment.= ' * ' . $this->getSubSchema($property) . "\n";
         } else {
             $title = $property->getTitle();
