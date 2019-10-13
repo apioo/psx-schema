@@ -79,6 +79,14 @@ class Java implements GeneratorInterface, TypeAwareInterface
         return 'Object';
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getDocType(PropertyInterface $property): string
+    {
+        return $this->getType($property);
+    }
+
     protected function generateObject(PropertyInterface $type)
     {
         $result = '';

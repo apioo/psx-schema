@@ -39,4 +39,12 @@ interface TypeAwareInterface
      * @return string
      */
     public function getType(PropertyInterface $property): string;
+
+    /**
+     * Returns a doc type string
+     *
+     * @param \PSX\Schema\PropertyInterface $property
+     * @return string
+     */
+    public function getDocType(PropertyInterface $property): string;
 }

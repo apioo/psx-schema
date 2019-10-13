@@ -88,6 +88,9 @@ class Php implements GeneratorInterface, TypeAwareInterface
         return $this->printer->prettyPrintFile([$this->root->getNode()]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getType(PropertyInterface $property): string
     {
         $type  = $this->getRealType($property);
@@ -124,6 +127,32 @@ class Php implements GeneratorInterface, TypeAwareInterface
         }
 
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDocType(PropertyInterface $property): string
+    {
+        $type = $this->getRealType($property);
+
+        if ($type == PropertyType::TYPE_ARRAY) {
+            return $this->getIdentifierForProperty($property) . '[]';
+        } elseif ($property->getOneOf()) {
+            $parts = [];
+            foreach ($property->getOneOf() as $property) {
+                $parts[] = $this->getType($property);
+            }
+            return implode('|', $parts);
+        } elseif ($property->getAllOf()) {
+            $parts = [];
+            foreach ($property->getAllOf() as $property) {
+                $parts[] = $this->getType($property);
+            }
+            return implode('&', $parts);
+        } else {
+            return $this->getType($property);
+        }
     }
 
     public function getNode()

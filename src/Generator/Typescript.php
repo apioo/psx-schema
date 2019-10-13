@@ -87,6 +87,14 @@ class Typescript implements GeneratorInterface, TypeAwareInterface
         return 'any';
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getDocType(PropertyInterface $property): string
+    {
+        return $this->getType($property);
+    }
+
     protected function generateObject(PropertyInterface $type)
     {
         $result = '';
