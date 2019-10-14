@@ -93,10 +93,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
      */
     public function getType(PropertyInterface $property): string
     {
-        $type  = $this->getRealType($property);
-        $oneOf = $property->getOneOf();
-        $allOf = $property->getAllOf();
-
+        $type = $this->getRealType($property);
         if ($type == PropertyType::TYPE_STRING) {
             if ($property->getFormat() === PropertyType::FORMAT_DATE) {
                 return '\DateTime';
@@ -119,10 +116,10 @@ class Php implements GeneratorInterface, TypeAwareInterface
             return 'array';
         } elseif ($type == PropertyType::TYPE_OBJECT) {
             return $this->getIdentifierForProperty($property);
-        } elseif (!empty($oneOf)) {
+        } elseif ($property->getOneOf()) {
             // @TODO if we have union types we can do this https://github.com/php/php-rfcs/pull/1
             return '';
-        } elseif (!empty($allOf)) {
+        } elseif ($property->getAllOf()) {
             return '';
         }
 
@@ -137,17 +134,24 @@ class Php implements GeneratorInterface, TypeAwareInterface
         $type = $this->getRealType($property);
 
         if ($type == PropertyType::TYPE_ARRAY) {
-            return $this->getIdentifierForProperty($property) . '[]';
+            $items = $property->getItems();
+            if ($items instanceof PropertyInterface) {
+                return 'array<' . $this->getDocType($items) . '>';
+            } else {
+                return 'array';
+            }
+        } elseif (is_array($type)) {
+            return implode('|', $type);
         } elseif ($property->getOneOf()) {
             $parts = [];
             foreach ($property->getOneOf() as $property) {
-                $parts[] = $this->getType($property);
+                $parts[] = $this->getDocType($property);
             }
             return implode('|', $parts);
         } elseif ($property->getAllOf()) {
             $parts = [];
             foreach ($property->getAllOf() as $property) {
-                $parts[] = $this->getType($property);
+                $parts[] = $this->getDocType($property);
             }
             return implode('&', $parts);
         } else {
@@ -213,6 +217,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
 
                 $setter = $this->factory->method('set' . ucfirst($name));
                 $setter->makePublic();
+                $setter->setDocComment('/**' . "\n" . ' * @param ' . $this->getDocType($property) . ' $' . $name . "\n" . ' */');
                 $setter->addParam($param);
                 $setter->addStmt(new Node\Expr\Assign(
                     new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
@@ -225,6 +230,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
                     $getter->setReturnType(new Node\NullableType($type));
                 }
                 $getter->makePublic();
+                $getter->setDocComment('/**' . "\n" . ' * @return ' . $this->getDocType($property) . "\n" . ' */');
                 $getter->addStmt(new Node\Stmt\Return_(
                     new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
                 ));
