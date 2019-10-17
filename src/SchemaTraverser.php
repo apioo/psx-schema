@@ -152,22 +152,8 @@ class SchemaTraverser
             $result = $this->traverseOneOf($data, $oneOf, $visitor);
         }
 
-        // not constraint
         if ($this->assertConstraints) {
-            $not = $property->getNot();
-            if ($not instanceof PropertyType) {
-                try {
-                    $this->recTraverse($data, $not, $visitor);
-                    $match = true;
-                } catch (ValidationException $e) {
-                    $this->recCount--;
-                    $match = false;
-                }
-
-                if ($match) {
-                    throw new ValidationException($this->getCurrentPath() . ' must not match the schema', 'not', $this->pathStack);
-                }
-            }
+            $this->assertNotConstraints($data, $property, $visitor);
         }
 
         $this->recCount--;
@@ -676,6 +662,24 @@ class SchemaTraverser
             $result = preg_match('/' . $pattern . '/', $data);
             if (!$result) {
                 throw new ValidationException($this->getCurrentPath() . ' does not match pattern [' . $pattern . ']', 'pattern', $this->pathStack);
+            }
+        }
+    }
+
+    protected function assertNotConstraints($data, PropertyInterface $property, VisitorInterface $visitor)
+    {
+        $not = $property->getNot();
+        if ($not instanceof PropertyType) {
+            try {
+                $this->recTraverse($data, $not, $visitor);
+                $match = true;
+            } catch (ValidationException $e) {
+                $this->recCount--;
+                $match = false;
+            }
+
+            if ($match) {
+                throw new ValidationException($this->getCurrentPath() . ' must not match the schema', 'not', $this->pathStack);
             }
         }
     }
