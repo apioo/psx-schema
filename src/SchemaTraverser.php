@@ -37,10 +37,30 @@ use RuntimeException;
  */
 class SchemaTraverser
 {
-    const MAX_RECURSION_DEPTH = 16;
+    private const MAX_RECURSION_DEPTH = 16;
 
-    protected $pathStack;
-    protected $recCount;
+    /**
+     * @var array
+     */
+    private $pathStack;
+
+    /**
+     * @var integer
+     */
+    private $recCount;
+
+    /**
+     * @var bool
+     */
+    private $assertConstraints;
+
+    /**
+     * @param bool $assertConstraints
+     */
+    public function __construct(bool $assertConstraints = true)
+    {
+        $this->assertConstraints = $assertConstraints;
+    }
 
     /**
      * Traverses through the data and validates it according to the provided
@@ -77,33 +97,45 @@ class SchemaTraverser
         }
 
         // check constraints
-        $this->assertTypeConstraints($data, $property);
-        $this->assertEnumConstraints($data, $property);
-        $this->assertConstConstraints($data, $property);
+        if ($this->assertConstraints) {
+            $this->assertTypeConstraints($data, $property);
+            $this->assertEnumConstraints($data, $property);
+            $this->assertConstConstraints($data, $property);
+        }
 
         $result = null;
         if ($data === null) {
             $result = $visitor->visitNull($data, $property, $this->getCurrentPath());
         } elseif (is_int($data)) {
-            $this->assertNumberConstraints($data, $property);
+            if ($this->assertConstraints) {
+                $this->assertNumberConstraints($data, $property);
+            }
 
             $result = $visitor->visitInteger($data, $property, $this->getCurrentPath());
         } elseif (is_float($data)) {
-            $this->assertNumberConstraints($data, $property);
+            if ($this->assertConstraints) {
+                $this->assertNumberConstraints($data, $property);
+            }
 
             $result = $visitor->visitNumber($data, $property, $this->getCurrentPath());
         } elseif (is_string($data)) {
-            $this->assertStringConstraints($data, $property);
+            if ($this->assertConstraints) {
+                $this->assertStringConstraints($data, $property);
+            }
 
             $result = $this->traverseString($data, $property, $visitor);
         } elseif (is_bool($data)) {
             $result = $visitor->visitBoolean($data, $property, $this->getCurrentPath());
         } elseif (is_array($data)) {
-            $this->assertArrayConstraints($data, $property);
+            if ($this->assertConstraints) {
+                $this->assertArrayConstraints($data, $property);
+            }
 
             $result = $this->traverseArray($data, $property, $visitor);
         } elseif ($data instanceof \stdClass) {
-            $this->assertObjectConstraints($data, $property, $visitor);
+            if ($this->assertConstraints) {
+                $this->assertObjectConstraints($data, $property, $visitor);
+            }
 
             $result = $this->traverseObject($data, $property, $visitor);
         }
@@ -121,18 +153,20 @@ class SchemaTraverser
         }
 
         // not constraint
-        $not = $property->getNot();
-        if ($not instanceof PropertyType) {
-            try {
-                $this->recTraverse($data, $not, $visitor);
-                $match = true;
-            } catch (ValidationException $e) {
-                $this->recCount--;
-                $match = false;
-            }
+        if ($this->assertConstraints) {
+            $not = $property->getNot();
+            if ($not instanceof PropertyType) {
+                try {
+                    $this->recTraverse($data, $not, $visitor);
+                    $match = true;
+                } catch (ValidationException $e) {
+                    $this->recCount--;
+                    $match = false;
+                }
 
-            if ($match) {
-                throw new ValidationException($this->getCurrentPath() . ' must not match the schema', 'not', $this->pathStack);
+                if ($match) {
+                    throw new ValidationException($this->getCurrentPath() . ' must not match the schema', 'not', $this->pathStack);
+                }
             }
         }
 
@@ -277,7 +311,7 @@ class SchemaTraverser
     {
         switch ($property->getFormat()) {
             case PropertyType::FORMAT_BINARY:
-                if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
+                if ($this->assertConstraints && !preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
                 }
 
@@ -285,7 +319,7 @@ class SchemaTraverser
                 break;
 
             case PropertyType::FORMAT_DATETIME:
-                if (!preg_match('/^' . DateTime::getPattern() . '$/', $data)) {
+                if ($this->assertConstraints && !preg_match('/^' . DateTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
                 }
 
@@ -293,7 +327,7 @@ class SchemaTraverser
                 break;
 
             case PropertyType::FORMAT_DATE:
-                if (!preg_match('/^' . Date::getPattern() . '$/', $data)) {
+                if ($this->assertConstraints && !preg_match('/^' . Date::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
                 }
 
@@ -301,7 +335,7 @@ class SchemaTraverser
                 break;
 
             case PropertyType::FORMAT_DURATION:
-                if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
+                if ($this->assertConstraints && !preg_match('/^' . Duration::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
                 }
 
@@ -309,7 +343,7 @@ class SchemaTraverser
                 break;
 
             case PropertyType::FORMAT_TIME:
-                if (!preg_match('/^' . Time::getPattern() . '$/', $data)) {
+                if ($this->assertConstraints && !preg_match('/^' . Time::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
                 }
 
@@ -323,7 +357,7 @@ class SchemaTraverser
                 break;
 
             case 'email':
-                if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
+                if ($this->assertConstraints && !filter_var($data, FILTER_VALIDATE_EMAIL)) {
                     throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address', 'format', $this->pathStack);
                 }
 
@@ -331,7 +365,7 @@ class SchemaTraverser
                 break;
 
             case 'ipv4':
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                if ($this->assertConstraints && !filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                     throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address', 'format', $this->pathStack);
                 }
 
@@ -339,7 +373,7 @@ class SchemaTraverser
                 break;
 
             case 'ipv6':
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                if ($this->assertConstraints && !filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                     throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address', 'format', $this->pathStack);
                 }
 
@@ -359,16 +393,22 @@ class SchemaTraverser
         $result = [];
 
         foreach ($properties as $index => $prop) {
+            $assertConstraints = $this->assertConstraints;
+
             try {
+                $this->assertConstraints = true;
+
                 $result[] = $this->recTraverse($data, $prop, new NullVisitor());
 
                 $match++;
             } catch (ValidationException $e) {
                 $this->recCount--;
+            } finally {
+                $this->assertConstraints = $assertConstraints;
             }
         }
 
-        if ($count !== $match) {
+        if ($this->assertConstraints && $count !== $match) {
             throw new ValidationException($this->getCurrentPath() . ' must match all required schemas (matched only ' . $match . ' out of ' . $count . ')', 'allOf', $this->pathStack);
         }
 
@@ -391,17 +431,23 @@ class SchemaTraverser
         $result = null;
 
         foreach ($properties as $index => $prop) {
+            $assertConstraints = $this->assertConstraints;
+
             try {
+                $this->assertConstraints = true;
+
                 $result = $this->recTraverse($data, $prop, $visitor);
 
                 $match++;
                 break;
             } catch (ValidationException $e) {
                 $this->recCount--;
+            } finally {
+                $this->assertConstraints = $assertConstraints;
             }
         }
 
-        if ($match === 0) {
+        if ($this->assertConstraints && $match === 0) {
             throw new ValidationException($this->getCurrentPath() . ' must match any required schema', 'anyOf', $this->pathStack);
         }
 
@@ -414,16 +460,22 @@ class SchemaTraverser
         $result = null;
 
         foreach ($properties as $index => $prop) {
+            $assertConstraints = $this->assertConstraints;
+
             try {
+                $this->assertConstraints = true;
+
                 $result = $this->recTraverse($data, $prop, $visitor);
 
                 $match++;
             } catch (ValidationException $e) {
                 $this->recCount--;
+            } finally {
+                $this->assertConstraints = $assertConstraints;
             }
         }
 
-        if ($match !== 1) {
+        if ($this->assertConstraints && $match !== 1) {
             throw new ValidationException($this->getCurrentPath() . ' must match one required schema', 'oneOf', $this->pathStack);
         }
 
