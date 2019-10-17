@@ -1,0 +1,144 @@
+{
+  "config": {
+    "foo": "bar",
+    "bar": "bar"
+  },
+  "tags": [
+    "foo",
+    "bar"
+  ],
+  "receiver": [
+    {
+      "title": "foo",
+      "email": "foo@bar.com",
+      "categories": [
+        "admin",
+        "user"
+      ],
+      "locations": [
+        {
+          "lat": 51.2984641,
+          "long": 6.9227502,
+          "foo": {
+            "bar": "test"
+          },
+          "bar": "foo"
+        }
+      ],
+      "origin": {
+        "lat": 51.2984641,
+        "long": 6.9227502,
+        "foo": {
+          "bar": "test"
+        },
+        "bar": "foo"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    },
+    {
+      "name": "web",
+      "url": "http:\/\/google.com",
+      "foo": "foo"
+    },
+    {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    }
+  ],
+  "profileImage": "Zm9vYmFy",
+  "read": true,
+  "source": {
+    "title": "foo",
+    "email": "foo@bar.com",
+    "categories": [
+      "admin",
+      "user"
+    ],
+    "locations": [
+      {
+        "lat": 51.2984641,
+        "long": 6.9227502,
+        "foo": {
+          "bar": "test"
+        },
+        "bar": "foo"
+      }
+    ],
+    "origin": {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    }
+  },
+  "author": {
+    "title": "foo",
+    "email": "foo@bar.com",
+    "categories": [
+      "admin",
+      "user"
+    ],
+    "locations": [
+      {
+        "lat": 51.2984641,
+        "long": 6.9227502,
+        "foo": {
+          "bar": "test"
+        },
+        "bar": "foo"
+      }
+    ],
+    "origin": {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    }
+  },
+  "meta": {
+    "tags_0": "foo",
+    "tags_1": "bar",
+    "location_0": {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    },
+    "location_1": {
+      "lat": 51.2984641,
+      "long": 6.9227502,
+      "foo": {
+        "bar": "test"
+      },
+      "bar": "foo"
+    }
+  },
+  "sendDate": "2016-05-28",
+  "readDate": "2016-05-28T12:12:00",
+  "expires": "P1D",
+  "price": 20.45,
+  "rating": 2,
+  "content": "lorem ipsum",
+  "question": "foo",
+  "coffeeTime": "12:12:00",
+  "profileUri": "urn:news:1"
+}

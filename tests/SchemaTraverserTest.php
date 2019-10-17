@@ -46,6 +46,31 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
+    public function testTraverseNoConstraints()
+    {
+        $traverser = new SchemaTraverser(false);
+        $result    = $traverser->traverse($this->getData(), $this->getSchema());
+
+        $actual = json_encode($result, JSON_PRETTY_PRINT);
+        $expect = $this->getExpectedJson();
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testTraverseNoConstraintsAllowInvalidValue()
+    {
+        $data = $this->getData();
+        $data->config->test = ['foo'];
+
+        $traverser = new SchemaTraverser(false);
+        $result    = $traverser->traverse($data, $this->getSchema());
+
+        $actual = json_encode($result, JSON_PRETTY_PRINT);
+        $expect = json_encode($data);
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
     /**
      * @expectedException \PSX\Schema\ValidationException
      * @expectedExceptionMessage /config/test must be of type string
@@ -264,7 +289,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /receiver/0/title does not match pattern [[A-z]{3,16}]
+     * @expectedExceptionMessage /author/title does not match pattern [[A-z]{3,16}]
      */
     public function testInvalidPattern()
     {
@@ -360,212 +385,11 @@ class SchemaTraverserTest extends SchemaTestCase
 
     protected function getData()
     {
-        $location = (object) [
-            'lat' => 51.2984641,
-            'long' => 6.9227502,
-            // allows any additional properties
-            'foo' => [
-                'bar' => 'test'
-            ],
-            'bar' => 'foo'
-        ];
-
-        $web = (object) [
-            'name' => 'web',
-            'url' => 'http://google.com',
-            // allows additional string properties
-            'foo' => 'foo',
-        ];
-
-        $author = (object) [
-            'title' => 'foo',
-            'email' => 'foo@bar.com',
-            'categories' => ['admin', 'user'],
-            'locations' => [$location],
-            'origin' => $location,
-        ];
-
-        $meta = (object) [
-            // pattern properties
-            'tags_0' => 'foo',
-            'tags_1' => 'bar',
-            'location_0' => $location,
-            'location_1' => $location,
-        ];
-
-        return (object) [
-            'config' => (object) [
-                // allows additional string properties
-                'foo' => 'bar',
-                'bar' => 'bar',
-            ],
-            'tags' => ['foo', 'bar'],
-            'receiver' => [$author],
-            'resources' => [$location, $web, $location],
-            'profileImage' => base64_encode('foobar'),
-            'read' => true,
-            'source' => $author,
-            'author' => $author,
-            'meta' => $meta,
-            'sendDate' => '2016-05-28',
-            'readDate' => '2016-05-28T12:12:00',
-            'expires' => 'P1D',
-            'price' => 20.45,
-            'rating' => 2,
-            'content' => 'lorem ipsum',
-            'question' => 'foo',
-            'coffeeTime' => '12:12:00',
-            'profileUri' => 'urn:news:1',
-        ];
+        return json_decode(file_get_contents(__DIR__ . '/SchemaTraverser/expected.json'));
     }
 
     protected function getExpectedJson()
     {
-        return <<<JSON
-{
-    "config": {
-        "foo": "bar",
-        "bar": "bar"
-    },
-    "tags": [
-        "foo",
-        "bar"
-    ],
-    "receiver": [
-        {
-            "title": "foo",
-            "email": "foo@bar.com",
-            "categories": [
-                "admin",
-                "user"
-            ],
-            "locations": [
-                {
-                    "lat": 51.2984641,
-                    "long": 6.9227502,
-                    "foo": {
-                        "bar": "test"
-                    },
-                    "bar": "foo"
-                }
-            ],
-            "origin": {
-                "lat": 51.2984641,
-                "long": 6.9227502,
-                "foo": {
-                    "bar": "test"
-                },
-                "bar": "foo"
-            }
-        }
-    ],
-    "resources": [
-        {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        },
-        {
-            "name": "web",
-            "url": "http:\/\/google.com",
-            "foo": "foo"
-        },
-        {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        }
-    ],
-    "profileImage": "Zm9vYmFy",
-    "read": true,
-    "source": {
-        "title": "foo",
-        "email": "foo@bar.com",
-        "categories": [
-            "admin",
-            "user"
-        ],
-        "locations": [
-            {
-                "lat": 51.2984641,
-                "long": 6.9227502,
-                "foo": {
-                    "bar": "test"
-                },
-                "bar": "foo"
-            }
-        ],
-        "origin": {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        }
-    },
-    "author": {
-        "title": "foo",
-        "email": "foo@bar.com",
-        "categories": [
-            "admin",
-            "user"
-        ],
-        "locations": [
-            {
-                "lat": 51.2984641,
-                "long": 6.9227502,
-                "foo": {
-                    "bar": "test"
-                },
-                "bar": "foo"
-            }
-        ],
-        "origin": {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        }
-    },
-    "meta": {
-        "tags_0": "foo",
-        "tags_1": "bar",
-        "location_0": {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        },
-        "location_1": {
-            "lat": 51.2984641,
-            "long": 6.9227502,
-            "foo": {
-                "bar": "test"
-            },
-            "bar": "foo"
-        }
-    },
-    "sendDate": "2016-05-28",
-    "readDate": "2016-05-28T12:12:00",
-    "expires": "P1D",
-    "price": 20.45,
-    "rating": 2,
-    "content": "lorem ipsum",
-    "question": "foo",
-    "coffeeTime": "12:12:00",
-    "profileUri": "urn:news:1"
-}
-JSON;
+        return file_get_contents(__DIR__ . '/SchemaTraverser/expected.json');
     }
 }
