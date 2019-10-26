@@ -529,14 +529,14 @@ class SchemaTraverser
         $minItems = $property->getMinItems();
         if ($minItems !== null) {
             if (count($data) < $minItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minItems . ' items', 'minItems', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minItems . ' items', 'minItems', $this->pathStack);
             }
         }
 
         $maxItems = $property->getMaxItems();
         if ($maxItems !== null) {
             if (count($data) > $maxItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxItems . ' items', 'maxItems', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxItems . ' items', 'maxItems', $this->pathStack);
             }
         }
 
@@ -565,14 +565,14 @@ class SchemaTraverser
         $minProperties = $property->getMinProperties();
         if ($minProperties !== null) {
             if (count($keys) < $minProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minProperties . ' properties', 'minProperties', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minProperties . ' properties', 'minProperties', $this->pathStack);
             }
         }
 
         $maxProperties = $property->getMaxProperties();
         if ($maxProperties !== null) {
             if (count($keys) > $maxProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxProperties . ' properties', 'maxProperties', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxProperties . ' properties', 'maxProperties', $this->pathStack);
             }
         }
 
@@ -607,11 +607,11 @@ class SchemaTraverser
         if ($maximum !== null) {
             if ($property->getExclusiveMaximum()) {
                 if ($data >= $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower then ' . $maximum, 'maximum', $this->pathStack);
+                    throw new ValidationException($this->getCurrentPath() . ' must be lower than ' . $maximum, 'maximum', $this->pathStack);
                 }
             } else {
                 if ($data > $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower or equal then ' . $maximum, 'maximum', $this->pathStack);
+                    throw new ValidationException($this->getCurrentPath() . ' must be lower or equal than ' . $maximum, 'maximum', $this->pathStack);
                 }
             }
         }
@@ -620,11 +620,11 @@ class SchemaTraverser
         if ($minimum !== null) {
             if ($property->getExclusiveMinimum()) {
                 if ($data <= $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater then ' . $minimum, 'minimum', $this->pathStack);
+                    throw new ValidationException($this->getCurrentPath() . ' must be greater than ' . $minimum, 'minimum', $this->pathStack);
                 }
             } else {
                 if ($data < $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater or equal then ' . $minimum, 'minimum', $this->pathStack);
+                    throw new ValidationException($this->getCurrentPath() . ' must be greater or equal than ' . $minimum, 'minimum', $this->pathStack);
                 }
             }
         }
@@ -646,14 +646,14 @@ class SchemaTraverser
         $minLength = $property->getMinLength();
         if ($minLength !== null) {
             if (strlen($data) < $minLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal then ' . $minLength . ' characters', 'minLength', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minLength . ' characters', 'minLength', $this->pathStack);
             }
         }
 
         $maxLength = $property->getMaxLength();
         if ($maxLength !== null) {
             if (strlen($data) > $maxLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal then ' . $maxLength . ' characters', 'maxLength', $this->pathStack);
+                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxLength . ' characters', 'maxLength', $this->pathStack);
             }
         }
 
