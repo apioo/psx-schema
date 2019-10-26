@@ -86,7 +86,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /tags must contain less or equal then 6 items
+     * @expectedExceptionMessage /tags must contain less or equal than 6 items
      */
     public function testInvalidMaxArrayItems()
     {
@@ -101,7 +101,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /tags must contain more or equal then 1 items
+     * @expectedExceptionMessage /tags must contain more or equal than 1 items
      */
     public function testInvalidMinArrayItems()
     {
@@ -185,7 +185,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /price must be greater or equal then 1
+     * @expectedExceptionMessage /price must be greater or equal than 1
      */
     public function testInvalidMinFloat()
     {
@@ -198,7 +198,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /price must be lower or equal then 100
+     * @expectedExceptionMessage /price must be lower or equal than 100
      */
     public function testInvalidMaxFloat()
     {
@@ -211,7 +211,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /rating must be greater or equal then 1
+     * @expectedExceptionMessage /rating must be greater or equal than 1
      */
     public function testInvalidMinInteger()
     {
@@ -224,7 +224,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /rating must be lower or equal then 5
+     * @expectedExceptionMessage /rating must be lower or equal than 5
      */
     public function testInvalidMaxInteger()
     {
@@ -237,7 +237,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /content must contain more or equal then 3 characters
+     * @expectedExceptionMessage /content must contain more or equal than 3 characters
      */
     public function testInvalidMinString()
     {
@@ -250,7 +250,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /content must contain less or equal then 512 characters
+     * @expectedExceptionMessage /content must contain less or equal than 512 characters
      */
     public function testInvalidMaxString()
     {
