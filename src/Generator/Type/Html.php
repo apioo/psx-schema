@@ -18,54 +18,19 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator;
-
-use PSX\Schema\Generator\Type\TypeInterface;
-use PSX\Schema\PropertyInterface;
+namespace PSX\Schema\Generator\Type;
 
 /**
- * Protobuf
+ * Html
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends CodeGeneratorAbstract
+class Html extends MarkupAbstract
 {
-    /**
-     * @inheritDoc
-     */
-    protected function newType(): TypeInterface
+    protected function writeLink(string $name, string $href): string
     {
-        return new Type\Protobuf();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(Code\Struct $struct): string
-    {
-        $code = '';
-        $code.= 'message ' . $struct->getName() . ' {' . "\n";
-
-        $index = 1;
-        foreach ($struct->getProperties() as $name => $property) {
-            /** @var PropertyInterface $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
-
-            $index++;
-        }
-
-        $code.= '}' . "\n";
-
-        return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        return '';
+        return '<a href="' . $href . '">' . htmlspecialchars($name) . '</a>';
     }
 }

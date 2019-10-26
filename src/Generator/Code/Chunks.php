@@ -18,54 +18,65 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator;
-
-use PSX\Schema\Generator\Type\TypeInterface;
-use PSX\Schema\PropertyInterface;
+namespace PSX\Schema\Generator\Code;
 
 /**
- * Protobuf
+ * Chunks
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends CodeGeneratorAbstract
+class Chunks
 {
     /**
-     * @inheritDoc
+     * @var string|null
      */
-    protected function newType(): TypeInterface
+    private $namespace;
+
+    /**
+     * @var array 
+     */
+    private $parts = [];
+
+    /**
+     * @param string|null $namespace
+     */
+    public function __construct(?string $namespace = null)
     {
-        return new Type\Protobuf();
+        $this->namespace = $namespace;
     }
 
     /**
-     * @inheritDoc
+     * @param string $identifier
+     * @param string $code
      */
-    protected function writeStruct(Code\Struct $struct): string
+    public function append(string $identifier, string $code)
     {
-        $code = '';
-        $code.= 'message ' . $struct->getName() . ' {' . "\n";
-
-        $index = 1;
-        foreach ($struct->getProperties() as $name => $property) {
-            /** @var PropertyInterface $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
-
-            $index++;
-        }
-
-        $code.= '}' . "\n";
-
-        return $code;
+        $this->parts[$identifier] = $code;
     }
 
     /**
-     * @inheritDoc
+     * @return string|null
      */
-    protected function writeMap(Code\Map $map): string
+    public function getNamespace(): ?string
     {
-        return '';
+        return $this->namespace;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChunks()
+    {
+        return $this->parts;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode("\n", $this->getChunks());
     }
 }

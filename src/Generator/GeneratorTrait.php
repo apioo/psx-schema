@@ -75,7 +75,7 @@ trait GeneratorTrait
             if ($additionalItems instanceof PropertyInterface) {
                 $result = array_merge($result, $this->getSubSchemas($additionalItems));
             }
-        } else {
+        } elseif ($this->isComposite($property)) {
             $allOf = $property->getAllOf();
             $anyOf = $property->getAnyOf();
             $oneOf = $property->getOneOf();
@@ -92,11 +92,11 @@ trait GeneratorTrait
                     $result = array_merge($result, $this->getSubSchemas($prop));
                 }
             }
+        }
 
-            $not = $property->getNot();
-            if ($not instanceof PropertyInterface) {
-                $result = array_merge($result, $this->getSubSchemas($not));
-            }
+        $not = $property->getNot();
+        if ($not instanceof PropertyInterface) {
+            $result = array_merge($result, $this->getSubSchemas($not));
         }
 
         return $result;
@@ -121,6 +121,11 @@ trait GeneratorTrait
             PropertyType::TYPE_NUMBER,
             PropertyType::TYPE_NULL,
         ]);
+    }
+
+    public function isComposite(PropertyInterface $property)
+    {
+        return $property->getOneOf() || $property->getAnyOf() || $property->getAllOf();
     }
 
     protected function getRealType(PropertyInterface $property)

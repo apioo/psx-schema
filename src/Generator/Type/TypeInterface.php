@@ -18,54 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator;
+namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\Generator\Type\TypeInterface;
 use PSX\Schema\PropertyInterface;
 
 /**
- * Protobuf
+ * A generator can implement this interface if it has the ability to resolve a
+ * type from a schema instance
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends CodeGeneratorAbstract
+interface TypeInterface
 {
     /**
-     * @inheritDoc
+     * Returns a type string
+     * 
+     * @param \PSX\Schema\PropertyInterface $property
+     * @return string
      */
-    protected function newType(): TypeInterface
-    {
-        return new Type\Protobuf();
-    }
+    public function getType(PropertyInterface $property): string;
 
     /**
-     * @inheritDoc
+     * Returns a doc type string
+     *
+     * @param \PSX\Schema\PropertyInterface $property
+     * @return string
      */
-    protected function writeStruct(Code\Struct $struct): string
-    {
-        $code = '';
-        $code.= 'message ' . $struct->getName() . ' {' . "\n";
-
-        $index = 1;
-        foreach ($struct->getProperties() as $name => $property) {
-            /** @var PropertyInterface $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
-
-            $index++;
-        }
-
-        $code.= '}' . "\n";
-
-        return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        return '';
-    }
+    public function getDocType(PropertyInterface $property): string;
 }

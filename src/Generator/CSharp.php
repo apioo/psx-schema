@@ -20,10 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\GeneratorInterface;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
-use PSX\Schema\SchemaInterface;
+use PSX\Schema\Generator\Type\TypeInterface;
 
 /**
  * CSharp
@@ -32,115 +29,52 @@ use PSX\Schema\SchemaInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CSharp implements GeneratorInterface, TypeAwareInterface
+class CSharp extends CodeGeneratorAbstract
 {
-    use GeneratorTrait;
-
-    private $generated;
-    private $objects;
-    
-    public function generate(SchemaInterface $schema)
+    /**
+     * @inheritDoc
+     */
+    protected function newType(): TypeInterface
     {
-        $this->generated = [];
-        $this->objects   = [];
-
-        return $this->generateObject($schema->getDefinition());
-    }
-
-    public function getType(PropertyInterface $property): string
-    {
-        $type  = $this->getRealType($property);
-        $oneOf = $property->getOneOf();
-        $allOf = $property->getAllOf();
-
-        if ($type == PropertyType::TYPE_STRING) {
-            return 'string';
-        } elseif ($type == PropertyType::TYPE_INTEGER) {
-            return 'int';
-        } elseif ($type == PropertyType::TYPE_NUMBER) {
-            return 'float';
-        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
-            return 'bool';
-        } elseif ($type == PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
-                return $this->getType($items) . '[]';
-            } else {
-                throw new \RuntimeException('Array items must be a schema');
-            }
-        } elseif ($type == PropertyType::TYPE_OBJECT) {
-            return $this->getIdentifierForProperty($property);
-        } elseif (!empty($oneOf)) {
-            // @TODO implement one of
-        } elseif (!empty($allOf)) {
-            // @TODO implement all of
-        }
-
-        return 'object';
+        return new Type\CSharp();
     }
 
     /**
      * @inheritDoc
      */
-    public function getDocType(PropertyInterface $property): string
+    protected function writeStruct(Code\Struct $struct): string
     {
-        return $this->getType($property);
+        $code = '';
+
+        $comment = $struct->getComment();
+        if (!empty($comment)) {
+            $code.= '/// <summary>' . "\n";
+            $code.= '/// ' . $comment . "\n";
+            $code.= '/// </summary>' . "\n";
+        }
+
+        $code.= 'public class ' . $struct->getName() . "\n";
+        $code.= '{' . "\n";
+
+        foreach ($struct->getProperties() as $name => $property) {
+            /** @var Code\Property $property */
+            $code.= $this->indent . 'public ' . $property->getType() . ' ' . ucfirst($name) . ' { get; set; }' . "\n";
+        }
+
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
-    protected function generateObject(PropertyInterface $type)
+    /**
+     * @inheritDoc
+     */
+    protected function writeMap(Code\Map $map): string
     {
-        $result = '';
-        $name   = $this->getIdentifierForProperty($type);
+        $code = 'public class ' . $map->getName() . ' : Dictionary<string, ' . $map->getType() . '>' . "\n";
+        $code.= '{' . "\n";
+        $code.= '}' . "\n";
 
-        if (in_array($name, $this->generated)) {
-            return '';
-        }
-
-        $this->generated[] = $name;
-
-        $indent     = str_repeat(' ', 4);
-        $properties = $type->getProperties();
-        $additional = $type->getAdditionalProperties();
-
-        $extends = '';
-        if ($additional === true) {
-            $extends = ': Dictionary<string, object> ';
-        } elseif ($additional instanceof PropertyInterface) {
-            $extends = ': Dictionary<string, ' . $this->getType($additional) . '> ';
-        }
-
-        $result.= 'public class ' . $name . ' ' . $extends . "\n";
-        $result.= '{' . "\n";
-
-        if (!empty($properties)) {
-            $required = $type->getRequired() ?: [];
-
-            foreach ($properties as $name => $property) {
-                /** @var PropertyInterface $property */
-                $type = $this->getType($property);
-                $name = $this->normalizeName($name);
-
-                $result.= $indent . 'public ' . $type . ' ' . ucfirst($name) . ' { get; set; }' . "\n";
-
-                $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
-            }
-        }
-
-        $result.= '}' . "\n";
-
-        foreach ($this->objects as $property) {
-            $result.= $this->generateObject($property);
-        }
-
-        return $result;
-    }
-
-    private function normalizeName(string $name)
-    {
-        $name = str_replace(['-', '_'], ' ', $name);
-        $name = ucwords($name);
-        $name = str_replace(' ', '', $name);
-
-        return preg_replace('/[^A-Za-z0-9]/', '', lcfirst($name));
+        return $code;
     }
 }

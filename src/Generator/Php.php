@@ -23,6 +23,7 @@ namespace PSX\Schema\Generator;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
+use PSX\Schema\Generator\Type\TypeInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
@@ -36,19 +37,12 @@ use RuntimeException;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Php implements GeneratorInterface, TypeAwareInterface
+class Php extends CodeGeneratorAbstract
 {
-    use GeneratorTrait;
-
     /**
      * @var \PhpParser\BuilderFactory
      */
     protected $factory;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
 
     /**
      * @var \PhpParser\PrettyPrinter\Standard
@@ -56,199 +50,74 @@ class Php implements GeneratorInterface, TypeAwareInterface
     protected $printer;
 
     /**
-     * @var \PhpParser\Builder\Namespace_
-     */
-    protected $root;
-
-    /**
-     * @var array
-     */
-    protected $generated;
-
-    /**
-     * @var array
-     */
-    protected $refs;
-
-    public function __construct($namespace = null)
-    {
-        $this->factory   = new BuilderFactory();
-        $this->namespace = $namespace === null ? 'PSX\Generation' : $namespace;
-        $this->printer   = new PrettyPrinter\Standard();
-    }
-
-    public function generate(SchemaInterface $schema)
-    {
-        $this->root      = $this->factory->namespace($this->namespace);
-        $this->generated = [];
-        $this->refs      = [];
-
-        $this->generateObject($schema->getDefinition());
-
-        return $this->printer->prettyPrintFile([$this->root->getNode()]);
-    }
-
-    /**
      * @inheritDoc
      */
-    public function getType(PropertyInterface $property): string
+    public function __construct(?string $namespace = null)
     {
-        $type = $this->getRealType($property);
-        if ($type == PropertyType::TYPE_STRING) {
-            if ($property->getFormat() === PropertyType::FORMAT_DATE) {
-                return '\DateTime';
-            } elseif ($property->getFormat() === PropertyType::FORMAT_DATETIME) {
-                return '\DateTime';
-            } elseif ($property->getFormat() === PropertyType::FORMAT_TIME) {
-                return '\DateTime';
-            } elseif ($property->getFormat() === PropertyType::FORMAT_DURATION) {
-                return '\DateInterval';
-            } else {
-                return 'string';
-            }
-        } elseif ($type == PropertyType::TYPE_INTEGER) {
-            return 'int';
-        } elseif ($type == PropertyType::TYPE_NUMBER) {
-            return 'float';
-        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
-            return 'bool';
-        } elseif ($type == PropertyType::TYPE_ARRAY) {
-            return 'array';
-        } elseif ($type == PropertyType::TYPE_OBJECT) {
-            return $this->getIdentifierForProperty($property);
-        } elseif ($property->getOneOf()) {
-            // @TODO if we have union types we can do this https://github.com/php/php-rfcs/pull/1
-            return '';
-        } elseif ($property->getAllOf()) {
-            return '';
-        }
+        parent::__construct($namespace);
 
-        return '';
+        $this->factory = new BuilderFactory();
+        $this->printer = new PrettyPrinter\Standard();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDocType(PropertyInterface $property): string
+    protected function newType(): TypeInterface
     {
-        $type = $this->getRealType($property);
-
-        if ($type == PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
-                return 'array<' . $this->getDocType($items) . '>';
-            } else {
-                return 'array';
-            }
-        } elseif (is_array($type)) {
-            return implode('|', $type);
-        } elseif ($property->getOneOf()) {
-            $parts = [];
-            foreach ($property->getOneOf() as $property) {
-                $parts[] = $this->getDocType($property);
-            }
-            return implode('|', $parts);
-        } elseif ($property->getAllOf()) {
-            $parts = [];
-            foreach ($property->getAllOf() as $property) {
-                $parts[] = $this->getDocType($property);
-            }
-            return implode('&', $parts);
-        } else {
-            return $this->getType($property);
-        }
+        return new Type\Php();
     }
 
-    public function getNode()
+    protected function writeStruct(Code\Struct $struct): string
     {
-        return $this->root ? $this->root->getNode() : null;
-    }
+        $class = $this->factory->class($struct->getName());
+        $class->setDocComment($this->getDocCommentForClass($struct->getProperty()));
 
-    protected function generateObject(PropertyInterface $type)
-    {
-        if ($this->getRealType($type) !== PropertyType::TYPE_OBJECT) {
-            throw new RuntimeException('Property must be an object type');
-        }
+        foreach ($struct->getProperties() as $name => $property) {
+            /** @var Code\Property $property */
+            $class->addStmt($this->factory->property($name)
+                ->makeProtected()
+                ->setDocComment($this->getDocCommentForProperty($property->getProperty(), $property->getName())));
 
-        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
-        if (empty($className)) {
-            $className = $this->getIdentifierForProperty($type);
-        } elseif (strpos($className, '\\') !== false) {
-            // in case we an absolute class name remove the namespace
-            $parts = explode('\\', $className);
-            $className = array_pop($parts);
-        }
+            $param = $this->factory->param($name);
 
-        if (in_array($className, $this->generated)) {
-            return;
-        }
-
-        $this->generated[] = $className;
-        
-        $class = $this->factory->class($className);
-        $class->setDocComment($this->getDocCommentForClass($type));
-
-        // if the type has additional or pattern properties extend from
-        // ArrayObject
-        $properties           = $type->getProperties();
-        $patternProperties    = $type->getPatternProperties();
-        $additionalProperties = $type->getAdditionalProperties();
-
-        if (!empty($patternProperties) || !empty($additionalProperties)) {
-            $class->extend('\ArrayObject');
-        }
-
-        if (!empty($properties)) {
-            $mapping = $type->getAttribute(PropertyType::ATTR_MAPPING);
-
-            foreach ($properties as $key => $property) {
-                $name = isset($mapping[$key]) ? $mapping[$key] : $key;
-                $name = $this->normalizeParameterName($name);
-
-                $class->addStmt($this->factory->property($name)
-                    ->makeProtected()
-                    ->setDocComment($this->getDocCommentForProperty($property, $key)));
-
-                $param = $this->factory->param($name);
-                $type = $this->getType($property);
-                if (!empty($type)) {
-                    $param->setTypeHint(new Node\NullableType(($type)));
-                }
-
-                $setter = $this->factory->method('set' . ucfirst($name));
-                $setter->makePublic();
-                $setter->setDocComment('/**' . "\n" . ' * @param ' . $this->getDocType($property) . ' $' . $name . "\n" . ' */');
-                $setter->addParam($param);
-                $setter->addStmt(new Node\Expr\Assign(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
-                    new Node\Expr\Variable($name)
-                ));
-                $class->addStmt($setter);
-
-                $getter = $this->factory->method('get' . ucfirst($name));
-                if (!empty($type)) {
-                    $getter->setReturnType(new Node\NullableType($type));
-                }
-                $getter->makePublic();
-                $getter->setDocComment('/**' . "\n" . ' * @return ' . $this->getDocType($property) . "\n" . ' */');
-                $getter->addStmt(new Node\Stmt\Return_(
-                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
-                ));
-                $class->addStmt($getter);
-
-                $this->refs = array_merge($this->refs, $this->getSubSchemas($property));
+            $type = $property->getType();
+            if (!empty($type)) {
+                $param->setTypeHint(new Node\NullableType(($type)));
             }
+
+            $setter = $this->factory->method('set' . ucfirst($name));
+            $setter->makePublic();
+            $setter->setDocComment('/**' . "\n" . ' * @param ' . $property->getDocType() . ' $' . $name . "\n" . ' */');
+            $setter->addParam($param);
+            $setter->addStmt(new Node\Expr\Assign(
+                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
+                new Node\Expr\Variable($name)
+            ));
+            $class->addStmt($setter);
+
+            $getter = $this->factory->method('get' . ucfirst($name));
+            if (!empty($type)) {
+                $getter->setReturnType(new Node\NullableType($type));
+            }
+            $getter->makePublic();
+            $getter->setDocComment('/**' . "\n" . ' * @return ' . $property->getDocType() . "\n" . ' */');
+            $getter->addStmt(new Node\Stmt\Return_(
+                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
+            ));
+            $class->addStmt($getter);
         }
 
-        // generate other complex types
-        foreach ($this->refs as $index => $prop) {
-            $this->generateObject($prop);
-        }
-
-        $this->root->addStmt($class);
+        return $this->printer->prettyPrint([$class->getNode()]);
     }
 
-    protected function normalizeParameterName($name)
+    protected function writeMap(Code\Map $map): string
+    {
+        $class = $this->factory->class($map->getName());
+        $class->setDocComment($this->getDocCommentForClass($map->getProperty()));
+        $class->extend('\ArrayObject');
+
+        return $this->printer->prettyPrint([$class->getNode()]);
+    }
+
+    protected function normalizeName(string $name)
     {
         if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
             return $name;
@@ -512,7 +381,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
                 case 'minItems':
                     $result[] = $key . '=' . intval($value);
                     break;
-                
+
                 // array
                 case 'enum':
                     $values = array_map(function ($value) {
@@ -521,8 +390,8 @@ class Php implements GeneratorInterface, TypeAwareInterface
 
                     $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
                     break;
-                
-                
+
+
                 case 'allOf':
                 case 'anyOf':
                 case 'oneOf':
@@ -533,7 +402,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
 
                     $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
                     break;
-                
+
                 case 'not':
                     $result[] = $key . '=' . $this->getSubSchema($value);
                     break;
@@ -542,7 +411,7 @@ class Php implements GeneratorInterface, TypeAwareInterface
                 case 'items':
                     $result[] = $key . '=' . $this->getSubSchema($value);
                     break;
-                
+
                 case 'additionalItems':
                     if (is_bool($value)) {
                         $result[] = $key . '=' . ($value ? 'true' : 'false');

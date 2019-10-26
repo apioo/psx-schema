@@ -20,10 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\GeneratorInterface;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
-use PSX\Schema\SchemaInterface;
+use PSX\Schema\Generator\Type\TypeInterface;
 
 /**
  * Go
@@ -32,137 +29,50 @@ use PSX\Schema\SchemaInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Go implements GeneratorInterface, TypeAwareInterface
+class Go extends CodeGeneratorAbstract
 {
-    use GeneratorTrait;
-
-    private $generated;
-    private $objects;
-    
-    public function generate(SchemaInterface $schema)
+    /**
+     * @inheritDoc
+     */
+    protected function newType(): TypeInterface
     {
-        $this->generated = [];
-        $this->objects   = [];
-
-        return $this->generateObject($schema->getDefinition());
-    }
-
-    public function getType(PropertyInterface $property): string
-    {
-        $type  = $this->getRealType($property);
-        $oneOf = $property->getOneOf();
-        $allOf = $property->getAllOf();
-
-        if ($type == PropertyType::TYPE_STRING) {
-            if ($property->getFormat() == PropertyType::FORMAT_DATETIME) {
-                return 'time.Time';
-            } elseif ($property->getFormat() == PropertyType::FORMAT_DATE) {
-                return 'time.Time';
-            } elseif ($property->getFormat() == PropertyType::FORMAT_DURATION) {
-                return 'time.Duration';
-            } elseif ($property->getFormat() == PropertyType::FORMAT_TIME) {
-                return 'time.Time';
-            } else {
-                return 'string';
-            }
-        } elseif ($type == PropertyType::TYPE_INTEGER) {
-            if ($property->getFormat() == PropertyType::FORMAT_INT32) {
-                return 'int32';
-            } elseif ($property->getFormat() == PropertyType::FORMAT_INT64) {
-                return 'int64';
-            } else {
-                return 'int';
-            }
-        } elseif ($type == PropertyType::TYPE_NUMBER) {
-            return 'float64';
-        } elseif ($type == PropertyType::TYPE_BOOLEAN) {
-            return 'bool';
-        } elseif ($type == PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
-                return '[]' . $this->getType($items);
-            } else {
-                throw new \RuntimeException('Array items must be a schema');
-            }
-        } elseif ($type == PropertyType::TYPE_OBJECT) {
-            $additional = $property->getAdditionalProperties();
-            if ($additional === true) {
-                return 'map[string]interface{}';
-            } elseif ($additional instanceof PropertyInterface) {
-                /** @var PropertyInterface $property */
-                $type = $this->getType($additional);
-                if ($type !== null) {
-                    return 'map[string]' . $type;
-                } else {
-                    return 'map[string]interface{}';
-                }
-            }
-
-            $this->objects[] = $property;
-            return $this->getIdentifierForProperty($property);
-        } elseif (!empty($oneOf)) {
-            // @TODO handle one of
-        } elseif (!empty($allOf)) {
-            // @TODO handle all of
-        }
-
-        return 'interface{}';
+        return new Type\Go();
     }
 
     /**
      * @inheritDoc
      */
-    public function getDocType(PropertyInterface $property): string
+    protected function writeStruct(Code\Struct $struct): string
     {
-        return $this->getType($property);
+        $code = '// ' . $struct->getName();
+
+        $comment = $struct->getComment();
+        if (!empty($comment)) {
+            $code.= ' ' . $comment;
+        }
+
+        $code.= "\n";
+        $code.= 'type ' . $struct->getName() . ' struct {' . "\n";
+
+        foreach ($struct->getProperties() as $name => $property) {
+            /** @var Code\Property $property */
+            $code.= $this->indent . $name . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
+        }
+
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
-    protected function generateObject(PropertyInterface $type)
+    /**
+     * @inheritDoc
+     */
+    protected function writeMap(Code\Map $map): string
     {
-        $result = '';
-        $name   = $this->getIdentifierForProperty($type);
-
-        if (in_array($name, $this->generated)) {
-            return '';
-        }
-
-        $this->generated[] = $name;
-
-        $indent     = str_repeat(' ', 4);
-        $properties = $type->getProperties();
-
-        $result.= '// ' . $name;
-
-        $description = $type->getDescription();
-        if (!empty($description)) {
-            $result.= ' ' . $description;
-        }
-
-        $result.= "\n";
-        $result.= 'type ' . $name . ' struct {' . "\n";
-
-        if (!empty($properties)) {
-            foreach ($properties as $name => $property) {
-                /** @var PropertyInterface $property */
-                $type = $this->getType($property);
-                $key  = $this->normalizeName($name);
-
-                $result.= $indent . $key . ' ' . $type . ' `json:"' . $name . '"`' . "\n";
-
-                $this->objects = array_merge($this->objects, $this->getSubSchemas($property));
-            }
-        }
-
-        $result.= '}' . "\n";
-
-        foreach ($this->objects as $property) {
-            $result.= $this->generateObject($property);
-        }
-
-        return $result;
+        return '';
     }
 
-    private function normalizeName(string $name)
+    protected function normalizeName(string $name)
     {
         return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
     }

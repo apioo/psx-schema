@@ -20,31 +20,15 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\Generator\Type\TypeInterface;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * TypeAwareInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface TypeAwareInterface
+interface TypeAwareInterface extends TypeInterface
 {
-    /**
-     * Returns a type string
-     * 
-     * @param \PSX\Schema\PropertyInterface $property
-     * @return string
-     */
-    public function getType(PropertyInterface $property): string;
-
-    /**
-     * Returns a doc type string
-     *
-     * @param \PSX\Schema\PropertyInterface $property
-     * @return string
-     */
-    public function getDocType(PropertyInterface $property): string;
 }

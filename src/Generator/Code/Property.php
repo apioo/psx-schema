@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator\Text;
+namespace PSX\Schema\Generator\Code;
+
+use PSX\Schema\PropertyInterface;
 
 /**
  * Property
@@ -30,51 +32,51 @@ namespace PSX\Schema\Generator\Text;
 class Property
 {
     /**
-     * @var boolean
+     * @var string
      */
-    protected $required;
+    private $name;
 
     /**
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
      * @var string
      */
-    protected $description;
+    private $docType;
 
     /**
-     * @var array
+     * @var bool
      */
-    protected $constraints;
+    private $required;
 
     /**
-     * @param boolean $required
-     * @param string $type
-     * @param string $description
-     * @param array $constraints
+     * @var PropertyInterface
      */
-    public function __construct($required, $type, $description = null, array $constraints = null)
+    private $property;
+
+    public function __construct(string $name, string $type, string $docType, bool $required, PropertyInterface $property)
     {
-        $this->required    = $required;
-        $this->type        = $type;
-        $this->description = $description;
-        $this->constraints = $constraints;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return $this->required;
+        $this->name = $name;
+        $this->type = $type;
+        $this->docType = $docType;
+        $this->required = $required;
+        $this->property = $property;
     }
 
     /**
      * @return string
      */
-    public function getType()
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getType(): string
     {
         return $this->type;
     }
@@ -82,24 +84,32 @@ class Property
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDocType(): string
     {
-        return $this->description;
+        return $this->docType;
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    public function getConstraints()
+    public function isRequired(): bool
     {
-        return $this->constraints;
+        return $this->required;
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function hasConstraints()
+    public function getComment(): ?string
     {
-        return !empty($this->constraints);
+        return $this->property->getDescription();
+    }
+
+    /**
+     * @return PropertyInterface
+     */
+    public function getProperty(): PropertyInterface
+    {
+        return $this->property;
     }
 }

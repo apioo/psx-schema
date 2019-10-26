@@ -18,54 +18,70 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator;
+namespace PSX\Schema\Generator\Code;
 
-use PSX\Schema\Generator\Type\TypeInterface;
 use PSX\Schema\PropertyInterface;
 
 /**
- * Protobuf
+ * Struct
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends CodeGeneratorAbstract
+class Struct
 {
     /**
-     * @inheritDoc
+     * @var string
      */
-    protected function newType(): TypeInterface
+    private $name;
+
+    /**
+     * @var array
+     */
+    private $properties;
+    
+    /**
+     * @var PropertyInterface
+     */
+    private $property;
+
+    public function __construct(string $name, array $properties, PropertyInterface $property)
     {
-        return new Type\Protobuf();
+        $this->name = $name;
+        $this->properties = $properties;
+        $this->property = $property;
     }
 
     /**
-     * @inheritDoc
+     * @return string
      */
-    protected function writeStruct(Code\Struct $struct): string
+    public function getName(): string
     {
-        $code = '';
-        $code.= 'message ' . $struct->getName() . ' {' . "\n";
-
-        $index = 1;
-        foreach ($struct->getProperties() as $name => $property) {
-            /** @var PropertyInterface $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
-
-            $index++;
-        }
-
-        $code.= '}' . "\n";
-
-        return $code;
+        return $this->name;
     }
 
     /**
-     * @inheritDoc
+     * @return array
      */
-    protected function writeMap(Code\Map $map): string
+    public function getProperties(): array
     {
-        return '';
+        return $this->properties;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment(): ?string
+    {
+        return $this->property->getDescription();
+    }
+
+    /**
+     * @return PropertyInterface
+     */
+    public function getProperty(): PropertyInterface
+    {
+        return $this->property;
     }
 }

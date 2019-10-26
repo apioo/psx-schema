@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Type\TypeInterface;
+
 /**
  * Markdown
  *
@@ -30,45 +32,78 @@ namespace PSX\Schema\Generator;
 class Markdown extends MarkupAbstract
 {
     /**
-     * @param string $id
-     * @param string $title
-     * @param string $description
-     * @param \PSX\Schema\Generator\Text\Property[] $properties
-     * @return string
+     * @inheritDoc
      */
-    protected function writeObject($id, $title, $description, array $properties)
+    protected function newType(): TypeInterface
     {
-        $result = str_repeat('#', $this->heading) . ' ' . $title . "\n";
-        $result.= '' . "\n";
+        return new Type\Markdown();
+    }
 
-        if (!empty($description)) {
-            $result.= $description . "\n";
-            $result.= '' . "\n";
+    /**
+     * @inheritDoc
+     */
+    protected function writeStruct(Code\Struct $struct): string
+    {
+        $return = '<a name="' . $struct->getName() . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . $struct->getName() . "\n";
+        $return.= '' . "\n";
+
+        $comment = $struct->getComment();
+        if (!empty($comment)) {
+            $return.= $comment . "\n";
+            $return.= '' . "\n";
         }
 
-        $result.= 'Field | Type | Description | Constraints' . "\n";
-        $result.= '----- | ---- | ----------- | -----------' . "\n";
+        $return.= 'Field | Type | Description | Constraints' . "\n";
+        $return.= '----- | ---- | ----------- | -----------' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($struct->getProperties() as $name => $property) {
+            /** @var Code\Property $property */
+            $constraints = $this->getConstraints($property->getProperty());
+
             $row = [
                 $name,
                 $property->getType(),
-                $property->getDescription(),
-                $property->hasConstraints() ? $this->writeConstraints($property->getConstraints()) : '',
+                ($property->isRequired() ? '**REQUIRED**. ' : '') . $property->getComment(),
+                !empty($constraints) ? $this->writeConstraints($constraints) : '',
             ];
 
-            $result.= implode(' | ', $row);
-            $result.= "\n";
+            $return.= implode(' | ', $row);
+            $return.= "\n";
         }
 
-        $result.= '' . "\n";
-
-        return $result;
+        return $return;
     }
 
-    protected function writeLink($title, $href)
+    /**
+     * @inheritDoc
+     */
+    protected function writeMap(Code\Map $map): string
     {
-        return '[' . $title . '](' . $href . ')';
+        $return = '<a name="' . $map->getName() . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . $map->getName() . "\n";
+        $return.= '' . "\n";
+
+        $comment = $map->getComment();
+        if (!empty($comment)) {
+            $return.= $comment . "\n";
+            $return.= '' . "\n";
+        }
+
+        $return.= 'Field | Type | Description | Constraints' . "\n";
+        $return.= '----- | ---- | ----------- | -----------' . "\n";
+
+        $row = [
+            '*',
+            $map->getType(),
+            $map->getComment(),
+            '',
+        ];
+
+        $return.= implode(' | ', $row);
+        $return.= "\n";
+
+        return $return;
     }
 
     protected function writeConstraints(array $constraints)
@@ -80,7 +115,7 @@ class Markdown extends MarkupAbstract
             }
 
             if (is_scalar($constraint)) {
-                $result[] = ucfirst($name) . ': ' . $constraint;
+                $result[] = ucfirst($name) . ': `' . $constraint . '`';
             }
         }
 
