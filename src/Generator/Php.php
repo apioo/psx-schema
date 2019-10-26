@@ -105,7 +105,14 @@ class Php extends CodeGeneratorAbstract
             $class->addStmt($getter);
         }
 
-        return $this->printer->prettyPrint([$class->getNode()]);
+        if ($this->namespace !== null) {
+            $namespace = $this->factory->namespace($this->namespace);
+            $namespace->addStmt($class);
+
+            return $this->printer->prettyPrint([$namespace->getNode()]);
+        } else {
+            return $this->printer->prettyPrint([$class->getNode()]);
+        }
     }
 
     protected function writeMap(Code\Map $map): string
@@ -114,7 +121,14 @@ class Php extends CodeGeneratorAbstract
         $class->setDocComment($this->getDocCommentForClass($map->getProperty()));
         $class->extend('\ArrayObject');
 
-        return $this->printer->prettyPrint([$class->getNode()]);
+        if ($this->namespace !== null) {
+            $namespace = $this->factory->namespace($this->namespace);
+            $namespace->addStmt($class);
+
+            return $this->printer->prettyPrint([$namespace->getNode()]);
+        } else {
+            return $this->printer->prettyPrint([$class->getNode()]);
+        }
     }
 
     protected function normalizeName(string $name)
