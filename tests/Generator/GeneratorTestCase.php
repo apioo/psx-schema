@@ -31,4 +31,8 @@ use PSX\Schema\Tests\SchemaTestCase;
  */
 abstract class GeneratorTestCase extends SchemaTestCase
 {
+    protected function getComplexSchema()
+    {
+        return $this->schemaManager->getSchema(__DIR__ . '/resource/typeschema.json');
+    }
 }

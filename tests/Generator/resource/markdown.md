@@ -1,75 +1,76 @@
-# news
+<a name="News"></a>
+# News
 
 An general news entry
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-config | Object ([config](#psx_model_Config)) |  | 
-tags | Array (String) |  | MinItems: 1, MaxItems: 6
-receiver | Array (Object ([author](#psx_model_Author))) |  | MinItems: 1
-resources | Array (Mixed) |  | 
+config | [Config](#Config) |  | 
+tags | Array (String) |  | MinItems: `1`, MaxItems: `6`
+receiver | Array ([Author](#Author)) | **REQUIRED**.  | MinItems: `1`
+resources | Array ([Location](#Location) &#124; [Web](#Web)) |  | 
 profileImage | [Base64](http://tools.ietf.org/html/rfc4648) |  | 
 read | Boolean |  | 
-source | Mixed |  | 
-author | Object ([author](#psx_model_Author)) | An simple author element with some description | 
-meta | Object ([meta](#psx_model_Meta)) | Some meta data | 
+source | [Author](#Author) &#124; [Web](#Web) |  | 
+author | [Author](#Author) | An simple author element with some description | 
+meta | [Meta](#Meta) | Some meta data | 
 sendDate | [Date](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 readDate | [DateTime](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 expires | [Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |  | 
-price | Number |  | Minimum: 1, Maximum: 100
-rating | Integer |  | Minimum: 1, Maximum: 5
-content | String | Contains the main content of the news entry | MinLength: 3, MaxLength: 512
+price | Number | **REQUIRED**.  | Minimum: `1`, Maximum: `100`
+rating | Integer |  | Minimum: `1`, Maximum: `5`
+content | String | **REQUIRED**. Contains the main content of the news entry | MinLength: `3`, MaxLength: `512`
 question | String |  | 
-version | String |  | Const: http://foo.bar
+version | String |  | Const: `http://foo.bar`
 coffeeTime | [Time](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 profileUri | [URI](http://tools.ietf.org/html/rfc3986) |  | 
-g-recaptcha-response | String |  | 
+captcha | String |  | 
 
-# config
+<a name="Config"></a>
+# Config
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | Object ([config](#psx_model_Config)) |  | 
+* | String |  | 
 
-# author
+<a name="Author"></a>
+# Author
 
 An simple author element with some description
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-title | String |  | Pattern: [A-z]{3,16}
-email | String / Null | We will send no spam to this address | 
-categories | Array (String) |  | MaxItems: 8
-locations | Array (Object ([location](#psx_model_Location))) | Array of locations | 
-origin | Object ([location](#psx_model_Location)) | Location of the person | 
+title | String | **REQUIRED**.  | Pattern: `[A-z]{3,16}`
+email |  | We will send no spam to this address | 
+categories | Array (String) |  | MaxItems: `8`
+locations | Array ([Location](#Location)) | Array of locations | 
+origin | [Location](#Location) | Location of the person | 
 
-# web
+<a name="Location"></a>
+# Location
+
+Location of the person
+
+Field | Type | Description | Constraints
+----- | ---- | ----------- | -----------
+lat | Number | **REQUIRED**.  | 
+long | Number | **REQUIRED**.  | 
+
+<a name="Web"></a>
+# Web
 
 An application
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-name | String |  | 
-url | String |  | 
-* | String |  | 
+name | String | **REQUIRED**.  | 
+url | String | **REQUIRED**.  | 
 
-# meta
+<a name="Meta"></a>
+# Meta
 
 Some meta data
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 createDate | [DateTime](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
-^tags_\d$ | String |  | 
-^location_\d$ | Object ([location](#psx_model_Location)) | Location of the person | 
-
-# location
-
-Location of the person
-
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-lat | Number |  | 
-long | Number |  | 
-* | Mixed |  | 
-

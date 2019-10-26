@@ -44,4 +44,16 @@ class TypescriptTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateComplex()
+    {
+        $generator = new Typescript();
+
+        $actual = $generator->generate($this->getComplexSchema());
+
+        $expect = $expect = file_get_contents(__DIR__ . '/resource/typescript_complex.ts');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }

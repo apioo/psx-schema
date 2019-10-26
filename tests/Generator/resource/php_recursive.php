@@ -1,19 +1,3 @@
-<?php
-
-namespace PSX\Generation;
-
-/**
- * @AdditionalProperties(@Schema(anyOf={@Ref("PSX\Generation\Json_schema"), @Schema(type="array", title="stringArray", items=@Schema(type="string"), minItems=1, uniqueItems=true)}))
- */
-class ObjectId extends \ArrayObject
-{
-}
-/**
- * @AdditionalProperties(@Ref("PSX\Generation\Json_schema"))
- */
-class ObjectId extends \ArrayObject
-{
-}
 /**
  * @Title("json schema")
  * @Description("Core schema meta-schema")
@@ -94,12 +78,12 @@ class Json_schema
     protected $pattern;
     /**
      * @Key("additionalItems")
-     * @AnyOf(@Schema(type="boolean"), @Ref("PSX\Generation\Json_schema"))
+     * @AnyOf(@Schema(type="boolean"), @Ref("\Json_schema"))
      */
     protected $additionalItems;
     /**
      * @Key("items")
-     * @AnyOf(@Ref("PSX\Generation\Json_schema"), @Schema(type="array", title="schemaArray", items=@Ref("PSX\Generation\Json_schema"), minItems=1))
+     * @AnyOf(@Ref("\Json_schema"), @Schema(type="array", title="schemaArray", items=@Ref("\Json_schema"), minItems=1))
      */
     protected $items;
     /**
@@ -144,27 +128,27 @@ class Json_schema
     protected $required;
     /**
      * @Key("additionalProperties")
-     * @AnyOf(@Schema(type="boolean"), @Ref("PSX\Generation\Json_schema"))
+     * @AnyOf(@Schema(type="boolean"), @Ref("\Json_schema"))
      */
     protected $additionalProperties;
     /**
      * @Key("definitions")
-     * @Ref("PSX\Generation\ObjectId")
+     * @Ref("\ObjectId")
      */
     protected $definitions;
     /**
      * @Key("properties")
-     * @Ref("PSX\Generation\ObjectId")
+     * @Ref("\ObjectId")
      */
     protected $properties;
     /**
      * @Key("patternProperties")
-     * @Ref("PSX\Generation\ObjectId")
+     * @Ref("\ObjectId")
      */
     protected $patternProperties;
     /**
      * @Key("dependencies")
-     * @Ref("PSX\Generation\ObjectId")
+     * @Ref("\ObjectId")
      */
     protected $dependencies;
     /**
@@ -183,7 +167,7 @@ class Json_schema
      * @Key("allOf")
      * @Title("schemaArray")
      * @Type("array")
-     * @Items(@Ref("PSX\Generation\Json_schema"))
+     * @Items(@Ref("\Json_schema"))
      * @MinItems(1)
      */
     protected $allOf;
@@ -191,7 +175,7 @@ class Json_schema
      * @Key("anyOf")
      * @Title("schemaArray")
      * @Type("array")
-     * @Items(@Ref("PSX\Generation\Json_schema"))
+     * @Items(@Ref("\Json_schema"))
      * @MinItems(1)
      */
     protected $anyOf;
@@ -199,13 +183,13 @@ class Json_schema
      * @Key("oneOf")
      * @Title("schemaArray")
      * @Type("array")
-     * @Items(@Ref("PSX\Generation\Json_schema"))
+     * @Items(@Ref("\Json_schema"))
      * @MinItems(1)
      */
     protected $oneOf;
     /**
      * @Key("not")
-     * @Ref("PSX\Generation\Json_schema")
+     * @Ref("\Json_schema")
      */
     protected $not;
     /**
@@ -656,4 +640,16 @@ class Json_schema
     {
         return $this->not;
     }
+}
+/**
+ * @AdditionalProperties(@Ref("\Json_schema"))
+ */
+class ObjectId extends \ArrayObject
+{
+}
+/**
+ * @AdditionalProperties(@Schema(anyOf={@Ref("\Json_schema"), @Schema(type="array", title="stringArray", items=@Schema(type="string"), minItems=1, uniqueItems=true)}))
+ */
+class ObjectId extends \ArrayObject
+{
 }

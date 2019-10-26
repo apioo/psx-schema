@@ -1,3 +1,6 @@
+/**
+ * An general news entry
+ */
 interface News {
     config?: Config
     tags?: Array<string>
@@ -18,11 +21,16 @@ interface News {
     version?: string
     coffeeTime?: string
     profileUri?: string
-    "g-recaptcha-response"?: string
+    captcha?: string
 }
+
 interface Config {
     [index: string]: string
 }
+
+/**
+ * An simple author element with some description
+ */
 interface Author {
     title: string
     email?: any
@@ -30,16 +38,26 @@ interface Author {
     locations?: Array<Location>
     origin?: Location
 }
+
+/**
+ * Location of the person
+ */
 interface Location {
     lat: number
     long: number
-    [index: string]: any;
 }
+
+/**
+ * An application
+ */
 interface Web {
     name: string
     url: string
-    [index: string]: string
 }
+
+/**
+ * Some meta data
+ */
 interface Meta {
     createDate?: string
 }

@@ -1,4 +1,7 @@
-public class News 
+/// <summary>
+/// An general news entry
+/// </summary>
+public class News
 {
     public Config Config { get; set; }
     public string[] Tags { get; set; }
@@ -19,12 +22,17 @@ public class News
     public string Version { get; set; }
     public string CoffeeTime { get; set; }
     public string ProfileUri { get; set; }
-    public string GRecaptchaResponse { get; set; }
+    public string Captcha { get; set; }
 }
-public class Config : Dictionary<string, string> 
+
+public class Config : Dictionary<string, string>
 {
 }
-public class Author 
+
+/// <summary>
+/// An simple author element with some description
+/// </summary>
+public class Author
 {
     public string Title { get; set; }
     public object Email { get; set; }
@@ -32,17 +40,29 @@ public class Author
     public Location[] Locations { get; set; }
     public Location Origin { get; set; }
 }
-public class Location : Dictionary<string, object> 
+
+/// <summary>
+/// Location of the person
+/// </summary>
+public class Location
 {
     public float Lat { get; set; }
     public float Long { get; set; }
 }
-public class Web : Dictionary<string, string> 
+
+/// <summary>
+/// An application
+/// </summary>
+public class Web
 {
     public string Name { get; set; }
     public string Url { get; set; }
 }
-public class Meta 
+
+/// <summary>
+/// Some meta data
+/// </summary>
+public class Meta
 {
     public string CreateDate { get; set; }
 }

@@ -68,7 +68,7 @@ class PhpTest extends GeneratorTestCase
         $result    = $generator->generate($source);
         $file      = __DIR__ . '/generated_schema.php';
 
-        file_put_contents($file, $result);
+        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
 
         include_once $file;
 
@@ -76,16 +76,5 @@ class PhpTest extends GeneratorTestCase
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
 
         $this->assertSchema($schema, $source);
-    }
-
-    public function testGetNode()
-    {
-        $generator = new Php(__NAMESPACE__);
-
-        $this->assertNull($generator->getNode());
-
-        $generator->generate($this->getSchema());
-
-        $this->assertInstanceOf(Namespace_::class, $generator->getNode());
     }
 }

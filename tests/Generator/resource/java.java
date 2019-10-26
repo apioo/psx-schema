@@ -1,3 +1,6 @@
+/**
+ * An general news entry
+ */
 public static class News {
     private Config config;
     private String[] tags;
@@ -18,7 +21,7 @@ public static class News {
     private String version;
     private String coffeeTime;
     private String profileUri;
-    private String gRecaptchaResponse;
+    private String captcha;
     public void setConfig(Config config) {
         this.config = config;
     }
@@ -133,15 +136,20 @@ public static class News {
     public String getProfileUri() {
         return this.profileUri;
     }
-    public void setGRecaptchaResponse(String gRecaptchaResponse) {
-        this.gRecaptchaResponse = gRecaptchaResponse;
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
-    public String getGRecaptchaResponse() {
-        return this.gRecaptchaResponse;
+    public String getCaptcha() {
+        return this.captcha;
     }
 }
+
 public static class Config extends HashMap<String, String> {
 }
+
+/**
+ * An simple author element with some description
+ */
 public static class Author {
     private String title;
     private Object email;
@@ -179,7 +187,11 @@ public static class Author {
         return this.origin;
     }
 }
-public static class Location extends HashMap<String, Object> {
+
+/**
+ * Location of the person
+ */
+public static class Location {
     private float lat;
     private float long;
     public void setLat(float lat) {
@@ -195,7 +207,11 @@ public static class Location extends HashMap<String, Object> {
         return this.long;
     }
 }
-public static class Web extends HashMap<String, String> {
+
+/**
+ * An application
+ */
+public static class Web {
     private String name;
     private String url;
     public void setName(String name) {
@@ -211,6 +227,10 @@ public static class Web extends HashMap<String, String> {
         return this.url;
     }
 }
+
+/**
+ * Some meta data
+ */
 public static class Meta {
     private String createDate;
     public void setCreateDate(String createDate) {

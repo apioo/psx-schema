@@ -1,250 +1,3 @@
-<?php
-
-namespace PSX\Generation;
-
-/**
- * @Title("meta")
- * @Description("Some meta data")
- * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
- * @PatternProperties(pattern="^location_\d$", property=@Ref("PSX\Generation\Location"))
- * @AdditionalProperties(false)
- */
-class Meta extends \ArrayObject
-{
-    /**
-     * @Key("createDate")
-     * @Type("string")
-     * @Format("date-time")
-     */
-    protected $createDate;
-    /**
-     * @param \DateTime $createDate
-     */
-    public function setCreateDate(?\DateTime $createDate)
-    {
-        $this->createDate = $createDate;
-    }
-    /**
-     * @return \DateTime
-     */
-    public function getCreateDate() : ?\DateTime
-    {
-        return $this->createDate;
-    }
-}
-/**
- * @Title("web")
- * @Description("An application")
- * @AdditionalProperties(@Schema(type="string"))
- * @Required({"name", "url"})
- * @MinProperties(2)
- * @MaxProperties(8)
- */
-class Web extends \ArrayObject
-{
-    /**
-     * @Key("name")
-     * @Type("string")
-     */
-    protected $name;
-    /**
-     * @Key("url")
-     * @Type("string")
-     */
-    protected $url;
-    /**
-     * @param string $name
-     */
-    public function setName(?string $name)
-    {
-        $this->name = $name;
-    }
-    /**
-     * @return string
-     */
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-    /**
-     * @param string $url
-     */
-    public function setUrl(?string $url)
-    {
-        $this->url = $url;
-    }
-    /**
-     * @return string
-     */
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-}
-/**
- * @Title("location")
- * @Description("Location of the person")
- * @AdditionalProperties(true)
- * @Required({"lat", "long"})
- */
-class Location extends \ArrayObject
-{
-    /**
-     * @Key("lat")
-     * @Type("number")
-     */
-    protected $lat;
-    /**
-     * @Key("long")
-     * @Type("number")
-     */
-    protected $long;
-    /**
-     * @param float $lat
-     */
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-    /**
-     * @return float
-     */
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-    /**
-     * @param float $long
-     */
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-    /**
-     * @return float
-     */
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-/**
- * @Title("author")
- * @Description("An simple author element with some description")
- * @AdditionalProperties(false)
- * @Required({"title"})
- */
-class Author
-{
-    /**
-     * @Key("title")
-     * @Type("string")
-     * @Pattern("[A-z]{3,16}")
-     */
-    protected $title;
-    /**
-     * @Key("email")
-     * @Description("We will send no spam to this addresss")
-     * @Type("string")
-     */
-    protected $email;
-    /**
-     * @Key("categories")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(8)
-     */
-    protected $categories;
-    /**
-     * @Key("locations")
-     * @Description("Array of locations")
-     * @Type("array")
-     * @Items(@Ref("PSX\Generation\Location"))
-     */
-    protected $locations;
-    /**
-     * @Key("origin")
-     * @Ref("PSX\Generation\Location")
-     */
-    protected $origin;
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-    /**
-     * @return string
-     */
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    /**
-     * @param string $email
-     */
-    public function setEmail(?string $email)
-    {
-        $this->email = $email;
-    }
-    /**
-     * @return string
-     */
-    public function getEmail() : ?string
-    {
-        return $this->email;
-    }
-    /**
-     * @param array<string> $categories
-     */
-    public function setCategories(?array $categories)
-    {
-        $this->categories = $categories;
-    }
-    /**
-     * @return array<string>
-     */
-    public function getCategories() : ?array
-    {
-        return $this->categories;
-    }
-    /**
-     * @param array<Location> $locations
-     */
-    public function setLocations(?array $locations)
-    {
-        $this->locations = $locations;
-    }
-    /**
-     * @return array<Location>
-     */
-    public function getLocations() : ?array
-    {
-        return $this->locations;
-    }
-    /**
-     * @param Location $origin
-     */
-    public function setOrigin(?Location $origin)
-    {
-        $this->origin = $origin;
-    }
-    /**
-     * @return Location
-     */
-    public function getOrigin() : ?Location
-    {
-        return $this->origin;
-    }
-}
-/**
- * @Title("config")
- * @AdditionalProperties(@Schema(type="string"))
- */
-class Config extends \ArrayObject
-{
-}
 /**
  * @Title("news")
  * @Description("An general news entry")
@@ -255,7 +8,7 @@ class News
 {
     /**
      * @Key("config")
-     * @Ref("PSX\Generation\Config")
+     * @Ref("\Config")
      */
     protected $config;
     /**
@@ -269,14 +22,14 @@ class News
     /**
      * @Key("receiver")
      * @Type("array")
-     * @Items(@Ref("PSX\Generation\Author"))
+     * @Items(@Ref("\Author"))
      * @MinItems(1)
      */
     protected $receiver;
     /**
      * @Key("resources")
      * @Type("array")
-     * @Items(@Schema(oneOf={@Ref("PSX\Generation\Location"), @Ref("PSX\Generation\Web")}))
+     * @Items(@Schema(oneOf={@Ref("\Location"), @Ref("\Web")}))
      */
     protected $resources;
     /**
@@ -292,17 +45,17 @@ class News
     protected $read;
     /**
      * @Key("source")
-     * @OneOf(@Ref("PSX\Generation\Author"), @Ref("PSX\Generation\Web"))
+     * @OneOf(@Ref("\Author"), @Ref("\Web"))
      */
     protected $source;
     /**
      * @Key("author")
-     * @Ref("PSX\Generation\Author")
+     * @Ref("\Author")
      */
     protected $author;
     /**
      * @Key("meta")
-     * @Ref("PSX\Generation\Meta")
+     * @Ref("\Meta")
      */
     protected $meta;
     /**
@@ -633,5 +386,248 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
+    }
+}
+/**
+ * @Title("config")
+ * @AdditionalProperties(@Schema(type="string"))
+ */
+class Config extends \ArrayObject
+{
+}
+/**
+ * @Title("author")
+ * @Description("An simple author element with some description")
+ * @AdditionalProperties(false)
+ * @Required({"title"})
+ */
+class Author
+{
+    /**
+     * @Key("title")
+     * @Type("string")
+     * @Pattern("[A-z]{3,16}")
+     */
+    protected $title;
+    /**
+     * @Key("email")
+     * @Description("We will send no spam to this addresss")
+     * @Type("string")
+     */
+    protected $email;
+    /**
+     * @Key("categories")
+     * @Type("array")
+     * @Items(@Schema(type="string"))
+     * @MaxItems(8)
+     */
+    protected $categories;
+    /**
+     * @Key("locations")
+     * @Description("Array of locations")
+     * @Type("array")
+     * @Items(@Ref("\Location"))
+     */
+    protected $locations;
+    /**
+     * @Key("origin")
+     * @Ref("\Location")
+     */
+    protected $origin;
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
+    {
+        $this->title = $title;
+    }
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
+    {
+        return $this->title;
+    }
+    /**
+     * @param string $email
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+    }
+    /**
+     * @return string
+     */
+    public function getEmail() : ?string
+    {
+        return $this->email;
+    }
+    /**
+     * @param array<string> $categories
+     */
+    public function setCategories(?array $categories)
+    {
+        $this->categories = $categories;
+    }
+    /**
+     * @return array<string>
+     */
+    public function getCategories() : ?array
+    {
+        return $this->categories;
+    }
+    /**
+     * @param array<Location> $locations
+     */
+    public function setLocations(?array $locations)
+    {
+        $this->locations = $locations;
+    }
+    /**
+     * @return array<Location>
+     */
+    public function getLocations() : ?array
+    {
+        return $this->locations;
+    }
+    /**
+     * @param Location $origin
+     */
+    public function setOrigin(?Location $origin)
+    {
+        $this->origin = $origin;
+    }
+    /**
+     * @return Location
+     */
+    public function getOrigin() : ?Location
+    {
+        return $this->origin;
+    }
+}
+/**
+ * @Title("location")
+ * @Description("Location of the person")
+ * @AdditionalProperties(true)
+ * @Required({"lat", "long"})
+ */
+class Location
+{
+    /**
+     * @Key("lat")
+     * @Type("number")
+     */
+    protected $lat;
+    /**
+     * @Key("long")
+     * @Type("number")
+     */
+    protected $long;
+    /**
+     * @param float $lat
+     */
+    public function setLat(?float $lat)
+    {
+        $this->lat = $lat;
+    }
+    /**
+     * @return float
+     */
+    public function getLat() : ?float
+    {
+        return $this->lat;
+    }
+    /**
+     * @param float $long
+     */
+    public function setLong(?float $long)
+    {
+        $this->long = $long;
+    }
+    /**
+     * @return float
+     */
+    public function getLong() : ?float
+    {
+        return $this->long;
+    }
+}
+/**
+ * @Title("web")
+ * @Description("An application")
+ * @AdditionalProperties(@Schema(type="string"))
+ * @Required({"name", "url"})
+ * @MinProperties(2)
+ * @MaxProperties(8)
+ */
+class Web
+{
+    /**
+     * @Key("name")
+     * @Type("string")
+     */
+    protected $name;
+    /**
+     * @Key("url")
+     * @Type("string")
+     */
+    protected $url;
+    /**
+     * @param string $name
+     */
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * @return string
+     */
+    public function getName() : ?string
+    {
+        return $this->name;
+    }
+    /**
+     * @param string $url
+     */
+    public function setUrl(?string $url)
+    {
+        $this->url = $url;
+    }
+    /**
+     * @return string
+     */
+    public function getUrl() : ?string
+    {
+        return $this->url;
+    }
+}
+/**
+ * @Title("meta")
+ * @Description("Some meta data")
+ * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
+ * @PatternProperties(pattern="^location_\d$", property=@Ref("\Location"))
+ * @AdditionalProperties(false)
+ */
+class Meta
+{
+    /**
+     * @Key("createDate")
+     * @Type("string")
+     * @Format("date-time")
+     */
+    protected $createDate;
+    /**
+     * @param \DateTime $createDate
+     */
+    public function setCreateDate(?\DateTime $createDate)
+    {
+        $this->createDate = $createDate;
+    }
+    /**
+     * @return \DateTime
+     */
+    public function getCreateDate() : ?\DateTime
+    {
+        return $this->createDate;
     }
 }

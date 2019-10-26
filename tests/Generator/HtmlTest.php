@@ -41,6 +41,16 @@ class HtmlTest extends GeneratorTestCase
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }
 
+    public function testGenerateComplex()
+    {
+        $generator = new Html();
+
+        $actual = $generator->generate($this->getComplexSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/html_complex.htm');
+
+        $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
+    }
+
     public function testGenerateHeading()
     {
         $generator = new Html(4);
