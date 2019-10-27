@@ -39,9 +39,21 @@ class PhpTest extends GeneratorTestCase
     {
         $generator = new Php();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/php.php');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateComplex()
+    {
+        $generator = new Php();
+
+        $actual = (string) $generator->generate($this->getComplexSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/php_complex.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -52,7 +64,7 @@ class PhpTest extends GeneratorTestCase
         $schema    = Parser\JsonSchema::fromFile(__DIR__ . '/../Parser/JsonSchema/schema.json');
         $generator = new Php();
 
-        $actual = $generator->generate($schema);
+        $actual = (string) $generator->generate($schema);
         $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
 
         $expect = $expect = file_get_contents(__DIR__ . '/resource/php_recursive.php');

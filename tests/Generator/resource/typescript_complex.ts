@@ -1,5 +1,5 @@
 /**
- * TypeSchema meta schema to validate a TypeSchema
+ * TypeSchema meta schema which describes a TypeSchema
  */
 interface TypeSchema {
     title: string
@@ -14,7 +14,7 @@ interface TypeSchema {
  * Schema definitions which can be reused
  */
 interface Definitions {
-    [index: string]: (((CommonProperties & ContainerSpecificProperties) & ObjectStructSpecificProperties) | ((CommonProperties & ContainerSpecificProperties) & ObjectMapSpecificProperties)) | (CommonProperties & ArrayProperties) | ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | (AllOfProperties | OneOfProperties)
+    [index: string]: ((CommonProperties & ContainerProperties & StructProperties) | (CommonProperties & ContainerProperties & MapProperties)) | (CommonProperties & ArrayProperties) | (CommonProperties & ScalarProperties & BooleanProperties) | (CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (AllOfProperties | OneOfProperties)
 }
 
 /**
@@ -29,40 +29,58 @@ interface CommonProperties {
     readonly?: boolean
 }
 
-interface ContainerSpecificProperties {
+/**
+ * Properties specific for a container
+ */
+interface ContainerProperties {
     type: string
 }
 
-interface ObjectStructSpecificProperties {
+/**
+ * Struct specific properties
+ */
+interface StructProperties {
     properties: Properties
     required?: Array<string>
 }
 
-interface ObjectMapSpecificProperties {
-    additionalProperties: ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | (CommonProperties & ArrayProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
+/**
+ * Map specific properties
+ */
+interface MapProperties {
+    additionalProperties: (CommonProperties & ScalarProperties & BooleanProperties) | (CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (CommonProperties & ArrayProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
     maxProperties?: number
     minProperties?: number
 }
 
+/**
+ * Array properties
+ */
 interface ArrayProperties {
     type: string
-    items: ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
+    items: (CommonProperties & ScalarProperties & BooleanProperties) | (CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
     maxItems?: number
     minItems?: number
     uniqueItems?: boolean
 }
 
-interface ScalarSpecificProperties {
+interface ScalarProperties {
     format?: string
-    enum?: Array<string | number>
+    enum?: Array<string> | Array<number>
     default?: string | number | boolean
 }
 
-interface BooleanTypeProperties {
+/**
+ * Boolean properties
+ */
+interface BooleanProperties {
     type: string
 }
 
-interface NumberTypeProperties {
+/**
+ * Number properties
+ */
+interface NumberProperties {
     type: string
     multipleOf?: number
     maximum?: number
@@ -71,6 +89,9 @@ interface NumberTypeProperties {
     exclusiveMinimum?: boolean
 }
 
+/**
+ * String properties
+ */
 interface StringProperties {
     type: string
     maxLength?: number
@@ -83,7 +104,7 @@ interface StringProperties {
  */
 interface AllOfProperties {
     description?: string
-    allOf: Array<((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ReferenceType>
+    allOf: Array<(CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (CommonProperties & ScalarProperties & BooleanProperties) | ReferenceType>
 }
 
 /**
@@ -92,14 +113,14 @@ interface AllOfProperties {
 interface OneOfProperties {
     description?: string
     discriminator?: Discriminator
-    oneOf: Array<((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ReferenceType>
+    oneOf: Array<(CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (CommonProperties & ScalarProperties & BooleanProperties) | ReferenceType>
 }
 
 /**
  * Properties of a schema
  */
 interface Properties {
-    [index: string]: ((CommonProperties & ScalarSpecificProperties) & BooleanTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & NumberTypeProperties) | ((CommonProperties & ScalarSpecificProperties) & StringProperties) | (CommonProperties & ArrayProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
+    [index: string]: (CommonProperties & ScalarProperties & BooleanProperties) | (CommonProperties & ScalarProperties & NumberProperties) | (CommonProperties & ScalarProperties & StringProperties) | (CommonProperties & ArrayProperties) | (AllOfProperties | OneOfProperties) | ReferenceType
 }
 
 /**
