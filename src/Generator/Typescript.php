@@ -47,6 +47,7 @@ class Typescript extends CodeGeneratorAbstract
         }
 
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
@@ -57,6 +58,7 @@ class Typescript extends CodeGeneratorAbstract
         $code.= 'interface ' . $map->getName(). ' {' . "\n";
         $code.= $this->indent . '[index: string]: ' . $map->getType() . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
