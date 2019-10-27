@@ -8,7 +8,7 @@ class News
 {
     /**
      * @Key("config")
-     * @Ref("PSX\Schema\Tests\Generator\Config")
+     * @Ref("\Config")
      */
     protected $config;
     /**
@@ -22,14 +22,14 @@ class News
     /**
      * @Key("receiver")
      * @Type("array")
-     * @Items(@Ref("PSX\Schema\Tests\Generator\Author"))
+     * @Items(@Ref("\Author"))
      * @MinItems(1)
      */
     protected $receiver;
     /**
      * @Key("resources")
      * @Type("array")
-     * @Items(@Schema(title="resource", oneOf={@Ref("PSX\Schema\Tests\Generator\Location"), @Ref("PSX\Schema\Tests\Generator\Web")}))
+     * @Items(@Schema(title="resource", oneOf={@Ref("\Location"), @Ref("\Web")}))
      */
     protected $resources;
     /**
@@ -46,17 +46,17 @@ class News
     /**
      * @Key("source")
      * @Title("source")
-     * @OneOf(@Ref("PSX\Schema\Tests\Generator\Author"), @Ref("PSX\Schema\Tests\Generator\Web"))
+     * @OneOf(@Ref("\Author"), @Ref("\Web"))
      */
     protected $source;
     /**
      * @Key("author")
-     * @Ref("PSX\Schema\Tests\Generator\Author")
+     * @Ref("\Author")
      */
     protected $author;
     /**
      * @Key("meta")
-     * @Ref("PSX\Schema\Tests\Generator\Meta")
+     * @Ref("\Meta")
      */
     protected $meta;
     /**
@@ -446,12 +446,12 @@ class Author
      * @Key("locations")
      * @Description("Array of locations")
      * @Type("array")
-     * @Items(@Ref("PSX\Schema\Tests\Generator\Location"))
+     * @Items(@Ref("\Location"))
      */
     protected $locations;
     /**
      * @Key("origin")
-     * @Ref("PSX\Schema\Tests\Generator\Location")
+     * @Ref("\Location")
      */
     protected $origin;
     /**
@@ -625,7 +625,7 @@ class Web
  * @Title("meta")
  * @Description("Some meta data")
  * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
- * @PatternProperties(pattern="^location_\d$", property=@Ref("PSX\Schema\Tests\Generator\Location"))
+ * @PatternProperties(pattern="^location_\d$", property=@Ref("\Location"))
  * @AdditionalProperties(false)
  */
 class Meta

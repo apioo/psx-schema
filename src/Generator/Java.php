@@ -44,15 +44,7 @@ class Java extends CodeGeneratorAbstract
      */
     protected function writeStruct(Code\Struct $struct): string
     {
-        $code = '';
-
-        $comment = $struct->getComment();
-        if (!empty($comment)) {
-            $code.= '/**' . "\n";
-            $code.= ' * ' . $comment . "\n";
-            $code.= ' */' . "\n";
-        }
-
+        $code = $this->writeHeader($struct->getComment());
         $code.= 'public static class ' . $struct->getName() . ' {' . "\n";
 
         foreach ($struct->getProperties() as $name => $property) {
@@ -81,17 +73,26 @@ class Java extends CodeGeneratorAbstract
      */
     protected function writeMap(Code\Map $map): string
     {
+        $code = $this->writeHeader($map->getComment());
+        $code.= 'public static class ' . $map->getName() . ' extends HashMap<String, ' . $map->getType() . '> {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
+    }
+
+    private function writeHeader(?string $comment)
+    {
         $code = '';
 
-        $comment = $map->getComment();
+        if (!empty($this->namespace)) {
+            $code.= 'package ' . $this->namespace . ';' . "\n";
+        }
+
         if (!empty($comment)) {
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
             $code.= ' */' . "\n";
         }
-
-        $code.= 'public static class ' . $map->getName() . ' extends HashMap<String, ' . $map->getType() . '> {' . "\n";
-        $code.= '}' . "\n";
 
         return $code;
     }

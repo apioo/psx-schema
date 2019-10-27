@@ -37,7 +37,7 @@ class PhpTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new Php(__NAMESPACE__);
+        $generator = new Php();
 
         $actual = $generator->generate($this->getSchema());
 

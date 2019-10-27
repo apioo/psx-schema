@@ -44,15 +44,7 @@ class CSharp extends CodeGeneratorAbstract
      */
     protected function writeStruct(Code\Struct $struct): string
     {
-        $code = '';
-
-        $comment = $struct->getComment();
-        if (!empty($comment)) {
-            $code.= '/// <summary>' . "\n";
-            $code.= '/// ' . $comment . "\n";
-            $code.= '/// </summary>' . "\n";
-        }
-
+        $code = $this->writeHeader($struct->getComment());
         $code.= 'public class ' . $struct->getName() . "\n";
         $code.= '{' . "\n";
 
@@ -62,6 +54,7 @@ class CSharp extends CodeGeneratorAbstract
         }
 
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
@@ -71,10 +64,39 @@ class CSharp extends CodeGeneratorAbstract
      */
     protected function writeMap(Code\Map $map): string
     {
-        $code = 'public class ' . $map->getName() . ' : Dictionary<string, ' . $map->getType() . '>' . "\n";
+        $code = $this->writeHeader($map->getComment());
+        $code.= 'public class ' . $map->getName() . ' : Dictionary<string, ' . $map->getType() . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
+    }
+
+    private function writeHeader(?string $comment)
+    {
+        $code = '';
+
+        if (!empty($this->namespace)) {
+            $code.= 'namespace ' . $this->namespace . "\n";
+            $code.= '{' . "\n";
+        }
+
+        if (!empty($comment)) {
+            $code.= '/// <summary>' . "\n";
+            $code.= '/// ' . $comment . "\n";
+            $code.= '/// </summary>' . "\n";
+        }
+
+        return $code;
+    }
+
+    private function writerFooter()
+    {
+        if (!empty($this->namespace)) {
+            return '}' . "\n";
+        } else {
+            return '';
+        }
     }
 }
