@@ -20,6 +20,18 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
+
 /**
  * Factory class to access different property types
  *
@@ -30,133 +42,144 @@ namespace PSX\Schema;
 final class Property
 {
     /**
-     * @return \PSX\Schema\PropertyInterface
-     */
-    public static function get()
-    {
-        return new PropertyType();
-    }
-
-    /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\ArrayType
      */
     public static function getArray()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_ARRAY);
+        return new ArrayType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getBinary()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_BINARY);
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\BooleanType
      */
     public static function getBoolean()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_BOOLEAN);
+        return new BooleanType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getDateTime()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_DATETIME);
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getDate()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_DATE);
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getDuration()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_DURATION);
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\IntegerType
      */
     public static function getInteger()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_INTEGER);
+        return new IntegerType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
-     */
-    public static function getNull()
-    {
-        return self::get()
-            ->setType(PropertyType::TYPE_NULL);
-    }
-
-    /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\NumberType
      */
     public static function getNumber()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_NUMBER);
+        return new NumberType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StructType
      */
-    public static function getObject()
+    public static function getStruct()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_OBJECT);
+        return new StructType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\MapType
+     */
+    public static function getMap()
+    {
+        return new MapType();
+    }
+
+    /**
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getString()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING);
+        return new StringType();
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getTime()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_TIME);
     }
 
     /**
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\Type\StringType
      */
     public static function getUri()
     {
-        return self::get()
-            ->setType(PropertyType::TYPE_STRING)
+        return self::getString()
             ->setFormat(PropertyType::FORMAT_URI);
+    }
+
+    /**
+     * @return \PSX\Schema\Type\IntersectionType
+     */
+    public static function getIntersection()
+    {
+        return new IntersectionType();
+    }
+
+    /**
+     * @return \PSX\Schema\Type\UnionType
+     */
+    public static function getUnion()
+    {
+        return new UnionType();
+    }
+
+    /**
+     * @return \PSX\Schema\Type\ReferenceType
+     */
+    public static function getReference()
+    {
+        return new ReferenceType();
+    }
+
+    /**
+     * @return \PSX\Schema\Type\GenericType
+     */
+    public static function getGeneric()
+    {
+        return new GenericType();
     }
 }

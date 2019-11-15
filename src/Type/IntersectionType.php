@@ -18,19 +18,49 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
+
+use PSX\Schema\PropertyType;
 
 /**
- * PropertyInterface
+ * IntersectionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface PropertyInterface
+class IntersectionType extends PropertyType
 {
+    /**
+     * @var array
+     */
+    protected $allOf;
+
     /**
      * @return array
      */
-    public function toArray(): array;
+    public function getAllOf(): ?array
+    {
+        return $this->allOf;
+    }
+
+    /**
+     * @param array $allOf
+     * @return self
+     */
+    public function setAllOf(array $allOf): self
+    {
+        $this->allOf = $allOf;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'allOf' => $this->allOf,
+        ], function($value){
+            return $value !== null;
+        }));
+    }
 }

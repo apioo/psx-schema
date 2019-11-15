@@ -21,39 +21,28 @@
 namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Dependencies
+ * Readonly
  *
  * @Annotation
- * @Target("CLASS")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Dependencies
+class Readonly
 {
     /**
      * @var string
      */
-    protected $property;
-
-    /**
-     * @var array
-     */
-    protected $value;
+    protected $readonly;
 
     public function __construct(array $values)
     {
-        $this->property = isset($values['property']) ? $values['property'] : null;
-        $this->value    = isset($values['value'])    ? $values['value']    : null;
+        $this->readonly = (bool) current($values);
     }
 
-    public function getProperty()
+    public function isReadonly()
     {
-        return $this->property;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
+        return $this->readonly;
     }
 }

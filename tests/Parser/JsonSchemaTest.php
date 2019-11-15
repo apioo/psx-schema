@@ -46,13 +46,9 @@ class JsonSchemaTest extends ParserTestCase
         $this->assertSchema($this->getSchema(), $schema);
     }
 
-    /**
-     * The offical json schema is recursive so we check whether we can parse it
-     * without a problem
-     */
-    public function testParseRecursion()
+    public function testParseTypeSchema()
     {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/schema.json');
+        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/typeschema.json');
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf(PropertyInterface::class, $property);
@@ -156,13 +152,13 @@ class JsonSchemaTest extends ParserTestCase
         JsonSchema::fromFile(__DIR__ . '/JsonSchema/invalid_document_ref_schema.json');
     }
 
+    /**
+     * @expectedException \PSX\Schema\Parser\JsonSchema\RecursionException
+     * @expectedExceptionMessage Endless recursion detected
+     */
     public function testRecursiveSchema()
     {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/recursive_schema.json');
-        $property = $schema->getDefinition();
-
-        $this->assertInstanceOf(PropertyInterface::class, $property);
-        $this->assertInstanceOf(PropertyInterface::class, $property->getProperty('entry')->getItems());
+        JsonSchema::fromFile(__DIR__ . '/JsonSchema/recursive_schema.json');
     }
 
     public function testParseSchemaMapping()
@@ -175,5 +171,16 @@ class JsonSchemaTest extends ParserTestCase
 
         $this->assertEquals('PSX\Schema\Tests\Parser\JsonSchema\Foo', $property->getAttribute(PropertyType::ATTR_CLASS));
         $this->assertEquals(['$foo' => 'bar'], $property->getAttribute(PropertyType::ATTR_MAPPING));
+    }
+    
+    public function testParseGenerice()
+    {
+        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/generics.json');
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
+
+        $property = $schema->getDefinition();
+
+        $this->assertEquals('News', $property->getProperty('map')->getProperty('entries')->getTitle());
     }
 }

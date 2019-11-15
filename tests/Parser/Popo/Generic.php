@@ -7,6 +7,8 @@ use PSX\Schema\Parser\Popo\Annotation as JS;
 /**
  * @JS\Title("meta")
  * @JS\Description("Some meta data")
+ * @JS\PatternProperties(pattern="^tags_\d$", property=@JS\Schema(type="string"))
+ * @JS\PatternProperties(pattern="^location_\d$", property=@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"))
  * @JS\AdditionalProperties(false)
  */
 class Meta extends \ArrayObject
@@ -195,7 +197,8 @@ class News
 {
     /**
      * @JS\Key("config")
-     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Config")
+     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Map")
+     * @JS\Template("T", @JS\Ref("PSX\Schema\Tests\Parser\Popo\News"))
      */
     public $config;
     /**

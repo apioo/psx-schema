@@ -239,13 +239,4 @@ class TypeVisitor implements VisitorInterface
 
         return $result;
     }
-
-    public function visitNull($data, PropertyInterface $property, $path)
-    {
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $data);
-        }
-
-        return null;
-    }
 }

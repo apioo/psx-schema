@@ -30,6 +30,26 @@ namespace PSX\Schema;
 interface VisitorInterface
 {
     /**
+     * Visits a struct value
+     *
+     * @param \stdClass $data
+     * @param \PSX\Schema\PropertyInterface $property
+     * @param string $path
+     * @return mixed
+     */
+    public function visitStruct(\stdClass $data, PropertyInterface $property, $path);
+
+    /**
+     * Visits a map value
+     *
+     * @param \stdClass $data
+     * @param \PSX\Schema\PropertyInterface $property
+     * @param string $path
+     * @return mixed
+     */
+    public function visitMap(\stdClass $data, PropertyInterface $property, $path);
+
+    /**
      * Visits an array value
      *
      * @param array $data
@@ -58,16 +78,6 @@ interface VisitorInterface
      * @return mixed
      */
     public function visitBoolean($data, PropertyInterface $property, $path);
-
-    /**
-     * Visits a complex value
-     *
-     * @param \stdClass $data
-     * @param \PSX\Schema\PropertyInterface $property
-     * @param string $path
-     * @return mixed
-     */
-    public function visitObject(\stdClass $data, PropertyInterface $property, $path);
 
     /**
      * Visits a date time value
@@ -148,14 +158,4 @@ interface VisitorInterface
      * @return mixed
      */
     public function visitUri($data, PropertyInterface $property, $path);
-
-    /**
-     * Visits a uri value
-     *
-     * @param string $data
-     * @param \PSX\Schema\PropertyInterface $property
-     * @param string $path
-     * @return mixed
-     */
-    public function visitNull($data, PropertyInterface $property, $path);
 }

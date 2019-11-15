@@ -18,19 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * PropertyInterface
+ * Nullable
  *
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface PropertyInterface
+class Nullable
 {
     /**
-     * @return array
+     * @var string
      */
-    public function toArray(): array;
+    protected $nullable;
+
+    public function __construct(array $values)
+    {
+        $this->nullable = (bool) current($values);
+    }
+
+    public function isNullable()
+    {
+        return $this->nullable;
+    }
 }

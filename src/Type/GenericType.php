@@ -18,31 +18,47 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Type;
+
+use PSX\Schema\PropertyInterface;
+use PSX\Schema\PropertyType;
 
 /**
- * AnyOf
+ * GenericType
  *
- * @Annotation
- * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class AnyOf
+class GenericType extends PropertyType
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $properties;
+    protected $generic;
 
-    public function __construct(array $values)
+    /**
+     * @return string
+     */
+    public function getGeneric(): string
     {
-        $this->properties = current($values);
+        return $this->generic;
     }
 
-    public function getProperties()
+    /**
+     * @param string $generic
+     */
+    public function setGeneric(string $generic): void
     {
-        return $this->properties;
+        $this->generic = $generic;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            '$generic' => $this->generic,
+        ], function($value){
+            return $value !== null;
+        }));
     }
 }

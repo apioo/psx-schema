@@ -66,28 +66,14 @@ class RefResolver
      * @param \PSX\Uri\Uri $ref
      * @param string $name
      * @param integer $depth
-     * @param \PSX\Schema\PropertyInterface $property
      * @return \PSX\Schema\PropertyInterface
      */
-    public function resolve(Document $document, Uri $ref, $name, $depth, PropertyInterface $property = null)
+    public function resolve(Document $document, Uri $ref, $name, $depth)
     {
         $uri = $this->resolver->resolve($document->getBaseUri(), $ref);
+        $doc = $this->getDocument($uri, $document);
 
-        if (isset($this->objects[$uri->toString()])) {
-            return $this->objects[$uri->toString()];
-        }
-
-        if ($property === null) {
-            $property = new PropertyType();
-            $property->setRef($uri->toString());
-        }
-
-        $this->objects[$uri->toString()] = $property;
-
-        $doc  = $this->getDocument($uri, $document);
-        $doc->getProperty($uri->getFragment(), $name, $depth, $property);
-
-        return $property;
+        return $doc->getProperty($uri->getFragment(), $name, $depth);
     }
 
     /**

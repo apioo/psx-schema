@@ -91,9 +91,4 @@ class NullVisitor implements VisitorInterface
     {
         return $data;
     }
-
-    public function visitNull($data, PropertyInterface $property, $path)
-    {
-        return null;
-    }
 }

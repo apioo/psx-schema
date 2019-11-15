@@ -37,99 +37,84 @@ class TestSchema extends SchemaAbstract
 {
     public function getDefinition()
     {
-        $sb = $this->getSchemaBuilder('location')
-            ->setAdditionalProperties(true)
-            ->setDescription('Location of the person')
-            ->setRequired(['lat', 'long']);
-        $sb->number('lat');
-        $sb->number('long');
-        $sb->setAttribute(PropertyType::ATTR_CLASS, Popo\Location::class);
-        $location = $sb->getProperty();
+        $location = Property::getStruct();
+        $location->setDescription('Location of the person');
+        $location->addProperty('lat', Property::getNumber());
+        $location->addProperty('long', Property::getNumber());
+        $location->setRequired(['lat', 'long']);
+        $location->setAttribute(PropertyType::ATTR_CLASS, Popo\Location::class);
 
-        $sb = $this->getSchemaBuilder('web')
-            ->setAdditionalProperties(Property::getString())
-            ->setMinProperties(2)
-            ->setMaxProperties(8)
-            ->setDescription('An application')
-            ->setRequired(['name', 'url']);
-        $sb->string('name');
-        $sb->string('url');
-        $sb->setAttribute(PropertyType::ATTR_CLASS, Popo\Web::class);
-        $web = $sb->getProperty();
+        $web = Property::getStruct();
+        $web->setDescription('An application');
+        $web->addProperty('name', Property::getString());
+        $web->addProperty('url', Property::getString());
+        $web->setRequired(['name', 'url']);
+        $web->setAttribute(PropertyType::ATTR_CLASS, Popo\Web::class);
 
-        $sb = $this->getSchemaBuilder('author')
-            ->setDescription('An simple author element with some description');
-        $sb->string('title')
-            ->setPattern('[A-z]{3,16}');
-        $sb->property('email')
-            ->setType(['string', 'null'])
-            ->setDescription('We will send no spam to this address');
-        $sb->arrayType('categories')
+        $author = Property::getStruct();
+        $author->setDescription('An simple author element with some description');
+        $author->addProperty('title', Property::getString()
+            ->setPattern('[A-z]{3,16}'));
+        $author->addProperty('email', Property::getString()
+            ->setDescription('We will send no spam to this address')
+            ->setNullable(true));
+        $author->addProperty('categories', Property::getArray()
             ->setItems(Property::getString())
-            ->setMaxItems(8);
-        $sb->arrayType('locations')
-            ->setItems($location)
-            ->setDescription('Array of locations');
-        $sb->objectType('origin', $location);
-        $sb->setRequired(['title']);
-        $sb->setAdditionalProperties(false);
-        $sb->setAttribute(PropertyType::ATTR_CLASS, Popo\Author::class);
-        $author = $sb->getProperty();
+            ->setMaxItems(8));
+        $author->addProperty('locations', Property::getArray()
+            ->setDescription('Array of locations')
+            ->setItems($location));
+        $author->addProperty('origin', $location);
+        $author->setRequired(['title']);
+        $author->setAttribute(PropertyType::ATTR_CLASS, Popo\Author::class);
 
-        $sb = $this->getSchemaBuilder('meta')
-            ->setDescription('Some meta data')
-            ->addPatternProperty('^tags_\d$', Property::getString())
-            ->addPatternProperty('^location_\d$', $location);
-        $sb->dateTime('createDate');
-        $sb->setAdditionalProperties(false);
-        $sb->setAttribute(PropertyType::ATTR_CLASS, Popo\Meta::class);
-        $meta = $sb->getProperty();
+        $meta = Property::getMap();
+        $meta->setAdditionalProperties(Property::getString());
+        $meta->setAttribute(PropertyType::ATTR_CLASS, Popo\Meta::class);
 
-        $sb = $this->getSchemaBuilder('news')
-            ->setDescription('An general news entry');
-        $sb->objectType('config')
-            ->setTitle('config')
-            ->setAdditionalProperties(Property::getString());
-        $sb->arrayType('tags')
+        $news = Property::getStruct();
+        $news->setDescription('An general news entry');
+        $news->addProperty('config', Property::getMap()
+            ->setAdditionalProperties(Property::getString()));
+        $news->addProperty('tags', Property::getArray()
             ->setItems(Property::getString())
             ->setMinItems(1)
-            ->setMaxItems(6);
-        $sb->arrayType('receiver')
+            ->setMaxItems(6));
+        $news->addProperty('receiver', Property::getArray()
             ->setItems($author)
-            ->setMinItems(1);
-        $sb->arrayType('resources')
-            ->setItems(Property::get()->setOneOf([$location, $web])->setTitle('resource'));
-        $sb->binary('profileImage');
-        $sb->boolean('read');
-        $sb->property('source')
-            ->setOneOf([$author, $web])->setTitle('source');
-        $sb->objectType('author', $author);
-        $sb->objectType('meta', $meta);
-        $sb->date('sendDate');
-        $sb->dateTime('readDate');
-        $sb->duration('expires');
-        $sb->number('price')
+            ->setMinItems(1));
+        $news->addProperty('resources', Property::getUnion()
+            ->setOneOf([$location, $web]));
+        $news->addProperty('profileImage', Property::getBinary());
+        $news->addProperty('read', Property::getBoolean());
+        $news->addProperty('source', Property::getUnion()
+            ->setOneOf([$author, $web]));
+        $news->addProperty('author', $author);
+        $news->addProperty('meta', $meta);
+        $news->addProperty('sendDate', Property::getDate());
+        $news->addProperty('readDate', Property::getDateTime());
+        $news->addProperty('expires', Property::getDuration());
+        $news->addProperty('price', Property::getNumber()
             ->setMinimum(1)
-            ->setMaximum(100);
-        $sb->integer('rating')
+            ->setMaximum(100));
+        $news->addProperty('rating', Property::getInteger()
             ->setMinimum(1)
-            ->setMaximum(5);
-        $sb->string('content')
+            ->setMaximum(5));
+        $news->addProperty('content', Property::getString()
             ->setDescription('Contains the main content of the news entry')
             ->setMinLength(3)
-            ->setMaxLength(512);
-        $sb->string('question')
-            ->setEnum(['foo', 'bar']);
-        $sb->string('version')
-            ->setConst('http://foo.bar');
-        $sb->time('coffeeTime');
-        $sb->uri('profileUri');
-        $sb->string('g-recaptcha-response');
-        $sb->setRequired(['receiver', 'price', 'content']);
-        $sb->setAdditionalProperties(false);
-        $sb->setAttribute(PropertyType::ATTR_CLASS, Popo\News::class);
-        $sb->setAttribute(PropertyType::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
+            ->setMaxLength(512));
+        $news->addProperty('question', Property::getString()
+            ->setEnum(['foo', 'bar']));
+        $news->addProperty('version', Property::getString()
+            ->setConst('http://foo.bar'));
+        $news->addProperty('coffeeTime', Property::getTime());
+        $news->addProperty('profileUri', Property::getUri());
+        $news->addProperty('g-recaptcha-response', Property::getString());
+        $news->setRequired(['receiver', 'price', 'content']);
+        $news->setAttribute(PropertyType::ATTR_CLASS, Popo\News::class);
+        $news->setAttribute(PropertyType::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
 
-        return $sb->getProperty();
+        return $news;
     }
 }

@@ -18,19 +18,23 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
+
+use PSX\Schema\PropertyType;
 
 /**
- * PropertyInterface
+ * BooleanType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface PropertyInterface
+class BooleanType extends PropertyType
 {
-    /**
-     * @return array
-     */
-    public function toArray(): array;
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'type' => 'boolean',
+        ]);
+    }
 }

@@ -18,42 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Parser\JsonSchema;
 
 /**
- * PatternProperties
+ * RecursionException
  *
- * @Annotation
- * @Target("CLASS")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PatternProperties
+class RecursionException extends \Exception
 {
-    /**
-     * @var string
-     */
-    protected $pattern;
-
-    /**
-     * @var mixed
-     */
-    protected $property;
-
-    public function __construct(array $values)
-    {
-        $this->pattern  = isset($values['pattern'])  ? $values['pattern']  : null;
-        $this->property = isset($values['property']) ? $values['property'] : null;
-    }
-
-    public function getPattern()
-    {
-        return $this->pattern;
-    }
-
-    public function getProperty()
-    {
-        return $this->property;
-    }
 }

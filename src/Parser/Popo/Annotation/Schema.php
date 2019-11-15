@@ -53,14 +53,17 @@ class Schema
         foreach ($this->values as $key => $value) {
             $value = [$value];
             switch ($key) {
+                // common
                 case 'title': $annotations[] = new Title($value); break;
-                case 'description': $annotations[] = new Description($value); break;
-                case 'enum': $annotations[] = new Enum($value); break;
                 case 'type': $annotations[] = new Type($value); break;
-                case 'allOf': $annotations[] = new AllOf($value); break;
-                case 'anyOf': $annotations[] = new AnyOf($value); break;
-                case 'oneOf': $annotations[] = new OneOf($value); break;
-                case 'not': $annotations[] = new Not($value); break;
+                case 'description': $annotations[] = new Description($value); break;
+                case 'nullable': $annotations[] = new Nullable($value); break;
+                case 'deprecated': $annotations[] = new Deprecated($value); break;
+                case 'readonly': $annotations[] = new Readonly($value); break;
+
+                // scalar
+                case 'enum': $annotations[] = new Enum($value); break;
+                case 'format': $annotations[] = new Format($value); break;
 
                 // number
                 case 'maximum': $annotations[] = new Maximum($value); break;
@@ -73,14 +76,15 @@ class Schema
                 case 'maxLength': $annotations[] = new MaxLength($value); break;
                 case 'minLength': $annotations[] = new MinLength($value); break;
                 case 'pattern': $annotations[] = new Pattern($value); break;
-                case 'format': $annotations[] = new Format($value); break;
 
                 // array
                 case 'items': $annotations[] = new Items($value); break;
-                case 'additionalItems': $annotations[] = new AdditionalItems($value); break;
                 case 'uniqueItems': $annotations[] = new UniqueItems($value); break;
                 case 'maxItems': $annotations[] = new MaxItems($value); break;
                 case 'minItems': $annotations[] = new MinItems($value); break;
+
+                case 'allOf': $annotations[] = new AllOf($value); break;
+                case 'oneOf': $annotations[] = new OneOf($value); break;
             }
         }
 

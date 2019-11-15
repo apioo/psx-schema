@@ -18,31 +18,22 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Type;
 
 /**
- * AdditionalItems
+ * IntegerType
  *
- * @Annotation
- * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class AdditionalItems
+class IntegerType extends NumberType
 {
-    /**
-     * @var boolean|string
-     */
-    protected $additionalItems;
-
-    public function __construct(array $values)
+    public function toArray(): array
     {
-        $this->additionalItems = current($values);
-    }
+        $return = parent::toArray();
+        $return['type'] = 'integer';
 
-    public function getAdditionalItems()
-    {
-        return $this->additionalItems;
+        return $return;
     }
 }

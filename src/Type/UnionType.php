@@ -18,19 +18,49 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
+
+use PSX\Schema\PropertyType;
 
 /**
- * PropertyInterface
+ * UnionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface PropertyInterface
+class UnionType extends PropertyType
 {
+    /**
+     * @var array
+     */
+    protected $oneOf;
+
     /**
      * @return array
      */
-    public function toArray(): array;
+    public function getOneOf(): ?array
+    {
+        return $this->oneOf;
+    }
+
+    /**
+     * @param array $oneOf
+     * @return self
+     */
+    public function setOneOf(array $oneOf): self
+    {
+        $this->oneOf = $oneOf;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'oneOf' => $this->oneOf,
+        ], function($value){
+            return $value !== null;
+        }));
+    }
 }

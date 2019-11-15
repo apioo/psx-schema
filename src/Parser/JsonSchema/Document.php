@@ -21,8 +21,20 @@
 namespace PSX\Schema\Parser\JsonSchema;
 
 use PSX\Json\Pointer;
+use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 use PSX\Uri\Uri;
 use RuntimeException;
 
@@ -56,23 +68,58 @@ class Document
     protected $source;
 
     /**
+     * @var string
+     */
+    protected $definitionKey;
+
+    /**
+     * @var array
+     */
+    protected $definitions;
+
+    /**
      * @var \PSX\Uri\Uri
      */
     protected $baseUri;
+
+    /**
+     * @var array
+     */
+    protected $template;
+
+    /**
+     * @var array
+     */
+    protected $objects;
+
+    /**
+     * @var array
+     */
+    protected $refs;
 
     /**
      * @param array $data
      * @param \PSX\Schema\Parser\JsonSchema\RefResolver $resolver
      * @param string|null $basePath
      * @param \PSX\Uri\Uri|null $source
+     * @param string $definitionKey
      */
-    public function __construct(array $data, RefResolver $resolver, $basePath = null, Uri $source = null)
+    public function __construct(array $data, RefResolver $resolver, $basePath = null, Uri $source = null, string $definitionKey = '/definitions')
     {
         $this->data     = $data;
         $this->resolver = $resolver;
         $this->basePath = $basePath;
         $this->source   = $source;
-        $this->baseUri  = new Uri(isset($data['id']) ? $data['id'] : 'http://phpsx.org/2015/data#');
+        $this->baseUri  = new Uri(isset($data['$id']) ? $data['$id'] : 'http://phpsx.org/2019/data#');
+        $this->template = [];
+        $this->objects  = [];
+        $this->refs     = [];
+
+        $this->definitionKey = $definitionKey;
+        $definitions = $this->pointer($definitionKey);
+        if (!empty($definitions)) {
+            $this->definitions = array_keys($definitions);
+        }
     }
 
     /**
@@ -80,7 +127,7 @@ class Document
      *
      * @return string
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
@@ -90,7 +137,7 @@ class Document
      *
      * @return \PSX\Uri\Uri
      */
-    public function getSource()
+    public function getSource(): ?Uri
     {
         return $this->source;
     }
@@ -100,7 +147,7 @@ class Document
      *
      * @return boolean
      */
-    public function isRemote()
+    public function isRemote(): bool
     {
         return $this->source !== null && in_array($this->source->getScheme(), ['http', 'https']);
     }
@@ -108,7 +155,7 @@ class Document
     /**
      * @return \PSX\Uri\Uri
      */
-    public function getBaseUri()
+    public function getBaseUri(): Uri
     {
         return $this->baseUri;
     }
@@ -117,15 +164,21 @@ class Document
      * @param string $pointer
      * @param string $name
      * @param integer $depth
-     * @param \PSX\Schema\PropertyInterface $property
      * @return \PSX\Schema\PropertyInterface
      */
-    public function getProperty($pointer = null, $name = null, $depth = 0, PropertyInterface $property = null)
+    public function getProperty($pointer = null, $name = null, $depth = 0): PropertyInterface
     {
-        if ($pointer === null) {
-            return $this->getRecProperty($this->data, $name, $depth, $property);
+        if (empty($pointer)) {
+            return $this->getRecProperty($this->data, $name, $depth);
         } else {
-            return $this->getRecProperty($this->pointer($pointer), $name, $depth, $property);
+            // for schemas inside the definitions we use the key as title
+            if (strpos($pointer, $this->definitionKey) === 0) {
+                $name = substr($pointer, 14);
+            } else {
+                throw new \RuntimeException('Can only resolve local schemas, given ' . $pointer);
+            }
+
+            return $this->getRecProperty($this->pointer($pointer), $name, $depth);
         }
     }
 
@@ -152,35 +205,56 @@ class Document
      * @param \PSX\Uri\Uri $ref
      * @return boolean
      */
-    public function canResolve(Uri $ref)
+    public function canResolve(Uri $ref): bool
     {
         return $this->baseUri->getHost() == $ref->getHost() && $this->baseUri->getPath() == $ref->getPath();
     }
 
-    protected function getRecProperty(array $data, $name, $depth, PropertyInterface $property = null)
+    protected function getRecProperty(array $data, $name, $depth)
     {
-        if (isset($data['$ref'])) {
-            // for schemas inside the definitions we use the key as title
-            if (strpos($data['$ref'], '#/definitions/') === 0) {
-                $name = substr($data['$ref'], 14);
+        $data     = $this->transformBcLayer($data);
+        $property = $this->newPropertyType($data);
+
+        if ($property instanceof PropertyType) {
+            $this->parseCommon($property, $data, $name);
+        }
+
+        if ($property instanceof ScalarType) {
+            $this->parseScalar($property, $data);
+        }
+
+        if ($property instanceof StructType) {
+            $property = $this->parseStruct($property, $data, $depth);
+        } elseif ($property instanceof MapType) {
+            $property = $this->parseMap($property, $data, $depth);
+        } elseif ($property instanceof ArrayType) {
+            $this->parseArray($property, $data, $depth);
+        } elseif ($property instanceof NumberType || $property instanceof IntegerType) {
+            $this->parseNumber($property, $data);
+        } elseif ($property instanceof StringType) {
+            $this->parseString($property, $data);
+        } elseif ($property instanceof IntersectionType) {
+            $this->parseIntersection($property, $data, $depth);
+        } elseif ($property instanceof UnionType) {
+            $this->parseUnion($property, $data, $depth);
+        } elseif ($property instanceof ReferenceType) {
+            $property = $this->parseReference($property, $data, $name, $depth);
+        } elseif ($property instanceof GenericType) {
+            $property = $this->parseGeneric($property, $data);
+        }
+
+        // PSX specific attributes
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 6) === 'x-psx-') {
+                $property->setAttribute(substr($key, 6), $value);
             }
-
-            return $this->resolver->resolve($this, new Uri($data['$ref']), $name, $depth, $property);
         }
 
-        if (isset($data['extends'])) {
-            $part = $this->resolver->extract($this, new Uri($data['extends']));
-            $data = array_replace_recursive($data, $part);
-        }
+        return $property;
+    }
 
-        if ($property === null) {
-            $property = new PropertyType();
-        }
-
-        if (isset($data['type'])) {
-            $property->setType($data['type']);
-        }
-
+    protected function parseCommon(PropertyType $property, array $data, ?string $name)
+    {
         if (isset($data['title'])) {
             $property->setTitle($data['title']);
         } elseif ($name !== null) {
@@ -189,6 +263,25 @@ class Document
 
         if (isset($data['description'])) {
             $property->setDescription($data['description']);
+        }
+
+        if (isset($data['nullable'])) {
+            $property->setNullable($data['nullable']);
+        }
+
+        if (isset($data['deprecated'])) {
+            $property->setDeprecated($data['deprecated']);
+        }
+
+        if (isset($data['readonly'])) {
+            $property->setReadonly($data['readonly']);
+        }
+    }
+    
+    protected function parseScalar(ScalarType $property, array $data)
+    {
+        if (isset($data['format'])) {
+            $property->setFormat($data['format']);
         }
 
         if (isset($data['enum'])) {
@@ -202,18 +295,16 @@ class Document
         if (isset($data['default'])) {
             $property->setDefault($data['default']);
         }
-
-        $this->parseObjectType($property, $data, $depth);
-        $this->parseArrayType($property, $data, $depth);
-        $this->parseScalar($property, $data);
-        $this->parseCombinations($property, $data, $depth);
-        $this->parseNot($property, $data, $depth);
-
-        return $property;
     }
 
-    protected function parseObjectType(PropertyType $property, array $data, $depth)
+    protected function parseStruct(StructType $property, array $data, $depth): PropertyInterface
     {
+        if (isset($this->objects[$property->getTitle()])) {
+            return $this->objects[$property->getTitle()];
+        }
+
+        $this->objects[$property->getTitle()] = $property;
+
         if (isset($data['properties']) && is_array($data['properties'])) {
             foreach ($data['properties'] as $name => $row) {
                 if (is_array($row)) {
@@ -226,13 +317,20 @@ class Document
             }
         }
 
-        if (isset($data['patternProperties']) && is_array($data['patternProperties'])) {
-            foreach ($data['patternProperties'] as $pattern => $prototype) {
-                if (is_array($prototype)) {
-                    $property->addPatternProperty($pattern, $this->getRecProperty($prototype, null, $depth + 1));
-                }
-            }
+        if (isset($data['required']) && is_array($data['required'])) {
+            $property->setRequired($data['required']);
         }
+
+        return $property;
+    }
+
+    protected function parseMap(MapType $property, array $data, $depth): PropertyInterface
+    {
+        if (isset($this->objects[$property->getTitle()])) {
+            return $this->objects[$property->getTitle()];
+        }
+
+        $this->objects[$property->getTitle()] = $property;
 
         if (isset($data['additionalProperties'])) {
             if (is_bool($data['additionalProperties'])) {
@@ -240,10 +338,6 @@ class Document
             } elseif (is_array($data['additionalProperties'])) {
                 $property->setAdditionalProperties($this->getRecProperty($data['additionalProperties'], null, $depth + 1));
             }
-        }
-
-        if (isset($data['required']) && is_array($data['required'])) {
-            $property->setRequired($data['required']);
         }
 
         if (isset($data['minProperties'])) {
@@ -254,56 +348,15 @@ class Document
             $property->setMaxProperties($data['maxProperties']);
         }
 
-        if (isset($data['dependencies']) && is_array($data['dependencies'])) {
-            $result = [];
-            foreach ($data['dependencies'] as $name => $row) {
-                if (isset($row[0])) {
-                    $result[$name] = $row;
-                } else {
-                    $result[$name] = $this->getRecProperty($row, null, $depth + 1);
-                }
-            }
-
-            $property->setDependencies($result);
-        }
-
-        // PSX specific attributes
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 6) === 'x-psx-') {
-                $property->setAttribute(substr($key, 6), $value);
-            }
-        }
-
         return $property;
     }
 
-    protected function parseArrayType(PropertyType $property, array $data, $depth)
+    protected function parseArray(ArrayType $property, array $data, $depth)
     {
         if (isset($data['items']) && is_array($data['items'])) {
-            if (isset($data['items'][0])) {
-                // tuple validation
-                $properties = [];
-                foreach ($data['items'] as $item) {
-                    $prop = $this->getRecProperty($item, null, $depth + 1);
-                    if ($prop !== null) {
-                        $properties[] = $prop;
-                    }
-                }
-
-                $property->setItems($properties);
-            } else {
-                $prop = $this->getRecProperty($data['items'], null, $depth + 1);
-                if ($prop !== null) {
-                    $property->setItems($prop);
-                }
-            }
-        }
-
-        if (isset($data['additionalItems'])) {
-            if (is_bool($data['additionalItems'])) {
-                $property->setAdditionalItems($data['additionalItems']);
-            } elseif (is_array($data['additionalItems'])) {
-                $property->setAdditionalItems($this->getRecProperty($data['additionalItems'], null, $depth + 1));
+            $prop = $this->getRecProperty($data['items'], null, $depth + 1);
+            if ($prop !== null) {
+                $property->setItems($prop);
             }
         }
 
@@ -322,9 +375,8 @@ class Document
         return $property;
     }
 
-    protected function parseScalar(PropertyType $property, array $data)
+    protected function parseNumber(PropertyType $property, array $data)
     {
-        // number
         if (isset($data['minimum'])) {
             $property->setMinimum($data['minimum']);
         }
@@ -344,14 +396,12 @@ class Document
         if (isset($data['multipleOf'])) {
             $property->setMultipleOf($data['multipleOf']);
         }
+    }
 
-        // string
+    protected function parseString(PropertyType $property, array $data)
+    {
         if (isset($data['pattern'])) {
             $property->setPattern($data['pattern']);
-        }
-
-        if (isset($data['format'])) {
-            $property->setFormat($data['format']);
         }
 
         if (isset($data['minLength'])) {
@@ -363,7 +413,7 @@ class Document
         }
     }
 
-    protected function parseCombinations(PropertyType $property, array $data, $depth)
+    protected function parseIntersection(PropertyType $property, array $data, $depth)
     {
         if (isset($data['allOf']) && is_array($data['allOf'])) {
             $props = [];
@@ -372,14 +422,12 @@ class Document
             }
 
             $property->setAllOf($props);
-        } elseif (isset($data['anyOf']) && is_array($data['anyOf'])) {
-            $props = [];
-            foreach ($data['anyOf'] as $prop) {
-                $props[] = $this->getRecProperty($prop, null, $depth + 1);
-            }
+        }
+    }
 
-            $property->setAnyOf($props);
-        } elseif (isset($data['oneOf']) && is_array($data['oneOf'])) {
+    protected function parseUnion(PropertyType $property, array $data, $depth)
+    {
+        if (isset($data['oneOf']) && is_array($data['oneOf'])) {
             $props = [];
             foreach ($data['oneOf'] as $prop) {
                 $props[] = $this->getRecProperty($prop, null, $depth + 1);
@@ -389,10 +437,132 @@ class Document
         }
     }
 
-    protected function parseNot(PropertyType $property, array $data, $depth)
+    protected function parseReference(ReferenceType $property, array $data, $name, $depth): PropertyInterface
     {
-        if (isset($data['not']) && is_array($data['not'])) {
-            $property->setNot($this->getRecProperty($data['not'], null, $depth + 1));
+        $ref = $data['$ref'];
+
+        array_push($this->refs, $ref);
+
+        if ($this->inEndlessRecursion()) {
+            throw new RecursionException('Endless recursion detected');
         }
+
+        // in case the referenced template contains generics
+        $template = $property->getTemplate();
+        if (!empty($template)) {
+            array_push($this->template, $template);
+        }
+
+        if (in_array($name, $this->definitions)) {
+            // in this case we have a local reference
+            $return = $this->getProperty($this->definitionKey . '/' . $name, $name, $depth);
+        } else {
+            // in this case we have a reference to a different schema
+            $return = $this->resolver->resolve($this, new Uri($ref), $name, $depth);
+        }
+
+        if (!empty($template)) {
+            array_pop($this->template);
+        }
+
+        array_pop($this->refs);
+
+        return $return;
+    }
+    
+    protected function parseGeneric(GenericType $property, array $data): PropertyInterface
+    {
+        $generic  = $data['$generic'];
+        $template = $this->template[count($this->template) - 1] ?? null;
+
+        if (empty($template)) {
+            throw new RuntimeException('Can not resolve generic, no template provided');
+        }
+
+        if (!isset($template[$generic])) {
+            throw new RuntimeException('Required generic ' . $generic . ' not available');
+        }
+
+        return $template[$data['$generic']];
+    }
+
+    private function newPropertyType(array $data): PropertyInterface
+    {
+        $type = $data['type'] ?? null;
+        if ($type === PropertyType::TYPE_OBJECT) {
+            if (isset($data['properties'])) {
+                return Property::getStruct();
+            } elseif (isset($data['additionalProperties'])) {
+                return Property::getMap();
+            }
+        } elseif ($type === PropertyType::TYPE_ARRAY) {
+            return Property::getArray();
+        } elseif ($type === PropertyType::TYPE_STRING) {
+            return Property::getString();
+        } elseif ($type === PropertyType::TYPE_INTEGER) {
+            return Property::getInteger();
+        } elseif ($type === PropertyType::TYPE_NUMBER) {
+            return Property::getNumber();
+        } elseif ($type === PropertyType::TYPE_BOOLEAN) {
+            return Property::getBoolean();
+        } elseif (isset($data['allOf'])) {
+            return Property::getIntersection();
+        } elseif (isset($data['oneOf'])) {
+            return Property::getUnion();
+        } elseif (isset($data['$ref'])) {
+            return Property::getReference();
+        } elseif (isset($data['$generic'])) {
+            return Property::getGeneric();
+        }
+
+        throw new \RuntimeException('Could not assign schema to a type');
+    }
+    
+    private function inEndlessRecursion(): bool
+    {
+        $sequence = [];
+        $count = 0;
+        foreach ($this->refs as $ref) {
+            if (!in_array($ref, $sequence)) {
+                $sequence[] = $ref;
+            } else {
+                $sequence = [];
+                $count++; 
+            }
+        }
+
+        return $count >= 4;
+    }
+
+    /**
+     * This method takes a look at the schema and adds missing properties
+     * 
+     * @param array $data
+     * @return array
+     */
+    private function transformBcLayer(array $data): array
+    {
+        if (isset($data['patternProperties']) && !isset($data['properties']) && !isset($data['additionalProperties'])) {
+            // in this case we have a schema with only pattern properties
+            if (count($data['patternProperties']) === 1) {
+                $data['additionalProperties'] = reset($data['patternProperties']);
+            } else {
+                $data['additionalProperties'] = true;
+            }
+        }
+
+        if (!isset($data['type'])) {
+            if (isset($data['properties']) || isset($data['additionalProperties'])) {
+                $data['type'] = 'object';
+            } elseif (isset($data['items'])) {
+                $data['type'] = 'array';
+            } elseif (isset($data['pattern']) || isset($data['minLength']) || isset($data['maxLength'])) {
+                $data['type'] = 'string';
+            } elseif (isset($data['minimum']) || isset($data['maximum'])) {
+                $data['type'] = 'number';
+            }
+        }
+
+        return $data;
     }
 }

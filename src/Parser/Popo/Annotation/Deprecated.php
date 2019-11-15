@@ -21,28 +21,28 @@
 namespace PSX\Schema\Parser\Popo\Annotation;
 
 /**
- * Not
+ * Deprecated
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Not
+class Deprecated
 {
     /**
-     * @var mixed
+     * @var string
      */
-    protected $property;
+    protected $deprecated;
 
     public function __construct(array $values)
     {
-        $this->property = current($values);
+        $this->deprecated = (bool) current($values);
     }
 
-    public function getProperty()
+    public function isDeprecated()
     {
-        return $this->property;
+        return $this->deprecated;
     }
 }

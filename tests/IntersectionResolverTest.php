@@ -47,7 +47,7 @@ class IntersectionResolverTest extends TestCase
         ]);
 
         $property = new PropertyType();
-        $property->setAllOf([$a, $b]);
+        $property->setOneOf([$a, $b]);
 
         $resolver = new IntersectionResolver();
         $result = $resolver->resolve($property);
@@ -69,7 +69,7 @@ class IntersectionResolverTest extends TestCase
         ]);
 
         $property = new PropertyType();
-        $property->setAllOf([$a, $b]);
+        $property->setOneOf([$a, $b]);
 
         $resolver = new IntersectionResolver();
         $result = $resolver->resolve($property);
