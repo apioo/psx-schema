@@ -57,6 +57,16 @@ class Chunks
     }
 
     /**
+     * @param Chunks $chunks
+     */
+    public function merge(Chunks $chunks)
+    {
+        foreach ($chunks->getChunks() as $identifier => $code) {
+            $this->append($identifier, $code);
+        }
+    }
+
+    /**
      * @return string|null
      */
     public function getNamespace(): ?string
@@ -70,6 +80,23 @@ class Chunks
     public function getChunks()
     {
         return $this->parts;
+    }
+
+    /**
+     * Writes this chunk collection as zip archive to the provided file
+     * 
+     * @param string $file
+     */
+    public function writeTo(string $file)
+    {
+        $zip = new \ZipArchive();
+        $zip->open($file, \ZipArchive::CREATE);
+
+        foreach ($this->getChunks() as $identifier => $code) {
+            $zip->addFromString($identifier, $code);
+        }
+
+        $zip->close();
     }
 
     /**
