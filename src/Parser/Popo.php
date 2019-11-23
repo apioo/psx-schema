@@ -24,17 +24,22 @@ use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
+use PSX\Schema\Parser\Popo\Resolver\Composite;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Schema\Schema;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 use ReflectionClass;
 
 /**
@@ -52,11 +57,9 @@ class Popo implements ParserInterface
     protected $reader;
 
     /**
-     * Holds all parsed objects to reuse
-     *
-     * @var array
+     * @var \PSX\Schema\Parser\Popo\Resolver\Composite
      */
-    protected $objects;
+    protected $resolver;
 
     /**
      * Contains the current path to detect recursions
@@ -66,11 +69,21 @@ class Popo implements ParserInterface
     protected $stack;
 
     /**
+     * @var array
+     */
+    private $objects;
+
+    /**
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
     public function __construct(Reader $reader)
     {
-        $this->reader = $reader;
+        $this->reader   = $reader;
+        $this->resolver = new Popo\Resolver\Composite(
+            new Popo\Resolver\Native(),
+            new Popo\Resolver\Documentor(),
+            new Popo\Resolver\Annotation($reader)
+        );
     }
 
     public function parse($className)
@@ -88,27 +101,35 @@ class Popo implements ParserInterface
 
     protected function parseClass(string $className)
     {
-        if (isset($this->objects[$className])) {
-            return $this->objects[$className];
+        $class = new ReflectionClass($className);
+
+        if (isset($this->objects[$class->getName()])) {
+            return $this->objects[$class->getName()];
         }
 
-        $class = new ReflectionClass($className);
+        $property    = $this->resolver->resolveClass($class);
         $annotations = $this->reader->getClassAnnotations($class);
 
-        $annotation = $this->getAnnotation($annotations, Annotation\AdditionalProperties::class);
-        if ($annotation instanceof Annotation\AdditionalProperties && $annotation->getAdditionalProperties() !== false) {
-            $property = Property::getMap();
-            $this->objects[$className] = $property;
+        $this->objects[$class->getName()] = $property;
 
+        $property->setTitle($class->getShortName());
+
+        if ($property instanceof PropertyType) {
             $this->parseCommonAnnotations($annotations, $property);
+        }
+
+        if ($property instanceof MapType) {
+            $additionalProperties = $property->getAdditionalProperties();
+            if ($additionalProperties instanceof ReferenceType) {
+                $property->setAdditionalProperties($this->parseClass($additionalProperties->getRef()));
+            }
+
             $this->parseMapAnnotations($annotations, $property);
-        } else {
-            $property = Property::getStruct();
-            $this->objects[$className] = $property;
-
-            $this->parseCommonAnnotations($annotations, $property);
+        } elseif ($property instanceof StructType) {
             $this->parseStructAnnotations($annotations, $property);
             $this->parseProperties($class, $property);
+        } else {
+            throw new \RuntimeException('Could not determine class type');
         }
 
         $property->setAttribute(PropertyType::ATTR_CLASS, $class->getName());
@@ -122,13 +143,11 @@ class Popo implements ParserInterface
         $mapping    = [];
 
         foreach ($properties as $key => $reflection) {
-            $annotations = $this->reader->getPropertyAnnotations($reflection);
-
             if ($key != $reflection->getName()) {
                 $mapping[$key] = $reflection->getName();
             }
 
-            $prop = $this->parsePropertyAnnotations($annotations);
+            $prop = $this->parseProperty($reflection);
             if ($prop !== null) {
                 $property->addProperty($key, $prop);
             }
@@ -139,71 +158,55 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parsePropertyAnnotations(array $annotations): ?PropertyInterface
+    private function parseProperty(\ReflectionProperty $reflection): ?PropertyInterface
     {
-        $type     = $this->getTypeByAnnotation($annotations);
-        $property = null;
+        $property    = $this->resolver->resolveProperty($reflection);
+        $annotations = $this->reader->getPropertyAnnotations($reflection);
 
-        if ($type === 'array') {
-            $property = Property::getArray();
+        if ($property instanceof ReferenceType) {
+            return $this->parseClass($property->getRef());
+        }
+
+        if ($property instanceof PropertyType) {
             $this->parseCommonAnnotations($annotations, $property);
+        }
+
+        if ($property instanceof ScalarType) {
+            $this->parseScalarAnnotations($annotations, $property);
+        }
+
+        if ($property instanceof ArrayType) {
+            $items = $property->getItems();
+            if ($items instanceof ReferenceType) {
+                $property->setItems($this->parseClass($items->getRef()));
+            }
+
             $this->parseArrayAnnotations($annotations, $property);
-        } elseif ($type === 'string') {
-            $property = Property::getString();
-            $this->parseCommonAnnotations($annotations, $property);
-            $this->parseScalarAnnotations($annotations, $property);
+        } elseif ($property instanceof StringType) {
             $this->parseStringAnnotations($annotations, $property);
-        } elseif ($type === 'number') {
-            $property = Property::getNumber();
-            $this->parseCommonAnnotations($annotations, $property);
-            $this->parseScalarAnnotations($annotations, $property);
+        } elseif ($property instanceof NumberType) {
             $this->parseNumberAnnotations($annotations, $property);
-        } elseif ($type === 'integer') {
-            $property = Property::getInteger();
-            $this->parseCommonAnnotations($annotations, $property);
-            $this->parseScalarAnnotations($annotations, $property);
-            $this->parseNumberAnnotations($annotations, $property);
-        } elseif ($type === 'boolean') {
-            $property = Property::getBoolean();
-            $this->parseCommonAnnotations($annotations, $property);
-        } elseif ($annotation = $this->getAnnotation($annotations, Annotation\AllOf::class)) {
-            $property = Property::getIntersection();
-            $property->setAllOf($this->parseRefs($annotation->getProperties()));
-        } elseif ($annotation = $this->getAnnotation($annotations, Annotation\OneOf::class)) {
-            $property = Property::getUnion();
-            $property->setOneOf($this->parseRefs($annotation->getProperties()));
-        } elseif ($annotation = $this->getAnnotation($annotations, Annotation\Ref::class)) {
-            $property = $this->parseClass($annotation->getRef());
+        }
+
+        if ($property instanceof UnionType) {
+            $property->setOneOf(array_map(function(PropertyInterface $property) {
+                if ($property instanceof ReferenceType) {
+                    return $this->parseClass($property->getRef());
+                } else {
+                    return $property;
+                }
+            }, $property->getOneOf()));
+        } elseif ($property instanceof IntersectionType) {
+            $property->setAllOf(array_map(function(PropertyInterface $property) {
+                if ($property instanceof ReferenceType) {
+                    return $this->parseClass($property->getRef());
+                } else {
+                    return $property;
+                }
+            }, $property->getAllOf()));
         }
 
         return $property;
-    }
-
-    private function parseRefs($values)
-    {
-        if (!is_array($values)) {
-            $values = [$values];
-        }
-
-        $result = [];
-        foreach ($values as $value) {
-            $result[] = $this->parseRef($value);
-        }
-
-        return $result;
-    }
-
-    private function parseRef($value, $allowBoolean = false)
-    {
-        if ($value instanceof Annotation\Ref) {
-            return $this->parseClass($value->getRef());
-        } elseif ($value instanceof Annotation\Schema) {
-            return $this->parsePropertyAnnotations($value->getAnnotations());
-        } elseif ($allowBoolean && is_bool($value)) {
-            return $value;
-        }
-
-        return null;
     }
 
     private function parseCommonAnnotations(array $annotations, PropertyType $property)
@@ -246,9 +249,7 @@ class Popo implements ParserInterface
     private function parseMapAnnotations(array $annotations, MapType $property)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\AdditionalProperties) {
-                $property->setAdditionalProperties($this->parseRef($annotation->getAdditionalProperties(), true));
-            } elseif ($annotation instanceof Annotation\MinProperties) {
+            if ($annotation instanceof Annotation\MinProperties) {
                 $property->setMinProperties($annotation->getMinProperties());
             } elseif ($annotation instanceof Annotation\MaxProperties) {
                 $property->setMaxProperties($annotation->getMaxProperties());
@@ -259,9 +260,7 @@ class Popo implements ParserInterface
     private function parseArrayAnnotations(array $annotations, ArrayType $property)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Items) {
-                $property->setItems($this->parseRef($annotation->getItems()));
-            } elseif ($annotation instanceof Annotation\MinItems) {
+            if ($annotation instanceof Annotation\MinItems) {
                 $property->setMinItems($annotation->getMinItems());
             } elseif ($annotation instanceof Annotation\MaxItems) {
                 $property->setMaxItems($annotation->getMaxItems());
@@ -301,27 +300,5 @@ class Popo implements ParserInterface
                 $property->setMultipleOf($annotation->getMultipleOf());
             }
         }
-    }
-
-    private function getTypeByAnnotation(array $annotations): ?string
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Type) {
-                return $annotation->getType();
-            }
-        }
-
-        return null;
-    }
-
-    private function getAnnotation(array $annotations, string $class)
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof $class) {
-                return $annotation;
-            }
-        }
-
-        return null;
     }
 }
