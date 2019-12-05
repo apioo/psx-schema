@@ -110,16 +110,13 @@ class Document
         $this->resolver = $resolver;
         $this->basePath = $basePath;
         $this->source   = $source;
-        $this->baseUri  = new Uri(isset($data['$id']) ? $data['$id'] : 'http://phpsx.org/2019/data#');
+        $this->baseUri  = $this->buildBaseUri();
         $this->template = [];
         $this->objects  = [];
         $this->refs     = [];
 
         $this->definitionKey = $definitionKey;
-        $definitions = $this->pointer($definitionKey);
-        if (!empty($definitions)) {
-            $this->definitions = array_keys($definitions);
-        }
+        $this->definitions   = $this->lookupDefinitionKeys($definitionKey);
     }
 
     /**
@@ -162,18 +159,17 @@ class Document
 
     /**
      * @param string $pointer
-     * @param string $name
      * @param integer $depth
      * @return \PSX\Schema\PropertyInterface
      */
-    public function getProperty($pointer = null, $name = null, $depth = 0): PropertyInterface
+    public function getProperty($pointer = null, $depth = 0): PropertyInterface
     {
         if (empty($pointer)) {
-            return $this->getRecProperty($this->data, $name, $depth);
+            return $this->getRecProperty($this->data, null, $depth);
         } else {
             // for schemas inside the definitions we use the key as title
             if (strpos($pointer, $this->definitionKey) === 0) {
-                $name = substr($pointer, 14);
+                $name = trim(substr($pointer, strlen($this->definitionKey)), '/');
             } else {
                 throw new \RuntimeException('Can only resolve local schemas, given ' . $pointer);
             }
@@ -238,7 +234,7 @@ class Document
         } elseif ($property instanceof UnionType) {
             $this->parseUnion($property, $data, $depth);
         } elseif ($property instanceof ReferenceType) {
-            $property = $this->parseReference($property, $data, $name, $depth);
+            $property = $this->parseReference($property, $data, $depth);
         } elseif ($property instanceof GenericType) {
             $property = $this->parseGeneric($property, $data);
         }
@@ -437,9 +433,14 @@ class Document
         }
     }
 
-    protected function parseReference(ReferenceType $property, array $data, $name, $depth): PropertyInterface
+    protected function parseReference(ReferenceType $property, array $data, $depth): PropertyInterface
     {
         $ref = $data['$ref'];
+
+        $name = null;
+        if (strpos($ref, $this->definitionKey) === 0) {
+            $name = trim(substr($ref, strlen($this->definitionKey)), '/');
+        }
 
         array_push($this->refs, $ref);
 
@@ -448,20 +449,24 @@ class Document
         }
 
         // in case the referenced template contains generics
-        $template = $property->getTemplate();
-        if (!empty($template)) {
+        if (isset($data['$template']) && is_array($data['$template'])) {
+            $template = [];
+            foreach ($data['$template'] as $key => $prop) {
+                $template[$key] = $this->getRecProperty($prop, null, $depth + 1);
+            }
+
             array_push($this->template, $template);
         }
 
         if (in_array($name, $this->definitions)) {
             // in this case we have a local reference
-            $return = $this->getProperty($this->definitionKey . '/' . $name, $name, $depth);
+            $return = $this->getProperty($this->definitionKey . '/' . $name, $depth);
         } else {
             // in this case we have a reference to a different schema
-            $return = $this->resolver->resolve($this, new Uri($ref), $name, $depth);
+            $return = $this->resolver->resolve($this, new Uri($ref), $depth);
         }
 
-        if (!empty($template)) {
+        if (isset($data['$template'])) {
             array_pop($this->template);
         }
 
@@ -564,5 +569,31 @@ class Document
         }
 
         return $data;
+    }
+
+    private function lookupDefinitionKeys(string $definitionKey): array
+    {
+        try {
+            $definitions = $this->pointer($definitionKey);
+            if (is_array($definitions)) {
+                return array_keys($definitions);
+            }
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        return [];
+    }
+
+    private function buildBaseUri(): Uri
+    {
+        if (isset($this->data['$id'])) {
+            return new Uri($this->data['$id']);
+        } elseif (isset($this->data['id'])) {
+            return new Uri($this->data['id']);
+        } elseif ($this->source instanceof Uri) {
+            return clone $this->source;
+        } else {
+            return new Uri('http://phpsx.org/2019/data#');
+        }
     }
 }

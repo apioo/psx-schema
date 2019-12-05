@@ -64,16 +64,15 @@ class RefResolver
      *
      * @param \PSX\Schema\Parser\JsonSchema\Document $document
      * @param \PSX\Uri\Uri $ref
-     * @param string $name
      * @param integer $depth
      * @return \PSX\Schema\PropertyInterface
      */
-    public function resolve(Document $document, Uri $ref, $name, $depth)
+    public function resolve(Document $document, Uri $ref, $depth)
     {
         $uri = $this->resolver->resolve($document->getBaseUri(), $ref);
         $doc = $this->getDocument($uri, $document);
 
-        return $doc->getProperty($uri->getFragment(), $name, $depth);
+        return $doc->getProperty($uri->getFragment(), $depth);
     }
 
     /**

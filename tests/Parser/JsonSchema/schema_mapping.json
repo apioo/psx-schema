@@ -1,5 +1,5 @@
 {
-  "id": "http://schema.org/bar#",
+  "$id": "http://schema.org/bar#",
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {

@@ -1,6 +1,6 @@
 {
   "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
-  "id": "urn:schema.phpsx.org#",
+  "$id": "urn:schema.phpsx.org#",
   "definitions": {
     "ref72828040aecd82459c3636a4226e81fc": {
       "type": "object",

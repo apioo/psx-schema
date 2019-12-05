@@ -1,5 +1,5 @@
 {
-    "id": "http://schema.org/foo#",
+    "$id": "http://schema.org/foo#",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Some schema",
     "title": "record",
@@ -12,15 +12,11 @@
             "$ref": "file:///other_schema.json#"
         },
         "foo": {
-            "extends": "file:///other_schema.json#/definitions/foo",
+            "type": "integer",
             "maximum": 12
         },
         "value": {
             "$ref": "http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
-        },
-        "test": {
-            "extends": "file:///other_schema.json#/definitions/obj",
-            "required": ["index", "foo"]
         },
         "normal": {
             "$ref": "file:///other_schema.json#/definitions/obj"
@@ -102,8 +98,6 @@
         "uri": {
           "type": "string",
           "format": "uri"
-        },
-        "unknown": {
         }
     }
 }
