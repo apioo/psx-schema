@@ -112,17 +112,23 @@ final class Property
     /**
      * @return \PSX\Schema\Type\StructType
      */
-    public static function getStruct()
+    public static function getStruct(string $title)
     {
-        return new StructType();
+        $type = new StructType();
+        $type->setTitle($title);
+
+        return $type;
     }
 
     /**
      * @return \PSX\Schema\Type\MapType
      */
-    public static function getMap()
+    public static function getMap(string $title)
     {
-        return new MapType();
+        $type = new MapType();
+        $type->setTitle($title);
+
+        return $type;
     }
 
     /**

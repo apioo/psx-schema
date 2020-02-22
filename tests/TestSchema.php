@@ -37,21 +37,21 @@ class TestSchema extends SchemaAbstract
 {
     public function getDefinition()
     {
-        $location = Property::getStruct();
+        $location = Property::getStruct('Location');
         $location->setDescription('Location of the person');
         $location->addProperty('lat', Property::getNumber());
         $location->addProperty('long', Property::getNumber());
         $location->setRequired(['lat', 'long']);
         $location->setAttribute(PropertyType::ATTR_CLASS, Popo\Location::class);
 
-        $web = Property::getStruct();
+        $web = Property::getStruct('Web');
         $web->setDescription('An application');
         $web->addProperty('name', Property::getString());
         $web->addProperty('url', Property::getString());
         $web->setRequired(['name', 'url']);
         $web->setAttribute(PropertyType::ATTR_CLASS, Popo\Web::class);
 
-        $author = Property::getStruct();
+        $author = Property::getStruct('Author');
         $author->setDescription('An simple author element with some description');
         $author->addProperty('title', Property::getString()
             ->setPattern('[A-z]{3,16}'));
@@ -68,13 +68,13 @@ class TestSchema extends SchemaAbstract
         $author->setRequired(['title']);
         $author->setAttribute(PropertyType::ATTR_CLASS, Popo\Author::class);
 
-        $meta = Property::getMap();
+        $meta = Property::getMap('Meta');
         $meta->setAdditionalProperties(Property::getString());
         $meta->setAttribute(PropertyType::ATTR_CLASS, Popo\Meta::class);
 
-        $news = Property::getStruct();
+        $news = Property::getStruct('News');
         $news->setDescription('An general news entry');
-        $news->addProperty('config', Property::getMap()
+        $news->addProperty('config', Property::getMap('Config')
             ->setAdditionalProperties(Property::getString()));
         $news->addProperty('tags', Property::getArray()
             ->setItems(Property::getString())

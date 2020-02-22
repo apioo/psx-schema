@@ -23,6 +23,15 @@ namespace PSX\Schema\Generator\Type;
 use PSX\Schema\Generator\GeneratorTrait;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 
 /**
  * TypeAbstract
@@ -40,23 +49,28 @@ abstract class TypeAbstract implements TypeInterface
      */
     public function getType(PropertyInterface $property): string
     {
-        $type = $this->getRealType($property);
-
-        if ($type === PropertyType::TYPE_STRING) {
+        if ($property instanceof StringType) {
             return $this->getStringType($property);
-        } elseif ($type === PropertyType::TYPE_INTEGER) {
+        } elseif ($property instanceof IntegerType) {
             return $this->getIntegerType($property);
-        } elseif ($type === PropertyType::TYPE_NUMBER) {
+        } elseif ($property instanceof NumberType) {
             return $this->getNumber();
-        } elseif ($type === PropertyType::TYPE_BOOLEAN) {
+        } elseif ($property instanceof BooleanType) {
             return $this->getBoolean();
-        } elseif ($type === PropertyType::TYPE_ARRAY) {
+        } elseif ($property instanceof ArrayType) {
             return $this->getArrayType($property);
-        } elseif ($type === PropertyType::TYPE_OBJECT) {
-            return $this->getObjectType($property);
-        } elseif ($property->getOneOf()) {
+        } elseif ($property instanceof StructType) {
+            return $this->getStruct($this->getIdentifierForProperty($property));
+        } elseif ($property instanceof MapType) {
+            $additional = $property->getAdditionalProperties();
+            if ($additional === true) {
+                return $this->getMap($this->getIdentifierForProperty($property), $this->getAny());
+            } elseif ($additional instanceof PropertyInterface) {
+                return $this->getMap($this->getIdentifierForProperty($property), $this->getType($additional));
+            }
+        } elseif ($property instanceof UnionType) {
             return $this->getUnion($this->getCombinationType($property->getOneOf()));
-        } elseif ($property->getAllOf()) {
+        } elseif ($property instanceof IntersectionType) {
             return $this->getIntersection($this->getCombinationType($property->getAllOf()));
         }
 
@@ -252,22 +266,6 @@ abstract class TypeAbstract implements TypeInterface
     }
 
     /**
-     * @param PropertyInterface $property
-     * @return string
-     */
-    private function getObjectType(PropertyInterface $property): string
-    {
-        $additional = $property->getAdditionalProperties();
-        if ($additional === true) {
-            return $this->getMap($this->getIdentifierForProperty($property), $this->getAny());
-        } elseif ($additional instanceof PropertyInterface) {
-            return $this->getMap($this->getIdentifierForProperty($property), $this->getType($additional));
-        }
-
-        return $this->getStruct($this->getIdentifierForProperty($property));
-    }
-
-    /**
      * @param array $properties
      * @return array
      */
@@ -276,7 +274,7 @@ abstract class TypeAbstract implements TypeInterface
         $types = [];
         foreach ($properties as $property) {
             $type = $this->getType($property);
-            if ($this->isComposite($property)) {
+            if ($property instanceof UnionType || $property instanceof IntersectionType) {
                 $types[] = $this->getGroup($type);
             } else {
                 $types[] = $type;

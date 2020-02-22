@@ -21,7 +21,12 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 
 /**
  * GeneratorTrait
@@ -39,7 +44,7 @@ trait GeneratorTrait
             $className = preg_replace('/[^a-zA-Z_\x7f-\xff]/u', '_', $title);
             $className = ucfirst($className);
         } else {
-            $className = 'Object' . substr($property->getConstraintId(), 0, 8);
+            $className = 'Object' . substr(md5(spl_object_hash($property)), 0, 8);
         }
 
         return $className;
@@ -49,102 +54,36 @@ trait GeneratorTrait
     {
         $result = [];
 
-        if ($this->isScalar($property)) {
+        if ($property instanceof ScalarType) {
             return [];
-        } elseif ($this->isObject($property)) {
+        } elseif ($property instanceof StructType) {
             $result[] = $property;
-
-            $patternProperties = $property->getPatternProperties();
-            if ($patternProperties) {
-                foreach ($patternProperties as $prop) {
-                    $result = array_merge($result, $this->getSubSchemas($prop));
-                }
-            }
-
+        } elseif ($property instanceof MapType) {
             $additionalProperties = $property->getAdditionalProperties();
             if ($additionalProperties instanceof PropertyInterface) {
                 $result = array_merge($result, $this->getSubSchemas($additionalProperties));
             }
-        } elseif ($this->isArray($property)) {
+        } elseif ($property instanceof ArrayType) {
             $items = $property->getItems();
             if ($items instanceof PropertyInterface) {
                 $result = array_merge($result, $this->getSubSchemas($items));
             }
-
-            $additionalItems = $property->getAdditionalItems();
-            if ($additionalItems instanceof PropertyInterface) {
-                $result = array_merge($result, $this->getSubSchemas($additionalItems));
-            }
-        } elseif ($this->isComposite($property)) {
-            $allOf = $property->getAllOf();
-            $anyOf = $property->getAnyOf();
+        } elseif ($property instanceof UnionType) {
             $oneOf = $property->getOneOf();
-            if (!empty($allOf)) {
-                foreach ($allOf as $prop) {
-                    $result = array_merge($result, $this->getSubSchemas($prop));
-                }
-            } elseif (!empty($anyOf)) {
-                foreach ($anyOf as $prop) {
-                    $result = array_merge($result, $this->getSubSchemas($prop));
-                }
-            } elseif (!empty($oneOf)) {
+            if (!empty($oneOf)) {
                 foreach ($oneOf as $prop) {
                     $result = array_merge($result, $this->getSubSchemas($prop));
                 }
             }
-        }
-
-        $not = $property->getNot();
-        if ($not instanceof PropertyInterface) {
-            $result = array_merge($result, $this->getSubSchemas($not));
-        }
-
-        return $result;
-    }
-
-    protected function isObject(PropertyInterface $property)
-    {
-        return $this->getRealType($property) === PropertyType::TYPE_OBJECT;
-    }
-
-    protected function isArray(PropertyInterface $property)
-    {
-        return $this->getRealType($property) === PropertyType::TYPE_ARRAY;
-    }
-
-    protected function isScalar(PropertyInterface $property)
-    {
-        return in_array($this->getRealType($property), [
-            PropertyType::TYPE_STRING,
-            PropertyType::TYPE_BOOLEAN,
-            PropertyType::TYPE_INTEGER,
-            PropertyType::TYPE_NUMBER,
-            PropertyType::TYPE_NULL,
-        ]);
-    }
-
-    public function isComposite(PropertyInterface $property)
-    {
-        return $property->getOneOf() || $property->getAnyOf() || $property->getAllOf();
-    }
-
-    protected function getRealType(PropertyInterface $property)
-    {
-        $type = $property->getType();
-        if (empty($type)) {
-            // if we have no type we try to guess it based on the available
-            // constraints
-            if ($property->getProperties() !== null || $property->getPatternProperties() !== null || $property->getAdditionalProperties() !== null) {
-                $type = PropertyType::TYPE_OBJECT;
-            } elseif ($property->getItems() !== null || $property->getAdditionalItems() !== null) {
-                $type = PropertyType::TYPE_ARRAY;
-            } elseif ($property->getMaximum() !== null || $property->getMinimum() !== null || $property->getMultipleOf() !== null) {
-                $type = PropertyType::TYPE_NUMBER;
-            } elseif ($property->getMaxLength() !== null || $property->getMinLength() !== null || $property->getFormat() !== null || $property->getPattern() !== null) {
-                $type = PropertyType::TYPE_STRING;
+        } elseif ($property instanceof IntersectionType) {
+            $allOf = $property->getAllOf();
+            if (!empty($allOf)) {
+                foreach ($allOf as $prop) {
+                    $result = array_merge($result, $this->getSubSchemas($prop));
+                }
             }
         }
 
-        return $type;
+        return $result;
     }
 }

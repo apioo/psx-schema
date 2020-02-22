@@ -37,13 +37,12 @@ class BuilderTest extends TestCase
 {
     public function testBuilder()
     {
-        $builder = new Builder('foo');
+        $struct = Property::getStruct();
 
         $builder
             ->setDescription('bar')
             ->setRequired(['foo', 'bar'])
-            ->addPatternProperty('^x-', Property::getInteger())
-            ->setAdditionalProperties(Property::getString())
+            ->addProperty('^x-', Property::getInteger())
             ->setClass('stdClass');
 
         $property = $builder->getProperty();
