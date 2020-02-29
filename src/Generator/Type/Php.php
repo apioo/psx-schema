@@ -119,8 +119,11 @@ class Php extends TypeAbstract
 
     protected function getUnion(array $types): string
     {
-        // @TODO currently not possible but there is an RFC for union types
-        return '';
+        if (PHP_MAJOR_VERSION >= 8) {
+            return implode('|', $types);
+        } else {
+            return '';
+        }
     }
 
     protected function getIntersection(array $types): string
