@@ -72,5 +72,7 @@ class ParseCommand extends Command
         $response  = $generator->generate($schema);
 
         $output->write($response);
+
+        return 0;
     }
 }
