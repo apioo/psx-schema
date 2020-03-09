@@ -145,11 +145,7 @@ class JsonSchema implements GeneratorInterface
             }
         }
 
-        if (empty($result)) {
-            return new \stdClass();
-        } else {
-            return $result;
-        }
+        return $result;
     }
 
     protected function getRef(PropertyInterface $property)
