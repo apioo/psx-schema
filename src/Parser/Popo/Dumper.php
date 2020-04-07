@@ -168,6 +168,18 @@ class Dumper
             foreach ($data as $value) {
                 $result[] = $this->dump($value);
             }
+        } elseif ($items instanceof Annotation\OneOf) {
+            foreach ($data as $value) {
+                $result[] = $this->dump($value);
+            }
+        } elseif ($items instanceof Annotation\AnyOf) {
+            foreach ($data as $value) {
+                $result[] = $this->dump($value);
+            }
+        } elseif ($items instanceof Annotation\AllOf) {
+            foreach ($data as $value) {
+                $result[] = $this->dump($value);
+            }
         } elseif (is_array($items)) {
             foreach ($data as $index => $value) {
                 if (isset($items[$index])) {

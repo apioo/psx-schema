@@ -242,6 +242,18 @@ class Popo implements ParserInterface
             $property = new PropertyType();
             $this->parsePropertyAnnotations($property, $value->getAnnotations());
             return $property;
+        } elseif ($value instanceof Annotation\OneOf) {
+            $property = new PropertyType();
+            $property->setOneOf($this->parseRefs($value->getProperties()));
+            return $property;
+        } elseif ($value instanceof Annotation\AnyOf) {
+            $property = new PropertyType();
+            $property->setAnyOf($this->parseRefs($value->getProperties()));
+            return $property;
+        } elseif ($value instanceof Annotation\AllOf) {
+            $property = new PropertyType();
+            $property->setAllOf($this->parseRefs($value->getProperties()));
+            return $property;
         } elseif ($allowBoolean && is_bool($value)) {
             return $value;
         }
