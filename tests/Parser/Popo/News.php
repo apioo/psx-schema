@@ -218,7 +218,7 @@ class News
     /**
      * @JS\Key("resources")
      * @JS\Type("array")
-     * @JS\Items(@JS\Schema(oneOf={@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web")}))
+     * @JS\Items(@JS\OneOf(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web")))
      */
     public $resources;
     /**
