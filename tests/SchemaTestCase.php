@@ -22,10 +22,6 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
-use PSX\Schema\Property\ArrayType;
-use PSX\Schema\Property\ComplexType;
-use PSX\Schema\Property\CompositeTypeAbstract;
-use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
