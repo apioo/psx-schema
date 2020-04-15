@@ -20,11 +20,15 @@
 
 namespace PSX\Schema\Tests;
 
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\Tests\Parser\Popo;
+use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\TypeFactory;
+use PSX\Schema\TypeInterface;
 
 /**
  * TestSchema
@@ -35,85 +39,93 @@ use PSX\Schema\Tests\Parser\Popo;
  */
 class TestSchema extends SchemaAbstract
 {
-    public function getDefinition()
+    public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $location = Property::getStruct('Location');
+        $location = TypeFactory::getStruct();
         $location->setDescription('Location of the person');
-        $location->addProperty('lat', Property::getNumber());
-        $location->addProperty('long', Property::getNumber());
+        $location->addProperty('lat', TypeFactory::getNumber());
+        $location->addProperty('long', TypeFactory::getNumber());
         $location->setRequired(['lat', 'long']);
-        $location->setAttribute(PropertyType::ATTR_CLASS, Popo\Location::class);
+        $location->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Location::class);
+        $definitions->addType('Location', $location);
 
-        $web = Property::getStruct('Web');
+        $web = TypeFactory::getStruct();
         $web->setDescription('An application');
-        $web->addProperty('name', Property::getString());
-        $web->addProperty('url', Property::getString());
+        $web->addProperty('name', TypeFactory::getString());
+        $web->addProperty('url', TypeFactory::getString());
         $web->setRequired(['name', 'url']);
-        $web->setAttribute(PropertyType::ATTR_CLASS, Popo\Web::class);
+        $web->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Web::class);
+        $definitions->addType('Web', $web);
 
-        $author = Property::getStruct('Author');
+        $author = TypeFactory::getStruct();
         $author->setDescription('An simple author element with some description');
-        $author->addProperty('title', Property::getString()
+        $author->addProperty('title', TypeFactory::getString()
             ->setPattern('[A-z]{3,16}'));
-        $author->addProperty('email', Property::getString()
+        $author->addProperty('email', TypeFactory::getString()
             ->setDescription('We will send no spam to this address')
             ->setNullable(true));
-        $author->addProperty('categories', Property::getArray()
-            ->setItems(Property::getString())
+        $author->addProperty('categories', TypeFactory::getArray()
+            ->setItems(TypeFactory::getString())
             ->setMaxItems(8));
-        $author->addProperty('locations', Property::getArray()
+        $author->addProperty('locations', TypeFactory::getArray()
             ->setDescription('Array of locations')
-            ->setItems($location));
-        $author->addProperty('origin', $location);
+            ->setItems(TypeFactory::getReference('Location')));
+        $author->addProperty('origin', TypeFactory::getReference('Location'));
         $author->setRequired(['title']);
-        $author->setAttribute(PropertyType::ATTR_CLASS, Popo\Author::class);
+        $author->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Author::class);
+        $definitions->addType('Author', $author);
 
-        $meta = Property::getMap('Meta');
-        $meta->setAdditionalProperties(Property::getString());
-        $meta->setAttribute(PropertyType::ATTR_CLASS, Popo\Meta::class);
+        $meta = TypeFactory::getMap();
+        $meta->setAdditionalProperties(TypeFactory::getString());
+        $meta->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Meta::class);
+        $definitions->addType('Meta', $meta);
 
-        $news = Property::getStruct('News');
+        $news = TypeFactory::getStruct();
         $news->setDescription('An general news entry');
-        $news->addProperty('config', Property::getMap('Config')
-            ->setAdditionalProperties(Property::getString()));
-        $news->addProperty('tags', Property::getArray()
-            ->setItems(Property::getString())
+        $news->addProperty('config', TypeFactory::getReference('Meta'));
+        $news->addProperty('tags', TypeFactory::getArray()
+            ->setItems(TypeFactory::getString())
             ->setMinItems(1)
             ->setMaxItems(6));
-        $news->addProperty('receiver', Property::getArray()
-            ->setItems($author)
+        $news->addProperty('receiver', TypeFactory::getArray()
+            ->setItems(TypeFactory::getReference('Author'))
             ->setMinItems(1));
-        $news->addProperty('resources', Property::getUnion()
-            ->setOneOf([$location, $web]));
-        $news->addProperty('profileImage', Property::getBinary());
-        $news->addProperty('read', Property::getBoolean());
-        $news->addProperty('source', Property::getUnion()
-            ->setOneOf([$author, $web]));
-        $news->addProperty('author', $author);
+        $news->addProperty('resources', TypeFactory::getArray()
+            ->setItems(TypeFactory::getUnion([
+                TypeFactory::getReference('Location'),
+                TypeFactory::getReference('Web')
+            ])));
+        $news->addProperty('profileImage', TypeFactory::getBinary());
+        $news->addProperty('read', TypeFactory::getBoolean());
+        $news->addProperty('source', TypeFactory::getUnion([
+            TypeFactory::getReference('Author'),
+            TypeFactory::getReference('Web')
+        ]));
+        $news->addProperty('author', TypeFactory::getReference('Author'));
         $news->addProperty('meta', $meta);
-        $news->addProperty('sendDate', Property::getDate());
-        $news->addProperty('readDate', Property::getDateTime());
-        $news->addProperty('expires', Property::getDuration());
-        $news->addProperty('price', Property::getNumber()
+        $news->addProperty('sendDate', TypeFactory::getDate());
+        $news->addProperty('readDate', TypeFactory::getDateTime());
+        $news->addProperty('expires', TypeFactory::getDuration());
+        $news->addProperty('price', TypeFactory::getNumber()
             ->setMinimum(1)
             ->setMaximum(100));
-        $news->addProperty('rating', Property::getInteger()
+        $news->addProperty('rating', TypeFactory::getInteger()
             ->setMinimum(1)
             ->setMaximum(5));
-        $news->addProperty('content', Property::getString()
+        $news->addProperty('content', TypeFactory::getString()
             ->setDescription('Contains the main content of the news entry')
             ->setMinLength(3)
             ->setMaxLength(512));
-        $news->addProperty('question', Property::getString()
+        $news->addProperty('question', TypeFactory::getString()
             ->setEnum(['foo', 'bar']));
-        $news->addProperty('version', Property::getString()
+        $news->addProperty('version', TypeFactory::getString()
             ->setConst('http://foo.bar'));
-        $news->addProperty('coffeeTime', Property::getTime());
-        $news->addProperty('profileUri', Property::getUri());
-        $news->addProperty('g-recaptcha-response', Property::getString());
+        $news->addProperty('coffeeTime', TypeFactory::getTime());
+        $news->addProperty('profileUri', TypeFactory::getUri());
+        $news->addProperty('g-recaptcha-response', TypeFactory::getString());
         $news->setRequired(['receiver', 'price', 'content']);
-        $news->setAttribute(PropertyType::ATTR_CLASS, Popo\News::class);
-        $news->setAttribute(PropertyType::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
+        $news->setAttribute(TypeAbstract::ATTR_CLASS, Popo\News::class);
+        $news->setAttribute(TypeAbstract::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
 
         return $news;
     }

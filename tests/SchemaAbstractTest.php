@@ -44,7 +44,7 @@ class SchemaAbstractTest extends TestCase
      */
     protected $schemaManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader        = new AnnotationReader();
         $this->schemaManager = new SchemaManager($this->reader);

@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Markdown
@@ -34,7 +35,7 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Markdown();
     }
@@ -42,7 +43,7 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, TypeInterface $type, ?string $extends): string
     {
         $return = '<a name="' . $struct->getName() . '"></a>' . "\n";
         $return.= str_repeat('#', $this->heading) . ' ' . $struct->getName() . "\n";
@@ -59,7 +60,7 @@ class Markdown extends MarkupAbstract
 
         foreach ($struct->getProperties() as $name => $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getProperty());
+            $constraints = $this->getConstraints($property->getOrigin());
 
             $row = [
                 $name,

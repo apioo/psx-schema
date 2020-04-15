@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Html
@@ -34,7 +35,7 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Html();
     }
@@ -42,7 +43,7 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment): string
     {
         $return = '<div id="' . $struct->getName() . '" class="psx-object">';
         $return.= '<h' . $this->heading . '>' . htmlspecialchars($struct->getName()) . '</h' . $this->heading . '>';
@@ -69,7 +70,7 @@ class Html extends MarkupAbstract
 
         foreach ($struct->getProperties() as $name => $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getProperty());
+            $constraints = $this->getConstraints($property->getOrigin());
 
             $prop.= '<tr>';
             $prop.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';

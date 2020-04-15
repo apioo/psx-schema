@@ -1,8 +1,90 @@
 /**
+ * Location of the person
+ */
+public static class Location {
+    private float lat;
+    private float long;
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+    public float getLat() {
+        return this.lat;
+    }
+    public void setLong(float long) {
+        this.long = long;
+    }
+    public float getLong() {
+        return this.long;
+    }
+}
+
+/**
+ * An application
+ */
+public static class Web {
+    private String name;
+    private String url;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return this.name;
+    }
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    public String getUrl() {
+        return this.url;
+    }
+}
+
+/**
+ * An simple author element with some description
+ */
+public static class Author {
+    private String title;
+    private String email;
+    private String[] categories;
+    private Location[] locations;
+    private Location origin;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getTitle() {
+        return this.title;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getEmail() {
+        return this.email;
+    }
+    public void setCategories(String[] categories) {
+        this.categories = categories;
+    }
+    public String[] getCategories() {
+        return this.categories;
+    }
+    public void setLocations(Location[] locations) {
+        this.locations = locations;
+    }
+    public Location[] getLocations() {
+        return this.locations;
+    }
+    public void setOrigin(Location origin) {
+        this.origin = origin;
+    }
+    public Location getOrigin() {
+        return this.origin;
+    }
+}
+
+
+/**
  * An general news entry
  */
-public static class News {
-    private Config config;
+public static class RootSchema {
+    private HashMap<string, String> config;
     private String[] tags;
     private Author[] receiver;
     private Object[] resources;
@@ -10,7 +92,7 @@ public static class News {
     private boolean read;
     private Object source;
     private Author author;
-    private Meta meta;
+    private HashMap<string, String> meta;
     private String sendDate;
     private String readDate;
     private String expires;
@@ -22,10 +104,10 @@ public static class News {
     private String coffeeTime;
     private String profileUri;
     private String captcha;
-    public void setConfig(Config config) {
+    public void setConfig(HashMap<string, String> config) {
         this.config = config;
     }
-    public Config getConfig() {
+    public HashMap<string, String> getConfig() {
         return this.config;
     }
     public void setTags(String[] tags) {
@@ -70,10 +152,10 @@ public static class News {
     public Author getAuthor() {
         return this.author;
     }
-    public void setMeta(Meta meta) {
+    public void setMeta(HashMap<string, String> meta) {
         this.meta = meta;
     }
-    public Meta getMeta() {
+    public HashMap<string, String> getMeta() {
         return this.meta;
     }
     public void setSendDate(String sendDate) {
@@ -141,102 +223,5 @@ public static class News {
     }
     public String getCaptcha() {
         return this.captcha;
-    }
-}
-
-public static class Config extends HashMap<String, String> {
-}
-
-/**
- * An simple author element with some description
- */
-public static class Author {
-    private String title;
-    private Object email;
-    private String[] categories;
-    private Location[] locations;
-    private Location origin;
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getTitle() {
-        return this.title;
-    }
-    public void setEmail(Object email) {
-        this.email = email;
-    }
-    public Object getEmail() {
-        return this.email;
-    }
-    public void setCategories(String[] categories) {
-        this.categories = categories;
-    }
-    public String[] getCategories() {
-        return this.categories;
-    }
-    public void setLocations(Location[] locations) {
-        this.locations = locations;
-    }
-    public Location[] getLocations() {
-        return this.locations;
-    }
-    public void setOrigin(Location origin) {
-        this.origin = origin;
-    }
-    public Location getOrigin() {
-        return this.origin;
-    }
-}
-
-/**
- * Location of the person
- */
-public static class Location {
-    private float lat;
-    private float long;
-    public void setLat(float lat) {
-        this.lat = lat;
-    }
-    public float getLat() {
-        return this.lat;
-    }
-    public void setLong(float long) {
-        this.long = long;
-    }
-    public float getLong() {
-        return this.long;
-    }
-}
-
-/**
- * An application
- */
-public static class Web {
-    private String name;
-    private String url;
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    public String getUrl() {
-        return this.url;
-    }
-}
-
-/**
- * Some meta data
- */
-public static class Meta {
-    private String createDate;
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
-    public String getCreateDate() {
-        return this.createDate;
     }
 }

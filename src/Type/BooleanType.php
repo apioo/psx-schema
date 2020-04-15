@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyType;
-
 /**
  * BooleanType
  *
@@ -29,7 +27,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class BooleanType extends PropertyType
+class BooleanType extends TypeAbstract
 {
     public function toArray(): array
     {

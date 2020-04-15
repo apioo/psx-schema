@@ -18,70 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator\Code;
+namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeInterface;
 
 /**
- * Struct
+ * A generator can implement this interface if it has the ability to resolve a
+ * type from a schema instance
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Struct
+interface GeneratorInterface
 {
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var array
-     */
-    private $properties;
-    
-    /**
-     * @var PropertyInterface
-     */
-    private $property;
-
-    public function __construct(string $name, array $properties, PropertyInterface $property)
-    {
-        $this->name = $name;
-        $this->properties = $properties;
-        $this->property = $property;
-    }
-
-    /**
+     * Returns a type string
+     * 
+     * @param \PSX\Schema\TypeInterface $type
      * @return string
      */
-    public function getName(): string
-    {
-        return $this->name;
-    }
+    public function getType(TypeInterface $type): string;
 
     /**
-     * @return array
-     */
-    public function getProperties(): array
-    {
-        return $this->properties;
-    }
-
-    /**
+     * Returns a doc type string
+     *
+     * @param \PSX\Schema\TypeInterface $type
      * @return string
      */
-    public function getComment(): ?string
-    {
-        return $this->property->getDescription();
-    }
-
-    /**
-     * @return PropertyInterface
-     */
-    public function getProperty(): PropertyInterface
-    {
-        return $this->property;
-    }
+    public function getDocType(TypeInterface $type): string;
 }

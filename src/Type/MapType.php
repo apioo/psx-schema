@@ -20,8 +20,7 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\TypeInterface;
 
 /**
  * MapType
@@ -30,10 +29,10 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MapType extends PropertyType
+class MapType extends ObjectType
 {
     /**
-     * @var PropertyInterface
+     * @var TypeInterface
      */
     protected $additionalProperties;
 
@@ -48,7 +47,7 @@ class MapType extends PropertyType
     protected $maxProperties;
 
     /**
-     * @return bool|PropertyInterface
+     * @return bool|TypeInterface
      */
     public function getAdditionalProperties()
     {
@@ -56,13 +55,19 @@ class MapType extends PropertyType
     }
 
     /**
-     * @param bool|PropertyInterface $additionalProperties
+     * @param bool|TypeInterface $additionalProperties
      * @return self
      */
     public function setAdditionalProperties($additionalProperties): self
     {
-        if (!is_bool($additionalProperties) && !$additionalProperties instanceof PropertyInterface) {
-            throw new \InvalidArgumentException('Additional properties must be either a boolean or PropertyInterface');
+        if (!is_bool($additionalProperties) && !$additionalProperties instanceof TypeInterface) {
+            throw new \InvalidArgumentException('Additional properties must be either a boolean or TypeInterface');
+        }
+
+        if ($additionalProperties === false) {
+            throw new \InvalidArgumentException('Map additional properties must not be false only true is allowed as boolean value');
+        } elseif ($additionalProperties instanceof StructType) {
+            throw new \InvalidArgumentException('Map additional properties must be of type string, number, boolean, array or reference');
         }
 
         $this->additionalProperties = $additionalProperties;
@@ -122,7 +127,7 @@ class MapType extends PropertyType
     {
         if ($this->additionalProperties !== null) {
             $additionalProperties = $this->additionalProperties;
-            if ($additionalProperties instanceof PropertyInterface) {
+            if ($additionalProperties instanceof TypeInterface) {
                 $this->additionalProperties = clone $additionalProperties;
             }
         }

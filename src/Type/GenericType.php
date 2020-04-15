@@ -20,9 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
-
 /**
  * GenericType
  *
@@ -30,7 +27,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class GenericType extends PropertyType
+class GenericType extends TypeAbstract
 {
     /**
      * @var string
@@ -40,7 +37,7 @@ class GenericType extends PropertyType
     /**
      * @return string
      */
-    public function getGeneric(): string
+    public function getGeneric(): ?string
     {
         return $this->generic;
     }

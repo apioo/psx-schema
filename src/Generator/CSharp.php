@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * CSharp
@@ -34,7 +35,7 @@ class CSharp extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\CSharp();
     }
@@ -42,31 +43,27 @@ class CSharp extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $code = $this->writeHeader($struct->getComment());
-        $code.= 'public class ' . $struct->getName() . "\n";
+        $code = $this->writeHeader($comment);
+        $code.= 'public class ' . $name;
+
+        if (!empty($generics)) {
+            $code.= '<' . implode(', ', $generics) . '>';
+        }
+
+        if (!empty($extends)) {
+            $code.= ' extends ' . $extends;
+        }
+
+        $code.= "\n";
         $code.= '{' . "\n";
 
-        foreach ($struct->getProperties() as $name => $property) {
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . 'public ' . $property->getType() . ' ' . ucfirst($name) . ' { get; set; }' . "\n";
         }
 
-        $code.= '}' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        $code = $this->writeHeader($map->getComment());
-        $code.= 'public class ' . $map->getName() . ' : Dictionary<string, ' . $map->getType() . '>' . "\n";
-        $code.= '{' . "\n";
         $code.= '}' . "\n";
         $code.= $this->writerFooter();
 

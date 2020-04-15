@@ -1,143 +1,193 @@
 /**
- * @Title("news")
- * @Description("An general news entry")
- * @AdditionalProperties(false)
- * @Required({"receiver", "price", "content"})
+ * Location of the person
  */
-class News
+class Location
 {
+    protected $lat;
+    protected $long;
     /**
-     * @Key("config")
-     * @Ref("\Config")
+     * @param float $lat
      */
+    public function setLat(?float $lat)
+    {
+        $this->lat = $lat;
+    }
+    /**
+     * @return float
+     */
+    public function getLat() : ?float
+    {
+        return $this->lat;
+    }
+    /**
+     * @param float $long
+     */
+    public function setLong(?float $long)
+    {
+        $this->long = $long;
+    }
+    /**
+     * @return float
+     */
+    public function getLong() : ?float
+    {
+        return $this->long;
+    }
+}
+/**
+ * An application
+ */
+class Web
+{
+    protected $name;
+    protected $url;
+    /**
+     * @param string $name
+     */
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * @return string
+     */
+    public function getName() : ?string
+    {
+        return $this->name;
+    }
+    /**
+     * @param string $url
+     */
+    public function setUrl(?string $url)
+    {
+        $this->url = $url;
+    }
+    /**
+     * @return string
+     */
+    public function getUrl() : ?string
+    {
+        return $this->url;
+    }
+}
+/**
+ * Array of locations
+ */
+class Author
+{
+    protected $title;
+    protected $email;
+    protected $categories;
+    protected $locations;
+    protected $origin;
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
+    {
+        $this->title = $title;
+    }
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
+    {
+        return $this->title;
+    }
+    /**
+     * @param string $email
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+    }
+    /**
+     * @return string
+     */
+    public function getEmail() : ?string
+    {
+        return $this->email;
+    }
+    /**
+     * @param array<string> $categories
+     */
+    public function setCategories(?array $categories)
+    {
+        $this->categories = $categories;
+    }
+    /**
+     * @return array<string>
+     */
+    public function getCategories() : ?array
+    {
+        return $this->categories;
+    }
+    /**
+     * @param array<Location> $locations
+     */
+    public function setLocations(?array $locations)
+    {
+        $this->locations = $locations;
+    }
+    /**
+     * @return array<Location>
+     */
+    public function getLocations() : ?array
+    {
+        return $this->locations;
+    }
+    /**
+     * @param Location $origin
+     */
+    public function setOrigin(?Location $origin)
+    {
+        $this->origin = $origin;
+    }
+    /**
+     * @return Location
+     */
+    public function getOrigin() : ?Location
+    {
+        return $this->origin;
+    }
+}
+
+/**
+ * Contains the main content of the news entry
+ */
+class RootSchema
+{
     protected $config;
-    /**
-     * @Key("tags")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(6)
-     * @MinItems(1)
-     */
     protected $tags;
-    /**
-     * @Key("receiver")
-     * @Type("array")
-     * @Items(@Ref("\Author"))
-     * @MinItems(1)
-     */
     protected $receiver;
-    /**
-     * @Key("resources")
-     * @Type("array")
-     * @Items(@Schema(title="resource", oneOf={@Ref("\Location"), @Ref("\Web")}))
-     */
     protected $resources;
-    /**
-     * @Key("profileImage")
-     * @Type("string")
-     * @Format("base64")
-     */
     protected $profileImage;
-    /**
-     * @Key("read")
-     * @Type("boolean")
-     */
     protected $read;
-    /**
-     * @Key("source")
-     * @Title("source")
-     * @OneOf(@Ref("\Author"), @Ref("\Web"))
-     */
     protected $source;
-    /**
-     * @Key("author")
-     * @Ref("\Author")
-     */
     protected $author;
-    /**
-     * @Key("meta")
-     * @Ref("\Meta")
-     */
     protected $meta;
-    /**
-     * @Key("sendDate")
-     * @Type("string")
-     * @Format("date")
-     */
     protected $sendDate;
-    /**
-     * @Key("readDate")
-     * @Type("string")
-     * @Format("date-time")
-     */
     protected $readDate;
-    /**
-     * @Key("expires")
-     * @Type("string")
-     * @Format("duration")
-     */
     protected $expires;
-    /**
-     * @Key("price")
-     * @Type("number")
-     * @Maximum(100)
-     * @Minimum(1)
-     */
     protected $price;
-    /**
-     * @Key("rating")
-     * @Type("integer")
-     * @Maximum(5)
-     * @Minimum(1)
-     */
     protected $rating;
-    /**
-     * @Key("content")
-     * @Description("Contains the main content of the news entry")
-     * @Type("string")
-     * @MaxLength(512)
-     * @MinLength(3)
-     */
     protected $content;
-    /**
-     * @Key("question")
-     * @Enum({"foo", "bar"})
-     * @Type("string")
-     */
     protected $question;
-    /**
-     * @Key("version")
-     * @Type("string")
-     */
     protected $version;
-    /**
-     * @Key("coffeeTime")
-     * @Type("string")
-     * @Format("time")
-     */
     protected $coffeeTime;
-    /**
-     * @Key("profileUri")
-     * @Type("string")
-     * @Format("uri")
-     */
     protected $profileUri;
-    /**
-     * @Key("g-recaptcha-response")
-     * @Type("string")
-     */
     protected $captcha;
     /**
-     * @param Config $config
+     * @param array<string, string> $config
      */
-    public function setConfig(?Config $config)
+    public function setConfig(?array $config)
     {
         $this->config = $config;
     }
     /**
-     * @return Config
+     * @return array<string, string>
      */
-    public function getConfig() : ?Config
+    public function getConfig() : ?array
     {
         return $this->config;
     }
@@ -240,16 +290,16 @@ class News
         return $this->author;
     }
     /**
-     * @param Meta $meta
+     * @param array<string, string> $meta
      */
-    public function setMeta(?Meta $meta)
+    public function setMeta(?array $meta)
     {
         $this->meta = $meta;
     }
     /**
-     * @return Meta
+     * @return array<string, string>
      */
-    public function getMeta() : ?Meta
+    public function getMeta() : ?array
     {
         return $this->meta;
     }
@@ -406,248 +456,5 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
-    }
-}
-/**
- * @Title("config")
- * @AdditionalProperties(@Schema(type="string"))
- */
-class Config extends \ArrayObject
-{
-}
-/**
- * @Title("author")
- * @Description("An simple author element with some description")
- * @AdditionalProperties(false)
- * @Required({"title"})
- */
-class Author
-{
-    /**
-     * @Key("title")
-     * @Type("string")
-     * @Pattern("[A-z]{3,16}")
-     */
-    protected $title;
-    /**
-     * @Key("email")
-     * @Description("We will send no spam to this address")
-     * @Type({"string", "null"})
-     */
-    protected $email;
-    /**
-     * @Key("categories")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(8)
-     */
-    protected $categories;
-    /**
-     * @Key("locations")
-     * @Description("Array of locations")
-     * @Type("array")
-     * @Items(@Ref("\Location"))
-     */
-    protected $locations;
-    /**
-     * @Key("origin")
-     * @Ref("\Location")
-     */
-    protected $origin;
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-    /**
-     * @return string
-     */
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    /**
-     * @param string|null $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-    /**
-     * @return string|null
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-    /**
-     * @param array<string> $categories
-     */
-    public function setCategories(?array $categories)
-    {
-        $this->categories = $categories;
-    }
-    /**
-     * @return array<string>
-     */
-    public function getCategories() : ?array
-    {
-        return $this->categories;
-    }
-    /**
-     * @param array<Location> $locations
-     */
-    public function setLocations(?array $locations)
-    {
-        $this->locations = $locations;
-    }
-    /**
-     * @return array<Location>
-     */
-    public function getLocations() : ?array
-    {
-        return $this->locations;
-    }
-    /**
-     * @param Location $origin
-     */
-    public function setOrigin(?Location $origin)
-    {
-        $this->origin = $origin;
-    }
-    /**
-     * @return Location
-     */
-    public function getOrigin() : ?Location
-    {
-        return $this->origin;
-    }
-}
-/**
- * @Title("location")
- * @Description("Location of the person")
- * @AdditionalProperties(true)
- * @Required({"lat", "long"})
- */
-class Location
-{
-    /**
-     * @Key("lat")
-     * @Type("number")
-     */
-    protected $lat;
-    /**
-     * @Key("long")
-     * @Type("number")
-     */
-    protected $long;
-    /**
-     * @param float $lat
-     */
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-    /**
-     * @return float
-     */
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-    /**
-     * @param float $long
-     */
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-    /**
-     * @return float
-     */
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-/**
- * @Title("web")
- * @Description("An application")
- * @AdditionalProperties(@Schema(type="string"))
- * @Required({"name", "url"})
- * @MinProperties(2)
- * @MaxProperties(8)
- */
-class Web
-{
-    /**
-     * @Key("name")
-     * @Type("string")
-     */
-    protected $name;
-    /**
-     * @Key("url")
-     * @Type("string")
-     */
-    protected $url;
-    /**
-     * @param string $name
-     */
-    public function setName(?string $name)
-    {
-        $this->name = $name;
-    }
-    /**
-     * @return string
-     */
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-    /**
-     * @param string $url
-     */
-    public function setUrl(?string $url)
-    {
-        $this->url = $url;
-    }
-    /**
-     * @return string
-     */
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-}
-/**
- * @Title("meta")
- * @Description("Some meta data")
- * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
- * @PatternProperties(pattern="^location_\d$", property=@Ref("\Location"))
- * @AdditionalProperties(false)
- */
-class Meta
-{
-    /**
-     * @Key("createDate")
-     * @Type("string")
-     * @Format("date-time")
-     */
-    protected $createDate;
-    /**
-     * @param \DateTime $createDate
-     */
-    public function setCreateDate(?\DateTime $createDate)
-    {
-        $this->createDate = $createDate;
-    }
-    /**
-     * @return \DateTime
-     */
-    public function getCreateDate() : ?\DateTime
-    {
-        return $this->createDate;
     }
 }

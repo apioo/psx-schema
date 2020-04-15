@@ -20,9 +20,7 @@
 
 namespace PSX\Schema\Type;
 
-use InvalidArgumentException;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\TypeInterface;
 
 /**
  * ArrayType
@@ -31,10 +29,10 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ArrayType extends PropertyType
+class ArrayType extends TypeAbstract
 {
     /**
-     * @var PropertyInterface
+     * @var TypeInterface
      */
     protected $items;
 
@@ -54,19 +52,25 @@ class ArrayType extends PropertyType
     protected $uniqueItems;
 
     /**
-     * @return PropertyInterface
+     * @return TypeInterface
      */
-    public function getItems(): ?PropertyInterface
+    public function getItems(): ?TypeInterface
     {
         return $this->items;
     }
 
     /**
-     * @param PropertyInterface $items
+     * @param TypeInterface $items
      * @return self
      */
-    public function setItems(PropertyInterface $items): self
+    public function setItems(TypeInterface $items): self
     {
+        if ($items instanceof StructType) {
+            throw new \InvalidArgumentException('Array item must be of type string, number, boolean or reference');
+        } elseif ($items instanceof ArrayType) {
+            throw new \InvalidArgumentException('Array item must be of type string, number, boolean or reference');
+        }
+
         $this->items = $items;
 
         return $this;
@@ -143,7 +147,7 @@ class ArrayType extends PropertyType
     {
         if ($this->items !== null) {
             $items = $this->items;
-            if ($items instanceof PropertyInterface) {
+            if ($items instanceof TypeInterface) {
                 $this->items = clone $items;
             }
         }

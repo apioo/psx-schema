@@ -20,8 +20,11 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\UnionType;
 
 /**
  * Php
@@ -30,35 +33,38 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Php extends TypeAbstract
+class Php extends GeneratorAbstract
 {
-    public function getDocType(PropertyInterface $property): string
+    public function getDocType(TypeInterface $type): string
     {
-        $type = $this->getRealType($property);
-
-        if ($type === PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
+        if ($type instanceof ArrayType) {
+            $items = $type->getItems();
+            if ($items instanceof TypeInterface) {
                 return 'array<' . $this->getDocType($items) . '>';
             } else {
                 return 'array';
             }
-        } elseif (is_array($type)) {
-            return implode('|', $type);
-        } elseif ($property->getOneOf()) {
+        } elseif ($type instanceof MapType) {
+            $additionalProperties = $type->getAdditionalProperties();
+            if ($additionalProperties instanceof TypeInterface) {
+                return 'array<string, ' . $this->getDocType($additionalProperties) . '>';
+            } else {
+                return 'array';
+            }
+        } elseif ($type instanceof UnionType) {
             $parts = [];
-            foreach ($property->getOneOf() as $property) {
-                $parts[] = $this->getDocType($property);
+            foreach ($type->getOneOf() as $item) {
+                $parts[] = $this->getDocType($item);
             }
             return implode('|', $parts);
-        } elseif ($property->getAllOf()) {
+        } elseif ($type instanceof IntersectionType) {
             $parts = [];
-            foreach ($property->getAllOf() as $property) {
-                $parts[] = $this->getDocType($property);
+            foreach ($type->getAllOf() as $item) {
+                $parts[] = $this->getDocType($item);
             }
             return implode('&', $parts);
         } else {
-            return $this->getType($property);
+            return $this->getType($type);
         }
     }
 
@@ -107,14 +113,9 @@ class Php extends TypeAbstract
         return 'array';
     }
 
-    protected function getStruct(string $type): string
+    protected function getMap(string $type): string
     {
-        return $type;
-    }
-
-    protected function getMap(string $type, string $child): string
-    {
-        return $type;
+        return 'array'; // we use PHP array as map data structure
     }
 
     protected function getUnion(array $types): string
@@ -134,6 +135,11 @@ class Php extends TypeAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
+    }
+
+    protected function getGeneric(array $types): string
+    {
+        return '';
     }
 
     protected function getAny(): string

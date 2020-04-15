@@ -21,7 +21,7 @@
 namespace PSX\Schema\Parser\Popo\Resolver;
 
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Composite
@@ -48,11 +48,11 @@ class Composite implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveClass(\ReflectionClass $reflection): ?PropertyInterface
+    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
         foreach ($this->resolver as $resolver) {
             $property = $resolver->resolveClass($reflection);
-            if ($property instanceof PropertyInterface) {
+            if ($property instanceof TypeInterface) {
                 return $property;
             }
         }
@@ -63,11 +63,11 @@ class Composite implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyInterface
+    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
         foreach ($this->resolver as $resolver) {
             $property = $resolver->resolveProperty($reflection);
-            if ($property instanceof PropertyInterface) {
+            if ($property instanceof TypeInterface) {
                 return $property;
             }
         }

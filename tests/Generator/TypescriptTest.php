@@ -56,4 +56,16 @@ class TypescriptTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateOOP()
+    {
+        $generator = new Typescript();
+
+        $actual = (string) $generator->generate($this->getOOPSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/typescript_oop.ts');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }

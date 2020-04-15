@@ -18,33 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator\Type;
-
-use PSX\Schema\PropertyInterface;
+namespace PSX\Schema\Type;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * AnyType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface TypeInterface
+class AnyType extends TypeAbstract
 {
-    /**
-     * Returns a type string
-     * 
-     * @param \PSX\Schema\PropertyInterface $property
-     * @return string
-     */
-    public function getType(PropertyInterface $property): string;
-
-    /**
-     * Returns a doc type string
-     *
-     * @param \PSX\Schema\PropertyInterface $property
-     * @return string
-     */
-    public function getDocType(PropertyInterface $property): string;
 }

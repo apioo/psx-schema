@@ -18,42 +18,46 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\JsonSchema\Resolver;
+namespace PSX\Schema\Parser\TypeSchema\Resolver;
 
+use PSX\Http\Client\ClientInterface;
+use PSX\Http\Client\GetRequest;
 use PSX\Json\Parser;
-use PSX\Schema\Parser\JsonSchema\Document;
-use PSX\Schema\Parser\JsonSchema\RefResolver;
-use PSX\Schema\Parser\JsonSchema\ResolverInterface;
+use PSX\Schema\Parser\TypeSchema\Document;
+use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use PSX\Schema\Parser\TypeSchema\ResolverInterface;
 use PSX\Uri\Uri;
+use PSX\Uri\UriResolver;
 use RuntimeException;
 
 /**
- * File
+ * Http
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class File implements ResolverInterface
+class Http implements ResolverInterface
 {
-    public function resolve(Uri $uri, Document $source, RefResolver $resolver)
+    protected $httpClient;
+
+    public function __construct(ClientInterface $httpClient)
     {
-        if ($source->isRemote()) {
-            throw new RuntimeException('Can not resolve file scheme from remote source');
-        }
+        $this->httpClient = $httpClient;
+    }
 
-        $path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
-        $path = $source->getBasePath() !== null ? $source->getBasePath() . DIRECTORY_SEPARATOR . $path : $path;
+    public function resolve(Uri $uri): array
+    {
+        $request  = new GetRequest($uri, array('Accept' => 'application/json'));
+        $response = $this->httpClient->request($request);
 
-        if (is_file($path)) {
-            $basePath = pathinfo($path, PATHINFO_DIRNAME);
-            $schema   = file_get_contents($path);
-            $data     = Parser::decode($schema, true);
-            $document = new Document($data, $resolver, $basePath, $uri);
+        if ($response->getStatusCode() == 200) {
+            $schema = (string) $response->getBody();
+            $data   = Parser::decode($schema, true);
 
-            return $document;
+            return $data;
         } else {
-            throw new RuntimeException('Could not load external schema ' . $path);
+            throw new RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
         }
     }
 }

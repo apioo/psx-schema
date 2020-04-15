@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Generator\Code;
 
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Property
@@ -52,17 +52,17 @@ class Property
     private $required;
 
     /**
-     * @var PropertyInterface
+     * @var TypeInterface
      */
-    private $property;
+    private $origin;
 
-    public function __construct(string $name, string $type, string $docType, bool $required, PropertyInterface $property)
+    public function __construct(string $name, string $type, string $docType, bool $required, TypeInterface $origin)
     {
         $this->name = $name;
         $this->type = $type;
         $this->docType = $docType;
         $this->required = $required;
-        $this->property = $property;
+        $this->origin = $origin;
     }
 
     /**
@@ -102,14 +102,14 @@ class Property
      */
     public function getComment(): ?string
     {
-        return $this->property->getDescription();
+        return $this->origin->getDescription();
     }
 
     /**
-     * @return PropertyInterface
+     * @return TypeInterface
      */
-    public function getProperty(): PropertyInterface
+    public function getOrigin(): TypeInterface
     {
-        return $this->property;
+        return $this->origin;
     }
 }

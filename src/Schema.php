@@ -32,27 +32,38 @@ use Serializable;
 class Schema implements SchemaInterface, Serializable
 {
     /**
-     * @var \PSX\Schema\PropertyInterface
+     * @var \PSX\Schema\TypeInterface
      */
-    protected $property;
+    protected $type;
 
-    public function __construct(PropertyInterface $property)
+    /**
+     * @var \PSX\Schema\DefinitionsInterface
+     */
+    protected $definitions;
+
+    public function __construct(TypeInterface $type, DefinitionsInterface $definitions)
     {
-        $this->property = $property;
+        $this->type        = $type;
+        $this->definitions = $definitions;
     }
 
-    public function getDefinition()
+    public function getType()
     {
-        return $this->property;
+        return $this->type;
+    }
+
+    public function getDefinitions()
+    {
+        return $this->definitions;
     }
 
     public function serialize()
     {
-        return serialize($this->property);
+        return serialize($this->type);
     }
 
     public function unserialize($data)
     {
-        $this->property = unserialize($data);
+        $this->type = unserialize($data);
     }
 }

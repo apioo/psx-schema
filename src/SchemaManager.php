@@ -27,7 +27,7 @@ use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
 use PSX\Http\Client\Client;
-use PSX\Schema\Parser\JsonSchema\RefResolver;
+use PSX\Schema\Parser\TypeSchema\ImportResolver;
 
 /**
  * SchemaManager
@@ -38,9 +38,14 @@ use PSX\Schema\Parser\JsonSchema\RefResolver;
  */
 class SchemaManager implements SchemaManagerInterface
 {
-    const TYPE_JSONSCHEMA = 'jsonschema';
+    const TYPE_TYPESCHEMA = 'typeschema';
     const TYPE_CLASS      = 'class';
     const TYPE_ANNOTATION = 'annotation';
+
+    /**
+     * @deprecated
+     */
+    const TYPE_JSONSCHEMA = 'jsonschema';
 
     /**
      * @var \PSX\Schema\Parser\Popo
@@ -101,9 +106,9 @@ class SchemaManager implements SchemaManagerInterface
             $type = $this->guessTypeFromSchema($schemaName);
         }
 
-        if ($type === self::TYPE_JSONSCHEMA) {
-            $resolver = RefResolver::createDefault($this->httpClient);
-            $schema = Parser\JsonSchema::fromFile($schemaName, $resolver);
+        if ($type === self::TYPE_TYPESCHEMA || $type === self::TYPE_JSONSCHEMA) {
+            $resolver = ImportResolver::createDefault($this->httpClient);
+            $schema = Parser\TypeSchema::fromFile($schemaName, $resolver);
         } elseif ($type === self::TYPE_CLASS) {
             $schema = new $schemaName($this);
         } elseif ($type === self::TYPE_ANNOTATION) {
@@ -113,7 +118,7 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         if (!$this->debug && $item !== null) {
-            $schema = new Schema($schema->getDefinition());
+            $schema = new Schema($schema->getType(), $schema->getDefinitions());
             $item->set($schema);
             $this->cache->save($item);
         }
@@ -128,7 +133,7 @@ class SchemaManager implements SchemaManagerInterface
     private function guessTypeFromSchema($schemaName)
     {
         if (strpos($schemaName, '.') !== false) {
-            return self::TYPE_JSONSCHEMA;
+            return self::TYPE_TYPESCHEMA;
         } elseif (class_exists($schemaName)) {
             if (in_array(SchemaInterface::class, class_implements($schemaName))) {
                 return self::TYPE_CLASS;

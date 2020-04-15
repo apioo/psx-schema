@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Typescript
@@ -31,17 +32,27 @@ use PSX\Schema\Generator\Type\TypeInterface;
  */
 class Typescript extends CodeGeneratorAbstract
 {
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Typescript();
     }
 
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $code = $this->writeHeader($struct->getComment());
-        $code.= 'interface ' . $struct->getName() . ' {' . "\n";
+        $code = $this->writeHeader($comment);
+        $code.= 'interface ' . $name;
 
-        foreach ($struct->getProperties() as $name => $property) {
+        if (!empty($generics)) {
+            $code.= '<' . implode(', ', $generics) . '>';
+        }
+
+        if (!empty($extends)) {
+            $code.= ' extends ' . $extends;
+        }
+
+        $code.= ' {' . "\n";
+
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . $name . ($property->isRequired() ? '' : '?') . ': ' . $property->getType() . "\n";
         }
@@ -52,15 +63,29 @@ class Typescript extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type): string
     {
-        $code = $this->writeHeader($map->getComment());
-        $code.= 'interface ' . $map->getName(). ' {' . "\n";
-        $code.= $this->indent . '[index: string]: ' . $map->getType() . "\n";
-        $code.= '}' . "\n";
-        $code.= $this->writerFooter();
+        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+    }
 
-        return $code;
+    protected function writeArray(string $name, string $type): string
+    {
+        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeUnion(string $name, string $type): string
+    {
+        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeIntersection(string $name, string $type): string
+    {
+        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeReference(string $name, string $type): string
+    {
+        return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function normalizeName(string $name)

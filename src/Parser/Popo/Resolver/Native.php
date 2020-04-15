@@ -21,8 +21,8 @@
 namespace PSX\Schema\Parser\Popo\Resolver;
 
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\Property;
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeFactory;
 
 /**
  * Native
@@ -36,7 +36,7 @@ class Native implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveClass(\ReflectionClass $reflection): ?PropertyInterface
+    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
         return null;
     }
@@ -44,7 +44,7 @@ class Native implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyInterface
+    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
         if (!method_exists($reflection, 'getType')) {
             // for everything < PHP 7.4 
@@ -57,13 +57,13 @@ class Native implements ResolverInterface
             $oneOf = [];
             foreach ($types as $type) {
                 $property = $this->getPropertyForType($type);
-                if ($property instanceof PropertyInterface) {
+                if ($property instanceof TypeInterface) {
                     $oneOf[] = $property;
                 }
             }
 
             if (count($oneOf) > 1) {
-                return Property::getUnion()->setOneOf($oneOf);
+                return TypeFactory::getUnion($oneOf);
             } else {
                 return reset($oneOf);
             }
@@ -74,17 +74,17 @@ class Native implements ResolverInterface
         return null;
     }
 
-    private function getPropertyForType(\ReflectionNamedType $type, \ReflectionProperty $property): ?PropertyInterface
+    private function getPropertyForType(\ReflectionNamedType $type, \ReflectionProperty $property): ?TypeInterface
     {
         $name = $type->getName();
         if ($name === 'string') {
-            return Property::getString();
+            return TypeFactory::getString();
         } elseif ($name === 'float') {
-            return Property::getNumber();
+            return TypeFactory::getNumber();
         } elseif ($name === 'int') {
-            return Property::getInteger();
+            return TypeFactory::getInteger();
         } elseif ($name === 'bool') {
-            return Property::getBoolean();
+            return TypeFactory::getBoolean();
         } elseif ($name === 'array') {
             // in this case we have no way to determine the type inside the
             // array in the future this is maybe possible
@@ -93,9 +93,9 @@ class Native implements ResolverInterface
             return null;
         } elseif ($name === 'self') {
             $class = $property->getDeclaringClass()->getName();
-            return Property::getReference()->setRef($class);
+            return TypeFactory::getReference($class);
         } elseif (class_exists($name)) {
-            return Property::getReference()->setRef($type);
+            return TypeFactory::getReference($type);
         }
 
         return null;

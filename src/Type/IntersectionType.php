@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyType;
-
 /**
  * IntersectionType
  *
@@ -29,7 +27,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class IntersectionType extends PropertyType
+class IntersectionType extends TypeAbstract
 {
     /**
      * @var array
@@ -50,6 +48,12 @@ class IntersectionType extends PropertyType
      */
     public function setAllOf(array $allOf): self
     {
+        foreach ($allOf as $item) {
+            if (!$item instanceof ReferenceType) {
+                throw new \InvalidArgumentException('All of item must be of type reference');
+            }
+        }
+
         $this->allOf = $allOf;
 
         return $this;

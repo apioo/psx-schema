@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Java
@@ -34,7 +35,7 @@ class Java extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Java();
     }
@@ -42,17 +43,27 @@ class Java extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $code = $this->writeHeader($struct->getComment());
-        $code.= 'public static class ' . $struct->getName() . ' {' . "\n";
+        $code = $this->writeHeader($comment);
+        $code.= 'public static class ' . $name;
 
-        foreach ($struct->getProperties() as $name => $property) {
+        if (!empty($generics)) {
+            $code.= '<' . implode(', ', $generics) . '>';
+        }
+
+        if (!empty($extends)) {
+            $code.= ' extends ' . $extends;
+        }
+
+        $code.= ' {' . "\n";
+
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . 'private ' . $property->getType() . ' ' . $name . ';' . "\n";
         }
 
-        foreach ($struct->getProperties() as $name => $property) {
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . 'public void set' . ucfirst($name) . '(' . $property->getType() . ' ' . $name . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
@@ -63,18 +74,6 @@ class Java extends CodeGeneratorAbstract
             $code.= $this->indent . '}' . "\n";
         }
 
-        $code.= '}' . "\n";
-
-        return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        $code = $this->writeHeader($map->getComment());
-        $code.= 'public static class ' . $map->getName() . ' extends HashMap<String, ' . $map->getType() . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;

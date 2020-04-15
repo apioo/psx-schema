@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
+
+use PSX\Schema\TypeInterface;
 
 /**
  * PropertyType
@@ -27,7 +29,7 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class PropertyType implements PropertyInterface
+abstract class TypeAbstract implements TypeInterface
 {
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_OBJECT = 'object';

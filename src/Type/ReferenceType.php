@@ -20,8 +20,7 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\TypeInterface;
 
 /**
  * ReferenceType
@@ -30,7 +29,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ReferenceType extends PropertyType
+class ReferenceType extends TypeAbstract
 {
     /**
      * @var string
@@ -82,12 +81,12 @@ class ReferenceType extends PropertyType
      * $generic keyword
      * 
      * @param string $type
-     * @param PropertyInterface $property
+     * @param string $template
      * @return self
      */
-    public function addTemplate(string $type, PropertyInterface $property): self
+    public function addTemplate(string $type, string $template): self
     {
-        $this->template[$type] = $property;
+        $this->template[$type] = $template;
 
         return $this;
     }

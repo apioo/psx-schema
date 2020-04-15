@@ -25,10 +25,13 @@ use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
-use PSX\Record\RecordInterface;
-use PSX\Schema\AdditionalPropertiesInterface;
-use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
@@ -55,7 +58,62 @@ class TypeVisitor implements VisitorInterface
         $this->validator = $validator;
     }
 
-    public function visitArray(array $data, PropertyInterface $property, $path)
+    public function visitStruct(\stdClass $data, StructType $type, $path)
+    {
+        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
+        if (!empty($className)) {
+            $class  = new \ReflectionClass($className);
+            $record = $class->newInstance();
+
+            $mapping = $type->getAttribute(PropertyType::ATTR_MAPPING) ?: [];
+            foreach ($data as $key => $value) {
+                try {
+                    $name   = isset($mapping[$key]) ? $mapping[$key] : $key;
+                    $method = $class->getMethod('set' . ucfirst($name));
+
+                    if ($method instanceof \ReflectionMethod) {
+                        $method->invokeArgs($record, [$value]);
+                    }
+                } catch (\ReflectionException $e) {
+                    // method does not exist
+                }
+            }
+        } else {
+            $record = Record::fromStdClass($data, $type->getTitle() ?: null);
+        }
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $record);
+        }
+
+        return $record;
+    }
+
+    public function visitMap(\stdClass $data, MapType $type, $path)
+    {
+        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
+        if (!empty($className)) {
+            $class  = new \ReflectionClass($className);
+            $record = $class->newInstance();
+
+            // allows to use other map implementations
+            if ($record instanceof \ArrayAccess) {
+                foreach ($data as $key => $value) {
+                    $record->offsetSet($key, $value);
+                }
+            }
+        } else {
+            $record = Record::fromStdClass($data, $type->getTitle() ?: null);
+        }
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $record);
+        }
+
+        return $record;
+    }
+
+    public function visitArray(array $data, ArrayType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -64,7 +122,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitBinary($data, PropertyInterface $property, $path)
+    public function visitBinary($data, StringType $type, $path)
     {
         $binary   = base64_decode($data);
         $resource = fopen('php://temp', 'r+');
@@ -79,7 +137,7 @@ class TypeVisitor implements VisitorInterface
         return $resource;
     }
 
-    public function visitBoolean($data, PropertyInterface $property, $path)
+    public function visitBoolean($data, StringType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -88,77 +146,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitObject(\stdClass $data, PropertyInterface $property, $path)
-    {
-        // if we have no class reference we simply create a record
-        $className = $property->getAttribute(PropertyType::ATTR_CLASS);
-        $mapping   = $property->getAttribute(PropertyType::ATTR_MAPPING);
-
-        if (empty($className)) {
-            $result = Record::fromStdClass($data, $property->getTitle() ?: null);
-
-            if ($this->validator !== null) {
-                $this->validator->validate($path, $result);
-            }
-
-            return $result;
-        }
-
-        $class  = new \ReflectionClass($className);
-        $record = $class->newInstance();
-
-        if ($record instanceof RecordInterface) {
-            foreach ($data as $key => $value) {
-                $record->setProperty($key, $value);
-            }
-        } elseif ($record instanceof \ArrayAccess) {
-            foreach ($data as $key => $value) {
-                $record[$key] = $value;
-            }
-        } elseif ($record instanceof \stdClass) {
-            foreach ($data as $key => $value) {
-                $record->$key = $value;
-            }
-        } else {
-            // if we have a POPO we first try to set the values through proper
-            // setter methods
-            $keys = [];
-            foreach ($data as $key => $value) {
-                try {
-                    $name       = isset($mapping[$key]) ? $mapping[$key] : $key;
-                    $methodName = 'set' . ucfirst($name);
-                    $method     = $class->getMethod($methodName);
-
-                    if ($method instanceof \ReflectionMethod) {
-                        $method->invokeArgs($record, array($value));
-                    } else {
-                        $keys[] = $key;
-                    }
-                } catch (\ReflectionException $e) {
-                    // method does not exist
-                    $keys[] = $key;
-                }
-            }
-
-            // if we have keys where we have no fitting setter method we try to
-            // add the values in another way to the object
-            if (!empty($keys)) {
-                if ($record instanceof AdditionalPropertiesInterface) {
-                    foreach ($keys as $key) {
-                        $record->setProperty($key, $data->$key);
-                    }
-                }
-            }
-        }
-
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $record);
-        }
-
-        return $record;
-    }
-
-    public function visitDateTime($data, PropertyInterface $property, $path)
+    public function visitDateTime($data, StringType $type, $path)
     {
         $result = new DateTime($data);
 
@@ -169,7 +157,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitDate($data, PropertyInterface $property, $path)
+    public function visitDate($data, StringType $type, $path)
     {
         $result = new Date($data);
 
@@ -180,7 +168,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitDuration($data, PropertyInterface $property, $path)
+    public function visitDuration($data, StringType $type, $path)
     {
         $result = new Duration($data);
 
@@ -191,7 +179,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitNumber($data, PropertyInterface $property, $path)
+    public function visitNumber($data, NumberType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -200,7 +188,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitInteger($data, PropertyInterface $property, $path)
+    public function visitInteger($data, IntegerType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -209,7 +197,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitString($data, PropertyInterface $property, $path)
+    public function visitString($data, StringType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -218,7 +206,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitTime($data, PropertyInterface $property, $path)
+    public function visitTime($data, StringType $type, $path)
     {
         $result = new Time($data);
 
@@ -229,7 +217,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitUri($data, PropertyInterface $property, $path)
+    public function visitUri($data, StringType $type, $path)
     {
         $result = new Uri($data);
 

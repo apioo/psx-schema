@@ -22,6 +22,8 @@ namespace PSX\Schema\Parser;
 
 use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
+use PSX\Schema\Definitions;
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\Parser\Popo\Resolver\Composite;
@@ -62,18 +64,6 @@ class Popo implements ParserInterface
     protected $resolver;
 
     /**
-     * Contains the current path to detect recursions
-     *
-     * @var array
-     */
-    protected $stack;
-
-    /**
-     * @var array
-     */
-    private $objects;
-
-    /**
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
     public function __construct(Reader $reader)
@@ -92,25 +82,18 @@ class Popo implements ParserInterface
             throw new InvalidArgumentException('Class name must be a string');
         }
 
-        $this->objects = [];
+        $definitions = new Definitions();
+        $property    = $this->parseClass($className, $definitions);
 
-        $property = $this->parseClass($className);
-
-        return new Schema($property);
+        return new Schema($property, $definitions);
     }
 
-    protected function parseClass(string $className)
+    protected function parseClass(string $className, DefinitionsInterface $definitions)
     {
         $class = new ReflectionClass($className);
 
-        if (isset($this->objects[$class->getName()])) {
-            return $this->objects[$class->getName()];
-        }
-
         $property    = $this->resolver->resolveClass($class);
         $annotations = $this->reader->getClassAnnotations($class);
-
-        $this->objects[$class->getName()] = $property;
 
         $property->setTitle($class->getShortName());
 
@@ -164,7 +147,8 @@ class Popo implements ParserInterface
         $annotations = $this->reader->getPropertyAnnotations($reflection);
 
         if ($property instanceof ReferenceType) {
-            return $this->parseClass($property->getRef());
+            $type = $this->parseClass($property->getRef());
+            $this->definitions->addType(DefinitionsInterface::SELF_NAMESPACE, $property->getRef(), $type);
         }
 
         if ($property instanceof PropertyType) {
@@ -178,7 +162,8 @@ class Popo implements ParserInterface
         if ($property instanceof ArrayType) {
             $items = $property->getItems();
             if ($items instanceof ReferenceType) {
-                $property->setItems($this->parseClass($items->getRef()));
+                $type = $this->parseClass($items->getRef());
+                $this->definitions->addType(DefinitionsInterface::SELF_NAMESPACE, $items->getRef(), $type);
             }
 
             $this->parseArrayAnnotations($annotations, $property);
@@ -189,21 +174,21 @@ class Popo implements ParserInterface
         }
 
         if ($property instanceof UnionType) {
-            $property->setOneOf(array_map(function(PropertyInterface $property) {
-                if ($property instanceof ReferenceType) {
-                    return $this->parseClass($property->getRef());
-                } else {
-                    return $property;
+            $oneOf = $property->getOneOf();
+            foreach ($oneOf as $prop) {
+                if ($prop instanceof ReferenceType) {
+                    $type = $this->parseClass($prop->getRef());
+                    $this->definitions->addType(DefinitionsInterface::SELF_NAMESPACE, $prop->getRef(), $type);
                 }
-            }, $property->getOneOf()));
+            }
         } elseif ($property instanceof IntersectionType) {
-            $property->setAllOf(array_map(function(PropertyInterface $property) {
-                if ($property instanceof ReferenceType) {
-                    return $this->parseClass($property->getRef());
-                } else {
-                    return $property;
+            $allOf = $property->getAllOf();
+            foreach ($allOf as $prop) {
+                if ($prop instanceof ReferenceType) {
+                    $type = $this->parseClass($prop->getRef());
+                    $this->definitions->addType(DefinitionsInterface::SELF_NAMESPACE, $prop->getRef(), $type);
                 }
-            }, $property->getAllOf()));
+            }
         }
 
         return $property;

@@ -27,7 +27,7 @@ namespace PSX\Schema\Generator\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends TypeAbstract
+class Protobuf extends GeneratorAbstract
 {
     protected function getDate(): string
     {
@@ -79,14 +79,9 @@ class Protobuf extends TypeAbstract
         return 'repeated ' . $type;
     }
 
-    protected function getStruct(string $type): string
+    protected function getMap(string $type): string
     {
-        return $type;
-    }
-
-    protected function getMap(string $type, string $child): string
-    {
-        return 'map<string, ' . $child . '>';
+        return 'map<string, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string

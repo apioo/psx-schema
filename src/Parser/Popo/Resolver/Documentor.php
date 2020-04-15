@@ -25,8 +25,8 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\Property;
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeFactory;
+use PSX\Schema\TypeInterface;
 
 /**
  * Documentor
@@ -40,7 +40,7 @@ class Documentor implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveClass(\ReflectionClass $reflection): ?PropertyInterface
+    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
         return null;
     }
@@ -48,7 +48,7 @@ class Documentor implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyInterface
+    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
         $comment = $reflection->getDocComment();
 
@@ -65,38 +65,38 @@ class Documentor implements ResolverInterface
         return null;
     }
 
-    private function getPropertyForType(Type $type): ?PropertyInterface
+    private function getPropertyForType(Type $type): ?TypeInterface
     {
         if ($type instanceof Types\Object_) {
-            return Property::getReference()->setRef($type->getFqsen());
+            return TypeFactory::getReference($type->getFqsen());
         } elseif ($type instanceof Types\AbstractList) {
             $items = $this->getPropertyForType($type->getValueType());
             if ($items === null) {
                 return null;
             }
 
-            return Property::getArray()->setItems($items);
+            return TypeFactory::getArray()->setItems($items);
         } elseif ($type instanceof Types\Boolean) {
-            return Property::getBoolean();
+            return TypeFactory::getBoolean();
         } elseif ($type instanceof Types\Integer) {
-            return Property::getInteger();
+            return TypeFactory::getInteger();
         } elseif ($type instanceof Types\Float_) {
-            return Property::getNumber();
+            return TypeFactory::getNumber();
         } elseif ($type instanceof Types\String_) {
-            return Property::getString();
+            return TypeFactory::getString();
         } elseif ($type instanceof Types\Nullable) {
             return $this->getPropertyForType($type->getActualType());
         } elseif ($type instanceof Types\Compound) {
             $oneOf = [];
             foreach ($type as $typ) {
                 $property = $this->getPropertyForType($typ);
-                if ($property instanceof PropertyInterface) {
+                if ($property instanceof TypeInterface) {
                     $oneOf[] = $property;
                 }
             }
 
             if (count($oneOf) > 1) {
-                return Property::getUnion()->setOneOf($oneOf);
+                return TypeFactory::getUnion($oneOf);
             } else {
                 return reset($oneOf);
             }

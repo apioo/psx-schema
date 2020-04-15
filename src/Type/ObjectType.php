@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\JsonSchema;
+namespace PSX\Schema\Type;
 
 /**
- * RecursionException
+ * ObjectType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class RecursionException extends \Exception
+class ObjectType extends TypeAbstract
 {
 }

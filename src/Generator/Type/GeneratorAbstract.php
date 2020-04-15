@@ -20,9 +20,10 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\Generator\GeneratorTrait;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\TypeInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
@@ -34,44 +35,46 @@ use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
 
 /**
- * TypeAbstract
+ * GeneratorAbstract
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class TypeAbstract implements TypeInterface
+abstract class GeneratorAbstract implements GeneratorInterface
 {
-    use GeneratorTrait;
-
     /**
      * @inheritDoc
      */
-    public function getType(PropertyInterface $property): string
+    public function getType(TypeInterface $type): string
     {
-        if ($property instanceof StringType) {
-            return $this->getStringType($property);
-        } elseif ($property instanceof IntegerType) {
-            return $this->getIntegerType($property);
-        } elseif ($property instanceof NumberType) {
+        if ($type instanceof StringType) {
+            return $this->getStringType($type);
+        } elseif ($type instanceof IntegerType) {
+            return $this->getIntegerType($type);
+        } elseif ($type instanceof NumberType) {
             return $this->getNumber();
-        } elseif ($property instanceof BooleanType) {
+        } elseif ($type instanceof BooleanType) {
             return $this->getBoolean();
-        } elseif ($property instanceof ArrayType) {
-            return $this->getArrayType($property);
-        } elseif ($property instanceof StructType) {
-            return $this->getStruct($this->getIdentifierForProperty($property));
-        } elseif ($property instanceof MapType) {
-            $additional = $property->getAdditionalProperties();
-            if ($additional === true) {
-                return $this->getMap($this->getIdentifierForProperty($property), $this->getAny());
-            } elseif ($additional instanceof PropertyInterface) {
-                return $this->getMap($this->getIdentifierForProperty($property), $this->getType($additional));
+        } elseif ($type instanceof ArrayType) {
+            return $this->getArray($this->getType($type->getItems()));
+        } elseif ($type instanceof StructType) {
+            throw new \RuntimeException('Could not determine name of anonymous struct, use a reference to the definitions instead');
+        } elseif ($type instanceof MapType) {
+            return $this->getMap($this->getType($type->getAdditionalProperties()));
+        } elseif ($type instanceof UnionType) {
+            return $this->getUnion($this->getCombinationType($type->getOneOf()));
+        } elseif ($type instanceof IntersectionType) {
+            return $this->getIntersection($this->getCombinationType($type->getAllOf()));
+        } elseif ($type instanceof ReferenceType) {
+            $template = $type->getTemplate();
+            if (!empty($template)) {
+                return $type->getRef() . $this->getGeneric(array_values($template));
+            } else {
+                return $type->getRef();
             }
-        } elseif ($property instanceof UnionType) {
-            return $this->getUnion($this->getCombinationType($property->getOneOf()));
-        } elseif ($property instanceof IntersectionType) {
-            return $this->getIntersection($this->getCombinationType($property->getAllOf()));
+        } elseif ($type instanceof GenericType) {
+            return $type->getGeneric();
         }
 
         return $this->getAny();
@@ -80,9 +83,9 @@ abstract class TypeAbstract implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function getDocType(PropertyInterface $property): string
+    public function getDocType(TypeInterface $type): string
     {
-        return $this->getType($property);
+        return $this->getType($type);
     }
 
     /**
@@ -179,14 +182,7 @@ abstract class TypeAbstract implements TypeInterface
      * @param string $type
      * @return string
      */
-    abstract protected function getStruct(string $type): string;
-
-    /**
-     * @param string $type
-     * @param string $child
-     * @return string
-     */
-    abstract protected function getMap(string $type, string $child): string;
+    abstract protected function getMap(string $type): string;
 
     /**
      * @param array $types
@@ -207,28 +203,34 @@ abstract class TypeAbstract implements TypeInterface
     abstract protected function getGroup(string $type): string;
 
     /**
+     * @param array $types
+     * @return string
+     */
+    abstract protected function getGeneric(array $types): string;
+
+    /**
      * @return string
      */
     abstract protected function getAny(): string;
 
     /**
-     * @param PropertyInterface $property
+     * @param TypeInterface $type
      * @return string
      */
-    private function getStringType(PropertyInterface $property): string
+    private function getStringType(TypeInterface $type): string
     {
-        $format = $property->getFormat();
-        if ($format === PropertyType::FORMAT_DATE) {
+        $format = $type->getFormat();
+        if ($format === TypeAbstract::FORMAT_DATE) {
             return $this->getDate();
-        } elseif ($format === PropertyType::FORMAT_DATETIME) {
+        } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
             return  $this->getDateTime();
-        } elseif ($format === PropertyType::FORMAT_TIME) {
+        } elseif ($format === TypeAbstract::FORMAT_TIME) {
             return  $this->getTime();
-        } elseif ($format === PropertyType::FORMAT_DURATION) {
+        } elseif ($format === TypeAbstract::FORMAT_DURATION) {
             return  $this->getDuration();
-        } elseif ($format === PropertyType::FORMAT_URI) {
+        } elseif ($format === TypeAbstract::FORMAT_URI) {
             return  $this->getUri();
-        } elseif ($format === PropertyType::FORMAT_BINARY) {
+        } elseif ($format === TypeAbstract::FORMAT_BINARY) {
             return  $this->getBinary();
         } else {
             return $this->getString();
@@ -236,32 +238,18 @@ abstract class TypeAbstract implements TypeInterface
     }
 
     /**
-     * @param PropertyInterface $property
+     * @param TypeInterface $type
      * @return string
      */
-    private function getIntegerType(PropertyInterface $property): string
+    private function getIntegerType(TypeInterface $type): string
     {
-        $format = $property->getFormat();
-        if ($format === PropertyType::FORMAT_INT32) {
+        $format = $type->getFormat();
+        if ($format === TypeAbstract::FORMAT_INT32) {
             return $this->getInteger32();
-        } elseif ($format === PropertyType::FORMAT_INT64) {
+        } elseif ($format === TypeAbstract::FORMAT_INT64) {
             return $this->getInteger64();
         } else {
             return $this->getInteger();
-        }
-    }
-
-    /**
-     * @param PropertyInterface $property
-     * @return string
-     */
-    private function getArrayType(PropertyInterface $property): string
-    {
-        $items = $property->getItems();
-        if ($items instanceof PropertyInterface) {
-            return $this->getArray($this->getType($items));
-        } else {
-            return $this->getArray($this->getAny());
         }
     }
 

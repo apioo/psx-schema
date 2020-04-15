@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyType;
-
 /**
  * ScalarType
  *
@@ -29,7 +27,7 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ScalarType extends PropertyType
+class ScalarType extends TypeAbstract
 {
     /**
      * @var string

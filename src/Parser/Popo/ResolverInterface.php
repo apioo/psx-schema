@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * ResolverInterface
@@ -33,13 +33,13 @@ interface ResolverInterface
 {
     /**
      * @param \ReflectionClass $reflection
-     * @return PropertyInterface|null
+     * @return TypeInterface|null
      */
-    public function resolveClass(\ReflectionClass $reflection): ?PropertyInterface;
+    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface;
 
     /**
      * @param \ReflectionProperty $reflection
-     * @return PropertyInterface|null
+     * @return TypeInterface|null
      */
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyInterface;
+    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface;
 }

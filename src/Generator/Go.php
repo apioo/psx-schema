@@ -20,7 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Go
@@ -34,7 +35,7 @@ class Go extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Go();
     }
@@ -42,19 +43,22 @@ class Go extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $code = '// ' . $struct->getName();
+        $code = '// ' . $name;
 
-        $comment = $struct->getComment();
         if (!empty($comment)) {
             $code.= ' ' . $comment;
         }
 
         $code.= "\n";
-        $code.= 'type ' . $struct->getName() . ' struct {' . "\n";
+        $code.= 'type ' . $name . ' struct {' . "\n";
 
-        foreach ($struct->getProperties() as $name => $property) {
+        if (!empty($extends)) {
+            $code.= '*' . $this->indent . $extends;
+        }
+
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . $name . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
         }
@@ -62,14 +66,6 @@ class Go extends CodeGeneratorAbstract
         $code.= '}' . "\n";
 
         return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        return '';
     }
 
     protected function normalizeName(string $name)

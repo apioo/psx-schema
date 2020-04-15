@@ -35,4 +35,9 @@ abstract class GeneratorTestCase extends SchemaTestCase
     {
         return $this->schemaManager->getSchema(__DIR__ . '/resource/typeschema.json');
     }
+
+    protected function getOOPSchema()
+    {
+        return $this->schemaManager->getSchema(__DIR__ . '/resource/typschema_oop.json');
+    }
 }

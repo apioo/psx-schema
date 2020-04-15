@@ -27,7 +27,7 @@ namespace PSX\Schema\Generator\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class MarkupAbstract extends TypeAbstract
+abstract class MarkupAbstract extends GeneratorAbstract
 {
     protected function getDate(): string
     {

@@ -18,15 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\JsonSchema;
+namespace PSX\Schema\Parser\TypeSchema\Resolver;
+
+use PSX\Json\Parser;
+use PSX\Schema\Parser\TypeSchema\ResolverInterface;
+use PSX\Uri\Uri;
+use RuntimeException;
 
 /**
- * UnsupportedVersionException
+ * File
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class UnsupportedVersionException extends \Exception
+class File implements ResolverInterface
 {
+    public function resolve(Uri $uri): array
+    {
+        $path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
+
+        if (is_file($path)) {
+            $schema = file_get_contents($path);
+            $data   = Parser::decode($schema, true);
+
+            return $data;
+        } else {
+            throw new RuntimeException('Could not load external schema ' . $path);
+        }
+    }
 }

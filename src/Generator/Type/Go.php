@@ -27,7 +27,7 @@ namespace PSX\Schema\Generator\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Go extends TypeAbstract
+class Go extends GeneratorAbstract
 {
     protected function getDate(): string
     {
@@ -84,14 +84,9 @@ class Go extends TypeAbstract
         return '[]' . $type;
     }
 
-    protected function getStruct(string $type): string
+    protected function getMap(string $type): string
     {
-        return $type;
-    }
-
-    protected function getMap(string $type, string $child): string
-    {
-        return 'map[string]' . $child;
+        return 'map[string]' . $type;
     }
 
     protected function getUnion(array $types): string
@@ -107,6 +102,11 @@ class Go extends TypeAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
+    }
+
+    protected function getGeneric(array $types): string
+    {
+        return '';
     }
 
     protected function getAny(): string

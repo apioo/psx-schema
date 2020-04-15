@@ -59,15 +59,13 @@ class PhpTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateRecursive()
+    public function testGenerateOOP()
     {
-        $schema    = Parser\JsonSchema::fromFile(__DIR__ . '/../Parser/JsonSchema/schema.json');
         $generator = new Php();
 
-        $actual = (string) $generator->generate($schema);
-        $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
+        $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/php_recursive.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php_oop.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

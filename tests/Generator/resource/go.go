@@ -1,50 +1,45 @@
-// News An general news entry
-type News struct {
-    Config map[string]string `json:"config"`
-    Tags []string `json:"tags"`
-    Receiver []Author `json:"receiver"`
-    Resources []interface{} `json:"resources"`
-    ProfileImage string `json:"profileImage"`
-    Read bool `json:"read"`
-    Source interface{} `json:"source"`
-    Author Author `json:"author"`
-    Meta Meta `json:"meta"`
-    SendDate time.Time `json:"sendDate"`
-    ReadDate time.Time `json:"readDate"`
-    Expires time.Duration `json:"expires"`
-    Price float64 `json:"price"`
-    Rating int `json:"rating"`
-    Content string `json:"content"`
-    Question string `json:"question"`
-    Version string `json:"version"`
-    CoffeeTime time.Time `json:"coffeeTime"`
-    ProfileUri string `json:"profileUri"`
-    Captcha string `json:"g-recaptcha-response"`
-}
-
-
-// Author An simple author element with some description
-type Author struct {
-    Title string `json:"title"`
-    Email interface{} `json:"email"`
-    Categories []string `json:"categories"`
-    Locations []map[string]interface{} `json:"locations"`
-    Origin map[string]interface{} `json:"origin"`
-}
-
 // Location Location of the person
 type Location struct {
-    Lat float64 `json:"lat"`
-    Long float64 `json:"long"`
+    lat float64 `json:"lat"`
+    long float64 `json:"long"`
 }
 
 // Web An application
 type Web struct {
-    Name string `json:"name"`
-    Url string `json:"url"`
+    name string `json:"name"`
+    url string `json:"url"`
 }
 
-// Meta Some meta data
-type Meta struct {
-    CreateDate time.Time `json:"createDate"`
+// Author An simple author element with some description
+type Author struct {
+    title string `json:"title"`
+    email string `json:"email"`
+    categories []string `json:"categories"`
+    locations []Location `json:"locations"`
+    origin Location `json:"origin"`
+}
+
+
+// RootSchema An general news entry
+type RootSchema struct {
+    config map[string]string `json:"config"`
+    tags []string `json:"tags"`
+    receiver []Author `json:"receiver"`
+    resources []interface{} `json:"resources"`
+    profileImage string `json:"profileImage"`
+    read bool `json:"read"`
+    source interface{} `json:"source"`
+    author Author `json:"author"`
+    meta map[string]string `json:"meta"`
+    sendDate time.Time `json:"sendDate"`
+    readDate time.Time `json:"readDate"`
+    expires time.Duration `json:"expires"`
+    price float64 `json:"price"`
+    rating int `json:"rating"`
+    content string `json:"content"`
+    question string `json:"question"`
+    version string `json:"version"`
+    coffeeTime time.Time `json:"coffeeTime"`
+    profileUri string `json:"profileUri"`
+    captcha string `json:"g-recaptcha-response"`
 }

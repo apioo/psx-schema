@@ -26,6 +26,9 @@ use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\TypeFactory;
+use PSX\Schema\TypeInterface;
 
 /**
  * Annotation
@@ -52,7 +55,7 @@ class Annotation implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveClass(\ReflectionClass $reflection): ?PropertyInterface
+    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
         $annotations = $this->reader->getClassAnnotations($reflection);
 
@@ -60,12 +63,12 @@ class Annotation implements ResolverInterface
         if ($annotation instanceof Anno\AdditionalProperties && $annotation->getAdditionalProperties() !== false) {
             $additionalProperties = $this->parseRef($annotation->getAdditionalProperties());
 
-            $property = Property::getMap();
+            $property = TypeFactory::getMap();
             if ($additionalProperties !== null) {
                 $property->setAdditionalProperties($additionalProperties);
             }
         } else {
-            $property = Property::getStruct();
+            $property = TypeFactory::getStruct();
         }
 
         return $property;
@@ -74,16 +77,16 @@ class Annotation implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyInterface
+    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
         return $this->getPropertyByAnnotations($this->reader->getPropertyAnnotations($reflection));
     }
 
     /**
      * @param array $annotations
-     * @return PropertyInterface|null
+     * @return TypeInterface|null
      */
-    private function getPropertyByAnnotations(array $annotations): ?PropertyInterface
+    private function getPropertyByAnnotations(array $annotations): ?TypeInterface
     {
         $annotation = $this->getAnnotationByType($annotations, Anno\Type::class);
 
@@ -92,7 +95,7 @@ class Annotation implements ResolverInterface
             $type = $annotation->getType();
         }
 
-        if ($type === PropertyType::TYPE_ARRAY) {
+        if ($type === TypeAbstract::TYPE_ARRAY) {
             $annotation = $this->getAnnotationByType($annotations, Anno\Items::class);
 
             $property = null;
@@ -100,21 +103,21 @@ class Annotation implements ResolverInterface
                 $property = $this->parseRef($annotation->getItems());
             }
 
-            return Property::getArray()->setItems($property);
-        } elseif ($type === PropertyType::TYPE_STRING) {
-            return Property::getString();
-        } elseif ($type === PropertyType::TYPE_NUMBER) {
-            return Property::getNumber();
-        } elseif ($type === PropertyType::TYPE_INTEGER) {
-            return Property::getInteger();
-        } elseif ($type === PropertyType::TYPE_BOOLEAN) {
-            return Property::getBoolean();
+            return TypeFactory::getArray()->setItems($property);
+        } elseif ($type === TypeAbstract::TYPE_STRING) {
+            return TypeFactory::getString();
+        } elseif ($type === TypeAbstract::TYPE_NUMBER) {
+            return TypeFactory::getNumber();
+        } elseif ($type === TypeAbstract::TYPE_INTEGER) {
+            return TypeFactory::getInteger();
+        } elseif ($type === TypeAbstract::TYPE_BOOLEAN) {
+            return TypeFactory::getBoolean();
         } elseif ($annotation = $this->getAnnotationByType($annotations, Anno\AllOf::class)) {
-            return Property::getIntersection()->setAllOf($this->parseRefs($annotation->getProperties()));
+            return TypeFactory::getIntersection()->setAllOf($this->parseRefs($annotation->getProperties()));
         } elseif ($annotation = $this->getAnnotationByType($annotations, Anno\OneOf::class)) {
-            return Property::getUnion()->setOneOf($this->parseRefs($annotation->getProperties()));
+            return TypeFactory::getUnion()->setOneOf($this->parseRefs($annotation->getProperties()));
         } elseif ($annotation = $this->getAnnotationByType($annotations, Anno\Ref::class)) {
-            return Property::getReference()->setRef($annotation->getRef());
+            return TypeFactory::getReference()->setRef($annotation->getRef());
         }
 
         return null;
@@ -137,7 +140,7 @@ class Annotation implements ResolverInterface
     private function parseRef($value, $allowBoolean = false)
     {
         if ($value instanceof Anno\Ref) {
-            return Property::getReference()->setRef($value->getRef());
+            return TypeFactory::getReference()->setRef($value->getRef());
         } elseif ($value instanceof Anno\Schema) {
             return $this->getPropertyByAnnotations($value->getAnnotations());
         } elseif ($allowBoolean && is_bool($value)) {

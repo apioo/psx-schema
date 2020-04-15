@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyType;
-
 /**
  * UnionType
  *
@@ -29,12 +27,22 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class UnionType extends PropertyType
+class UnionType extends TypeAbstract
 {
     /**
      * @var array
      */
     protected $oneOf;
+
+    /**
+     * @var string
+     */
+    protected $propertyName;
+
+    /**
+     * @var array
+     */
+    protected $mapping;
 
     /**
      * @return array
@@ -50,15 +58,59 @@ class UnionType extends PropertyType
      */
     public function setOneOf(array $oneOf): self
     {
+        foreach ($oneOf as $item) {
+            if (!$item instanceof StringType && $item instanceof NumberType && $item instanceof BooleanType && $item instanceof ReferenceType) {
+                throw new \InvalidArgumentException('One of item must be of type string, number or reference');
+            }
+        }
+
         $this->oneOf = $oneOf;
 
         return $this;
     }
 
+    /**
+     * @param string $propertyName
+     * @param array $mapping
+     */
+    public function setDiscriminator(string $propertyName, array $mapping)
+    {
+        $this->propertyName = $propertyName;
+        $this->mapping = $mapping;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropertyName(): ?string
+    {
+        return $this->propertyName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMapping(): ?array
+    {
+        return $this->mapping;
+    }
+
     public function toArray(): array
     {
+        $discriminator = null;
+        if ($this->propertyName !== null) {
+            $discriminator = [
+                'propertyName' => $this->propertyName,
+            ];
+
+            if (!empty($this->mapping)) {
+                $discriminator['mapping'] = $this->mapping;
+            }
+        }
+
         return array_merge(parent::toArray(), array_filter([
             'oneOf' => $this->oneOf,
+            'discriminator' => $discriminator,
         ], function($value){
             return $value !== null;
         }));

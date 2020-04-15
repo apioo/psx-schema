@@ -20,8 +20,7 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\Schema\TypeInterface;
 
 /**
  * StructType
@@ -30,8 +29,13 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class StructType extends PropertyType
+class StructType extends ObjectType
 {
+    /**
+     * @var string
+     */
+    protected $extends;
+
     /**
      * @var array
      */
@@ -41,6 +45,22 @@ class StructType extends PropertyType
      * @var array
      */
     protected $required;
+
+    /**
+     * @return string
+     */
+    public function getExtends(): ?string
+    {
+        return $this->extends;
+    }
+
+    /**
+     * @param string $extends
+     */
+    public function setExtends(string $extends): void
+    {
+        $this->extends = $extends;
+    }
 
     /**
      * @return array
@@ -56,18 +76,25 @@ class StructType extends PropertyType
      */
     public function setProperties(array $properties): self
     {
-        $this->properties = $properties;
+        $this->properties = [];
+        foreach ($properties as $name => $property) {
+            $this->addProperty($name, $property);
+        }
 
         return $this;
     }
 
     /**
      * @param string $name
-     * @param \PSX\Schema\PropertyInterface $property
+     * @param \PSX\Schema\TypeInterface $property
      * @return self
      */
-    public function addProperty($name, PropertyInterface $property): self
+    public function addProperty($name, TypeInterface $property): self
     {
+        if ($property instanceof StructType) {
+            throw new \InvalidArgumentException('Struct property must be of type string, number, boolean, array or reference');
+        }
+
         $this->properties[$name] = $property;
 
         return $this;
@@ -75,9 +102,9 @@ class StructType extends PropertyType
 
     /**
      * @param string $name
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\TypeInterface
      */
-    public function getProperty($name): ?PropertyInterface
+    public function getProperty($name): ?TypeInterface
     {
         return isset($this->properties[$name]) ? $this->properties[$name] : null;
     }

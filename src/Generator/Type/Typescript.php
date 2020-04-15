@@ -27,7 +27,7 @@ namespace PSX\Schema\Generator\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Typescript extends TypeAbstract
+class Typescript extends GeneratorAbstract
 {
     protected function getString(): string
     {
@@ -54,14 +54,9 @@ class Typescript extends TypeAbstract
         return 'Array<' . $type . '>';
     }
 
-    protected function getStruct(string $type): string
+    protected function getMap(string $type): string
     {
-        return $type;
-    }
-
-    protected function getMap(string $type, string $child): string
-    {
-        return $type;
+        return 'Record<string, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string
@@ -77,6 +72,11 @@ class Typescript extends TypeAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
+    }
+
+    protected function getGeneric(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getAny(): string

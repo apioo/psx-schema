@@ -18,19 +18,24 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Parser\TypeSchema;
+
+use PSX\Uri\Uri;
 
 /**
- * PropertyInterface
+ * ResolverInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface PropertyInterface
+interface ResolverInterface
 {
     /**
+     * Resolves the given uri and returns an JsonSchema document
+     *
+     * @param \PSX\Uri\Uri $uri
      * @return array
      */
-    public function toArray(): array;
+    public function resolve(Uri $uri): array;
 }

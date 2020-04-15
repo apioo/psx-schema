@@ -30,9 +30,17 @@ namespace PSX\Schema;
 interface SchemaInterface
 {
     /**
-     * Returns an schema definition
+     * Returns the root type for this schema
      *
-     * @return \PSX\Schema\PropertyInterface
+     * @return \PSX\Schema\TypeInterface
      */
-    public function getDefinition();
+    public function getType();
+
+    /**
+     * Returns the definitions for this schema which can be used to resolve
+     * referenced types
+     *
+     * @return \PSX\Schema\DefinitionsInterface
+     */
+    public function getDefinitions();
 }
