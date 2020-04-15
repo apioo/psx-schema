@@ -29,7 +29,7 @@ use PSX\Schema\TypeInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class TypeAbstract implements TypeInterface
+abstract class TypeAbstract implements TypeInterface, \JsonSerializable
 {
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_OBJECT = 'object';
@@ -206,7 +206,7 @@ abstract class TypeAbstract implements TypeInterface
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), array_filter([
+        return array_filter([
             'title' => $this->title,
             'description' => $this->description,
             'nullable' => $this->nullable,
@@ -214,6 +214,11 @@ abstract class TypeAbstract implements TypeInterface
             'readonly' => $this->readonly,
         ], function($value){
             return $value !== null;
-        }));
+        });
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

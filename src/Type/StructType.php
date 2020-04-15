@@ -153,6 +153,7 @@ class StructType extends ObjectType
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
+            '$extends' => $this->extends,
             'type' => 'object',
             'properties' => $this->properties,
             'required' => $this->required,

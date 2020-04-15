@@ -70,21 +70,4 @@ class PhpTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
-
-    public function testExecute()
-    {
-        $source    = $this->getSchema();
-        $generator = new Php(__NAMESPACE__);
-        $result    = $generator->generate($source);
-        $file      = __DIR__ . '/generated_schema.php';
-
-        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
-
-        include_once $file;
-
-        $schemaManager = new SchemaManager(new SimpleAnnotationReader());
-        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
-
-        $this->assertSchema($schema, $source);
-    }
 }

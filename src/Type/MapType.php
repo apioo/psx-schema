@@ -118,6 +118,8 @@ class MapType extends ObjectType
         return array_merge(parent::toArray(), array_filter([
             'type' => 'object',
             'additionalProperties' => $this->additionalProperties,
+            'minProperties' => $this->minProperties,
+            'maxProperties' => $this->maxProperties,
         ], function($value){
             return $value !== null;
         }));

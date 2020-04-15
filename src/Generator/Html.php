@@ -21,7 +21,6 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\TypeInterface;
 
 /**
  * Html
@@ -43,12 +42,11 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $return = '<div id="' . $struct->getName() . '" class="psx-object">';
-        $return.= '<h' . $this->heading . '>' . htmlspecialchars($struct->getName()) . '</h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object">';
+        $return.= '<h' . $this->heading . '>' . htmlspecialchars($name) . '</h' . $this->heading . '>';
 
-        $comment = $struct->getComment();
         if (!empty($comment)) {
             $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
         }
@@ -68,7 +66,7 @@ class Html extends MarkupAbstract
 
         $json = '<span class="psx-object-json-pun">{</span>' . "\n";
 
-        foreach ($struct->getProperties() as $name => $property) {
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $constraints = $this->getConstraints($property->getOrigin());
 
@@ -104,15 +102,10 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type): string
     {
-        $return = '<div id="' . $map->getName() . '" class="psx-object">';
-        $return.= '<h' . $this->heading . '>' . htmlspecialchars($map->getName()) . '</h' . $this->heading . '>';
-
-        $comment = $map->getComment();
-        if (!empty($comment)) {
-            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
-        }
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object">';
+        $return.= '<h' . $this->heading . '>' . htmlspecialchars($name) . '</h' . $this->heading . '>';
 
         $prop = '<table class="table psx-object-properties">';
         $prop.= '<colgroup>';
@@ -132,15 +125,15 @@ class Html extends MarkupAbstract
         $prop.= '<tr>';
         $prop.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
         $prop.= '<td>';
-        $prop.= '<span class="psx-property-type">' . $map->getType() . '</span><br />';
-        $prop.= '<div class="psx-property-description">' . htmlspecialchars($map->getComment()) . '</div>';
+        $prop.= '<span class="psx-property-type">' . $type . '</span><br />';
+        $prop.= '<div class="psx-property-description"></div>';
         $prop.= '</td>';
         $prop.= '</tr>';
 
         $json.= '  ';
         $json.= '<span class="psx-object-json-key">"*"</span>';
         $json.= '<span class="psx-object-json-pun">: </span>';
-        $json.= '<span class="psx-property-type">' . $map->getType() . '</span>';
+        $json.= '<span class="psx-property-type">' . $type . '</span>';
         $json.= '<span class="psx-object-json-pun">,</span>';
         $json.= "\n";
 

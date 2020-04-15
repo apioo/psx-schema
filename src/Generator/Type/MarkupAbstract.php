@@ -89,7 +89,7 @@ abstract class MarkupAbstract extends GeneratorAbstract
         return $this->writeLink($type, '#' . $type);
     }
 
-    protected function getMap(string $type, string $child): string
+    protected function getMap(string $type): string
     {
         return $this->writeLink($type, '#' . $type);
     }
@@ -107,6 +107,11 @@ abstract class MarkupAbstract extends GeneratorAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
+    }
+
+    protected function getGeneric(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getAny(): string

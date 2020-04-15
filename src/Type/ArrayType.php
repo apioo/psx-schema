@@ -137,7 +137,10 @@ class ArrayType extends TypeAbstract
     {
         return array_merge(parent::toArray(), array_filter([
             'type' => 'array',
-            'items' => $this->items
+            'items' => $this->items,
+            'minItems' => $this->minItems,
+            'maxItems' => $this->maxItems,
+            'uniqueItems' => $this->uniqueItems,
         ], function($value){
             return $value !== null;
         }));

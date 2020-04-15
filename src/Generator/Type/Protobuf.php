@@ -99,6 +99,11 @@ class Protobuf extends GeneratorAbstract
         return '(' . $type . ')';
     }
 
+    protected function getGeneric(array $types): string
+    {
+        return '';
+    }
+
     protected function getAny(): string
     {
         return 'Any';

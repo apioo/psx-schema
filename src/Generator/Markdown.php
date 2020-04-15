@@ -43,13 +43,12 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, TypeInterface $type, ?string $extends): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
     {
-        $return = '<a name="' . $struct->getName() . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . $struct->getName() . "\n";
+        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
 
-        $comment = $struct->getComment();
         if (!empty($comment)) {
             $return.= $comment . "\n";
             $return.= '' . "\n";
@@ -58,7 +57,7 @@ class Markdown extends MarkupAbstract
         $return.= 'Field | Type | Description | Constraints' . "\n";
         $return.= '----- | ---- | ----------- | -----------' . "\n";
 
-        foreach ($struct->getProperties() as $name => $property) {
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
             $constraints = $this->getConstraints($property->getOrigin());
 
@@ -79,25 +78,19 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type): string
     {
-        $return = '<a name="' . $map->getName() . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . $map->getName() . "\n";
+        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
-
-        $comment = $map->getComment();
-        if (!empty($comment)) {
-            $return.= $comment . "\n";
-            $return.= '' . "\n";
-        }
 
         $return.= 'Field | Type | Description | Constraints' . "\n";
         $return.= '----- | ---- | ----------- | -----------' . "\n";
 
         $row = [
             '*',
-            $map->getType(),
-            $map->getComment(),
+            $type,
+            '',
             '',
         ];
 

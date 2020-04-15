@@ -86,7 +86,7 @@ class GeneratorFactory
 
             default:
             case self::TYPE_JSONSCHEMA:
-                return new Generator\JsonSchema($config ?: null);
+                return new Generator\TypeSchema($config ?: null);
                 break;
         }
     }

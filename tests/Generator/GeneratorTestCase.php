@@ -33,11 +33,11 @@ abstract class GeneratorTestCase extends SchemaTestCase
 {
     protected function getComplexSchema()
     {
-        return $this->schemaManager->getSchema(__DIR__ . '/resource/typeschema.json');
+        return $this->schemaManager->getSchema(__DIR__ . '/resource/source_typeschema.json');
     }
 
     protected function getOOPSchema()
     {
-        return $this->schemaManager->getSchema(__DIR__ . '/resource/typschema_oop.json');
+        return $this->schemaManager->getSchema(__DIR__ . '/resource/source_oop.json');
     }
 }
