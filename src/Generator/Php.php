@@ -25,6 +25,7 @@ use PhpParser\Node;
 use PhpParser\PrettyPrinter;
 use PSX\Record\Record;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
@@ -130,14 +131,7 @@ class Php extends CodeGeneratorAbstract
             $class->addStmt($getter);
         }
 
-        if ($this->namespace !== null) {
-            $namespace = $this->factory->namespace($this->namespace);
-            $namespace->addStmt($class);
-
-            return $this->printer->prettyPrint([$namespace->getNode()]);
-        } else {
-            return $this->printer->prettyPrint([$class->getNode()]);
-        }
+        return $this->prettyPrint($class);
     }
 
     protected function writeMap(string $name, string $type, MapType $origin): string
@@ -148,14 +142,22 @@ class Php extends CodeGeneratorAbstract
         $class->setDocComment($this->buildComment(['extends' => 'ArrayAccess<string, ' . $subType . '>'], $this->getAnnotationsForType($origin)));
         $class->extend('\\' . Record::class);
 
-        if ($this->namespace !== null) {
-            $namespace = $this->factory->namespace($this->namespace);
-            $namespace->addStmt($class);
+        return $this->prettyPrint($class);
+    }
 
-            return $this->printer->prettyPrint([$namespace->getNode()]);
-        } else {
-            return $this->printer->prettyPrint([$class->getNode()]);
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    {
+        $tags = [];
+        $template = $origin->getTemplate();
+        if (!empty($template)) {
+            $tags['extends'] = $type . '<' . implode(', ', array_values($template)) . '>';
         }
+
+        $class = $this->factory->class($name);
+        $class->setDocComment($this->buildComment($tags, $this->getAnnotationsForType($origin)));
+        $class->extend($type);
+
+        return $this->prettyPrint($class);
     }
 
     protected function normalizeName(string $name)
@@ -274,5 +276,17 @@ class Php extends CodeGeneratorAbstract
         }
 
         return $type->getConst();
+    }
+
+    private function prettyPrint($class)
+    {
+        if ($this->namespace !== null) {
+            $namespace = $this->factory->namespace($this->namespace);
+            $namespace->addStmt($class);
+
+            return $this->printer->prettyPrint([$namespace->getNode()]);
+        } else {
+            return $this->printer->prettyPrint([$class->getNode()]);
+        }
     }
 }

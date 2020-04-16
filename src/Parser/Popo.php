@@ -100,6 +100,16 @@ class Popo implements ParserInterface
         $type = $this->resolver->resolveClass($class);
         $annotations = $this->reader->getClassAnnotations($class);
 
+        if ($type instanceof StructType) {
+            $parent = $class->getParentClass();
+            if ($parent instanceof \ReflectionClass) {
+                $extends = $this->parseClass($parent->getName(), $definitions);
+                if ($extends instanceof StructType) {
+                    $type->setExtends($parent->getShortName());
+                }
+            }
+        }
+
         if (!$root) {
             $definitions->addType($class->getShortName(), $type);
         }
@@ -113,7 +123,9 @@ class Popo implements ParserInterface
             $this->parseProperties($class, $type, $definitions);
         } elseif ($type instanceof MapType) {
             $this->parseMapAnnotations($annotations, $type);
-            $this->parseNested($type, $definitions);
+            $this->parseReferences($type, $definitions);
+        } elseif ($type instanceof ReferenceType) {
+            $this->parseReferences($type, $definitions);
         } else {
             throw new \RuntimeException('Could not determine class type');
         }
@@ -129,15 +141,20 @@ class Popo implements ParserInterface
         $mapping    = [];
 
         foreach ($properties as $key => $reflection) {
+            if ($reflection->getDeclaringClass()->getName() !== $class->getName()) {
+                // skip properties from inherited classes
+                continue;
+            }
+
             if ($key != $reflection->getName()) {
                 $mapping[$key] = $reflection->getName();
             }
 
             $type = $this->parseProperty($reflection);
             if ($type instanceof TypeInterface) {
-                $property->addProperty($key, $type);
+                $this->parseReferences($type, $definitions);
 
-                $this->parseNested($type, $definitions);
+                $property->addProperty($key, $type);
             }
         }
 
@@ -265,34 +282,62 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseNested(TypeInterface $type, DefinitionsInterface $definitions)
+    private function parseReferences(TypeInterface $type, DefinitionsInterface $definitions)
     {
         if ($type instanceof MapType) {
             $additionalProperties = $type->getAdditionalProperties();
             if ($additionalProperties instanceof ReferenceType) {
-                $this->parseClass($additionalProperties->getRef(), $definitions);
+                $this->parseReferences($additionalProperties, $definitions);
             }
         } elseif ($type instanceof ArrayType) {
             $items = $type->getItems();
-            if ($items instanceof ReferenceType) {
-                $this->parseClass($items->getRef(), $definitions);
+            if ($items instanceof TypeInterface) {
+                $this->parseReferences($items, $definitions);
             }
         } elseif ($type instanceof UnionType) {
             $items = $type->getOneOf();
             foreach ($items as $item) {
                 if ($item instanceof ReferenceType) {
-                    $this->parseClass($item->getRef(), $definitions);
+                    $this->parseReferences($item, $definitions);
                 }
             }
         } elseif ($type instanceof IntersectionType) {
             $items = $type->getAllOf();
             foreach ($items as $item) {
                 if ($item instanceof ReferenceType) {
-                    $this->parseClass($item->getRef(), $definitions);
+                    $this->parseReferences($item, $definitions);
                 }
             }
         } elseif ($type instanceof ReferenceType) {
-            $this->parseClass($type->getRef(), $definitions);
+            $this->parseRef($type, $definitions);
+        }
+    }
+
+    private function parseRef(ReferenceType $type, DefinitionsInterface $definitions)
+    {
+        $className = $type->getRef();
+        try {
+            $reflection = new ReflectionClass($className);
+            $type->setRef($reflection->getShortName());
+
+            $this->parseClass($className, $definitions);
+        } catch (\ReflectionException $e) {
+            // in this case the class does not exist
+        }
+
+        $template = $type->getTemplate();
+        if (!empty($template)) {
+            $result = [];
+            foreach ($template as $key => $className) {
+                try {
+                    $reflection = new ReflectionClass($className);
+                    $result[$key] = $reflection->getShortName();
+                    $this->parseClass($className, $definitions);
+                } catch (\ReflectionException $e) {
+                    // in this case the class does not exist
+                }
+            }
+            $type->setTemplate($result);
         }
     }
 }

@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\TypeInterface;
-
 /**
  * ReferenceType
  *

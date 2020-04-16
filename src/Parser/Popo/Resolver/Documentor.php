@@ -74,7 +74,27 @@ class Documentor implements ResolverInterface
                 throw new \RuntimeException('Could not determine type of map');
             }
         } else {
-            return TypeFactory::getStruct();
+            $tag = $this->getTag('extends', $reflection->getDocComment());
+            if (!empty($tag)) {
+                $parent = $reflection->getParentClass();
+                if (!$parent instanceof \ReflectionClass) {
+                    // we have no parent class
+                    return TypeFactory::getStruct();
+                }
+
+                $values = $this->getTemplateValues($reflection, $tag);
+                $keys = $this->getTemplateKeys($parent);
+                $template = array_combine($keys, $values);
+
+                $reference = TypeFactory::getReference();
+                $reference->setRef($parent->getName());
+                if (!empty($template)) {
+                    $reference->setTemplate($template);
+                }
+                return $reference;
+            } else {
+                return TypeFactory::getStruct();
+            }
         }
     }
 
@@ -120,7 +140,7 @@ class Documentor implements ResolverInterface
             if (class_exists($fqsen)) {
                 return TypeFactory::getReference($fqsen);
             } else {
-                return TypeFactory::getGeneric($fqsen);
+                return TypeFactory::getGeneric($type->getFqsen()->getName());
             }
         } elseif ($type instanceof Types\AbstractList) {
             $key = $type->getKeyType();
@@ -176,5 +196,30 @@ class Documentor implements ResolverInterface
     {
         preg_match('/@' . $tag . ' (.*)\R/', $comment, $matches);
         return $matches[1] ?? null;
+    }
+
+    private function getTemplateValues(\ReflectionClass $reflection, string $tag)
+    {
+        $values = [];
+        $context = $this->contextFactory->createFromReflector($reflection);
+        $type = $this->typeResolver->resolve($tag, $context);
+
+        if ($type instanceof Types\Collection) {
+            $value = $type->getValueType();
+            if ($value instanceof Types\Object_) {
+                $values[] = (string) $value->getFqsen();
+            }
+        }
+
+        return $values;
+    }
+
+    private function getTemplateKeys(\ReflectionClass $reflection)
+    {
+        $tag = $this->getTag('template', $reflection->getDocComment());
+        $keys = array_map('trim', explode(',', $tag));
+
+        // currently we can handle only one type, since we pare also only one value
+        return array_slice($keys, 0, 1);
     }
 }

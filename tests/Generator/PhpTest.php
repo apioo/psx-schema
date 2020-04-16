@@ -96,7 +96,7 @@ class PhpTest extends GeneratorTestCase
         $source    = $this->getOOPSchema();
         $generator = new Php();
         $result    = $generator->generate($source);
-        $file      = __DIR__ . '/generated_schema.php';
+        $file      = __DIR__ . '/generated_schema_oop.php';
 
         file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
 

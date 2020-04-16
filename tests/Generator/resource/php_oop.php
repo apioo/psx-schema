@@ -40,7 +40,12 @@ class Student extends Human
         return $this->matricleNumber;
     }
 }
-
+/**
+ * @extends Map<Student>
+ */
+class StudentMap extends Map
+{
+}
 /**
  * @template T
  */
@@ -86,20 +91,20 @@ class Map
 class RootSchema
 {
     /**
-     * @var Map
+     * @var StudentMap
      */
     protected $students;
     /**
-     * @param Map $students
+     * @param StudentMap $students
      */
-    public function setStudents(?Map $students)
+    public function setStudents(?StudentMap $students)
     {
         $this->students = $students;
     }
     /**
-     * @return Map
+     * @return StudentMap
      */
-    public function getStudents() : ?Map
+    public function getStudents() : ?StudentMap
     {
         return $this->students;
     }
