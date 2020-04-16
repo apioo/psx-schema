@@ -62,9 +62,13 @@ class TypeFactory
         return new BooleanType();
     }
 
-    public static function getGeneric(): GenericType
+    public static function getGeneric(?string $type = null): GenericType
     {
-        return new GenericType();
+        $generic = new GenericType();
+        if ($type !== null) {
+            $generic->setGeneric($type);
+        }
+        return $generic;
     }
 
     public static function getInteger(): IntegerType

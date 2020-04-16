@@ -44,10 +44,13 @@ class GenericType extends TypeAbstract
 
     /**
      * @param string $generic
+     * @return $this
      */
-    public function setGeneric(string $generic): void
+    public function setGeneric(string $generic): self
     {
         $this->generic = $generic;
+        
+        return $this;
     }
 
     public function toArray(): array
