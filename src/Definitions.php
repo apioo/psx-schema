@@ -27,7 +27,7 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Definitions implements DefinitionsInterface
+class Definitions implements DefinitionsInterface, \JsonSerializable
 {
     private $container;
 
@@ -78,9 +78,41 @@ class Definitions implements DefinitionsInterface
         }
     }
 
+    public function getAllTypes(): iterable
+    {
+        $result = [];
+        foreach ($this->container as $namespace => $types) {
+            foreach ($types as $name => $type) {
+                if ($name === self::SELF_NAMESPACE) {
+                    $result[$name] = $type;
+                } else {
+                    $result[$namespace . ':' . $name] = $type;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     public function getNamespaces(): iterable
     {
         return array_keys($this->container);
+    }
+
+    public function merge(DefinitionsInterface $definitions): void
+    {
+        $namespaces = $definitions->getNamespaces();
+        foreach ($namespaces as $namespace) {
+            $types = $definitions->getTypes($namespace);
+            foreach ($types as $name => $type) {
+                $this->addType($namespace . ':' . $name, $type);
+            }
+        }
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->getAllTypes();
     }
 
     private function split(string $ref): array

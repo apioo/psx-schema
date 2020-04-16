@@ -66,7 +66,7 @@ class SchemaManagerTest extends TestCase
 
     public function testGetSchemaFile()
     {
-        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/JsonSchema/test_schema.json');
+        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/TypeSchema/test_schema.json');
 
         $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
     }

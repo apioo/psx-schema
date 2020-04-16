@@ -43,12 +43,13 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
         $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
         $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $return.= $comment . "\n";
             $return.= '' . "\n";

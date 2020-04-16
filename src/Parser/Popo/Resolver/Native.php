@@ -38,7 +38,7 @@ class Native implements ResolverInterface
      */
     public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
-        return null;
+        return TypeFactory::getStruct();
     }
 
     /**

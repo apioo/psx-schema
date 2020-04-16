@@ -38,7 +38,7 @@ class PropertyTypeTest extends TestCase
     public function testSerialize()
     {
         $parser = new Parser\JsonSchema();
-        $schema = $parser->parse(file_get_contents(__DIR__ . '/Parser/JsonSchema/schema.json'));
+        $schema = $parser->parse(file_get_contents(__DIR__ . '/Parser/TypeSchema/schema.json'));
 
         $data = serialize($schema);
         $newSchema = unserialize($data);

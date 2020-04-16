@@ -43,9 +43,9 @@ class Java extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
-        $code = $this->writeHeader($comment);
+        $code = $this->writeHeader($origin->getDescription());
         $code.= 'public static class ' . $name;
 
         if (!empty($generics)) {

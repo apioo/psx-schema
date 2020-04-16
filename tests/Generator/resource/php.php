@@ -1,9 +1,16 @@
+<?php
 /**
  * Location of the person
  */
 class Location
 {
+    /**
+     * @var float
+     */
     protected $lat;
+    /**
+     * @var float
+     */
     protected $long;
     /**
      * @param float $lat
@@ -39,7 +46,13 @@ class Location
  */
 class Web
 {
+    /**
+     * @var string
+     */
     protected $name;
+    /**
+     * @var string
+     */
     protected $url;
     /**
      * @param string $name
@@ -71,14 +84,36 @@ class Web
     }
 }
 /**
- * Array of locations
+ * An simple author element with some description
  */
 class Author
 {
+    /**
+     * @var string
+     * @Pattern("[A-z]{3,16}")
+     */
     protected $title;
+    /**
+     * We will send no spam to this address
+     * @var string
+     * @Description("We will send no spam to this address")
+     * @Nullable(true)
+     */
     protected $email;
+    /**
+     * @var array<string>
+     * @MaxItems(8)
+     */
     protected $categories;
+    /**
+     * Array of locations
+     * @var array<Location>
+     * @Description("Array of locations")
+     */
     protected $locations;
+    /**
+     * @var Location
+     */
     protected $origin;
     /**
      * @param string $title
@@ -153,29 +188,102 @@ class Author
 }
 
 /**
- * Contains the main content of the news entry
+ * An general news entry
  */
-class RootSchema
+class News
 {
+    /**
+     * @var array<string, string>
+     */
     protected $config;
+    /**
+     * @var array<string>
+     * @MinItems(1)
+     * @MaxItems(6)
+     */
     protected $tags;
+    /**
+     * @var array<Author>
+     * @MinItems(1)
+     */
     protected $receiver;
+    /**
+     * @var array<Location|Web>
+     */
     protected $resources;
+    /**
+     * @var string
+     */
     protected $profileImage;
+    /**
+     * @var bool
+     */
     protected $read;
+    /**
+     * @var Author|Web
+     */
     protected $source;
+    /**
+     * @var Author
+     */
     protected $author;
+    /**
+     * @var array<string, string>
+     */
     protected $meta;
+    /**
+     * @var \PSX\DateTime\Date
+     */
     protected $sendDate;
+    /**
+     * @var \DateTime
+     */
     protected $readDate;
+    /**
+     * @var \DateInterval
+     */
     protected $expires;
+    /**
+     * @var float
+     * @Minimum(1)
+     * @Maximum(100)
+     */
     protected $price;
+    /**
+     * @var int
+     * @Minimum(1)
+     * @Maximum(5)
+     */
     protected $rating;
+    /**
+     * Contains the main content of the news entry
+     * @var string
+     * @Description("Contains the main content of the news entry")
+     * @MinLength(3)
+     * @MaxLength(512)
+     */
     protected $content;
+    /**
+     * @var string
+     * @Enum(""foo", "bar"")
+     */
     protected $question;
+    /**
+     * @var string
+     * @Const("http://foo.bar")
+     */
     protected $version;
+    /**
+     * @var \PSX\DateTime\Time
+     */
     protected $coffeeTime;
+    /**
+     * @var string
+     */
     protected $profileUri;
+    /**
+     * @var string
+     */
     protected $captcha;
     /**
      * @param array<string, string> $config
@@ -304,16 +412,16 @@ class RootSchema
         return $this->meta;
     }
     /**
-     * @param \DateTime $sendDate
+     * @param \PSX\DateTime\Date $sendDate
      */
-    public function setSendDate(?\DateTime $sendDate)
+    public function setSendDate(?\PSX\DateTime\Date $sendDate)
     {
         $this->sendDate = $sendDate;
     }
     /**
-     * @return \DateTime
+     * @return \PSX\DateTime\Date
      */
-    public function getSendDate() : ?\DateTime
+    public function getSendDate() : ?\PSX\DateTime\Date
     {
         return $this->sendDate;
     }
@@ -416,16 +524,16 @@ class RootSchema
         return $this->version;
     }
     /**
-     * @param \DateTime $coffeeTime
+     * @param \PSX\DateTime\Time $coffeeTime
      */
-    public function setCoffeeTime(?\DateTime $coffeeTime)
+    public function setCoffeeTime(?\PSX\DateTime\Time $coffeeTime)
     {
         $this->coffeeTime = $coffeeTime;
     }
     /**
-     * @return \DateTime
+     * @return \PSX\DateTime\Time
      */
-    public function getCoffeeTime() : ?\DateTime
+    public function getCoffeeTime() : ?\PSX\DateTime\Time
     {
         return $this->coffeeTime;
     }

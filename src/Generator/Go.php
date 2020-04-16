@@ -43,10 +43,11 @@ class Go extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
         $code = '// ' . $name;
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= ' ' . $comment;
         }

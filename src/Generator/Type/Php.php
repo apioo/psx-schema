@@ -20,11 +20,17 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\DateTime\Date;
+use PSX\DateTime\Time;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\UnionType;
+use PSX\Uri\Uri;
+use PSX\Schema\Type\TypeAbstract;
 
 /**
  * Php
@@ -51,6 +57,8 @@ class Php extends GeneratorAbstract
             } else {
                 return 'array';
             }
+        } elseif ($type instanceof StringType && $type->getFormat() === TypeAbstract::FORMAT_BINARY) {
+            return 'resource';
         } elseif ($type instanceof UnionType) {
             $parts = [];
             foreach ($type->getOneOf() as $item) {
@@ -63,6 +71,8 @@ class Php extends GeneratorAbstract
                 $parts[] = $this->getDocType($item);
             }
             return implode('&', $parts);
+        } elseif ($type instanceof GenericType) {
+            return $type->getGeneric();
         } else {
             return $this->getType($type);
         }
@@ -70,7 +80,7 @@ class Php extends GeneratorAbstract
 
     protected function getDate(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . Date::class;
     }
 
     protected function getDateTime(): string
@@ -80,12 +90,22 @@ class Php extends GeneratorAbstract
 
     protected function getTime(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . Time::class;
     }
 
     protected function getDuration(): string
     {
         return '\\' . \DateInterval::class;
+    }
+
+    protected function getUri(): string
+    {
+        return '\\' . Uri::class;
+    }
+
+    protected function getBinary(): string
+    {
+        return '';
     }
 
     protected function getString(): string

@@ -1,13 +1,37 @@
 /**
- * Indicates whether this schema is readonly
+ * Common properties which can be used at any schema
  */
 class CommonProperties
 {
+    /**
+     * Distinct word which represents this schema
+     * @var string
+     */
     protected $title;
+    /**
+     * General description of this schema, should not contain any new lines.
+     * @var string
+     */
     protected $description;
+    /**
+     * JSON type of the property
+     * @var string
+     */
     protected $type;
+    /**
+     * Indicates whether it is possible to use a null value
+     * @var bool
+     */
     protected $nullable;
+    /**
+     * Indicates whether this schema is deprecated
+     * @var bool
+     */
     protected $deprecated;
+    /**
+     * Indicates whether this schema is readonly
+     * @var bool
+     */
     protected $readonly;
     /**
      * @param string $title
@@ -94,13 +118,22 @@ class CommonProperties
         return $this->readonly;
     }
 }
-/**
- * Represents a scalar value
- */
 class ScalarProperties
 {
+    /**
+     * Describes the specific format of this type i.e. date-time or int64
+     * @var string
+     */
     protected $format;
+    /**
+     * A list of possible enumeration values
+     * @var StringArray|NumberArray
+     */
     protected $enum;
+    /**
+     * Represents a scalar value
+     * @var string|float|bool
+     */
     protected $default;
     /**
      * @param string $format
@@ -152,6 +185,9 @@ class ScalarProperties
  */
 class ContainerProperties
 {
+    /**
+     * @var string
+     */
     protected $type;
     /**
      * @param string $type
@@ -169,11 +205,19 @@ class ContainerProperties
     }
 }
 /**
- * Array string values
+ * Struct specific properties
  */
 class StructProperties
 {
+    /**
+     * Properties of a schema
+     * @var array<string, PropertyValue>
+     */
     protected $properties;
+    /**
+     * Array string values
+     * @var array<string>
+     */
     protected $required;
     /**
      * @param array<string, PropertyValue> $properties
@@ -206,12 +250,24 @@ class StructProperties
 }
 
 /**
- * Positive integer value
+ * Map specific properties
  */
 class MapProperties
 {
+    /**
+     * Allowed values of an object property
+     * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
+     */
     protected $additionalProperties;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $maxProperties;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $minProperties;
     /**
      * @param BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType $additionalProperties
@@ -260,14 +316,32 @@ class MapProperties
 
 
 /**
- * Positive integer value
+ * Array properties
  */
 class ArrayProperties
 {
+    /**
+     * @var string
+     */
     protected $type;
+    /**
+     * Allowed values of an array item
+     * @var BooleanType|NumberType|StringType|ReferenceType|GenericType
+     */
     protected $items;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $maxItems;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $minItems;
+    /**
+     * @var bool
+     */
     protected $uniqueItems;
     /**
      * @param string $type
@@ -346,6 +420,9 @@ class ArrayProperties
  */
 class BooleanProperties
 {
+    /**
+     * @var string
+     */
     protected $type;
     /**
      * @param string $type
@@ -368,11 +445,29 @@ class BooleanProperties
  */
 class NumberProperties
 {
+    /**
+     * @var string
+     */
     protected $type;
+    /**
+     * @var float
+     */
     protected $multipleOf;
+    /**
+     * @var float
+     */
     protected $maximum;
+    /**
+     * @var bool
+     */
     protected $exclusiveMaximum;
+    /**
+     * @var float
+     */
     protected $minimum;
+    /**
+     * @var bool
+     */
     protected $exclusiveMinimum;
     /**
      * @param string $type
@@ -461,13 +556,27 @@ class NumberProperties
 }
 
 /**
- * Positive integer value
+ * String properties
  */
 class StringProperties
 {
+    /**
+     * @var string
+     */
     protected $type;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $maxLength;
+    /**
+     * Positive integer value
+     * @var int
+     */
     protected $minLength;
+    /**
+     * @var string
+     */
     protected $pattern;
     /**
      * @param string $type
@@ -530,11 +639,19 @@ class StringProperties
 
 
 /**
- * An object to hold mappings between payload values and schema names or references
+ * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
  */
 class Discriminator
 {
+    /**
+     * The name of the property in the payload that will hold the discriminator value
+     * @var string
+     */
     protected $propertyName;
+    /**
+     * An object to hold mappings between payload values and schema names or references
+     * @var array<string, string>
+     */
     protected $mapping;
     /**
      * @param string $propertyName
@@ -566,11 +683,18 @@ class Discriminator
     }
 }
 /**
- * Combination values
+ * An intersection type combines multiple schemas into one
  */
 class AllOfProperties
 {
+    /**
+     * @var string
+     */
     protected $description;
+    /**
+     * Combination values
+     * @var array<OfValue>
+     */
     protected $allOf;
     /**
      * @param string $description
@@ -602,12 +726,22 @@ class AllOfProperties
     }
 }
 /**
- * Combination values
+ * An union type can contain one of the provided schemas
  */
 class OneOfProperties
 {
+    /**
+     * @var string
+     */
     protected $description;
+    /**
+     * @var Discriminator
+     */
     protected $discriminator;
+    /**
+     * Combination values
+     * @var array<OfValue>
+     */
     protected $oneOf;
     /**
      * @param string $description
@@ -655,11 +789,18 @@ class OneOfProperties
 
 
 /**
- * Reference to the schema under the definitions key
+ * Represents a reference to another schema
  */
 class ReferenceType
 {
+    /**
+     * Reference to the schema under the definitions key
+     * @var string
+     */
     protected $ref;
+    /**
+     * @var array<string, ReferenceType>
+     */
     protected $template;
     /**
      * @param string $ref
@@ -695,6 +836,9 @@ class ReferenceType
  */
 class GenericType
 {
+    /**
+     * @var string
+     */
     protected $generic;
     /**
      * @param string $generic
@@ -719,16 +863,41 @@ class GenericType
 
 
 /**
- * Array string values
+ * TypeSchema meta schema which describes a TypeSchema
  */
 class TypeSchema
 {
+    /**
+     * Contains external definitions which are imported. The imported schemas can be used via the namespace
+     * @var array<string, string>
+     */
     protected $import;
+    /**
+     * @var string
+     */
     protected $title;
+    /**
+     * @var string
+     */
     protected $description;
+    /**
+     * @var string
+     */
     protected $type;
+    /**
+     * Schema definitions which can be reused
+     * @var array<string, DefinitionValue>
+     */
     protected $definitions;
+    /**
+     * Properties of a schema
+     * @var array<string, PropertyValue>
+     */
     protected $properties;
+    /**
+     * Array string values
+     * @var array<string>
+     */
     protected $required;
     /**
      * @param array<string, string> $import

@@ -29,6 +29,7 @@ use PSX\Schema\PropertyAbstract;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\TypeInterface;
 
 /**
  * SchemaTestCase
@@ -65,14 +66,14 @@ abstract class SchemaTestCase extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $leftSchema);
         $this->assertInstanceOf(SchemaInterface::class, $rightSchema);
 
-        $leftProperty  = $leftSchema->getDefinition();
-        $rightProperty = $rightSchema->getDefinition();
+        $leftType  = $leftSchema->getType();
+        $rightType = $rightSchema->getType();
 
-        $this->assertInstanceOf(PropertyInterface::class, $leftProperty);
-        $this->assertInstanceOf(PropertyInterface::class, $rightProperty);
+        $this->assertInstanceOf(TypeInterface::class, $leftType);
+        $this->assertInstanceOf(TypeInterface::class, $rightType);
 
-        $expect = json_encode($leftProperty, JSON_PRETTY_PRINT);
-        $actual = json_encode($rightProperty, JSON_PRETTY_PRINT);
+        $expect = json_encode($leftType, JSON_PRETTY_PRINT);
+        $actual = json_encode($rightType, JSON_PRETTY_PRINT);
 
         $this->assertJsonStringEqualsJsonString($expect, $actual);
     }

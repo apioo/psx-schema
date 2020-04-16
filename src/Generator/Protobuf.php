@@ -43,7 +43,7 @@ class Protobuf extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
         $code = '';
         $code.= 'message ' . $name . ' {' . "\n";

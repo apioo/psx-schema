@@ -31,24 +31,24 @@ use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 
 /**
- * JsonSchemaTest
+ * TypeSchemaTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class JsonSchemaTest extends ParserTestCase
+class TypeSchemaTest extends ParserTestCase
 {
     public function testParse()
     {
-        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/test_schema.json');
+        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/test_schema.json');
 
         $this->assertSchema($this->getSchema(), $schema);
     }
 
     public function testParseTypeSchema()
     {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/typeschema.json');
+        $schema   = JsonSchema::fromFile(__DIR__ . '/TypeSchema/typeschema.json');
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf(PropertyInterface::class, $property);
@@ -56,7 +56,7 @@ class JsonSchemaTest extends ParserTestCase
 
     public function testParseSwagger()
     {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/JsonSchema/swagger.json');
+        $schema   = JsonSchema::fromFile(__DIR__ . '/TypeSchema/swagger.json');
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf(PropertyInterface::class, $property);
@@ -65,7 +65,7 @@ class JsonSchemaTest extends ParserTestCase
     public function testParseExternalResource()
     {
         $mock = new MockHandler([
-            new Response(200, [], file_get_contents(__DIR__ . '/JsonSchema/schema.json')),
+            new Response(200, [], file_get_contents(__DIR__ . '/TypeSchema/schema.json')),
         ]);
 
         $container = [];
@@ -77,8 +77,8 @@ class JsonSchemaTest extends ParserTestCase
         $client   = new Client\Client(['handler' => $stack]);
         $resolver = JsonSchema\RefResolver::createDefault($client);
 
-        $parser   = new JsonSchema(__DIR__ . '/JsonSchema', $resolver);
-        $schema   = $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/test_schema_external.json'));
+        $parser   = new JsonSchema(__DIR__ . '/TypeSchema', $resolver);
+        $schema   = $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/test_schema_external.json'));
         $property = $schema->getDefinition();
 
         $this->assertInstanceOf(PropertyInterface::class, $property);
@@ -96,12 +96,12 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidFile()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/foo.json');
+        JsonSchema::fromFile(__DIR__ . '/TypeSchema/foo.json');
     }
 
     public function testParseInvalidVersion()
     {
-        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/wrong_version_schema.json');
+        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/wrong_version_schema.json');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
@@ -112,7 +112,7 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidFileRef()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/invalid_file_ref_schema.json');
+        JsonSchema::fromFile(__DIR__ . '/TypeSchema/invalid_file_ref_schema.json');
     }
 
     /**
@@ -131,7 +131,7 @@ class JsonSchemaTest extends ParserTestCase
         $resolver = JsonSchema\RefResolver::createDefault($client);
 
         $parser   = new JsonSchema(__DIR__, $resolver);
-        $parser->parse(file_get_contents(__DIR__ . '/JsonSchema/invalid_http_ref_schema.json'));
+        $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/invalid_http_ref_schema.json'));
     }
 
     /**
@@ -140,7 +140,7 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidSchemaRef()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/unknown_protocol_ref_schema.json');
+        JsonSchema::fromFile(__DIR__ . '/TypeSchema/unknown_protocol_ref_schema.json');
     }
 
     /**
@@ -149,7 +149,7 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testParseInvalidDocumentRef()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/invalid_document_ref_schema.json');
+        JsonSchema::fromFile(__DIR__ . '/TypeSchema/invalid_document_ref_schema.json');
     }
 
     /**
@@ -158,12 +158,12 @@ class JsonSchemaTest extends ParserTestCase
      */
     public function testRecursiveSchema()
     {
-        JsonSchema::fromFile(__DIR__ . '/JsonSchema/recursive_schema.json');
+        JsonSchema::fromFile(__DIR__ . '/TypeSchema/recursive_schema.json');
     }
 
     public function testParseSchemaMapping()
     {
-        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/schema_mapping.json');
+        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/schema_mapping.json');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
 
@@ -175,7 +175,7 @@ class JsonSchemaTest extends ParserTestCase
     
     public function testParseGenerice()
     {
-        $schema = JsonSchema::fromFile(__DIR__ . '/JsonSchema/generics.json');
+        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/generics.json');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
 

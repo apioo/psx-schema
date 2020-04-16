@@ -23,7 +23,6 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
 use PSX\Schema\GeneratorInterface;
-use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
@@ -155,7 +154,6 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
 
         $className  = $this->normalizeClassName($className);
-        $comment    = $type->getDescription();
         $properties = $type->getProperties();
         $generics   = [];
         $required   = $type->getRequired() ?: [];
@@ -191,42 +189,42 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             );
         }
 
-        $code = $this->writeStruct($className, $props, $extends, $comment, $generics);
+        $code = $this->writeStruct($className, $props, $extends, $generics, $type);
 
         $this->chunks->append($className, $code);
     }
 
     private function generateMap(string $className, MapType $type)
     {
-        $code = $this->writeMap($className, $this->generator->getType($type));
+        $code = $this->writeMap($className, $this->generator->getType($type), $type);
 
         $this->chunks->append($className, $code);
     }
 
     private function generateArray(string $className, ArrayType $type)
     {
-        $code = $this->writeArray($className, $this->generator->getType($type));
+        $code = $this->writeArray($className, $this->generator->getType($type), $type);
 
         $this->chunks->append($className, $code);
     }
 
     private function generateUnion(string $className, UnionType $type)
     {
-        $code = $this->writeUnion($className, $this->generator->getType($type));
+        $code = $this->writeUnion($className, $this->generator->getType($type), $type);
 
         $this->chunks->append($className, $code);
     }
 
     private function generateIntersection(string $className, IntersectionType $type)
     {
-        $code = $this->writeUnion($className, $this->generator->getType($type));
+        $code = $this->writeIntersection($className, $this->generator->getType($type), $type);
 
         $this->chunks->append($className, $code);
     }
 
     private function generateReference(string $className, ReferenceType $type)
     {
-        $code = $this->writeReference($className, $this->generator->getType($type));
+        $code = $this->writeReference($className, $this->generator->getType($type), $type);
 
         $this->chunks->append($className, $code);
     }
@@ -236,15 +234,15 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         if ($type instanceof StructType) {
             return true;
         } elseif ($type instanceof MapType) {
-            return !!$this->writeMap($name, $this->generator->getType($type));
+            return !!$this->writeMap($name, $this->generator->getType($type), $type);
         } elseif ($type instanceof ArrayType) {
-            return !!$this->writeArray($name, $this->generator->getType($type));
+            return !!$this->writeArray($name, $this->generator->getType($type), $type);
         } elseif ($type instanceof UnionType) {
-            return !!$this->writeUnion($name, $this->generator->getType($type));
+            return !!$this->writeUnion($name, $this->generator->getType($type), $type);
         } elseif ($type instanceof IntersectionType) {
-            return !!$this->writeIntersection($name, $this->generator->getType($type));
+            return !!$this->writeIntersection($name, $this->generator->getType($type), $type);
         } elseif ($type instanceof ReferenceType) {
-            return !!$this->writeReference($name, $this->generator->getType($type));
+            return !!$this->writeReference($name, $this->generator->getType($type), $type);
         }
 
         return false;
@@ -301,33 +299,32 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
      * @param string $name
      * @param array $properties
      * @param string|null $extends
-     * @param string|null $comment
      * @param array|null $generics
      * @return string
      */
-    abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string;
+    abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string;
 
-    protected function writeMap(string $name, string $type): string
+    protected function writeMap(string $name, string $type, TypeInterface $origin): string
     {
         return '';
     }
 
-    protected function writeArray(string $name, string $type): string
+    protected function writeArray(string $name, string $type, TypeInterface $origin): string
     {
         return '';
     }
 
-    protected function writeUnion(string $name, string $type): string
+    protected function writeUnion(string $name, string $type, TypeInterface $origin): string
     {
         return '';
     }
 
-    protected function writeIntersection(string $name, string $type): string
+    protected function writeIntersection(string $name, string $type, TypeInterface $origin): string
     {
         return '';
     }
 
-    protected function writeReference(string $name, string $type): string
+    protected function writeReference(string $name, string $type, TypeInterface $origin): string
     {
         return '';
     }

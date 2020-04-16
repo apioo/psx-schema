@@ -24,9 +24,15 @@ use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
+use PSX\DateTime\Date;
+use PSX\DateTime\Time;
 use PSX\Schema\Parser\Popo\ResolverInterface;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
+use PSX\Uri\Uri;
 
 /**
  * Documentor
@@ -38,11 +44,27 @@ use PSX\Schema\TypeInterface;
 class Documentor implements ResolverInterface
 {
     /**
+     * @var ContextFactory 
+     */
+    private $contextFactory;
+
+    /**
+     * @var TypeResolver 
+     */
+    private $typeResolver;
+
+    public function __construct()
+    {
+        $this->contextFactory = new ContextFactory();
+        $this->typeResolver   = new TypeResolver();
+    }
+
+    /**
      * @inheritDoc
      */
     public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
-        return null;
+        return TypeFactory::getStruct();
     }
 
     /**
@@ -52,14 +74,21 @@ class Documentor implements ResolverInterface
     {
         $comment = $reflection->getDocComment();
 
-        preg_match('/@var ([?\w]+)/', $comment, $matches);
-        $type = $matches[1] ?? null;
+        preg_match('/@var (.*)\R/', $comment, $matches);
+        $tag = $matches[1] ?? null;
 
-        if (!empty($type)) {
-            $context = (new ContextFactory())->createFromReflector($reflection);
-            $type = (new TypeResolver())->resolve($type, $context);
+        if (!empty($tag)) {
+            $context = $this->contextFactory->createFromReflector($reflection);
+            $type = $this->getPropertyForType($this->typeResolver->resolve($tag, $context));
 
-            return $this->getPropertyForType($type);
+            if ($type instanceof ScalarType) {
+                $properties = $reflection->getDeclaringClass()->getDefaultProperties();
+                if (isset($properties[$reflection->getName()])) {
+                    $type->setConst($properties[$reflection->getName()]);
+                }
+            }
+
+            return $type;
         }
 
         return null;
@@ -68,14 +97,39 @@ class Documentor implements ResolverInterface
     private function getPropertyForType(Type $type): ?TypeInterface
     {
         if ($type instanceof Types\Object_) {
-            return TypeFactory::getReference($type->getFqsen());
-        } elseif ($type instanceof Types\AbstractList) {
-            $items = $this->getPropertyForType($type->getValueType());
-            if ($items === null) {
-                return null;
+            $fqsen = (string) $type->getFqsen();
+            if ($fqsen === '\\' . Date::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
+            } elseif ($fqsen === '\\' . \DateTime::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
+            } elseif ($fqsen === '\\' . Time::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
+            } elseif ($fqsen === '\\' . \DateInterval::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
+            } elseif ($fqsen === '\\' . Uri::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
             }
 
-            return TypeFactory::getArray()->setItems($items);
+            return TypeFactory::getReference($type->getFqsen());
+        } elseif ($type instanceof Types\AbstractList) {
+            $key = $type->getKeyType();
+            $value = $type->getValueType();
+
+            if ($key instanceof Types\Compound) {
+                $items = $this->getPropertyForType($value);
+                if ($items instanceof TypeInterface) {
+                    return TypeFactory::getArray()->setItems($items);
+                } else {
+                    throw new \RuntimeException('Array without type hint');
+                }
+            } else {
+                $additionalProperties = $this->getPropertyForType($value);
+                if ($additionalProperties instanceof TypeInterface) {
+                    return TypeFactory::getMap()->setAdditionalProperties($additionalProperties);
+                } else {
+                    throw new \RuntimeException('Array without type hint');
+                }
+            }
         } elseif ($type instanceof Types\Boolean) {
             return TypeFactory::getBoolean();
         } elseif ($type instanceof Types\Integer) {
@@ -84,6 +138,8 @@ class Documentor implements ResolverInterface
             return TypeFactory::getNumber();
         } elseif ($type instanceof Types\String_) {
             return TypeFactory::getString();
+        } elseif ($type instanceof Types\Resource_) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_BINARY);
         } elseif ($type instanceof Types\Nullable) {
             return $this->getPropertyForType($type->getActualType());
         } elseif ($type instanceof Types\Compound) {

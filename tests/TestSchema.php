@@ -81,6 +81,7 @@ class TestSchema extends SchemaAbstract
         $definitions->addType('Meta', $meta);
 
         $news = TypeFactory::getStruct();
+        $news->setTitle('News');
         $news->setDescription('An general news entry');
         $news->addProperty('config', TypeFactory::getReference('Meta'));
         $news->addProperty('tags', TypeFactory::getArray()

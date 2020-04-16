@@ -70,4 +70,24 @@ class PhpTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testExecute()
+    {
+        $source    = $this->getSchema();
+        $generator = new Php();
+        $result    = $generator->generate($source);
+        $file      = __DIR__ . '/generated_schema.php';
+
+        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
+
+        include_once $file;
+
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $schemaManager = new SchemaManager($reader);
+        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
+
+        $this->assertSchema($schema, $source);
+    }
 }

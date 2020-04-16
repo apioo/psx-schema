@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\TypeInterface;
 
 /**
  * Html
@@ -42,11 +43,12 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object">';
         $return.= '<h' . $this->heading . '>' . htmlspecialchars($name) . '</h' . $this->heading . '>';
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
         }

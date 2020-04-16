@@ -1,5 +1,8 @@
 class Human
 {
+    /**
+     * @var int
+     */
     protected $firstName;
     /**
      * @param int $firstName
@@ -18,6 +21,9 @@ class Human
 }
 class Student extends Human
 {
+    /**
+     * @var int
+     */
     protected $matricleNumber;
     /**
      * @param int $matricleNumber
@@ -35,9 +41,18 @@ class Student extends Human
     }
 }
 
+/**
+ * @template T
+ */
 class Map
 {
+    /**
+     * @var int
+     */
     protected $totalResults;
+    /**
+     * @var array<T>
+     */
     protected $entries;
     /**
      * @param int $totalResults
@@ -70,6 +85,9 @@ class Map
 }
 class RootSchema
 {
+    /**
+     * @var Map
+     */
     protected $students;
     /**
      * @param Map $students

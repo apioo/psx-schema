@@ -37,9 +37,9 @@ class Typescript extends CodeGeneratorAbstract
         return new Type\Typescript();
     }
 
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?string $comment, ?array $generics): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
     {
-        $code = $this->writeHeader($comment);
+        $code = $this->writeHeader($origin->getDescription());
         $code.= 'interface ' . $name;
 
         if (!empty($generics)) {
@@ -63,27 +63,27 @@ class Typescript extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type): string
+    protected function writeMap(string $name, string $type, TypeInterface $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(string $name, string $type): string
+    protected function writeArray(string $name, string $type, TypeInterface $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeUnion(string $name, string $type): string
+    protected function writeUnion(string $name, string $type, TypeInterface $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeIntersection(string $name, string $type): string
+    protected function writeIntersection(string $name, string $type, TypeInterface $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeReference(string $name, string $type): string
+    protected function writeReference(string $name, string $type, TypeInterface $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }

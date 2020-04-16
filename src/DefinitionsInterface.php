@@ -65,9 +65,23 @@ interface DefinitionsInterface
     public function getTypes(string $namespace): iterable;
 
     /**
+     * Returns all types registered at this container
+     * 
+     * @return TypeInterface[]
+     */
+    public function getAllTypes(): iterable;
+
+    /**
      * Returns all registered namespaces on this definition
      * 
      * @return string[]
      */
     public function getNamespaces(): iterable;
+
+    /**
+     * Merges the provided type definitions
+     * 
+     * @param DefinitionsInterface $definitions
+     */
+    public function merge(DefinitionsInterface $definitions): void;
 }
