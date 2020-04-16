@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -43,7 +44,7 @@ class Go extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = '// ' . $name;
 

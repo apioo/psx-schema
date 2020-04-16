@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\Generator\TypeSchema;
 use PSX\Schema\Property\ArrayType;
 use PSX\Schema\Property\ComplexType;
 use PSX\Schema\Property\CompositeTypeAbstract;
@@ -63,17 +64,10 @@ abstract class SchemaTestCase extends TestCase
 
     protected function assertSchema($leftSchema, $rightSchema)
     {
-        $this->assertInstanceOf(SchemaInterface::class, $leftSchema);
-        $this->assertInstanceOf(SchemaInterface::class, $rightSchema);
+        $generator = new TypeSchema();
 
-        $leftType  = $leftSchema->getType();
-        $rightType = $rightSchema->getType();
-
-        $this->assertInstanceOf(TypeInterface::class, $leftType);
-        $this->assertInstanceOf(TypeInterface::class, $rightType);
-
-        $expect = json_encode($leftType, JSON_PRETTY_PRINT);
-        $actual = json_encode($rightType, JSON_PRETTY_PRINT);
+        $expect = $generator->generate($leftSchema);
+        $actual = $generator->generate($rightSchema);
 
         $this->assertJsonStringEqualsJsonString($expect, $actual);
     }

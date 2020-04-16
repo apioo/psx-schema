@@ -90,4 +90,24 @@ class PhpTest extends GeneratorTestCase
 
         $this->assertSchema($schema, $source);
     }
+
+    public function testExecuteOOP()
+    {
+        $source    = $this->getOOPSchema();
+        $generator = new Php();
+        $result    = $generator->generate($source);
+        $file      = __DIR__ . '/generated_schema.php';
+
+        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
+
+        include_once $file;
+
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $schemaManager = new SchemaManager($reader);
+        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\RootSchema');
+
+        $this->assertSchema($schema, $source);
+    }
 }

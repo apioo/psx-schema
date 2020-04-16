@@ -68,6 +68,9 @@ class TypeSchema implements GeneratorInterface
     {
         $result = [];
         $types  = $definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
+
+        ksort($types);
+
         foreach ($types as $name => $type) {
             $result[$name] = $this->generateType($type);
         }

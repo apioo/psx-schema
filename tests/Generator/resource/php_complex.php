@@ -1,36 +1,37 @@
 /**
- * Common properties which can be used at any schema
+ * @Description("Common properties which can be used at any schema")
  */
 class CommonProperties
 {
     /**
-     * Distinct word which represents this schema
      * @var string
+     * @Description("Distinct word which represents this schema")
      */
     protected $title;
     /**
-     * General description of this schema, should not contain any new lines.
      * @var string
+     * @Description("General description of this schema, should not contain any new lines.")
      */
     protected $description;
     /**
-     * JSON type of the property
      * @var string
+     * @Description("JSON type of the property")
+     * @Enum({"object", "array", "boolean", "integer", "number", "string"})
      */
     protected $type;
     /**
-     * Indicates whether it is possible to use a null value
      * @var bool
+     * @Description("Indicates whether it is possible to use a null value")
      */
     protected $nullable;
     /**
-     * Indicates whether this schema is deprecated
      * @var bool
+     * @Description("Indicates whether this schema is deprecated")
      */
     protected $deprecated;
     /**
-     * Indicates whether this schema is readonly
      * @var bool
+     * @Description("Indicates whether this schema is readonly")
      */
     protected $readonly;
     /**
@@ -121,18 +122,18 @@ class CommonProperties
 class ScalarProperties
 {
     /**
-     * Describes the specific format of this type i.e. date-time or int64
      * @var string
+     * @Description("Describes the specific format of this type i.e. date-time or int64")
      */
     protected $format;
     /**
-     * A list of possible enumeration values
      * @var StringArray|NumberArray
+     * @Description("A list of possible enumeration values")
      */
     protected $enum;
     /**
-     * Represents a scalar value
      * @var string|float|bool
+     * @Description("Represents a scalar value")
      */
     protected $default;
     /**
@@ -179,14 +180,22 @@ class ScalarProperties
     }
 }
 
-
 /**
- * Properties specific for a container
+ * @extends ArrayAccess<string, PropertyValue>
+ * @Description("Properties of a schema")
+ */
+class Properties extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("Properties specific for a container")
+ * @Required({"type"})
  */
 class ContainerProperties
 {
     /**
      * @var string
+     * @Enum({"object"})
      */
     protected $type;
     /**
@@ -205,31 +214,32 @@ class ContainerProperties
     }
 }
 /**
- * Struct specific properties
+ * @Description("Struct specific properties")
+ * @Required({"properties"})
  */
 class StructProperties
 {
     /**
-     * Properties of a schema
-     * @var array<string, PropertyValue>
+     * @var Properties
      */
     protected $properties;
     /**
-     * Array string values
      * @var array<string>
+     * @Description("Array string values")
+     * @MinItems(1)
      */
     protected $required;
     /**
-     * @param array<string, PropertyValue> $properties
+     * @param Properties $properties
      */
-    public function setProperties(?array $properties)
+    public function setProperties(?Properties $properties)
     {
         $this->properties = $properties;
     }
     /**
-     * @return array<string, PropertyValue>
+     * @return Properties
      */
-    public function getProperties() : ?array
+    public function getProperties() : ?Properties
     {
         return $this->properties;
     }
@@ -250,23 +260,26 @@ class StructProperties
 }
 
 /**
- * Map specific properties
+ * @Description("Map specific properties")
+ * @Required({"additionalProperties"})
  */
 class MapProperties
 {
     /**
-     * Allowed values of an object property
      * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
+     * @Description("Allowed values of an object property")
      */
     protected $additionalProperties;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $maxProperties;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $minProperties;
     /**
@@ -316,27 +329,31 @@ class MapProperties
 
 
 /**
- * Array properties
+ * @Description("Array properties")
+ * @Required({"type", "items"})
  */
 class ArrayProperties
 {
     /**
      * @var string
+     * @Enum({"array"})
      */
     protected $type;
     /**
-     * Allowed values of an array item
      * @var BooleanType|NumberType|StringType|ReferenceType|GenericType
+     * @Description("Allowed values of an array item")
      */
     protected $items;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $maxItems;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $minItems;
     /**
@@ -416,12 +433,14 @@ class ArrayProperties
 }
 
 /**
- * Boolean properties
+ * @Description("Boolean properties")
+ * @Required({"type"})
  */
 class BooleanProperties
 {
     /**
      * @var string
+     * @Enum({"boolean"})
      */
     protected $type;
     /**
@@ -441,16 +460,20 @@ class BooleanProperties
 }
 
 /**
- * Number properties
+ * @Description("Number properties")
+ * @Required({"type"})
  */
 class NumberProperties
 {
     /**
      * @var string
+     * @Enum({"number", "integer"})
      */
     protected $type;
     /**
      * @var float
+     * @Minimum(0)
+     * @ExclusiveMinimum(true)
      */
     protected $multipleOf;
     /**
@@ -556,22 +579,26 @@ class NumberProperties
 }
 
 /**
- * String properties
+ * @Description("String properties")
+ * @Required({"type"})
  */
 class StringProperties
 {
     /**
      * @var string
+     * @Enum({"string"})
      */
     protected $type;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $maxLength;
     /**
-     * Positive integer value
      * @var int
+     * @Description("Positive integer value")
+     * @Minimum(0)
      */
     protected $minLength;
     /**
@@ -637,20 +664,26 @@ class StringProperties
 }
 
 
-
 /**
- * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
+ * @extends ArrayAccess<string, string>
+ * @Description("An object to hold mappings between payload values and schema names or references")
+ */
+class DiscriminatorMapping extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description")
+ * @Required({"propertyName"})
  */
 class Discriminator
 {
     /**
-     * The name of the property in the payload that will hold the discriminator value
      * @var string
+     * @Description("The name of the property in the payload that will hold the discriminator value")
      */
     protected $propertyName;
     /**
-     * An object to hold mappings between payload values and schema names or references
-     * @var array<string, string>
+     * @var DiscriminatorMapping
      */
     protected $mapping;
     /**
@@ -668,22 +701,23 @@ class Discriminator
         return $this->propertyName;
     }
     /**
-     * @param array<string, string> $mapping
+     * @param DiscriminatorMapping $mapping
      */
-    public function setMapping(?array $mapping)
+    public function setMapping(?DiscriminatorMapping $mapping)
     {
         $this->mapping = $mapping;
     }
     /**
-     * @return array<string, string>
+     * @return DiscriminatorMapping
      */
-    public function getMapping() : ?array
+    public function getMapping() : ?DiscriminatorMapping
     {
         return $this->mapping;
     }
 }
 /**
- * An intersection type combines multiple schemas into one
+ * @Description("An intersection type combines multiple schemas into one")
+ * @Required({"allOf"})
  */
 class AllOfProperties
 {
@@ -692,8 +726,8 @@ class AllOfProperties
      */
     protected $description;
     /**
-     * Combination values
      * @var array<OfValue>
+     * @Description("Combination values")
      */
     protected $allOf;
     /**
@@ -726,7 +760,8 @@ class AllOfProperties
     }
 }
 /**
- * An union type can contain one of the provided schemas
+ * @Description("An union type can contain one of the provided schemas")
+ * @Required({"oneOf"})
  */
 class OneOfProperties
 {
@@ -739,8 +774,8 @@ class OneOfProperties
      */
     protected $discriminator;
     /**
-     * Combination values
      * @var array<OfValue>
+     * @Description("Combination values")
      */
     protected $oneOf;
     /**
@@ -787,19 +822,28 @@ class OneOfProperties
     }
 }
 
-
 /**
- * Represents a reference to another schema
+ * @extends ArrayAccess<string, ReferenceType>
+ */
+class TemplateProperties extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("Represents a reference to another schema")
+ * @Required({"$ref"})
  */
 class ReferenceType
 {
     /**
-     * Reference to the schema under the definitions key
      * @var string
+     * @Key("$ref")
+     * @Description("Reference to the schema under the definitions key")
      */
     protected $ref;
     /**
-     * @var array<string, ReferenceType>
+     * @var TemplateProperties
+     * @Key("$template")
+     * @Description("Optional concrete schema definitions which replace generic template types")
      */
     protected $template;
     /**
@@ -817,27 +861,29 @@ class ReferenceType
         return $this->ref;
     }
     /**
-     * @param array<string, ReferenceType> $template
+     * @param TemplateProperties $template
      */
-    public function setTemplate(?array $template)
+    public function setTemplate(?TemplateProperties $template)
     {
         $this->template = $template;
     }
     /**
-     * @return array<string, ReferenceType>
+     * @return TemplateProperties
      */
-    public function getTemplate() : ?array
+    public function getTemplate() : ?TemplateProperties
     {
         return $this->template;
     }
 }
 /**
- * Represents a generic type
+ * @Description("Represents a generic type")
+ * @Required({"$generic"})
  */
 class GenericType
 {
     /**
      * @var string
+     * @Key("$generic")
      */
     protected $generic;
     /**
@@ -856,20 +902,34 @@ class GenericType
     }
 }
 
-
-
+/**
+ * @extends ArrayAccess<string, DefinitionValue>
+ * @Description("Schema definitions which can be reused")
+ */
+class Definitions extends \PSX\Record\Record
+{
+}
+/**
+ * @extends ArrayAccess<string, string>
+ * @Description("Contains external definitions which are imported. The imported schemas can be used via the namespace")
+ */
+class Import extends \PSX\Record\Record
+{
+}
 
 
 
 
 /**
- * TypeSchema meta schema which describes a TypeSchema
+ * @Title("TypeSchema")
+ * @Description("TypeSchema meta schema which describes a TypeSchema")
+ * @Required({"title", "type", "properties"})
  */
 class TypeSchema
 {
     /**
-     * Contains external definitions which are imported. The imported schemas can be used via the namespace
-     * @var array<string, string>
+     * @var Import
+     * @Key("$import")
      */
     protected $import;
     /**
@@ -882,34 +942,34 @@ class TypeSchema
     protected $description;
     /**
      * @var string
+     * @Enum({"object"})
      */
     protected $type;
     /**
-     * Schema definitions which can be reused
-     * @var array<string, DefinitionValue>
+     * @var Definitions
      */
     protected $definitions;
     /**
-     * Properties of a schema
-     * @var array<string, PropertyValue>
+     * @var Properties
      */
     protected $properties;
     /**
-     * Array string values
      * @var array<string>
+     * @Description("Array string values")
+     * @MinItems(1)
      */
     protected $required;
     /**
-     * @param array<string, string> $import
+     * @param Import $import
      */
-    public function setImport(?array $import)
+    public function setImport(?Import $import)
     {
         $this->import = $import;
     }
     /**
-     * @return array<string, string>
+     * @return Import
      */
-    public function getImport() : ?array
+    public function getImport() : ?Import
     {
         return $this->import;
     }
@@ -956,30 +1016,30 @@ class TypeSchema
         return $this->type;
     }
     /**
-     * @param array<string, DefinitionValue> $definitions
+     * @param Definitions $definitions
      */
-    public function setDefinitions(?array $definitions)
+    public function setDefinitions(?Definitions $definitions)
     {
         $this->definitions = $definitions;
     }
     /**
-     * @return array<string, DefinitionValue>
+     * @return Definitions
      */
-    public function getDefinitions() : ?array
+    public function getDefinitions() : ?Definitions
     {
         return $this->definitions;
     }
     /**
-     * @param array<string, PropertyValue> $properties
+     * @param Properties $properties
      */
-    public function setProperties(?array $properties)
+    public function setProperties(?Properties $properties)
     {
         $this->properties = $properties;
     }
     /**
-     * @return array<string, PropertyValue>
+     * @return Properties
      */
-    public function getProperties() : ?array
+    public function getProperties() : ?Properties
     {
         return $this->properties;
     }

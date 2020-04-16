@@ -30,7 +30,7 @@ type Meta = Record<string, string>;
 /**
  * An general news entry
  */
-interface RootSchema {
+interface News {
     config?: Meta
     tags?: Array<string>
     receiver: Array<Author>

@@ -84,12 +84,12 @@ class Popo implements ParserInterface
         }
 
         $definitions = new Definitions();
-        $property    = $this->parseClass($className, $definitions);
+        $property    = $this->parseClass($className, $definitions, true);
 
         return new Schema($property, $definitions);
     }
 
-    protected function parseClass(string $className, DefinitionsInterface $definitions)
+    protected function parseClass(string $className, DefinitionsInterface $definitions, bool $root = false)
     {
         $class = new ReflectionClass($className);
 
@@ -100,7 +100,9 @@ class Popo implements ParserInterface
         $type = $this->resolver->resolveClass($class);
         $annotations = $this->reader->getClassAnnotations($class);
 
-        $definitions->addType($class->getShortName(), $type);
+        if (!$root) {
+            $definitions->addType($class->getShortName(), $type);
+        }
 
         if ($type instanceof TypeAbstract) {
             $this->parseCommonAnnotations($annotations, $type);
@@ -109,6 +111,9 @@ class Popo implements ParserInterface
         if ($type instanceof StructType) {
             $this->parseStructAnnotations($annotations, $type);
             $this->parseProperties($class, $type, $definitions);
+        } elseif ($type instanceof MapType) {
+            $this->parseMapAnnotations($annotations, $type);
+            $this->parseNested($type, $definitions);
         } else {
             throw new \RuntimeException('Could not determine class type');
         }

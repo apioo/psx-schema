@@ -1,6 +1,6 @@
-<?php
 /**
- * Location of the person
+ * @Description("Location of the person")
+ * @Required({"lat", "long"})
  */
 class Location
 {
@@ -42,7 +42,8 @@ class Location
     }
 }
 /**
- * An application
+ * @Description("An application")
+ * @Required({"name", "url"})
  */
 class Web
 {
@@ -84,7 +85,8 @@ class Web
     }
 }
 /**
- * An simple author element with some description
+ * @Description("An simple author element with some description")
+ * @Required({"title"})
  */
 class Author
 {
@@ -94,7 +96,6 @@ class Author
      */
     protected $title;
     /**
-     * We will send no spam to this address
      * @var string
      * @Description("We will send no spam to this address")
      * @Nullable(true)
@@ -106,7 +107,6 @@ class Author
      */
     protected $categories;
     /**
-     * Array of locations
      * @var array<Location>
      * @Description("Array of locations")
      */
@@ -186,14 +186,21 @@ class Author
         return $this->origin;
     }
 }
-
 /**
- * An general news entry
+ * @extends ArrayAccess<string, string>
+ */
+class Meta extends \PSX\Record\Record
+{
+}
+/**
+ * @Title("News")
+ * @Description("An general news entry")
+ * @Required({"receiver", "price", "content"})
  */
 class News
 {
     /**
-     * @var array<string, string>
+     * @var Meta
      */
     protected $config;
     /**
@@ -212,7 +219,7 @@ class News
      */
     protected $resources;
     /**
-     * @var string
+     * @var resource
      */
     protected $profileImage;
     /**
@@ -256,7 +263,6 @@ class News
      */
     protected $rating;
     /**
-     * Contains the main content of the news entry
      * @var string
      * @Description("Contains the main content of the news entry")
      * @MinLength(3)
@@ -265,37 +271,37 @@ class News
     protected $content;
     /**
      * @var string
-     * @Enum(""foo", "bar"")
+     * @Enum({"foo", "bar"})
      */
     protected $question;
     /**
      * @var string
-     * @Const("http://foo.bar")
      */
-    protected $version;
+    protected $version = 'http://foo.bar';
     /**
      * @var \PSX\DateTime\Time
      */
     protected $coffeeTime;
     /**
-     * @var string
+     * @var \PSX\Uri\Uri
      */
     protected $profileUri;
     /**
      * @var string
+     * @Key("g-recaptcha-response")
      */
     protected $captcha;
     /**
-     * @param array<string, string> $config
+     * @param Meta $config
      */
-    public function setConfig(?array $config)
+    public function setConfig(?Meta $config)
     {
         $this->config = $config;
     }
     /**
-     * @return array<string, string>
+     * @return Meta
      */
-    public function getConfig() : ?array
+    public function getConfig() : ?Meta
     {
         return $this->config;
     }
@@ -342,16 +348,16 @@ class News
         return $this->resources;
     }
     /**
-     * @param string $profileImage
+     * @param resource $profileImage
      */
-    public function setProfileImage(?string $profileImage)
+    public function setProfileImage($profileImage)
     {
         $this->profileImage = $profileImage;
     }
     /**
-     * @return string
+     * @return resource
      */
-    public function getProfileImage() : ?string
+    public function getProfileImage()
     {
         return $this->profileImage;
     }
@@ -538,16 +544,16 @@ class News
         return $this->coffeeTime;
     }
     /**
-     * @param string $profileUri
+     * @param \PSX\Uri\Uri $profileUri
      */
-    public function setProfileUri(?string $profileUri)
+    public function setProfileUri(?\PSX\Uri\Uri $profileUri)
     {
         $this->profileUri = $profileUri;
     }
     /**
-     * @return string
+     * @return \PSX\Uri\Uri
      */
-    public function getProfileUri() : ?string
+    public function getProfileUri() : ?\PSX\Uri\Uri
     {
         return $this->profileUri;
     }

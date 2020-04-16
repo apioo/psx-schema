@@ -22,20 +22,20 @@ namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\Proto;
 use PSX\Schema\Generator\Protobuf;
-use PSX\Schema\Generator\Typescript;
+use PSX\Schema\Generator\TypeScript;
 
 /**
- * TypescriptTest
+ * TypeScriptTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TypescriptTest extends GeneratorTestCase
+class TypeScriptTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new Typescript();
+        $generator = new TypeScript();
 
         $actual = (string) $generator->generate($this->getSchema());
 
@@ -47,7 +47,7 @@ class TypescriptTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new Typescript();
+        $generator = new TypeScript();
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
@@ -59,7 +59,7 @@ class TypescriptTest extends GeneratorTestCase
 
     public function testGenerateOOP()
     {
-        $generator = new Typescript();
+        $generator = new TypeScript();
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 

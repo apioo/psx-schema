@@ -21,6 +21,8 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -43,7 +45,7 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object">';
         $return.= '<h' . $this->heading . '>' . htmlspecialchars($name) . '</h' . $this->heading . '>';
@@ -104,7 +106,7 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeMap(string $name, string $type): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object">';
         $return.= '<h' . $this->heading . '>' . htmlspecialchars($name) . '</h' . $this->heading . '>';

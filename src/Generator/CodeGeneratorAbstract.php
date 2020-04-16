@@ -302,29 +302,29 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
      * @param array|null $generics
      * @return string
      */
-    abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string;
+    abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string;
 
-    protected function writeMap(string $name, string $type, TypeInterface $origin): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
         return '';
     }
 
-    protected function writeArray(string $name, string $type, TypeInterface $origin): string
+    protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
         return '';
     }
 
-    protected function writeUnion(string $name, string $type, TypeInterface $origin): string
+    protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
         return '';
     }
 
-    protected function writeIntersection(string $name, string $type, TypeInterface $origin): string
+    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
         return '';
     }
 
-    protected function writeReference(string $name, string $type, TypeInterface $origin): string
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
         return '';
     }

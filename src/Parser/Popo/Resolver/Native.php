@@ -38,7 +38,12 @@ class Native implements ResolverInterface
      */
     public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
-        return TypeFactory::getStruct();
+        if ($reflection->implementsInterface(\ArrayAccess::class)) {
+            // we have currently no way to determine the inner type
+            return null;
+        } else {
+            return TypeFactory::getStruct();
+        }
     }
 
     /**

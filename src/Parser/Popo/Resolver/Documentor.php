@@ -28,7 +28,6 @@ use PSX\DateTime\Date;
 use PSX\DateTime\Time;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
@@ -64,7 +63,19 @@ class Documentor implements ResolverInterface
      */
     public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
-        return TypeFactory::getStruct();
+        if ($reflection->implementsInterface(\ArrayAccess::class)) {
+            $tag = $this->getTag('extends', $reflection->getDocComment());
+            if (!empty($tag)) {
+                $context = $this->contextFactory->createFromReflector($reflection);
+                $type = $this->buildType($this->typeResolver->resolve($tag, $context));
+
+                return $type;
+            } else {
+                throw new \RuntimeException('Could not determine type of map');
+            }
+        } else {
+            return TypeFactory::getStruct();
+        }
     }
 
     /**
@@ -72,14 +83,10 @@ class Documentor implements ResolverInterface
      */
     public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
-        $comment = $reflection->getDocComment();
-
-        preg_match('/@var (.*)\R/', $comment, $matches);
-        $tag = $matches[1] ?? null;
-
+        $tag = $this->getTag('var', $reflection->getDocComment());
         if (!empty($tag)) {
             $context = $this->contextFactory->createFromReflector($reflection);
-            $type = $this->getPropertyForType($this->typeResolver->resolve($tag, $context));
+            $type = $this->buildType($this->typeResolver->resolve($tag, $context));
 
             if ($type instanceof ScalarType) {
                 $properties = $reflection->getDeclaringClass()->getDefaultProperties();
@@ -94,7 +101,7 @@ class Documentor implements ResolverInterface
         return null;
     }
 
-    private function getPropertyForType(Type $type): ?TypeInterface
+    private function buildType(Type $type): ?TypeInterface
     {
         if ($type instanceof Types\Object_) {
             $fqsen = (string) $type->getFqsen();
@@ -110,20 +117,24 @@ class Documentor implements ResolverInterface
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
             }
 
-            return TypeFactory::getReference($type->getFqsen());
+            if (class_exists($fqsen)) {
+                return TypeFactory::getReference($fqsen);
+            } else {
+                return TypeFactory::getGeneric($fqsen);
+            }
         } elseif ($type instanceof Types\AbstractList) {
             $key = $type->getKeyType();
             $value = $type->getValueType();
 
             if ($key instanceof Types\Compound) {
-                $items = $this->getPropertyForType($value);
+                $items = $this->buildType($value);
                 if ($items instanceof TypeInterface) {
                     return TypeFactory::getArray()->setItems($items);
                 } else {
                     throw new \RuntimeException('Array without type hint');
                 }
             } else {
-                $additionalProperties = $this->getPropertyForType($value);
+                $additionalProperties = $this->buildType($value);
                 if ($additionalProperties instanceof TypeInterface) {
                     return TypeFactory::getMap()->setAdditionalProperties($additionalProperties);
                 } else {
@@ -141,11 +152,11 @@ class Documentor implements ResolverInterface
         } elseif ($type instanceof Types\Resource_) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_BINARY);
         } elseif ($type instanceof Types\Nullable) {
-            return $this->getPropertyForType($type->getActualType());
+            return $this->buildType($type->getActualType());
         } elseif ($type instanceof Types\Compound) {
             $oneOf = [];
             foreach ($type as $typ) {
-                $property = $this->getPropertyForType($typ);
+                $property = $this->buildType($typ);
                 if ($property instanceof TypeInterface) {
                     $oneOf[] = $property;
                 }
@@ -159,5 +170,11 @@ class Documentor implements ResolverInterface
         }
 
         return null;
+    }
+
+    private function getTag(string $tag, string $comment): ?string
+    {
+        preg_match('/@' . $tag . ' (.*)\R/', $comment, $matches);
+        return $matches[1] ?? null;
     }
 }

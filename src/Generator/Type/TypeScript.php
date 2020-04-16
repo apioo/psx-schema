@@ -21,13 +21,13 @@
 namespace PSX\Schema\Generator\Type;
 
 /**
- * Typescript
+ * TypeScript
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Typescript extends GeneratorAbstract
+class TypeScript extends GeneratorAbstract
 {
     protected function getString(): string
     {

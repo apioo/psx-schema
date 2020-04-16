@@ -32,7 +32,7 @@ public class Author
 /// <summary>
 /// An general news entry
 /// </summary>
-public class RootSchema
+public class News
 {
     public Dictionary<string, string> Config { get; set; }
     public string[] Tags { get; set; }

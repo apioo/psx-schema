@@ -81,7 +81,7 @@ class GeneratorFactory
                 break;
 
             case self::TYPE_TYPESCRIPT:
-                return new Generator\Typescript();
+                return new Generator\TypeScript();
                 break;
 
             default:

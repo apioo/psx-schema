@@ -20,8 +20,8 @@ type Author struct {
 }
 
 
-// RootSchema An general news entry
-type RootSchema struct {
+// News An general news entry
+type News struct {
     config map[string]string `json:"config"`
     tags []string `json:"tags"`
     receiver []Author `json:"receiver"`

@@ -69,7 +69,7 @@ class Php extends CodeGeneratorAbstract
         return new Type\Php();
     }
 
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $tags = [];
         if ($generics !== null) {
@@ -140,10 +140,12 @@ class Php extends CodeGeneratorAbstract
         }
     }
 
-    protected function writeMap(string $name, string $type, TypeInterface $origin): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
+        $subType = $this->generator->getType($origin->getAdditionalProperties());
+
         $class = $this->factory->class($name);
-        $class->setDocComment($this->buildComment([], $this->getAnnotationsForType($origin)));
+        $class->setDocComment($this->buildComment(['extends' => 'ArrayAccess<string, ' . $subType . '>'], $this->getAnnotationsForType($origin)));
         $class->extend('\\' . Record::class);
 
         if ($this->namespace !== null) {

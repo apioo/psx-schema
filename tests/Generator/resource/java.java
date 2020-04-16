@@ -83,7 +83,7 @@ public static class Author {
 /**
  * An general news entry
  */
-public static class RootSchema {
+public static class News {
     private HashMap<string, String> config;
     private String[] tags;
     private Author[] receiver;

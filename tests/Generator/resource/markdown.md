@@ -38,8 +38,8 @@ Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 * | [String](#String) |  | 
 
-<a name="RootSchema"></a>
-# RootSchema
+<a name="News"></a>
+# News
 
 An general news entry
 

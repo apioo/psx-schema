@@ -21,23 +21,29 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
- * Typescript
+ * TypeScript
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Typescript extends CodeGeneratorAbstract
+class TypeScript extends CodeGeneratorAbstract
 {
     protected function newTypeGenerator(): GeneratorInterface
     {
-        return new Type\Typescript();
+        return new Type\TypeScript();
     }
 
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, TypeInterface $origin): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = $this->writeHeader($origin->getDescription());
         $code.= 'interface ' . $name;
@@ -63,27 +69,27 @@ class Typescript extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, TypeInterface $origin): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(string $name, string $type, TypeInterface $origin): string
+    protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeUnion(string $name, string $type, TypeInterface $origin): string
+    protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeIntersection(string $name, string $type, TypeInterface $origin): string
+    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeReference(string $name, string $type, TypeInterface $origin): string
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
         return 'type ' . $name . ' = ' . $type . ';' . "\n";
     }

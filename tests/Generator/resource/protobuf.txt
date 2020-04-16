@@ -17,7 +17,7 @@ message Author {
 }
 
 
-message RootSchema {
+message News {
     map<string, string> config = 1;
     repeated string tags = 2;
     repeated Author receiver = 3;
