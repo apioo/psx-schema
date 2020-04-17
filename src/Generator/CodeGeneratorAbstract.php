@@ -69,13 +69,14 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     private $chunks;
 
     /**
-     * @param string|null $namespace
+     * @param string $namespace
+     * @param int $indent
      */
-    public function __construct(?string $namespace = null)
+    public function __construct(?string $namespace = null, int $indent = 4)
     {
         $this->generator = $this->newTypeGenerator();
         $this->namespace = $namespace;
-        $this->indent    = str_repeat(' ', 4);;
+        $this->indent    = str_repeat(' ', $indent);
     }
 
     /**
