@@ -35,6 +35,7 @@ use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\Visitor\NullVisitor;
 use RuntimeException;
@@ -163,7 +164,7 @@ class SchemaTraverser
             $result = $this->traverseUnion($data, $type, $definitions, $visitor, $context);
         } elseif ($type instanceof ReferenceType) {
             $subType = $definitions->getType($type->getRef());
-            $result = $this->recTraverse($data, $subType, $definitions, $visitor, $type->getTemplate());
+            $result = $this->recTraverse($data, $subType, $definitions, $visitor, $type->getTemplate() ?: []);
         } elseif ($type instanceof GenericType) {
             if (!isset($context[$type->getGeneric()])) {
                 throw new \RuntimeException('Could not resolve generic type from context');
@@ -204,15 +205,15 @@ class SchemaTraverser
             }
         }
 
-        return $visitor->visitObject($result, $type, $this->getCurrentPath());
+        return $visitor->visitStruct($result, $type, $this->getCurrentPath());
     }
 
-    protected function traverseMap(\stdClass $data, MapType $property, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    protected function traverseMap(\stdClass $data, MapType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
         $data   = (array) $data;
         $result = new \stdClass();
 
-        $additionalProperties = $property->getAdditionalProperties();
+        $additionalProperties = $type->getAdditionalProperties();
         if (is_bool($additionalProperties)) {
             if ($additionalProperties === true) {
                 $result = (object) $data;
@@ -227,7 +228,7 @@ class SchemaTraverser
             }
         }
 
-        return $visitor->visitObject($result, $property, $this->getCurrentPath());
+        return $visitor->visitMap($result, $type, $this->getCurrentPath());
     }
 
     protected function traverseArray(array $data, ArrayType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
@@ -251,17 +252,17 @@ class SchemaTraverser
     protected function traverseString($data, StringType $type, VisitorInterface $visitor)
     {
         $format = $type->getFormat();
-        if ($format === PropertyType::FORMAT_BINARY) {
+        if ($format === TypeAbstract::FORMAT_BINARY) {
             return $visitor->visitBinary($data, $type, $this->getCurrentPath());
-        } elseif ($format === PropertyType::FORMAT_DATETIME) {
+        } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
             return $visitor->visitDateTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === PropertyType::FORMAT_DATE) {
+        } elseif ($format === TypeAbstract::FORMAT_DATE) {
             return $visitor->visitDate($data, $type, $this->getCurrentPath());
-        } elseif ($format === PropertyType::FORMAT_DURATION) {
+        } elseif ($format === TypeAbstract::FORMAT_DURATION) {
             return $visitor->visitDuration($data, $type, $this->getCurrentPath());
-        } elseif ($format === PropertyType::FORMAT_TIME) {
+        } elseif ($format === TypeAbstract::FORMAT_TIME) {
             return $visitor->visitTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === PropertyType::FORMAT_URI) {
+        } elseif ($format === TypeAbstract::FORMAT_URI) {
             return $visitor->visitUri($data, $type, $this->getCurrentPath());
         } else {
             return $visitor->visitString($data, $type, $this->getCurrentPath());
@@ -350,23 +351,23 @@ class SchemaTraverser
 
         $format = $type->getFormat();
         if ($format !== null) {
-            if ($format === PropertyType::FORMAT_BINARY) {
+            if ($format === TypeAbstract::FORMAT_BINARY) {
                 if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
                 }
-            } elseif ($format === PropertyType::FORMAT_DATETIME) {
+            } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
                 if (!preg_match('/^' . DateTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
                 }
-            } elseif ($format === PropertyType::FORMAT_DATE) {
+            } elseif ($format === TypeAbstract::FORMAT_DATE) {
                 if (!preg_match('/^' . Date::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
                 }
-            } elseif ($format === PropertyType::FORMAT_DURATION) {
+            } elseif ($format === TypeAbstract::FORMAT_DURATION) {
                 if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
                 }
-            } elseif ($format === PropertyType::FORMAT_TIME) {
+            } elseif ($format === TypeAbstract::FORMAT_TIME) {
                 if (!preg_match('/^' . Time::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
                 }
@@ -387,7 +388,7 @@ class SchemaTraverser
 
         $enum = $type->getEnum();
         if ($enum !== null) {
-            if (!array_search($data, $enum, true)) {
+            if (!in_array($data, $enum, true)) {
                 throw new ValidationException($this->getCurrentPath() . ' is not in enumeration ' . json_encode($enum), 'enum', $this->pathStack);
             }
         }

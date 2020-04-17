@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -66,8 +67,8 @@ class MapType extends ObjectType
 
         if ($additionalProperties === false) {
             throw new \InvalidArgumentException('Map additional properties must not be false only true is allowed as boolean value');
-        } elseif ($additionalProperties instanceof StructType) {
-            throw new \InvalidArgumentException('Map additional properties must be of type string, number, boolean, array or reference');
+        } elseif ($additionalProperties instanceof TypeInterface) {
+            TypeAssert::assertProperty($additionalProperties);
         }
 
         $this->additionalProperties = $additionalProperties;

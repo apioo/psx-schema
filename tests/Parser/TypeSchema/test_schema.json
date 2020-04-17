@@ -1,30 +1,6 @@
 {
-  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
-  "$id": "urn:schema.phpsx.org#",
   "definitions": {
-    "ref72828040aecd82459c3636a4226e81fc": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "refb33b896fd4135c2882510d8949e883cf": {
-      "title": "location",
-      "description": "Location of the person",
-      "type": "object",
-      "properties": {
-        "lat": {
-          "type": "number"
-        },
-        "long": {
-          "type": "number"
-        }
-      },
-      "additionalProperties": true,
-      "required": ["lat", "long"]
-    },
-    "ref4770be5abc2aedca274241c166226fc7": {
-      "title": "author",
+    "Author": {
       "description": "An simple author element with some description",
       "type": "object",
       "properties": {
@@ -33,7 +9,8 @@
           "pattern": "[A-z]{3,16}"
         },
         "email": {
-          "description": "We will send no spam to this addresss",
+          "description": "We will send no spam to this address",
+          "nullable": true,
           "type": "string"
         },
         "categories": {
@@ -44,23 +21,45 @@
           "maxItems": 8
         },
         "locations": {
+          "description": "Array of locations",
           "type": "array",
           "items": {
-            "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
-          },
-          "description": "Array of locations"
+            "$ref": "Location"
+          }
         },
         "origin": {
-          "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
+          "$ref": "Location"
         }
       },
-      "additionalProperties": false,
       "required": [
         "title"
       ]
     },
-    "ref57c64cac92e27c1db99e6a6793546e12": {
-      "title": "web",
+    "Location": {
+      "description": "Location of the person",
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "long"
+      ]
+    },
+    "Meta": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1,
+      "maxProperties": 6
+    },
+    "Web": {
       "description": "An application",
       "type": "object",
       "properties": {
@@ -71,60 +70,18 @@
           "type": "string"
         }
       },
-      "additionalProperties": {
-        "type": "string"
-      },
-      "minProperties": 2,
-      "maxProperties": 8,
-      "required": ["name", "url"]
-    },
-    "ref4898a93cd82b117833f9683324e0f6dd": {
-      "oneOf": [
-        {
-          "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
-        },
-        {
-          "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
-        }
+      "required": [
+        "name",
+        "url"
       ]
-    },
-    "ref20f5d15c759c1d56a2ed0675fe4b4a0b": {
-      "oneOf": [
-        {
-          "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
-        },
-        {
-          "$ref": "#\/definitions\/ref57c64cac92e27c1db99e6a6793546e12"
-        }
-      ]
-    },
-    "ref68a5de1071c84dc3c357e50c05e674fa": {
-      "title": "meta",
-      "description": "Some meta data",
-      "type": "object",
-      "properties": {
-        "createDate": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "patternProperties": {
-        "^tags_\\d$": {
-          "type": "string"
-        },
-        "^location_\\d$": {
-          "$ref": "#\/definitions\/refb33b896fd4135c2882510d8949e883cf"
-        }
-      },
-      "additionalProperties": false
     }
   },
-  "title": "news",
+  "title": "News",
   "description": "An general news entry",
   "type": "object",
   "properties": {
     "config": {
-      "$ref": "#\/definitions\/ref72828040aecd82459c3636a4226e81fc"
+      "$ref": "Meta"
     },
     "tags": {
       "type": "array",
@@ -137,43 +94,57 @@
     "receiver": {
       "type": "array",
       "items": {
-        "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+        "$ref": "Author"
       },
       "minItems": 1
     },
     "resources": {
       "type": "array",
       "items": {
-        "$ref": "#\/definitions\/ref4898a93cd82b117833f9683324e0f6dd"
+        "oneOf": [
+          {
+            "$ref": "Location"
+          },
+          {
+            "$ref": "Web"
+          }
+        ]
       }
     },
     "profileImage": {
-      "type": "string",
-      "format": "base64"
+      "format": "base64",
+      "type": "string"
     },
     "read": {
       "type": "boolean"
     },
     "source": {
-      "$ref": "#\/definitions\/ref20f5d15c759c1d56a2ed0675fe4b4a0b"
+      "oneOf": [
+        {
+          "$ref": "Author"
+        },
+        {
+          "$ref": "Web"
+        }
+      ]
     },
     "author": {
-      "$ref": "#\/definitions\/ref4770be5abc2aedca274241c166226fc7"
+      "$ref": "Author"
     },
     "meta": {
-      "$ref": "#\/definitions\/ref68a5de1071c84dc3c357e50c05e674fa"
+      "$ref": "Meta"
     },
     "sendDate": {
-      "type": "string",
-      "format": "date"
+      "format": "date",
+      "type": "string"
     },
     "readDate": {
-      "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "type": "string"
     },
     "expires": {
-      "type": "string",
-      "format": "duration"
+      "format": "duration",
+      "type": "string"
     },
     "price": {
       "type": "number",
@@ -192,22 +163,28 @@
       "maxLength": 512
     },
     "question": {
-      "type": "string",
       "enum": [
         "foo",
         "bar"
-      ]
+      ],
+      "type": "string"
+    },
+    "version": {
+      "const": "http:\/\/foo.bar",
+      "type": "string"
     },
     "coffeeTime": {
-      "type": "string",
-      "format": "time"
+      "format": "time",
+      "type": "string"
     },
     "profileUri": {
-      "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "type": "string"
+    },
+    "g-recaptcha-response": {
+      "type": "string"
     }
   },
-  "additionalProperties": false,
   "required": [
     "receiver",
     "price",

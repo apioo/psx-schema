@@ -5,459 +5,578 @@ namespace PSX\Schema\Tests\Parser\Popo;
 use PSX\Schema\Parser\Popo\Annotation as JS;
 
 /**
- * @JS\Title("meta")
- * @JS\Description("Some meta data")
- * @JS\AdditionalProperties(false)
- */
-class Meta extends \ArrayObject
-{
-    /**
-     * @JS\Key("createDate")
-     * @JS\Type("string")
-     * @JS\Format("date-time")
-     */
-    public $createDate;
-    public function setCreateDate($createDate)
-    {
-        $this->createDate = $createDate;
-    }
-    public function getCreateDate()
-    {
-        return $this->createDate;
-    }
-}
-/**
- * @JS\Title("web")
- * @JS\Description("An application")
- * @JS\AdditionalProperties(@JS\Schema(type="string"))
- * @JS\Required({"name", "url"})
- * @JS\MinProperties(2)
- * @JS\MaxProperties(8)
- */
-class Web extends \ArrayObject
-{
-    /**
-     * @JS\Key("name")
-     * @JS\Type("string")
-     */
-    public $name;
-    /**
-     * @JS\Key("url")
-     * @JS\Type("string")
-     */
-    public $url;
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-    public function getName()
-    {
-        return $this->name;
-    }
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-    public function getUrl()
-    {
-        return $this->url;
-    }
-}
-/**
- * @JS\Title("location")
  * @JS\Description("Location of the person")
- * @JS\AdditionalProperties(true)
  * @JS\Required({"lat", "long"})
  */
-class Location extends \ArrayObject
+class Location
 {
     /**
-     * @JS\Key("lat")
-     * @JS\Type("number")
+     * @var float
      */
-    public $lat;
+    protected $lat;
     /**
-     * @JS\Key("long")
-     * @JS\Type("number")
+     * @var float
      */
-    public $long;
-    public function setLat($lat)
+    protected $long;
+    /**
+     * @param float $lat
+     */
+    public function setLat(?float $lat)
     {
         $this->lat = $lat;
     }
-    public function getLat()
+    /**
+     * @return float
+     */
+    public function getLat() : ?float
     {
         return $this->lat;
     }
-    public function setLong($long)
+    /**
+     * @param float $long
+     */
+    public function setLong(?float $long)
     {
         $this->long = $long;
     }
-    public function getLong()
+    /**
+     * @return float
+     */
+    public function getLong() : ?float
     {
         return $this->long;
     }
 }
 /**
- * @JS\Title("author")
+ * @JS\Description("An application")
+ * @JS\Required({"name", "url"})
+ */
+class Web
+{
+    /**
+     * @var string
+     */
+    protected $name;
+    /**
+     * @var string
+     */
+    protected $url;
+    /**
+     * @param string $name
+     */
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * @return string
+     */
+    public function getName() : ?string
+    {
+        return $this->name;
+    }
+    /**
+     * @param string $url
+     */
+    public function setUrl(?string $url)
+    {
+        $this->url = $url;
+    }
+    /**
+     * @return string
+     */
+    public function getUrl() : ?string
+    {
+        return $this->url;
+    }
+}
+/**
  * @JS\Description("An simple author element with some description")
- * @JS\AdditionalProperties(false)
  * @JS\Required({"title"})
  */
 class Author
 {
     /**
-     * @JS\Key("title")
-     * @JS\Type("string")
+     * @var string
      * @JS\Pattern("[A-z]{3,16}")
      */
-    public $title;
+    protected $title;
     /**
-     * @JS\Key("email")
-     * @JS\Description("We will send no spam to this addresss")
-     * @JS\Type("string")
+     * @var string
+     * @JS\Description("We will send no spam to this address")
+     * @JS\Nullable(true)
      */
-    public $email;
+    protected $email;
     /**
-     * @JS\Key("categories")
-     * @JS\Type("array")
-     * @JS\Items(@JS\Schema(type="string"))
+     * @var array<string>
      * @JS\MaxItems(8)
      */
-    public $categories;
+    protected $categories;
     /**
-     * @JS\Key("locations")
+     * @var array<Location>
      * @JS\Description("Array of locations")
-     * @JS\Type("array")
-     * @JS\Items(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"))
      */
-    public $locations;
+    protected $locations;
     /**
-     * @JS\Key("origin")
-     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Location")
+     * @var Location
      */
-    public $origin;
-    public function setTitle($title)
+    protected $origin;
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
     {
         $this->title = $title;
     }
-    public function getTitle()
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
     {
         return $this->title;
     }
-    public function setEmail($email)
+    /**
+     * @param string $email
+     */
+    public function setEmail(?string $email)
     {
         $this->email = $email;
     }
-    public function getEmail()
+    /**
+     * @return string
+     */
+    public function getEmail() : ?string
     {
         return $this->email;
     }
-    public function setCategories($categories)
+    /**
+     * @param array<string> $categories
+     */
+    public function setCategories(?array $categories)
     {
         $this->categories = $categories;
     }
-    public function getCategories()
+    /**
+     * @return array<string>
+     */
+    public function getCategories() : ?array
     {
         return $this->categories;
     }
-    public function setLocations($locations)
+    /**
+     * @param array<Location> $locations
+     */
+    public function setLocations(?array $locations)
     {
         $this->locations = $locations;
     }
-    public function getLocations()
+    /**
+     * @return array<Location>
+     */
+    public function getLocations() : ?array
     {
         return $this->locations;
     }
-    public function setOrigin($origin)
+    /**
+     * @param Location $origin
+     */
+    public function setOrigin(?Location $origin)
     {
         $this->origin = $origin;
     }
-    public function getOrigin()
+    /**
+     * @return Location
+     */
+    public function getOrigin() : ?Location
     {
         return $this->origin;
     }
 }
 /**
- * @JS\Title("config")
- * @JS\AdditionalProperties(@JS\Schema(type="string"))
+ * @extends ArrayAccess<string, string>
+ * @JS\MinProperties(1)
+ * @JS\MaxProperties(6)
  */
-class Config extends \ArrayObject
+class Meta extends \PSX\Record\Record
 {
 }
 /**
- * @JS\Title("news")
+ * @JS\Title("News")
  * @JS\Description("An general news entry")
- * @JS\AdditionalProperties(false)
  * @JS\Required({"receiver", "price", "content"})
  */
 class News
 {
     /**
-     * @JS\Key("config")
-     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Config")
+     * @var Meta
      */
-    public $config;
+    protected $config;
     /**
-     * @JS\Key("tags")
-     * @JS\Type("array")
-     * @JS\Items(@JS\Schema(type="string"))
+     * @var array<string>
+     * @JS\MinItems(1)
      * @JS\MaxItems(6)
+     */
+    protected $tags;
+    /**
+     * @var array<Author>
      * @JS\MinItems(1)
      */
-    public $tags;
+    protected $receiver;
     /**
-     * @JS\Key("receiver")
-     * @JS\Type("array")
-     * @JS\Items(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Author"))
-     * @JS\MinItems(1)
+     * @var array<Location|Web>
      */
-    public $receiver;
+    protected $resources;
     /**
-     * @JS\Key("resources")
-     * @JS\Type("array")
-     * @JS\Items(@JS\Schema(oneOf={@JS\Ref("PSX\Schema\Tests\Parser\Popo\Location"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web")}))
+     * @var resource
      */
-    public $resources;
+    protected $profileImage;
     /**
-     * @JS\Key("profileImage")
-     * @JS\Type("string")
-     * @JS\Format("base64")
+     * @var bool
      */
-    public $profileImage;
+    protected $read;
     /**
-     * @JS\Key("read")
-     * @JS\Type("boolean")
+     * @var Author|Web
      */
-    public $read;
+    protected $source;
     /**
-     * @JS\Key("source")
-     * @JS\OneOf(@JS\Ref("PSX\Schema\Tests\Parser\Popo\Author"), @JS\Ref("PSX\Schema\Tests\Parser\Popo\Web"))
+     * @var Author
      */
-    public $source;
+    protected $author;
     /**
-     * @JS\Key("author")
-     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Author")
+     * @var Meta
      */
-    public $author;
+    protected $meta;
     /**
-     * @JS\Key("meta")
-     * @JS\Ref("PSX\Schema\Tests\Parser\Popo\Meta")
+     * @var \PSX\DateTime\Date
      */
-    public $meta;
+    protected $sendDate;
     /**
-     * @JS\Key("sendDate")
-     * @JS\Type("string")
-     * @JS\Format("date")
+     * @var \DateTime
      */
-    public $sendDate;
+    protected $readDate;
     /**
-     * @JS\Key("readDate")
-     * @JS\Type("string")
-     * @JS\Format("date-time")
+     * @var \DateInterval
      */
-    public $readDate;
+    protected $expires;
     /**
-     * @JS\Key("expires")
-     * @JS\Type("string")
-     * @JS\Format("duration")
-     */
-    public $expires;
-    /**
-     * @JS\Key("price")
-     * @JS\Type("number")
+     * @var float
+     * @JS\Minimum(1)
      * @JS\Maximum(100)
-     * @JS\Minimum(1)
      */
-    public $price;
+    protected $price;
     /**
-     * @JS\Key("rating")
-     * @JS\Type("integer")
+     * @var int
+     * @JS\Minimum(1)
      * @JS\Maximum(5)
-     * @JS\Minimum(1)
      */
-    public $rating;
+    protected $rating;
     /**
-     * @JS\Key("content")
+     * @var string
      * @JS\Description("Contains the main content of the news entry")
-     * @JS\Type("string")
-     * @JS\MaxLength(512)
      * @JS\MinLength(3)
+     * @JS\MaxLength(512)
      */
-    public $content;
+    protected $content;
     /**
-     * @JS\Key("question")
+     * @var string
      * @JS\Enum({"foo", "bar"})
-     * @JS\Type("string")
      */
-    public $question;
+    protected $question;
     /**
-     * @JS\Key("coffeeTime")
-     * @JS\Type("string")
-     * @JS\Format("time")
+     * @var string
      */
-    public $coffeeTime;
+    protected $version = 'http://foo.bar';
     /**
-     * @JS\Key("profileUri")
-     * @JS\Type("string")
-     * @JS\Format("uri")
+     * @var \PSX\DateTime\Time
      */
-    public $profileUri;
+    protected $coffeeTime;
     /**
+     * @var \PSX\Uri\Uri
+     */
+    protected $profileUri;
+    /**
+     * @var string
      * @JS\Key("g-recaptcha-response")
-     * @JS\Type("string")
      */
-    public $captcha;
-    public function setConfig($config)
+    protected $captcha;
+    /**
+     * @param Meta $config
+     */
+    public function setConfig(?Meta $config)
     {
         $this->config = $config;
     }
-    public function getConfig()
+    /**
+     * @return Meta
+     */
+    public function getConfig() : ?Meta
     {
         return $this->config;
     }
-    public function setTags($tags)
+    /**
+     * @param array<string> $tags
+     */
+    public function setTags(?array $tags)
     {
         $this->tags = $tags;
     }
-    public function getTags()
+    /**
+     * @return array<string>
+     */
+    public function getTags() : ?array
     {
         return $this->tags;
     }
-    public function setReceiver($receiver)
+    /**
+     * @param array<Author> $receiver
+     */
+    public function setReceiver(?array $receiver)
     {
         $this->receiver = $receiver;
     }
-    public function getReceiver()
+    /**
+     * @return array<Author>
+     */
+    public function getReceiver() : ?array
     {
         return $this->receiver;
     }
-    public function setResources($resources)
+    /**
+     * @param array<Location|Web> $resources
+     */
+    public function setResources(?array $resources)
     {
         $this->resources = $resources;
     }
-    public function getResources()
+    /**
+     * @return array<Location|Web>
+     */
+    public function getResources() : ?array
     {
         return $this->resources;
     }
+    /**
+     * @param resource $profileImage
+     */
     public function setProfileImage($profileImage)
     {
         $this->profileImage = $profileImage;
     }
+    /**
+     * @return resource
+     */
     public function getProfileImage()
     {
         return $this->profileImage;
     }
-    public function setRead($read)
+    /**
+     * @param bool $read
+     */
+    public function setRead(?bool $read)
     {
         $this->read = $read;
     }
-    public function getRead()
+    /**
+     * @return bool
+     */
+    public function getRead() : ?bool
     {
         return $this->read;
     }
+    /**
+     * @param Author|Web $source
+     */
     public function setSource($source)
     {
         $this->source = $source;
     }
+    /**
+     * @return Author|Web
+     */
     public function getSource()
     {
         return $this->source;
     }
-    public function setAuthor($author)
+    /**
+     * @param Author $author
+     */
+    public function setAuthor(?Author $author)
     {
         $this->author = $author;
     }
-    public function getAuthor()
+    /**
+     * @return Author
+     */
+    public function getAuthor() : ?Author
     {
         return $this->author;
     }
-    public function setMeta($meta)
+    /**
+     * @param Meta $meta
+     */
+    public function setMeta(?Meta $meta)
     {
         $this->meta = $meta;
     }
-    public function getMeta()
+    /**
+     * @return Meta
+     */
+    public function getMeta() : ?Meta
     {
         return $this->meta;
     }
-    public function setSendDate($sendDate)
+    /**
+     * @param \PSX\DateTime\Date $sendDate
+     */
+    public function setSendDate(?\PSX\DateTime\Date $sendDate)
     {
         $this->sendDate = $sendDate;
     }
-    public function getSendDate()
+    /**
+     * @return \PSX\DateTime\Date
+     */
+    public function getSendDate() : ?\PSX\DateTime\Date
     {
         return $this->sendDate;
     }
-    public function setReadDate($readDate)
+    /**
+     * @param \DateTime $readDate
+     */
+    public function setReadDate(?\DateTime $readDate)
     {
         $this->readDate = $readDate;
     }
-    public function getReadDate()
+    /**
+     * @return \DateTime
+     */
+    public function getReadDate() : ?\DateTime
     {
         return $this->readDate;
     }
-    public function setExpires($expires)
+    /**
+     * @param \DateInterval $expires
+     */
+    public function setExpires(?\DateInterval $expires)
     {
         $this->expires = $expires;
     }
-    public function getExpires()
+    /**
+     * @return \DateInterval
+     */
+    public function getExpires() : ?\DateInterval
     {
         return $this->expires;
     }
-    public function setPrice($price)
+    /**
+     * @param float $price
+     */
+    public function setPrice(?float $price)
     {
         $this->price = $price;
     }
-    public function getPrice()
+    /**
+     * @return float
+     */
+    public function getPrice() : ?float
     {
         return $this->price;
     }
-    public function setRating($rating)
+    /**
+     * @param int $rating
+     */
+    public function setRating(?int $rating)
     {
         $this->rating = $rating;
     }
-    public function getRating()
+    /**
+     * @return int
+     */
+    public function getRating() : ?int
     {
         return $this->rating;
     }
-    public function setContent($content)
+    /**
+     * @param string $content
+     */
+    public function setContent(?string $content)
     {
         $this->content = $content;
     }
-    public function getContent()
+    /**
+     * @return string
+     */
+    public function getContent() : ?string
     {
         return $this->content;
     }
-    public function setQuestion($question)
+    /**
+     * @param string $question
+     */
+    public function setQuestion(?string $question)
     {
         $this->question = $question;
     }
-    public function getQuestion()
+    /**
+     * @return string
+     */
+    public function getQuestion() : ?string
     {
         return $this->question;
     }
-    public function setCoffeeTime($coffeeTime)
+    /**
+     * @param string $version
+     */
+    public function setVersion(?string $version)
+    {
+        $this->version = $version;
+    }
+    /**
+     * @return string
+     */
+    public function getVersion() : ?string
+    {
+        return $this->version;
+    }
+    /**
+     * @param \PSX\DateTime\Time $coffeeTime
+     */
+    public function setCoffeeTime(?\PSX\DateTime\Time $coffeeTime)
     {
         $this->coffeeTime = $coffeeTime;
     }
-    public function getCoffeeTime()
+    /**
+     * @return \PSX\DateTime\Time
+     */
+    public function getCoffeeTime() : ?\PSX\DateTime\Time
     {
         return $this->coffeeTime;
     }
-    public function setProfileUri($profileUri)
+    /**
+     * @param \PSX\Uri\Uri $profileUri
+     */
+    public function setProfileUri(?\PSX\Uri\Uri $profileUri)
     {
         $this->profileUri = $profileUri;
     }
-    public function getProfileUri()
+    /**
+     * @return \PSX\Uri\Uri
+     */
+    public function getProfileUri() : ?\PSX\Uri\Uri
     {
         return $this->profileUri;
     }
-    public function getCaptcha()
-    {
-        return $this->captcha;
-    }
-    public function setCaptcha($captcha)
+    /**
+     * @param string $captcha
+     */
+    public function setCaptcha(?string $captcha)
     {
         $this->captcha = $captcha;
+    }
+    /**
+     * @return string
+     */
+    public function getCaptcha() : ?string
+    {
+        return $this->captcha;
     }
 }

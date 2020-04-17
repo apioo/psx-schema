@@ -77,6 +77,8 @@ class TestSchema extends SchemaAbstract
 
         $meta = TypeFactory::getMap();
         $meta->setAdditionalProperties(TypeFactory::getString());
+        $meta->setMinProperties(1);
+        $meta->setMaxProperties(6);
         $meta->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Meta::class);
         $definitions->addType('Meta', $meta);
 
@@ -103,7 +105,7 @@ class TestSchema extends SchemaAbstract
             TypeFactory::getReference('Web')
         ]));
         $news->addProperty('author', TypeFactory::getReference('Author'));
-        $news->addProperty('meta', $meta);
+        $news->addProperty('meta', TypeFactory::getReference('Meta'));
         $news->addProperty('sendDate', TypeFactory::getDate());
         $news->addProperty('readDate', TypeFactory::getDateTime());
         $news->addProperty('expires', TypeFactory::getDuration());

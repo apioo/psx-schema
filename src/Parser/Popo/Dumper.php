@@ -30,6 +30,7 @@ use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\TypeAbstract;
 
 /**
  * The dumper extracts all data from POPOs containing annotations so that the 
@@ -209,37 +210,35 @@ class Dumper
         }
 
         if (!empty($ref)) {
-            $type = PropertyType::TYPE_OBJECT;
+            $type = TypeAbstract::TYPE_OBJECT;
         } elseif (!empty($items)) {
-            $type = PropertyType::TYPE_ARRAY;
+            $type = TypeAbstract::TYPE_ARRAY;
         }
 
-        if ($type === PropertyType::TYPE_OBJECT) {
+        if ($type === TypeAbstract::TYPE_OBJECT) {
             return $this->dump($value);
-        } elseif ($type === PropertyType::TYPE_ARRAY) {
+        } elseif ($type === TypeAbstract::TYPE_ARRAY) {
             return $this->dumpArray($value, $items);
-        } elseif ($type === PropertyType::TYPE_BOOLEAN) {
+        } elseif ($type === TypeAbstract::TYPE_BOOLEAN) {
             return (bool) $value;
-        } elseif ($type === PropertyType::TYPE_INTEGER) {
+        } elseif ($type === TypeAbstract::TYPE_INTEGER) {
             return (int) $value;
-        } elseif ($type === PropertyType::TYPE_NUMBER) {
+        } elseif ($type === TypeAbstract::TYPE_NUMBER) {
             return (float) $value;
-        } elseif ($type === PropertyType::TYPE_STRING) {
-            if ($format === PropertyType::FORMAT_BINARY && is_resource($value)) {
+        } elseif ($type === TypeAbstract::TYPE_STRING) {
+            if ($format === TypeAbstract::FORMAT_BINARY && is_resource($value)) {
                 return base64_encode(stream_get_contents($value, -1, 0));
-            } elseif ($format === PropertyType::FORMAT_DATETIME && $value instanceof \DateTime) {
+            } elseif ($format === TypeAbstract::FORMAT_DATETIME && $value instanceof \DateTime) {
                 return DateTime::fromDateTime($value)->toString();
-            } elseif ($format === PropertyType::FORMAT_DATE && $value instanceof \DateTime) {
+            } elseif ($format === TypeAbstract::FORMAT_DATE && $value instanceof \DateTime) {
                 return Date::fromDateTime($value)->toString();
-            } elseif ($format === PropertyType::FORMAT_TIME && $value instanceof \DateTime) {
+            } elseif ($format === TypeAbstract::FORMAT_TIME && $value instanceof \DateTime) {
                 return Time::fromDateTime($value)->toString();
-            } elseif ($format === PropertyType::FORMAT_DURATION && $value instanceof \DateInterval) {
+            } elseif ($format === TypeAbstract::FORMAT_DURATION && $value instanceof \DateInterval) {
                 return Duration::fromDateInterval($value)->toString();
             } else {
                 return (string) $value;
             }
-        } elseif ($type === PropertyType::TYPE_NULL) {
-            return null;
         }
 
         if (!empty($allOf)) {

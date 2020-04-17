@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\TypeAssert;
+
 /**
  * UnionType
  *
@@ -58,11 +60,7 @@ class UnionType extends TypeAbstract
      */
     public function setOneOf(array $oneOf): self
     {
-        foreach ($oneOf as $item) {
-            if (!$item instanceof StringType && $item instanceof NumberType && $item instanceof BooleanType && $item instanceof ReferenceType) {
-                throw new \InvalidArgumentException('One of item must be of type string, number or reference');
-            }
-        }
+        TypeAssert::assertUnion($oneOf);
 
         $this->oneOf = $oneOf;
 

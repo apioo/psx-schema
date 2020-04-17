@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -65,11 +66,7 @@ class ArrayType extends TypeAbstract
      */
     public function setItems(TypeInterface $items): self
     {
-        if ($items instanceof StructType) {
-            throw new \InvalidArgumentException('Array item must be of type string, number, boolean or reference');
-        } elseif ($items instanceof ArrayType) {
-            throw new \InvalidArgumentException('Array item must be of type string, number, boolean or reference');
-        }
+        TypeAssert::assertItem($items);
 
         $this->items = $items;
 

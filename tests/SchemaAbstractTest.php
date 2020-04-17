@@ -22,8 +22,11 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\TypeFactory;
+use PSX\Schema\TypeInterface;
 
 /**
  * SchemaAbstractTest
@@ -55,69 +58,61 @@ class SchemaAbstractTest extends TestCase
      */
     public function testGetSchema()
     {
-        $schemaC = $this->schemaManager->getSchema('PSX\Schema\Tests\SchemaCommon')->getDefinition();
-        $schemaA = $this->schemaManager->getSchema('PSX\Schema\Tests\SchemaA')->getDefinition();
-        $schemaB = $this->schemaManager->getSchema('PSX\Schema\Tests\SchemaB')->getDefinition();
+        $schemaC = $this->schemaManager->getSchema(SchemaCommon::class)->getType();
+        $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getType();
+        $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getType();
 
         $this->assertNull($schemaC->getProperty('lat')->getTitle());
         $this->assertNull($schemaC->getProperty('long')->getTitle());
-        $this->assertNull($schemaC->getProperty('entry')->getItems()->getProperty('title')->getTitle());
-        $this->assertNull($schemaC->getProperty('author')->getProperty('name')->getTitle());
 
         $this->assertEquals('foo', $schemaA->getProperty('lat')->getTitle());
         $this->assertEquals(null, $schemaA->getProperty('long')->getTitle());
-        $this->assertEquals('foo', $schemaA->getProperty('entry')->getItems()->getProperty('title')->getTitle());
-        $this->assertEquals(null, $schemaA->getProperty('author')->getProperty('name')->getTitle());
 
         $this->assertEquals(null, $schemaB->getProperty('lat')->getTitle());
         $this->assertEquals('bar', $schemaB->getProperty('long')->getTitle());
-        $this->assertEquals(null, $schemaB->getProperty('entry')->getItems()->getProperty('title')->getTitle());
-        $this->assertEquals('bar', $schemaB->getProperty('author')->getProperty('name')->getTitle());
     }
 }
 
 class SchemaCommon extends SchemaAbstract
 {
-    public function getDefinition()
+    public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $sb = $this->getSchemaBuilder('entry');
-        $sb->integer('title');
-        $entry = $sb->getProperty();
+        $entry = TypeFactory::getStruct();
+        $entry->addProperty('title', TypeFactory::getInteger());
+        $definitions->addType('Entry', $entry);
 
-        $sb = $this->getSchemaBuilder('author');
-        $sb->integer('name');
-        $author = $sb->getProperty();
+        $author = TypeFactory::getStruct();
+        $author->addProperty('name', TypeFactory::getInteger());
+        $definitions->addType('Author', $author);
 
-        $sb = $this->getSchemaBuilder('location')
-            ->setDescription('Location of the person');
-        $sb->integer('lat');
-        $sb->integer('long');
-        $sb->arrayType('entry')->setItems($entry);
-        $sb->objectType('author', $author);
+        $location = TypeFactory::getStruct();
+        $location->setDescription('Location of the person');
+        $location->addProperty('lat', TypeFactory::getInteger());
+        $location->addProperty('long', TypeFactory::getInteger());
+        $location->addProperty('entry', TypeFactory::getArray()->setItems(TypeFactory::getReference('Entry')));
+        $location->addProperty('author', TypeFactory::getReference('Author'));
 
-        return $sb->getProperty();
+        return $location;
     }
 }
 
 class SchemaA extends SchemaAbstract
 {
-    public function getDefinition()
+    public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $property = $this->getSchema('PSX\Schema\Tests\SchemaCommon');
+        $property = clone $this->getSchema(SchemaCommon::class)->getType();
         $property->getProperty('lat')->setTitle('foo');
-        $property->getProperty('entry')->getItems()->getProperty('title')->setTitle('foo');
-        
+
         return $property;
     }
 }
 
 class SchemaB extends SchemaAbstract
 {
-    public function getDefinition()
+    public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $property = $this->getSchema('PSX\Schema\Tests\SchemaCommon');
+        $property = clone $this->getSchema(SchemaCommon::class)->getType();
         $property->getProperty('long')->setTitle('bar');
-        $property->getProperty('author')->getProperty('name')->setTitle('bar');
 
         return $property;
     }

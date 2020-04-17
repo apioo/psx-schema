@@ -39,7 +39,7 @@ interface News {
     read?: boolean
     source?: Author | Web
     author?: Author
-    meta?: Record<string, string>
+    meta?: Meta
     sendDate?: string
     readDate?: string
     expires?: string

@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Parser\Popo\Annotation\AllOf;
+use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -91,9 +93,7 @@ class StructType extends ObjectType
      */
     public function addProperty($name, TypeInterface $property): self
     {
-        if ($property instanceof StructType) {
-            throw new \InvalidArgumentException('Struct property must be of type string, number, boolean, array or reference');
-        }
+        TypeAssert::assertProperty($property);
 
         $this->properties[$name] = $property;
 

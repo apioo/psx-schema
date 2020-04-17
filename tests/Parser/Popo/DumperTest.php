@@ -44,13 +44,12 @@ class DumperTest extends TestCase
     {
         include_once __DIR__ . '/News.php';
 
-        $config = new Config();
+        $config = new Meta();
         $config['foo'] = 'bar';
 
         $location = new Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
-        $location['foo'] = 'bar';
 
         $author = new Author();
         $author->setTitle('foo');
@@ -62,13 +61,11 @@ class DumperTest extends TestCase
         $web = new Web();
         $web->setName('foo');
         $web->setUrl('http://google.com');
-        $web['email'] = 'foo@bar.com';
 
         $profileImage = fopen('php://memory', 'r+');
         fwrite($profileImage, 'foobar');
 
-        $meta = new Meta();
-        $meta->setCreateDate(new DateTime('2016-12-11T10:50:00'));
+        $meta = [];
         $meta['tags_0'] = 'foo';
         $meta['tags_1'] = 'bar';
         $meta['location_0'] = $location;
@@ -100,107 +97,7 @@ class DumperTest extends TestCase
         $this->assertInstanceOf(RecordInterface::class, $actual);
 
         $actual = json_encode($actual, JSON_PRETTY_PRINT);
-        $expect = <<<JSON
-{
-    "config": {
-        "foo": "bar"
-    },
-    "tags": [
-        "foo",
-        "bar"
-    ],
-    "receiver": [
-        {
-            "title": "foo",
-            "email": "foo@bar.com",
-            "categories": [
-                "foo",
-                "bar"
-            ],
-            "locations": [
-                {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                },
-                {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                }
-            ],
-            "origin": {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            }
-        }
-    ],
-    "resources": [
-        {
-            "name": "foo",
-            "url": "http:\/\/google.com",
-            "email": "foo@bar.com"
-        },
-        {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    ],
-    "profileImage": "Zm9vYmFy",
-    "read": false,
-    "source": {
-        "name": "foo",
-        "url": "http:\/\/google.com",
-        "email": "foo@bar.com"
-    },
-    "author": {
-        "title": "foo",
-        "email": "foo@bar.com",
-        "categories": [
-            "foo",
-            "bar"
-        ],
-        "locations": [
-            {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            },
-            {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            }
-        ],
-        "origin": {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    },
-    "meta": {
-        "createDate": "2016-12-11T10:50:00Z",
-        "tags_0": "foo",
-        "tags_1": "bar",
-        "location_0": {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    },
-    "sendDate": "2016-12-11",
-    "readDate": "2016-12-11T10:50:00Z",
-    "expires": "P1D",
-    "price": 50,
-    "rating": 4,
-    "content": "foobar",
-    "question": "foo",
-    "coffeeTime": "10:49:00",
-    "profileUri": "urn:foo:image"
-}
-JSON;
+        $expect = file_get_contents(__DIR__ . '/expect.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

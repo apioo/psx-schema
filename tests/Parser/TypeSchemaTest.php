@@ -26,9 +26,14 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
 use PSX\Schema\Parser\JsonSchema;
+use PSX\Schema\Parser\TypeSchema;
 use PSX\Schema\PropertyInterface;
 use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\TypeInterface;
 
 /**
  * TypeSchemaTest
@@ -41,31 +46,23 @@ class TypeSchemaTest extends ParserTestCase
 {
     public function testParse()
     {
-        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/test_schema.json');
+        $schema = TypeSchema::fromFile(__DIR__ . '/TypeSchema/test_schema.json');
 
         $this->assertSchema($this->getSchema(), $schema);
     }
 
     public function testParseTypeSchema()
     {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/TypeSchema/typeschema.json');
-        $property = $schema->getDefinition();
+        $schema = TypeSchema::fromFile(__DIR__ . '/TypeSchema/typeschema.json');
+        $type   = $schema->getType();
 
-        $this->assertInstanceOf(PropertyInterface::class, $property);
-    }
-
-    public function testParseSwagger()
-    {
-        $schema   = JsonSchema::fromFile(__DIR__ . '/TypeSchema/swagger.json');
-        $property = $schema->getDefinition();
-
-        $this->assertInstanceOf(PropertyInterface::class, $property);
+        $this->assertInstanceOf(TypeInterface::class, $type);
     }
 
     public function testParseExternalResource()
     {
         $mock = new MockHandler([
-            new Response(200, [], file_get_contents(__DIR__ . '/TypeSchema/schema.json')),
+            new Response(200, [], file_get_contents(__DIR__ . '/TypeSchema/test_schema.json')),
         ]);
 
         $container = [];
@@ -75,19 +72,25 @@ class TypeSchemaTest extends ParserTestCase
         $stack->push($history);
 
         $client   = new Client\Client(['handler' => $stack]);
-        $resolver = JsonSchema\RefResolver::createDefault($client);
+        $resolver = TypeSchema\ImportResolver::createDefault($client);
 
-        $parser   = new JsonSchema(__DIR__ . '/TypeSchema', $resolver);
-        $schema   = $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/test_schema_external.json'));
-        $property = $schema->getDefinition();
+        $parser = new TypeSchema($resolver);
+        $schema = $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/test_schema_external.json'));
 
-        $this->assertInstanceOf(PropertyInterface::class, $property);
+        /** @var StructType $type */
+        $type = $schema->getType();
+        $this->assertInstanceOf(StructType::class, $type);
+        $reference = $type->getProperty('user');
+        $this->assertInstanceOf(ReferenceType::class, $reference);
+
+        $type = $schema->getDefinitions()->getType($reference->getRef());
+        $this->assertInstanceOf(StructType::class, $type);
 
         $this->assertEquals(1, count($container));
         $transaction = array_shift($container);
 
         $this->assertEquals('GET', $transaction['request']->getMethod());
-        $this->assertEquals(['json-schema.org'], $transaction['request']->getHeader('Host'));
+        $this->assertEquals(['acme.com'], $transaction['request']->getHeader('Host'));
     }
 
     /**
@@ -96,91 +99,6 @@ class TypeSchemaTest extends ParserTestCase
      */
     public function testParseInvalidFile()
     {
-        JsonSchema::fromFile(__DIR__ . '/TypeSchema/foo.json');
-    }
-
-    public function testParseInvalidVersion()
-    {
-        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/wrong_version_schema.json');
-
-        $this->assertInstanceOf(SchemaInterface::class, $schema);
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp /^Could not load external schema (.*)$/
-     */
-    public function testParseInvalidFileRef()
-    {
-        JsonSchema::fromFile(__DIR__ . '/TypeSchema/invalid_file_ref_schema.json');
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Could not load external schema http://localhost/foo/bar#/definitions/bar received 404
-     */
-    public function testParseInvalidHttpRef()
-    {
-        $mock = new MockHandler([
-            new Response(404, [], 'Nothing is here ...'),
-        ]);
-
-        $stack = HandlerStack::create($mock);
-
-        $client   = new Client\Client(['handler' => $stack]);
-        $resolver = JsonSchema\RefResolver::createDefault($client);
-
-        $parser   = new JsonSchema(__DIR__, $resolver);
-        $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/invalid_http_ref_schema.json'));
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unknown protocol scheme foo
-     */
-    public function testParseInvalidSchemaRef()
-    {
-        JsonSchema::fromFile(__DIR__ . '/TypeSchema/unknown_protocol_ref_schema.json');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Property definitions does not exist at /
-     */
-    public function testParseInvalidDocumentRef()
-    {
-        JsonSchema::fromFile(__DIR__ . '/TypeSchema/invalid_document_ref_schema.json');
-    }
-
-    /**
-     * @expectedException \PSX\Schema\Parser\JsonSchema\RecursionException
-     * @expectedExceptionMessage Endless recursion detected
-     */
-    public function testRecursiveSchema()
-    {
-        JsonSchema::fromFile(__DIR__ . '/TypeSchema/recursive_schema.json');
-    }
-
-    public function testParseSchemaMapping()
-    {
-        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/schema_mapping.json');
-
-        $this->assertInstanceOf(SchemaInterface::class, $schema);
-
-        $property = $schema->getDefinition();
-
-        $this->assertEquals('PSX\Schema\Tests\Parser\JsonSchema\Foo', $property->getAttribute(PropertyType::ATTR_CLASS));
-        $this->assertEquals(['$foo' => 'bar'], $property->getAttribute(PropertyType::ATTR_MAPPING));
-    }
-    
-    public function testParseGenerice()
-    {
-        $schema = JsonSchema::fromFile(__DIR__ . '/TypeSchema/generics.json');
-
-        $this->assertInstanceOf(SchemaInterface::class, $schema);
-
-        $property = $schema->getDefinition();
-
-        $this->assertEquals('News', $property->getProperty('map')->getProperty('entries')->getTitle());
+        TypeSchema::fromFile(__DIR__ . '/TypeSchema/foo.json');
     }
 }

@@ -41,6 +41,7 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
+use PSX\Uri\Uri;
 use RuntimeException;
 
 /**
@@ -106,7 +107,7 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($import as $namespace => $uri) {
-            $data = $this->resolver->resolve($uri);
+            $data = $this->resolver->resolve(new Uri($uri));
             $this->parseDefinitions($namespace, $data, $definitions);
         }
     }

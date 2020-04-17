@@ -53,7 +53,7 @@ profileImage | [Base64](http://tools.ietf.org/html/rfc4648) |  |
 read | Boolean |  | 
 source | Author &#124; Web |  | 
 author | Author |  | 
-meta | [String](#String) |  | 
+meta | Meta |  | 
 sendDate | [Date](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 readDate | [DateTime](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 expires | [Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |  | 

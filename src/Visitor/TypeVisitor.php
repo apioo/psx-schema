@@ -27,11 +27,13 @@ use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Schema\PropertyType;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
@@ -60,12 +62,12 @@ class TypeVisitor implements VisitorInterface
 
     public function visitStruct(\stdClass $data, StructType $type, $path)
     {
-        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
+        $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
         if (!empty($className)) {
             $class  = new \ReflectionClass($className);
             $record = $class->newInstance();
 
-            $mapping = $type->getAttribute(PropertyType::ATTR_MAPPING) ?: [];
+            $mapping = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
             foreach ($data as $key => $value) {
                 try {
                     $name   = isset($mapping[$key]) ? $mapping[$key] : $key;
@@ -91,7 +93,7 @@ class TypeVisitor implements VisitorInterface
 
     public function visitMap(\stdClass $data, MapType $type, $path)
     {
-        $className = $type->getAttribute(PropertyType::ATTR_CLASS);
+        $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
         if (!empty($className)) {
             $class  = new \ReflectionClass($className);
             $record = $class->newInstance();
@@ -101,6 +103,8 @@ class TypeVisitor implements VisitorInterface
                 foreach ($data as $key => $value) {
                     $record->offsetSet($key, $value);
                 }
+            } else {
+                throw new \RuntimeException('Map implementation must implement the ArrayAccess interface');
             }
         } else {
             $record = Record::fromStdClass($data, $type->getTitle() ?: null);
@@ -137,7 +141,7 @@ class TypeVisitor implements VisitorInterface
         return $resource;
     }
 
-    public function visitBoolean($data, StringType $type, $path)
+    public function visitBoolean($data, BooleanType $type, $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);

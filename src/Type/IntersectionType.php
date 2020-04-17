@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\TypeAssert;
+
 /**
  * IntersectionType
  *
@@ -48,11 +50,7 @@ class IntersectionType extends TypeAbstract
      */
     public function setAllOf(array $allOf): self
     {
-        foreach ($allOf as $item) {
-            if (!$item instanceof ReferenceType) {
-                throw new \InvalidArgumentException('All of item must be of type reference');
-            }
-        }
+        TypeAssert::assertIntersection($allOf);
 
         $this->allOf = $allOf;
 

@@ -188,6 +188,8 @@ class Author
 }
 /**
  * @extends ArrayAccess<string, string>
+ * @MinProperties(1)
+ * @MaxProperties(6)
  */
 class Meta extends \PSX\Record\Record
 {
@@ -235,7 +237,7 @@ class News
      */
     protected $author;
     /**
-     * @var array<string, string>
+     * @var Meta
      */
     protected $meta;
     /**
@@ -404,16 +406,16 @@ class News
         return $this->author;
     }
     /**
-     * @param array<string, string> $meta
+     * @param Meta $meta
      */
-    public function setMeta(?array $meta)
+    public function setMeta(?Meta $meta)
     {
         $this->meta = $meta;
     }
     /**
-     * @return array<string, string>
+     * @return Meta
      */
-    public function getMeta() : ?array
+    public function getMeta() : ?Meta
     {
         return $this->meta;
     }
