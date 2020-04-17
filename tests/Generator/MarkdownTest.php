@@ -35,7 +35,7 @@ class MarkdownTest extends GeneratorTestCase
     {
         $generator = new Markdown();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/markdown.md');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
@@ -47,21 +47,9 @@ class MarkdownTest extends GeneratorTestCase
     {
         $generator = new Markdown();
 
-        $actual = $generator->generate($this->getComplexSchema());
+        $actual = (string) $generator->generate($this->getComplexSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/markdown_complex.md');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
-    public function testGenerateHeading()
-    {
-        $generator = new Markdown(4);
-
-        $actual = $generator->generate($this->getSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/markdown_heading.md');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

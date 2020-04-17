@@ -69,9 +69,9 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof ReferenceType) {
             $template = $type->getTemplate();
             if (!empty($template)) {
-                return $type->getRef() . $this->getGeneric(array_values($template));
+                return $this->getReference($type->getRef()) . $this->getGeneric(array_values($template));
             } else {
-                return $type->getRef();
+                return $this->getReference($type->getRef());
             }
         } elseif ($type instanceof GenericType) {
             return $type->getGeneric();
@@ -201,6 +201,15 @@ abstract class GeneratorAbstract implements GeneratorInterface
      * @return string
      */
     abstract protected function getGroup(string $type): string;
+
+    /**
+     * @param string $ref
+     * @return string
+     */
+    protected function getReference(string $ref): string
+    {
+        return $ref;
+    }
 
     /**
      * @param array $types

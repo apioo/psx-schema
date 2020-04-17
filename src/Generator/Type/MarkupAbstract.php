@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\TypeInterface;
+
 /**
  * MarkupAbstract
  *
@@ -91,7 +94,7 @@ abstract class MarkupAbstract extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return $this->writeLink($type, '#' . $type);
+        return $type;
     }
 
     protected function getUnion(array $types): string
@@ -109,14 +112,19 @@ abstract class MarkupAbstract extends GeneratorAbstract
         return '(' . $type . ')';
     }
 
+    protected function getReference(string $ref): string
+    {
+        return 'Object (' . $this->writeLink($ref, '#' . $ref) . ')';
+    }
+
     protected function getGeneric(array $types): string
     {
-        return '<' . implode(', ', $types) . '>';
+        return '';
     }
 
     protected function getAny(): string
     {
-        return '';
+        return 'Any';
     }
 
     /**
