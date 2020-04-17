@@ -28,9 +28,22 @@ use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
+use PSX\Schema\Parser\Popo;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
 
 /**
  * The dumper extracts all data from POPOs containing annotations so that the 
@@ -48,6 +61,11 @@ class Dumper
     protected $reader;
 
     /**
+     * @var ResolverInterface
+     */
+    protected $resolver;
+
+    /**
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
     public function __construct(Reader $reader = null)
@@ -57,7 +75,8 @@ class Dumper
             $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
         }
 
-        $this->reader = $reader;
+        $this->reader   = $reader;
+        $this->resolver = Popo::createDefaultResolver();
     }
 
     /**
@@ -66,14 +85,14 @@ class Dumper
      */
     public function dump($data)
     {
-        if ($data instanceof RecordInterface || $data instanceof \stdClass || is_array($data)) {
-            return $this->dumpTraversable($data);
+        if (is_iterable($data)) {
+            return $this->dumpIterable($data);
         } elseif ($data instanceof \DateTime) {
             return DateTime::fromDateTime($data)->toString();
         } elseif ($data instanceof \DateInterval) {
             return Duration::fromDateInterval($data)->toString();
         } elseif (is_object($data)) {
-            return $this->dumpObject($data);
+            return $this->dumpObject($data, get_class($data));
         } elseif (is_resource($data)) {
             return stream_get_contents($data, -1, 0);
         } else {
@@ -81,25 +100,33 @@ class Dumper
         }
     }
 
-    protected function dumpObject($data)
+    private function dumpObject($data, string $class)
     {
-        $reflection  = new \ReflectionClass(get_class($data));
-        $annotations = $this->reader->getClassAnnotations($reflection);
+        $reflection = new \ReflectionClass($class);
 
-        $patternProperties    = [];
-        $additionalProperties = null;
+        $type = $this->resolver->resolveClass($reflection);
+        if ($type instanceof StructType) {
+            return $this->dumpStruct($data, $reflection);
+        } elseif ($type instanceof MapType) {
+            return $this->dumpMap($data, $type, $reflection);
+        } else {
+            throw new \InvalidArgumentException('Could not determine object type');
+        }
+    }
 
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\PatternProperties) {
-                $patternProperties[$annotation->getPattern()] = $annotation->getProperty();
-            } elseif ($annotation instanceof Annotation\AdditionalProperties) {
-                $additionalProperties = $annotation->getAdditionalProperties();
-            }
+    private function dumpStruct($data, ?\ReflectionClass $reflection = null): RecordInterface
+    {
+        if (!is_object($data)) {
+            throw new \InvalidArgumentException('Struct must be an object');
         }
 
-        $properties = ObjectReader::getProperties($this->reader, $reflection);
-        $result     = new Record($reflection->getShortName());
+        if ($reflection === null) {
+            $reflection = new \ReflectionClass(get_class($data));
+        }
 
+        $result = new Record($reflection->getShortName());
+
+        $properties = ObjectReader::getProperties($this->reader, $reflection);
         foreach ($properties as $name => $property) {
             $getters = [
                 'get' . ucfirst($property->getName()),
@@ -108,10 +135,10 @@ class Dumper
 
             foreach ($getters as $getter) {
                 if ($reflection->hasMethod($getter)) {
-                    $annotations = $this->reader->getPropertyAnnotations($property);
-
                     $value = $reflection->getMethod($getter)->invoke($data);
-                    $value = $this->dumpValue($value, $annotations);
+
+                    $type = $this->resolver->resolveProperty($property);
+                    $value = $this->dumpValue($value, $type);
 
                     if ($value !== null) {
                         $result->setProperty($name, $value);
@@ -121,111 +148,61 @@ class Dumper
             }
         }
 
-        if (!empty($patternProperties)) {
-            foreach ($patternProperties as $pattern => $property) {
-                foreach ($data as $key => $value) {
-                    if (preg_match('~' . $pattern . '~', $key)) {
-                        $ref = $this->getRef($value, $property);
-                        if ($ref !== null) {
-                            $result->setProperty($key, $ref);
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($additionalProperties === true) {
-            foreach ($data as $key => $value) {
-                if (!$result->hasProperty($key)) {
-                    if ($value !== null) {
-                        $result->setProperty($key, $this->dump($value));
-                    }
-                }
-            }
-        } elseif ($additionalProperties instanceof Annotation\Ref || $additionalProperties instanceof Annotation\Schema) {
-            foreach ($data as $key => $value) {
-                if (!$result->hasProperty($key)) {
-                    $ref = $this->getRef($value, $additionalProperties);
-                    if ($ref !== null) {
-                        $result->setProperty($key, $ref);
-                    }
-                }
-            }
-        }
-
         return $result;
     }
 
-    protected function dumpArray($data, $items)
+    private function dumpMap($data, MapType $type, ?\ReflectionClass $reflection = null): RecordInterface
     {
-        $result = [];
+        if (!is_iterable($data)) {
+            throw new \InvalidArgumentException('Map must be iterable');
+        }
 
-        if ($items instanceof Annotation\Schema) {
-            $annotations = $items->getAnnotations();
-            foreach ($data as $value) {
-                $result[] = $this->dumpValue($value, $annotations);
-            }
-        } elseif ($items instanceof Annotation\Ref) {
-            foreach ($data as $value) {
-                $result[] = $this->dump($value);
-            }
-        } elseif (is_array($items)) {
-            foreach ($data as $index => $value) {
-                if (isset($items[$index])) {
-                    $result[] = $this->getRef($value, $items[$index]);
-                }
-            }
+        if ($reflection === null) {
+            $reflection = new \ReflectionClass(get_class($data));
+        }
+
+        $result = new Record($reflection->getShortName());
+        foreach ($data as $key => $value) {
+            $result->setProperty($key, $this->dumpValue($value, $type->getAdditionalProperties()));
         }
 
         return $result;
     }
 
-    protected function dumpValue($value, array $annotations)
+    private function dumpArray($data, ArrayType $type): array
+    {
+        if (!is_iterable($data)) {
+            throw new \InvalidArgumentException('Array must be iterable');
+        }
+
+        $result = [];
+        foreach ($data as $index => $value) {
+            $result[] = $this->dumpValue($value, $type->getItems());
+        }
+
+        return $result;
+    }
+
+    private function dumpValue($value, TypeInterface $type)
     {
         if ($value === null) {
             return null;
         }
 
-        $type   = null;
-        $format = null;
-        $items  = null;
-        $ref    = null;
-        $allOf  = $anyOf = $oneOf = null;
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Type) {
-                $type = $annotation->getType();
-            } elseif ($annotation instanceof Annotation\Format) {
-                $format = $annotation->getFormat();
-            } elseif ($annotation instanceof Annotation\Items) {
-                $items = $annotation->getItems();
-            } elseif ($annotation instanceof Annotation\Ref) {
-                $ref = $annotation->getRef();
-            } elseif ($annotation instanceof Annotation\AllOf) {
-                $allOf = $annotation->getProperties();
-            } elseif ($annotation instanceof Annotation\AnyOf) {
-                $anyOf = $annotation->getProperties();
-            } elseif ($annotation instanceof Annotation\OneOf) {
-                $oneOf = $annotation->getProperties();
-            }
-        }
-
-        if (!empty($ref)) {
-            $type = TypeAbstract::TYPE_OBJECT;
-        } elseif (!empty($items)) {
-            $type = TypeAbstract::TYPE_ARRAY;
-        }
-
-        if ($type === TypeAbstract::TYPE_OBJECT) {
-            return $this->dump($value);
-        } elseif ($type === TypeAbstract::TYPE_ARRAY) {
-            return $this->dumpArray($value, $items);
-        } elseif ($type === TypeAbstract::TYPE_BOOLEAN) {
+        if ($type instanceof StructType) {
+            return $this->dumpStruct($value);
+        } elseif ($type instanceof MapType) {
+            return $this->dumpMap($value, $type);
+        } elseif ($type instanceof ArrayType) {
+            return $this->dumpArray($value, $type);
+        } elseif ($type instanceof BooleanType) {
             return (bool) $value;
-        } elseif ($type === TypeAbstract::TYPE_INTEGER) {
+        } elseif ($type instanceof IntegerType) {
             return (int) $value;
-        } elseif ($type === TypeAbstract::TYPE_NUMBER) {
+        } elseif ($type instanceof NumberType) {
             return (float) $value;
-        } elseif ($type === TypeAbstract::TYPE_STRING) {
+        } elseif ($type instanceof StringType) {
+            $format = $type->getFormat();
             if ($format === TypeAbstract::FORMAT_BINARY && is_resource($value)) {
                 return base64_encode(stream_get_contents($value, -1, 0));
             } elseif ($format === TypeAbstract::FORMAT_DATETIME && $value instanceof \DateTime) {
@@ -239,31 +216,23 @@ class Dumper
             } else {
                 return (string) $value;
             }
-        }
-
-        if (!empty($allOf)) {
+        } elseif ($type instanceof IntersectionType) {
             return $this->dump($value);
-        } elseif (!empty($anyOf)) {
+        } elseif ($type instanceof UnionType) {
             return $this->dump($value);
-        } elseif (!empty($oneOf)) {
-            return $this->dump($value);
-        }
-
-        return $value;
-    }
-
-    protected function getRef($value, $annotation)
-    {
-        if ($annotation instanceof Annotation\Ref) {
-            return $this->dump($value);
-        } elseif ($annotation instanceof Annotation\Schema) {
-            return $this->dumpValue($value, $annotation->getAnnotations());
+        } elseif ($type instanceof ReferenceType) {
+            return $this->dumpReference($value, $type);
         }
 
         return null;
     }
 
-    protected function dumpTraversable($data)
+    private function dumpReference($data, ReferenceType $type)
+    {
+        return $this->dumpObject($data, $type->getRef());
+    }
+
+    private function dumpIterable(iterable $data)
     {
         $values = [];
         foreach ($data as $key => $value) {

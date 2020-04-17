@@ -27,6 +27,7 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Parser\Popo\Annotation;
 use PSX\Schema\Parser\Popo\ObjectReader;
 use PSX\Schema\Parser\Popo\Resolver\Composite;
+use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyInterface;
@@ -71,10 +72,7 @@ class Popo implements ParserInterface
     public function __construct(Reader $reader)
     {
         $this->reader   = $reader;
-        $this->resolver = new Popo\Resolver\Composite(
-            new Popo\Resolver\Native(),
-            new Popo\Resolver\Documentor()
-        );
+        $this->resolver = self::createDefaultResolver();
     }
 
     public function parse($className)
@@ -339,5 +337,13 @@ class Popo implements ParserInterface
             }
             $type->setTemplate($result);
         }
+    }
+
+    public static function createDefaultResolver(): ResolverInterface
+    {
+        return new Popo\Resolver\Composite(
+            new Popo\Resolver\Native(),
+            new Popo\Resolver\Documentor()
+        );
     }
 }
