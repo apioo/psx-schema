@@ -4,7 +4,7 @@
       "type": "object",
       "properties": {
         "firstName": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },
@@ -13,7 +13,7 @@
       "type": "object",
       "properties": {
         "matricleNumber": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },

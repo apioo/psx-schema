@@ -59,14 +59,14 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected $indent;
 
     /**
+     * @var DefinitionsInterface
+     */
+    protected $definitions;
+
+    /**
      * @var Code\Chunks
      */
     private $chunks;
-
-    /**
-     * @var DefinitionsInterface
-     */
-    private $definitions;
 
     /**
      * @param string|null $namespace
@@ -191,42 +191,49 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
         $code = $this->writeStruct($className, $props, $extends, $generics, $type);
 
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function generateMap(string $className, MapType $type)
     {
         $code = $this->writeMap($className, $this->generator->getType($type), $type);
-
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function generateArray(string $className, ArrayType $type)
     {
         $code = $this->writeArray($className, $this->generator->getType($type), $type);
-
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function generateUnion(string $className, UnionType $type)
     {
         $code = $this->writeUnion($className, $this->generator->getType($type), $type);
-
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function generateIntersection(string $className, IntersectionType $type)
     {
         $code = $this->writeIntersection($className, $this->generator->getType($type), $type);
-
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function generateReference(string $className, ReferenceType $type)
     {
         $code = $this->writeReference($className, $this->generator->getType($type), $type);
-
-        $this->chunks->append($className, $code);
+        if (!empty($code)) {
+            $this->chunks->append($className, $code);
+        }
     }
 
     private function supportsWrite(string $name, TypeInterface $type)

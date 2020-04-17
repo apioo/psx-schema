@@ -1,23 +1,25 @@
 public static class Human {
-    private int firstName;
-    public void setFirstName(int firstName) {
+    private String firstName;
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    public int getFirstName() {
+    public String getFirstName() {
         return this.firstName;
     }
 }
 
 public static class Student extends Human {
-    private int matricleNumber;
-    public void setMatricleNumber(int matricleNumber) {
+    private String matricleNumber;
+    public void setMatricleNumber(String matricleNumber) {
         this.matricleNumber = matricleNumber;
     }
-    public int getMatricleNumber() {
+    public String getMatricleNumber() {
         return this.matricleNumber;
     }
 }
 
+public class StudentMap extends Map<Student> {
+}
 
 public static class Map<T> {
     private int totalResults;
@@ -37,11 +39,11 @@ public static class Map<T> {
 }
 
 public static class RootSchema {
-    private Map<Student> students;
-    public void setStudents(Map<Student> students) {
+    private StudentMap students;
+    public void setStudents(StudentMap students) {
         this.students = students;
     }
-    public Map<Student> getStudents() {
+    public StudentMap getStudents() {
         return this.students;
     }
 }

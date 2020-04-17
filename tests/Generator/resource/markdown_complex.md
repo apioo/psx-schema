@@ -21,7 +21,6 @@ format | String | Describes the specific format of this type i.e. date-time or i
 enum | StringArray &#124; NumberArray | A list of possible enumeration values | 
 default | String &#124; Number &#124; Boolean | Represents a scalar value | 
 
-
 <a name="Properties"></a>
 # Properties
 
@@ -48,7 +47,6 @@ Field | Type | Description | Constraints
 properties | Properties | **REQUIRED**.  | 
 required | Array (String) | Array string values | MinItems: `1`
 
-
 <a name="MapProperties"></a>
 # MapProperties
 
@@ -59,9 +57,6 @@ Field | Type | Description | Constraints
 additionalProperties | BooleanType &#124; NumberType &#124; StringType &#124; ArrayType &#124; CombinationType &#124; ReferenceType &#124; GenericType | **REQUIRED**. Allowed values of an object property | 
 maxProperties | Integer | Positive integer value | 
 minProperties | Integer | Positive integer value | 
-
-
-
 
 <a name="ArrayProperties"></a>
 # ArrayProperties
@@ -76,7 +71,6 @@ maxItems | Integer | Positive integer value |
 minItems | Integer | Positive integer value | 
 uniqueItems | Boolean |  | 
 
-
 <a name="BooleanProperties"></a>
 # BooleanProperties
 
@@ -85,7 +79,6 @@ Boolean properties
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 type | String | **REQUIRED**.  | 
-
 
 <a name="NumberProperties"></a>
 # NumberProperties
@@ -101,7 +94,6 @@ exclusiveMaximum | Boolean |  |
 minimum | Number |  | 
 exclusiveMinimum | Boolean |  | 
 
-
 <a name="StringProperties"></a>
 # StringProperties
 
@@ -113,8 +105,6 @@ type | String | **REQUIRED**.  |
 maxLength | Integer | Positive integer value | 
 minLength | Integer | Positive integer value | 
 pattern | String |  | 
-
-
 
 <a name="DiscriminatorMapping"></a>
 # DiscriminatorMapping
@@ -154,7 +144,6 @@ description | String |  |
 discriminator | Discriminator |  | 
 oneOf | Array (OfValue) | **REQUIRED**. Combination values | 
 
-
 <a name="TemplateProperties"></a>
 # TemplateProperties
 
@@ -181,7 +170,6 @@ Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 generic | String | **REQUIRED**.  | 
 
-
 <a name="Definitions"></a>
 # Definitions
 
@@ -195,10 +183,6 @@ Field | Type | Description | Constraints
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 * | [String](#String) |  | 
-
-
-
-
 
 <a name="TypeSchema"></a>
 # TypeSchema

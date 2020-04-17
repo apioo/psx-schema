@@ -79,12 +79,14 @@ public static class Author {
     }
 }
 
+public static class Meta<String, String> extends HashMap<String, String> {
+}
 
 /**
  * An general news entry
  */
 public static class News {
-    private HashMap<string, String> config;
+    private Meta config;
     private String[] tags;
     private Author[] receiver;
     private Object[] resources;
@@ -92,7 +94,7 @@ public static class News {
     private boolean read;
     private Object source;
     private Author author;
-    private HashMap<string, String> meta;
+    private Meta meta;
     private String sendDate;
     private String readDate;
     private String expires;
@@ -104,10 +106,10 @@ public static class News {
     private String coffeeTime;
     private String profileUri;
     private String captcha;
-    public void setConfig(HashMap<string, String> config) {
+    public void setConfig(Meta config) {
         this.config = config;
     }
-    public HashMap<string, String> getConfig() {
+    public Meta getConfig() {
         return this.config;
     }
     public void setTags(String[] tags) {
@@ -152,10 +154,10 @@ public static class News {
     public Author getAuthor() {
         return this.author;
     }
-    public void setMeta(HashMap<string, String> meta) {
+    public void setMeta(Meta meta) {
         this.meta = meta;
     }
-    public HashMap<string, String> getMeta() {
+    public Meta getMeta() {
         return this.meta;
     }
     public void setSendDate(String sendDate) {

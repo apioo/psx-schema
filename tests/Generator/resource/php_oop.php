@@ -1,20 +1,20 @@
 class Human
 {
     /**
-     * @var int
+     * @var string
      */
     protected $firstName;
     /**
-     * @param int $firstName
+     * @param string $firstName
      */
-    public function setFirstName(?int $firstName)
+    public function setFirstName(?string $firstName)
     {
         $this->firstName = $firstName;
     }
     /**
-     * @return int
+     * @return string
      */
-    public function getFirstName() : ?int
+    public function getFirstName() : ?string
     {
         return $this->firstName;
     }
@@ -22,20 +22,20 @@ class Human
 class Student extends Human
 {
     /**
-     * @var int
+     * @var string
      */
     protected $matricleNumber;
     /**
-     * @param int $matricleNumber
+     * @param string $matricleNumber
      */
-    public function setMatricleNumber(?int $matricleNumber)
+    public function setMatricleNumber(?string $matricleNumber)
     {
         $this->matricleNumber = $matricleNumber;
     }
     /**
-     * @return int
+     * @return string
      */
-    public function getMatricleNumber() : ?int
+    public function getMatricleNumber() : ?string
     {
         return $this->matricleNumber;
     }

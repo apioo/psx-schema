@@ -1,13 +1,16 @@
 public class Human
 {
-    public int FirstName { get; set; }
+    public string FirstName { get; set; }
 }
 
 public class Student extends Human
 {
-    public int MatricleNumber { get; set; }
+    public string MatricleNumber { get; set; }
 }
 
+public class StudentMap : Map<Student>
+{
+}
 
 public class Map<T>
 {
@@ -17,5 +20,5 @@ public class Map<T>
 
 public class RootSchema
 {
-    public Map<Student> Students { get; set; }
+    public StudentMap Students { get; set; }
 }

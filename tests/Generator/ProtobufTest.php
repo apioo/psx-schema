@@ -40,7 +40,7 @@ class ProtobufTest extends GeneratorTestCase
     {
         $generator = new Protobuf();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
 
         $expect = $expect = file_get_contents(__DIR__ . '/resource/protobuf.txt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);

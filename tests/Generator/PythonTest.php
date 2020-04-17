@@ -20,24 +20,24 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\CSharp;
+use PSX\Schema\Generator\Python;
 
 /**
- * CSharpTest
+ * PythonTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CSharpTest extends GeneratorTestCase
+class PythonTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new CSharp();
+        $generator = new Python();
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/csharp.cs');
+        $expect = $expect = file_get_contents(__DIR__ . '/resource/python.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -45,11 +45,11 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new CSharp();
+        $generator = new Python();
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_complex.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/python_complex.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -57,11 +57,11 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateOOP()
     {
-        $generator = new CSharp();
+        $generator = new Python();
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_oop.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/python_oop.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

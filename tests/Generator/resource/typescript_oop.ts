@@ -1,9 +1,9 @@
 interface Human {
-    firstName?: number
+    firstName?: string
 }
 
 interface Student extends Human {
-    matricleNumber?: number
+    matricleNumber?: string
 }
 
 type StudentMap = Map<Student>;

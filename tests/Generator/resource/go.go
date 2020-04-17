@@ -19,7 +19,6 @@ type Author struct {
     origin Location `json:"origin"`
 }
 
-
 // News An general news entry
 type News struct {
     config map[string]string `json:"config"`

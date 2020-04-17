@@ -20,24 +20,27 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\CSharp;
+use PSX\Schema\Generator\Proto;
+use PSX\Schema\Generator\Protobuf;
+use PSX\Schema\Generator\Swift;
+use PSX\Schema\Generator\TypeScript;
 
 /**
- * CSharpTest
+ * SwiftTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CSharpTest extends GeneratorTestCase
+class SwiftTest extends GeneratorTestCase
 {
     public function testGenerate()
     {
-        $generator = new CSharp();
+        $generator = new Swift();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/csharp.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/swift.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -45,11 +48,11 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new CSharp();
+        $generator = new Swift();
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_complex.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/swift_complex.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -57,11 +60,11 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateOOP()
     {
-        $generator = new CSharp();
+        $generator = new Swift();
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_oop.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/swift_oop.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

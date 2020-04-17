@@ -21,24 +21,29 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
- * Go
+ * Swift
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Go extends CodeGeneratorAbstract
+class Swift extends CodeGeneratorAbstract
 {
     /**
      * @inheritDoc
      */
     protected function newTypeGenerator(): GeneratorInterface
     {
-        return new Type\Go();
+        return new Type\Swift();
     }
 
     /**
@@ -46,28 +51,56 @@ class Go extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '// ' . $name;
+        $code = '';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= ' ' . $comment;
+            $code.= '// ' . $comment . "\n";
         }
 
-        $code.= "\n";
-        $code.= 'type ' . $name . ' struct {' . "\n";
+        $code.= 'class ' . $name . ': ';
 
         if (!empty($extends)) {
-            $code.= $this->indent . '*' . $extends . "\n";
+            $code.= $extends . ' ';
+        } else {
+            $code.= 'Codable ';
         }
+
+        $code.= '{' . "\n";
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $name . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
+            $code.= $this->indent . 'var ' . $name . ': ' . $property->getType() . "\n";
         }
 
         $code.= '}' . "\n";
 
         return $code;
+    }
+
+    protected function writeMap(string $name, string $type, MapType $origin): string
+    {
+        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeArray(string $name, string $type, ArrayType $origin): string
+    {
+        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeUnion(string $name, string $type, UnionType $origin): string
+    {
+        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
+    {
+        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+    }
+
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    {
+        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function normalizeName(string $name)

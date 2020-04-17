@@ -43,6 +43,18 @@ class JavaTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
+    public function testGenerateComplex()
+    {
+        $generator = new Java();
+
+        $actual = (string) $generator->generate($this->getComplexSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/java_complex.java');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
     public function testGenerateOOP()
     {
         $generator = new Java();

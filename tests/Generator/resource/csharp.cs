@@ -28,13 +28,16 @@ public class Author
     public Location Origin { get; set; }
 }
 
+public class Meta<string, string> : IDictionary<string, string>
+{
+}
 
 /// <summary>
 /// An general news entry
 /// </summary>
 public class News
 {
-    public Dictionary<string, string> Config { get; set; }
+    public Meta Config { get; set; }
     public string[] Tags { get; set; }
     public Author[] Receiver { get; set; }
     public object[] Resources { get; set; }
@@ -42,7 +45,7 @@ public class News
     public bool Read { get; set; }
     public object Source { get; set; }
     public Author Author { get; set; }
-    public Dictionary<string, string> Meta { get; set; }
+    public Meta Meta { get; set; }
     public string SendDate { get; set; }
     public string ReadDate { get; set; }
     public string Expires { get; set; }

@@ -179,7 +179,6 @@ class ScalarProperties
         return $this->default;
     }
 }
-
 /**
  * @extends ArrayAccess<string, PropertyValue>
  * @Description("Properties of a schema")
@@ -258,7 +257,6 @@ class StructProperties
         return $this->required;
     }
 }
-
 /**
  * @Description("Map specific properties")
  * @Required({"additionalProperties"})
@@ -325,9 +323,6 @@ class MapProperties
         return $this->minProperties;
     }
 }
-
-
-
 /**
  * @Description("Array properties")
  * @Required({"type", "items"})
@@ -431,7 +426,6 @@ class ArrayProperties
         return $this->uniqueItems;
     }
 }
-
 /**
  * @Description("Boolean properties")
  * @Required({"type"})
@@ -458,7 +452,6 @@ class BooleanProperties
         return $this->type;
     }
 }
-
 /**
  * @Description("Number properties")
  * @Required({"type"})
@@ -577,7 +570,6 @@ class NumberProperties
         return $this->exclusiveMinimum;
     }
 }
-
 /**
  * @Description("String properties")
  * @Required({"type"})
@@ -662,8 +654,6 @@ class StringProperties
         return $this->pattern;
     }
 }
-
-
 /**
  * @extends ArrayAccess<string, string>
  * @Description("An object to hold mappings between payload values and schema names or references")
@@ -821,7 +811,6 @@ class OneOfProperties
         return $this->oneOf;
     }
 }
-
 /**
  * @extends ArrayAccess<string, ReferenceType>
  */
@@ -901,7 +890,6 @@ class GenericType
         return $this->generic;
     }
 }
-
 /**
  * @extends ArrayAccess<string, DefinitionValue>
  * @Description("Schema definitions which can be reused")
@@ -916,10 +904,6 @@ class Definitions extends \PSX\Record\Record
 class Import extends \PSX\Record\Record
 {
 }
-
-
-
-
 /**
  * @Title("TypeSchema")
  * @Description("TypeSchema meta schema which describes a TypeSchema")

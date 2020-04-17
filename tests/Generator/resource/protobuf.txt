@@ -16,7 +16,6 @@ message Author {
     Location origin = 5;
 }
 
-
 message News {
     map<string, string> config = 1;
     repeated string tags = 2;

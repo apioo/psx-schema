@@ -4,23 +4,8 @@
       "type": "object",
       "properties": {
         "firstName": {
-          "type": "integer"
+          "type": "string"
         }
-      }
-    },
-    "Student": {
-      "$extends": "Human",
-      "type": "object",
-      "properties": {
-        "matricleNumber": {
-          "type": "integer"
-        }
-      }
-    },
-    "StudentMap": {
-      "$ref": "Map",
-      "$template": {
-        "T": "Student"
       }
     },
     "Map": {
@@ -35,6 +20,21 @@
             "$generic": "T"
           }
         }
+      }
+    },
+    "Student": {
+      "$extends": "Human",
+      "type": "object",
+      "properties": {
+        "matricleNumber": {
+          "type": "string"
+        }
+      }
+    },
+    "StudentMap": {
+      "$ref": "Map",
+      "$template": {
+        "T": "Student"
       }
     }
   },
