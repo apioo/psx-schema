@@ -18,7 +18,7 @@ readonly | Boolean | Indicates whether this schema is readonly |
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 format | String | Describes the specific format of this type i.e. date-time or int64 | 
-enum | StringArray &#124; NumberArray | A list of possible enumeration values | 
+enum | Object ([StringArray](#StringArray)) &#124; Object ([NumberArray](#NumberArray)) | A list of possible enumeration values | 
 default | String &#124; Number &#124; Boolean | Represents a scalar value | 
 
 <a name="Properties"></a>
@@ -26,7 +26,7 @@ default | String &#124; Number &#124; Boolean | Represents a scalar value |
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [PropertyValue](#PropertyValue) |  | 
+* | Object ([PropertyValue](#PropertyValue)) |  | 
 
 <a name="ContainerProperties"></a>
 # ContainerProperties
@@ -44,7 +44,7 @@ Struct specific properties
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-properties | Properties | **REQUIRED**.  | 
+properties | Object ([Properties](#Properties)) | **REQUIRED**.  | 
 required | Array (String) | Array string values | MinItems: `1`
 
 <a name="MapProperties"></a>
@@ -54,7 +54,7 @@ Map specific properties
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-additionalProperties | BooleanType &#124; NumberType &#124; StringType &#124; ArrayType &#124; CombinationType &#124; ReferenceType &#124; GenericType | **REQUIRED**. Allowed values of an object property | 
+additionalProperties | Object ([BooleanType](#BooleanType)) &#124; Object ([NumberType](#NumberType)) &#124; Object ([StringType](#StringType)) &#124; Object ([ArrayType](#ArrayType)) &#124; Object ([CombinationType](#CombinationType)) &#124; Object ([ReferenceType](#ReferenceType)) &#124; Object ([GenericType](#GenericType)) | **REQUIRED**. Allowed values of an object property | 
 maxProperties | Integer | Positive integer value | 
 minProperties | Integer | Positive integer value | 
 
@@ -66,7 +66,7 @@ Array properties
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 type | String | **REQUIRED**.  | 
-items | BooleanType &#124; NumberType &#124; StringType &#124; ReferenceType &#124; GenericType | **REQUIRED**. Allowed values of an array item | 
+items | Object ([BooleanType](#BooleanType)) &#124; Object ([NumberType](#NumberType)) &#124; Object ([StringType](#StringType)) &#124; Object ([ReferenceType](#ReferenceType)) &#124; Object ([GenericType](#GenericType)) | **REQUIRED**. Allowed values of an array item | 
 maxItems | Integer | Positive integer value | 
 minItems | Integer | Positive integer value | 
 uniqueItems | Boolean |  | 
@@ -111,7 +111,7 @@ pattern | String |  |
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [String](#String) |  | 
+* | String |  | 
 
 <a name="Discriminator"></a>
 # Discriminator
@@ -121,7 +121,7 @@ Adds support for polymorphism. The discriminator is an object name that is used 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 propertyName | String | **REQUIRED**. The name of the property in the payload that will hold the discriminator value | 
-mapping | DiscriminatorMapping |  | 
+mapping | Object ([DiscriminatorMapping](#DiscriminatorMapping)) |  | 
 
 <a name="AllOfProperties"></a>
 # AllOfProperties
@@ -131,7 +131,7 @@ An intersection type combines multiple schemas into one
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 description | String |  | 
-allOf | Array (OfValue) | **REQUIRED**. Combination values | 
+allOf | Array (Object ([OfValue](#OfValue))) | **REQUIRED**. Combination values | 
 
 <a name="OneOfProperties"></a>
 # OneOfProperties
@@ -141,15 +141,15 @@ An union type can contain one of the provided schemas
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 description | String |  | 
-discriminator | Discriminator |  | 
-oneOf | Array (OfValue) | **REQUIRED**. Combination values | 
+discriminator | Object ([Discriminator](#Discriminator)) |  | 
+oneOf | Array (Object ([OfValue](#OfValue))) | **REQUIRED**. Combination values | 
 
 <a name="TemplateProperties"></a>
 # TemplateProperties
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [ReferenceType](#ReferenceType) |  | 
+* | Object ([ReferenceType](#ReferenceType)) |  | 
 
 <a name="ReferenceType"></a>
 # ReferenceType
@@ -159,7 +159,7 @@ Represents a reference to another schema
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 ref | String | **REQUIRED**. Reference to the schema under the definitions key | 
-template | TemplateProperties | Optional concrete schema definitions which replace generic template types | 
+template | Object ([TemplateProperties](#TemplateProperties)) | Optional concrete schema definitions which replace generic template types | 
 
 <a name="GenericType"></a>
 # GenericType
@@ -175,14 +175,14 @@ generic | String | **REQUIRED**.  |
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [DefinitionValue](#DefinitionValue) |  | 
+* | Object ([DefinitionValue](#DefinitionValue)) |  | 
 
 <a name="Import"></a>
 # Import
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [String](#String) |  | 
+* | String |  | 
 
 <a name="TypeSchema"></a>
 # TypeSchema
@@ -191,10 +191,10 @@ TypeSchema meta schema which describes a TypeSchema
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-import | Import |  | 
+import | Object ([Import](#Import)) |  | 
 title | String | **REQUIRED**.  | 
 description | String |  | 
 type | String | **REQUIRED**.  | 
-definitions | Definitions |  | 
-properties | Properties | **REQUIRED**.  | 
+definitions | Object ([Definitions](#Definitions)) |  | 
+properties | Object ([Properties](#Properties)) | **REQUIRED**.  | 
 required | Array (String) | Array string values | MinItems: `1`

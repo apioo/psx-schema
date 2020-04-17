@@ -28,15 +28,15 @@ Field | Type | Description | Constraints
 title | String | **REQUIRED**.  | Pattern: `[A-z]{3,16}`
 email | String | We will send no spam to this address | 
 categories | Array (String) |  | MaxItems: `8`
-locations | Array (Location) | Array of locations | 
-origin | Location |  | 
+locations | Array (Object ([Location](#Location))) | Array of locations | 
+origin | Object ([Location](#Location)) |  | 
 
 <a name="Meta"></a>
 # Meta
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | [String](#String) |  | 
+* | String |  | 
 
 <a name="News"></a>
 # News
@@ -45,15 +45,15 @@ An general news entry
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-config | Meta |  | 
+config | Object ([Meta](#Meta)) |  | 
 tags | Array (String) |  | MinItems: `1`, MaxItems: `6`
-receiver | Array (Author) | **REQUIRED**.  | MinItems: `1`
-resources | Array (Location &#124; Web) |  | 
+receiver | Array (Object ([Author](#Author))) | **REQUIRED**.  | MinItems: `1`
+resources | Array (Object ([Location](#Location)) &#124; Object ([Web](#Web))) |  | 
 profileImage | [Base64](http://tools.ietf.org/html/rfc4648) |  | 
 read | Boolean |  | 
-source | Author &#124; Web |  | 
-author | Author |  | 
-meta | Meta |  | 
+source | Object ([Author](#Author)) &#124; Object ([Web](#Web)) |  | 
+author | Object ([Author](#Author)) |  | 
+meta | Object ([Meta](#Meta)) |  | 
 sendDate | [Date](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 readDate | [DateTime](http://tools.ietf.org/html/rfc3339#section-5.6) |  | 
 expires | [Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |  | 
