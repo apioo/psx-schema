@@ -20,18 +20,6 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
-
 /**
  * Factory class to access different property types
  *

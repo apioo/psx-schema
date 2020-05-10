@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Parser\Popo\Annotation\Type;
-use PSX\Schema\PropertyInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ScalarType;

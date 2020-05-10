@@ -22,7 +22,6 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\StructType;
-use PSX\Schema\TypeInterface;
 
 /**
  * Go

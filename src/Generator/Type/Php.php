@@ -22,15 +22,15 @@ namespace PSX\Schema\Generator\Type;
 
 use PSX\DateTime\Date;
 use PSX\DateTime\Time;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\UnionType;
-use PSX\Uri\Uri;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
+use PSX\Uri\Uri;
 
 /**
  * Php

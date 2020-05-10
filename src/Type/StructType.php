@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\Parser\Popo\Annotation\AllOf;
 use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 

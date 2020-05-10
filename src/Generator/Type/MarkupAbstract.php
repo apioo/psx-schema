@@ -20,9 +20,6 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\TypeInterface;
-
 /**
  * MarkupAbstract
  *

@@ -26,7 +26,6 @@ use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 
 /**
  * CSharp

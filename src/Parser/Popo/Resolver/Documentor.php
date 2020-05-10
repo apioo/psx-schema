@@ -20,10 +20,10 @@
 
 namespace PSX\Schema\Parser\Popo\Resolver;
 
-use phpDocumentor\Reflection\TypeResolver;
-use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types;
+use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\Date;
 use PSX\DateTime\Time;
 use PSX\Schema\Parser\Popo\ResolverInterface;

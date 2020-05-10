@@ -21,8 +21,8 @@
 namespace PSX\Schema\Parser\Popo\Resolver;
 
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeFactory;
+use PSX\Schema\TypeInterface;
 
 /**
  * Native

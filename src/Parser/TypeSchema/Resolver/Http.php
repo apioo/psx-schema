@@ -24,10 +24,8 @@ use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
 use PSX\Json\Parser;
 use PSX\Schema\Parser\TypeSchema\Document;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\Parser\TypeSchema\ResolverInterface;
 use PSX\Uri\Uri;
-use PSX\Uri\UriResolver;
 use RuntimeException;
 
 /**
