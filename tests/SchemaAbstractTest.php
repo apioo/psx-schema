@@ -23,8 +23,11 @@ namespace PSX\Schema\Tests;
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Schema;
 use PSX\Schema\SchemaAbstract;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
 
@@ -70,6 +73,20 @@ class SchemaAbstractTest extends TestCase
 
         $this->assertEquals(null, $schemaB->getProperty('lat')->getTitle());
         $this->assertEquals('bar', $schemaB->getProperty('long')->getTitle());
+    }
+    
+    public function testSerialize()
+    {
+        $schema = $this->schemaManager->getSchema(SchemaCommon::class);
+
+        $data = serialize($schema);
+
+        /** @var SchemaInterface $schema */
+        $schema = unserialize($data);
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Author'));
+        $this->assertInstanceOf(StructType::class, $schema->getType());
     }
 }
 
