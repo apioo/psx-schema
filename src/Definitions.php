@@ -43,7 +43,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         if (!isset($this->container[$ns])) {
             $this->container[$ns] = [];
         }
-        
+
         if (isset($this->container[$ns][$name])) {
             throw new \RuntimeException('Type already registered');
         }
@@ -65,16 +65,16 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         if (isset($this->container[$ns][$name])) {
             return $this->container[$ns][$name];
         } else {
-            throw new \RuntimeException('Type already registered');
+            throw new \RuntimeException('Type not found');
         }
     }
-    
+
     public function getTypes(string $namespace): iterable
     {
         if (isset($this->container[$namespace])) {
             return $this->container[$namespace];
         } else {
-            throw new \RuntimeException('Provided namespace does not exist');
+            return [];
         }
     }
 
