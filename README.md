@@ -12,13 +12,13 @@ currently supported:
 * Go
 * HTML
 * Java
+* JsonSchema
 * Markdown
 * PHP
 * Protobuf
 * Python
 * Swift
 * TypeSchema
-* JsonSchema
 * TypeScript
 
 Please take a look at the [TypeSchema](https://typeschema.org/) website which
