@@ -87,7 +87,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $this->chunks      = new Code\Chunks($this->namespace);
         $this->definitions = $schema->getDefinitions();
 
-        $types = $this->definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
+        $types = $this->definitions->getAllTypes();
         foreach ($types as $name => $type) {
             $this->generateDefinition($name, $type);
         }

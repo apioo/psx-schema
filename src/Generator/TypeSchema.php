@@ -67,7 +67,7 @@ class TypeSchema implements GeneratorInterface
     protected function generateDefinitions(DefinitionsInterface $definitions)
     {
         $result = [];
-        $types  = $definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
+        $types  = $definitions->getAllTypes();
 
         ksort($types);
 
