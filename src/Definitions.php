@@ -86,7 +86,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
                 if ($name === self::SELF_NAMESPACE) {
                     $result[$name] = $type;
                 } else {
-                    $result[$namespace . ':' . $name] = $type;
+                    $result[$name] = $type;
                 }
             }
         }
