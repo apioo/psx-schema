@@ -67,7 +67,7 @@ class GeneratorFactory
                 break;
 
             case self::TYPE_JSONSCHEMA:
-                return new Generator\JsonSchema($config ?: null);
+                return new Generator\JsonSchema();
                 break;
 
             case self::TYPE_MARKDOWN:

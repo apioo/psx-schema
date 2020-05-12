@@ -1,0 +1,193 @@
+{
+  "definitions": {
+    "Author": {
+      "description": "An simple author element with some description",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "pattern": "[A-z]{3,16}"
+        },
+        "email": {
+          "description": "We will send no spam to this address",
+          "nullable": true,
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8
+        },
+        "locations": {
+          "description": "Array of locations",
+          "type": "array",
+          "items": {
+            "$ref": "#\/definitions\/Location"
+          }
+        },
+        "origin": {
+          "$ref": "#\/definitions\/Location"
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "Location": {
+      "description": "Location of the person",
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "long"
+      ]
+    },
+    "Meta": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1,
+      "maxProperties": 6
+    },
+    "Web": {
+      "description": "An application",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "url"
+      ]
+    }
+  },
+  "title": "News",
+  "description": "An general news entry",
+  "type": "object",
+  "properties": {
+    "config": {
+      "$ref": "#\/definitions\/Meta"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 6
+    },
+    "receiver": {
+      "type": "array",
+      "items": {
+        "$ref": "#\/definitions\/Author"
+      },
+      "minItems": 1
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#\/definitions\/Location"
+          },
+          {
+            "$ref": "#\/definitions\/Web"
+          }
+        ]
+      }
+    },
+    "profileImage": {
+      "format": "base64",
+      "type": "string"
+    },
+    "read": {
+      "type": "boolean"
+    },
+    "source": {
+      "oneOf": [
+        {
+          "$ref": "#\/definitions\/Author"
+        },
+        {
+          "$ref": "#\/definitions\/Web"
+        }
+      ]
+    },
+    "author": {
+      "$ref": "#\/definitions\/Author"
+    },
+    "meta": {
+      "$ref": "#\/definitions\/Meta"
+    },
+    "sendDate": {
+      "format": "date",
+      "type": "string"
+    },
+    "readDate": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "expires": {
+      "format": "duration",
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "content": {
+      "description": "Contains the main content of the news entry",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 512
+    },
+    "question": {
+      "enum": [
+        "foo",
+        "bar"
+      ],
+      "type": "string"
+    },
+    "version": {
+      "const": "http:\/\/foo.bar",
+      "type": "string"
+    },
+    "coffeeTime": {
+      "format": "time",
+      "type": "string"
+    },
+    "profileUri": {
+      "format": "uri",
+      "type": "string"
+    },
+    "g-recaptcha-response": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "receiver",
+    "price",
+    "content"
+  ]
+}

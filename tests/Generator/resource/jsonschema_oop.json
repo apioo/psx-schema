@@ -1,0 +1,50 @@
+{
+  "definitions": {
+    "Human": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        }
+      }
+    },
+    "Map": {
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$generic": "T"
+          }
+        }
+      }
+    },
+    "Student": {
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/Human"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "matricleNumber": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "StudentMap": {
+      "$ref": "#\/definitions\/Map"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "students": {
+      "$ref": "#\/definitions\/StudentMap"
+    }
+  }
+}
