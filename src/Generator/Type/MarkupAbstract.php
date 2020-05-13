@@ -27,7 +27,7 @@ namespace PSX\Schema\Generator\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class MarkupAbstract extends TypeAbstract
+abstract class MarkupAbstract extends GeneratorAbstract
 {
     protected function getDate(): string
     {
@@ -89,9 +89,9 @@ abstract class MarkupAbstract extends TypeAbstract
         return $this->writeLink($type, '#' . $type);
     }
 
-    protected function getMap(string $type, string $child): string
+    protected function getMap(string $type): string
     {
-        return $this->writeLink($type, '#' . $type);
+        return $type;
     }
 
     protected function getUnion(array $types): string
@@ -109,9 +109,19 @@ abstract class MarkupAbstract extends TypeAbstract
         return '(' . $type . ')';
     }
 
-    protected function getAny(): string
+    protected function getReference(string $ref): string
+    {
+        return 'Object (' . $this->writeLink($ref, '#' . $ref) . ')';
+    }
+
+    protected function getGeneric(array $types): string
     {
         return '';
+    }
+
+    protected function getAny(): string
+    {
+        return 'Any';
     }
 
     /**

@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\JsonSchema;
-use PSX\Schema\Parser;
 
 /**
  * JsonSchemaTest
@@ -42,15 +41,22 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateRecursive()
+    public function testGenerateComplex()
     {
-        $schema    = Parser\JsonSchema::fromFile(__DIR__ . '/../Parser/JsonSchema/schema.json');
         $generator = new JsonSchema();
 
-        $actual = $generator->generate($schema);
-        $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
+        $actual = (string) $generator->generate($this->getComplexSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_complex.json');
 
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_recursion.json');
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateOOP()
+    {
+        $generator = new JsonSchema();
+
+        $actual = (string) $generator->generate($this->getOOPSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_oop.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

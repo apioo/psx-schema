@@ -20,8 +20,17 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
+use PSX\DateTime\Date;
+use PSX\DateTime\Time;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
+use PSX\Uri\Uri;
 
 /**
  * Php
@@ -30,41 +39,48 @@ use PSX\Schema\PropertyType;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Php extends TypeAbstract
+class Php extends GeneratorAbstract
 {
-    public function getDocType(PropertyInterface $property): string
+    public function getDocType(TypeInterface $type): string
     {
-        $type = $this->getRealType($property);
-
-        if ($type === PropertyType::TYPE_ARRAY) {
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
+        if ($type instanceof ArrayType) {
+            $items = $type->getItems();
+            if ($items instanceof TypeInterface) {
                 return 'array<' . $this->getDocType($items) . '>';
             } else {
                 return 'array';
             }
-        } elseif (is_array($type)) {
-            return implode('|', $type);
-        } elseif ($property->getOneOf()) {
+        } elseif ($type instanceof MapType) {
+            $additionalProperties = $type->getAdditionalProperties();
+            if ($additionalProperties instanceof TypeInterface) {
+                return 'array<string, ' . $this->getDocType($additionalProperties) . '>';
+            } else {
+                return 'array';
+            }
+        } elseif ($type instanceof StringType && $type->getFormat() === TypeAbstract::FORMAT_BINARY) {
+            return 'resource';
+        } elseif ($type instanceof UnionType) {
             $parts = [];
-            foreach ($property->getOneOf() as $property) {
-                $parts[] = $this->getDocType($property);
+            foreach ($type->getOneOf() as $item) {
+                $parts[] = $this->getDocType($item);
             }
             return implode('|', $parts);
-        } elseif ($property->getAllOf()) {
+        } elseif ($type instanceof IntersectionType) {
             $parts = [];
-            foreach ($property->getAllOf() as $property) {
-                $parts[] = $this->getDocType($property);
+            foreach ($type->getAllOf() as $item) {
+                $parts[] = $this->getDocType($item);
             }
             return implode('&', $parts);
+        } elseif ($type instanceof GenericType) {
+            return $type->getGeneric();
         } else {
-            return $this->getType($property);
+            return $this->getType($type);
         }
     }
 
     protected function getDate(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . Date::class;
     }
 
     protected function getDateTime(): string
@@ -74,12 +90,22 @@ class Php extends TypeAbstract
 
     protected function getTime(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . Time::class;
     }
 
     protected function getDuration(): string
     {
         return '\\' . \DateInterval::class;
+    }
+
+    protected function getUri(): string
+    {
+        return '\\' . Uri::class;
+    }
+
+    protected function getBinary(): string
+    {
+        return '';
     }
 
     protected function getString(): string
@@ -107,20 +133,18 @@ class Php extends TypeAbstract
         return 'array';
     }
 
-    protected function getStruct(string $type): string
+    protected function getMap(string $type): string
     {
-        return $type;
-    }
-
-    protected function getMap(string $type, string $child): string
-    {
-        return $type;
+        return 'array'; // we use PHP array as map data structure
     }
 
     protected function getUnion(array $types): string
     {
-        // @TODO currently not possible but there is an RFC for union types
-        return '';
+        if (PHP_MAJOR_VERSION >= 8) {
+            return implode('|', $types);
+        } else {
+            return '';
+        }
     }
 
     protected function getIntersection(array $types): string
@@ -131,6 +155,11 @@ class Php extends TypeAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
+    }
+
+    protected function getGeneric(array $types): string
+    {
+        return '';
     }
 
     protected function getAny(): string

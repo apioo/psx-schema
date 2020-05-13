@@ -1,3 +1,21 @@
+message Location {
+    float lat = 1;
+    float long = 2;
+}
+
+message Web {
+    string name = 1;
+    string url = 2;
+}
+
+message Author {
+    string title = 1;
+    string email = 2;
+    repeated string categories = 3;
+    repeated Location locations = 4;
+    Location origin = 5;
+}
+
 message News {
     map<string, string> config = 1;
     repeated string tags = 2;
@@ -7,7 +25,7 @@ message News {
     bool read = 6;
     Struct source = 7;
     Author author = 8;
-    Meta meta = 9;
+    map<string, string> meta = 9;
     Timestamp sendDate = 10;
     Timestamp readDate = 11;
     string expires = 12;
@@ -19,27 +37,4 @@ message News {
     string coffeeTime = 18;
     string profileUri = 19;
     string captcha = 20;
-}
-
-
-message Author {
-    string title = 1;
-    Any email = 2;
-    repeated string categories = 3;
-    repeated map<string, Any> locations = 4;
-    map<string, Any> origin = 5;
-}
-
-message Location {
-    float lat = 1;
-    float long = 2;
-}
-
-message Web {
-    string name = 1;
-    string url = 2;
-}
-
-message Meta {
-    Timestamp createDate = 1;
 }

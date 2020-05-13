@@ -44,13 +44,12 @@ class DumperTest extends TestCase
     {
         include_once __DIR__ . '/News.php';
 
-        $config = new Config();
+        $config = new Meta();
         $config['foo'] = 'bar';
 
         $location = new Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
-        $location['foo'] = 'bar';
 
         $author = new Author();
         $author->setTitle('foo');
@@ -62,16 +61,13 @@ class DumperTest extends TestCase
         $web = new Web();
         $web->setName('foo');
         $web->setUrl('http://google.com');
-        $web['email'] = 'foo@bar.com';
 
         $profileImage = fopen('php://memory', 'r+');
         fwrite($profileImage, 'foobar');
 
         $meta = new Meta();
-        $meta->setCreateDate(new DateTime('2016-12-11T10:50:00'));
         $meta['tags_0'] = 'foo';
         $meta['tags_1'] = 'bar';
-        $meta['location_0'] = $location;
 
         $news = new News();
         $news->setConfig($config);
@@ -100,136 +96,22 @@ class DumperTest extends TestCase
         $this->assertInstanceOf(RecordInterface::class, $actual);
 
         $actual = json_encode($actual, JSON_PRETTY_PRINT);
-        $expect = <<<JSON
-{
-    "config": {
-        "foo": "bar"
-    },
-    "tags": [
-        "foo",
-        "bar"
-    ],
-    "receiver": [
-        {
-            "title": "foo",
-            "email": "foo@bar.com",
-            "categories": [
-                "foo",
-                "bar"
-            ],
-            "locations": [
-                {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                },
-                {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                }
-            ],
-            "origin": {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            }
-        }
-    ],
-    "resources": [
-        {
-            "name": "foo",
-            "url": "http:\/\/google.com",
-            "email": "foo@bar.com"
-        },
-        {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    ],
-    "profileImage": "Zm9vYmFy",
-    "read": false,
-    "source": {
-        "name": "foo",
-        "url": "http:\/\/google.com",
-        "email": "foo@bar.com"
-    },
-    "author": {
-        "title": "foo",
-        "email": "foo@bar.com",
-        "categories": [
-            "foo",
-            "bar"
-        ],
-        "locations": [
-            {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            },
-            {
-                "lat": 12.34,
-                "long": 56.78,
-                "foo": "bar"
-            }
-        ],
-        "origin": {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    },
-    "meta": {
-        "createDate": "2016-12-11T10:50:00Z",
-        "tags_0": "foo",
-        "tags_1": "bar",
-        "location_0": {
-            "lat": 12.34,
-            "long": 56.78,
-            "foo": "bar"
-        }
-    },
-    "sendDate": "2016-12-11",
-    "readDate": "2016-12-11T10:50:00Z",
-    "expires": "P1D",
-    "price": 50,
-    "rating": 4,
-    "content": "foobar",
-    "question": "foo",
-    "coffeeTime": "10:49:00",
-    "profileUri": "urn:foo:image"
-}
-JSON;
+        $expect = file_get_contents(__DIR__ . '/expect.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    /**
-     * @dataProvider traversableProvider
-     */
     public function testDumpTraversable()
     {
         include_once __DIR__ . '/News.php';
 
-        $subLocation = new Location();
-        $subLocation->setLat(12.34);
-        $subLocation->setLong(56.78);
-        $subLocation['foo'] = 'bar';
-
-        $resource = fopen('php://memory', 'r+');
-        fwrite($resource, 'foobar');
-
         $location = new Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
-        $location['assoc_array'] = ['foo' => $subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
-        $location['stdclass'] = (object) ['foo' => $subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
-        $location['array'] = [$subLocation, 'date' => new DateTime(2016, 12, 24), 'string' => 'bar', 'resource' => $resource];
 
         $locations = [
             $location,
-            Record::fromArray(['lat' => 12, 'long' => 12]),
+            $location,
         ];
 
         $author = new Author();
@@ -242,59 +124,8 @@ JSON;
         $this->assertInstanceOf(RecordInterface::class, $actual);
 
         $actual = json_encode($actual, JSON_PRETTY_PRINT);
-        $expect = <<<JSON
-{
-    "locations": [
-        {
-            "lat": 12.34,
-            "long": 56.78,
-            "assoc_array": {
-                "foo": {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                },
-                "date": "2016-12-24T00:00:00Z",
-                "string": "bar",
-                "resource": "foobar"
-            },
-            "stdclass": {
-                "foo": {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                },
-                "date": "2016-12-24T00:00:00Z",
-                "string": "bar",
-                "resource": "foobar"
-            },
-            "array": [
-                {
-                    "lat": 12.34,
-                    "long": 56.78,
-                    "foo": "bar"
-                },
-                "2016-12-24T00:00:00Z",
-                "bar",
-                "foobar"
-            ]
-        },
-        {
-            "lat": 12,
-            "long": 12
-        }
-    ]
-}
-JSON;
+        $expect = file_get_contents(__DIR__ . '/expect_iterable.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
-    }
-
-    public function traversableProvider()
-    {
-        return [
-            [],
-            [],
-        ];
     }
 }

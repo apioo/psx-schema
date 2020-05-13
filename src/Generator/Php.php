@@ -23,12 +23,17 @@ namespace PSX\Schema\Generator;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
-use PSX\Schema\Generator\Type\TypeInterface;
-use PSX\Schema\GeneratorInterface;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
-use PSX\Schema\SchemaInterface;
-use RuntimeException;
+use PSX\Record\Record;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\TypeInterface;
 
 /**
  * Php
@@ -60,21 +65,42 @@ class Php extends CodeGeneratorAbstract
         $this->printer = new PrettyPrinter\Standard();
     }
 
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Php();
     }
 
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $class = $this->factory->class($struct->getName());
-        $class->setDocComment($this->getDocCommentForClass($struct->getProperty()));
+        $tags = [];
+        if ($generics !== null) {
+            $tags['template'] = $generics;
+        }
 
-        foreach ($struct->getProperties() as $name => $property) {
+        $class = $this->factory->class($name);
+        $class->setDocComment($this->buildComment($tags, $this->getAnnotationsForType($origin)));
+
+        if (!empty($extends)) {
+            $class->extend($extends);
+        }
+
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $class->addStmt($this->factory->property($name)
-                ->makeProtected()
-                ->setDocComment($this->getDocCommentForProperty($property->getProperty(), $property->getName())));
+            $realKey = null;
+            if ($property->getName() !== $name) {
+                $realKey = $property->getName();
+            }
+
+            $prop = $this->factory->property($name);
+            $prop->makeProtected();
+            $prop->setDocComment($this->buildComment(['var' => $property->getDocType()], $this->getAnnotationsForType($property->getOrigin(), $realKey)));
+
+            $default = $this->getDefault($property->getOrigin());
+            if ($default !== null) {
+                $prop->setDefault($default);
+            }
+
+            $class->addStmt($prop);
 
             $param = $this->factory->param($name);
 
@@ -85,7 +111,7 @@ class Php extends CodeGeneratorAbstract
 
             $setter = $this->factory->method('set' . ucfirst($name));
             $setter->makePublic();
-            $setter->setDocComment('/**' . "\n" . ' * @param ' . $property->getDocType() . ' $' . $name . "\n" . ' */');
+            $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . ' $' . $name]));
             $setter->addParam($param);
             $setter->addStmt(new Node\Expr\Assign(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
@@ -98,37 +124,40 @@ class Php extends CodeGeneratorAbstract
                 $getter->setReturnType(new Node\NullableType($type));
             }
             $getter->makePublic();
-            $getter->setDocComment('/**' . "\n" . ' * @return ' . $property->getDocType() . "\n" . ' */');
+            $getter->setDocComment($this->buildComment(['return' => $property->getDocType()]));
             $getter->addStmt(new Node\Stmt\Return_(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
             ));
             $class->addStmt($getter);
         }
 
-        if ($this->namespace !== null) {
-            $namespace = $this->factory->namespace($this->namespace);
-            $namespace->addStmt($class);
-
-            return $this->printer->prettyPrint([$namespace->getNode()]);
-        } else {
-            return $this->printer->prettyPrint([$class->getNode()]);
-        }
+        return $this->prettyPrint($class);
     }
 
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $class = $this->factory->class($map->getName());
-        $class->setDocComment($this->getDocCommentForClass($map->getProperty()));
-        $class->extend('\ArrayObject');
+        $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        if ($this->namespace !== null) {
-            $namespace = $this->factory->namespace($this->namespace);
-            $namespace->addStmt($class);
+        $class = $this->factory->class($name);
+        $class->setDocComment($this->buildComment(['extends' => 'ArrayAccess<string, ' . $subType . '>'], $this->getAnnotationsForType($origin)));
+        $class->extend('\\' . Record::class);
 
-            return $this->printer->prettyPrint([$namespace->getNode()]);
-        } else {
-            return $this->printer->prettyPrint([$class->getNode()]);
+        return $this->prettyPrint($class);
+    }
+
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    {
+        $tags = [];
+        $template = $origin->getTemplate();
+        if (!empty($template)) {
+            $tags['extends'] = $type . '<' . implode(', ', array_values($template)) . '>';
         }
+
+        $class = $this->factory->class($name);
+        $class->setDocComment($this->buildComment($tags, $this->getAnnotationsForType($origin)));
+        $class->extend($type);
+
+        return $this->prettyPrint($class);
     }
 
     protected function normalizeName(string $name)
@@ -141,201 +170,90 @@ class Php extends CodeGeneratorAbstract
 
         return $name;
     }
-
-    protected function getDocCommentForClass(PropertyInterface $property)
+    
+    private function buildComment(array $tags, array $annotations = [], ?string $comment = null): string
     {
-        $comment = '/**' . "\n";
-
-        $title = $property->getTitle();
-        if (!empty($title)) {
-            $comment.= ' * @Title("' . $this->escapeString($title) . '")' . "\n";
+        $lines = [];
+        if (!empty($comment)) {
+            $lines[] = ' * ' . $comment;
         }
 
-        $description = $property->getDescription();
-        if (!empty($description)) {
-            $comment.= ' * @Description("' . $this->escapeString($description) . '")' . "\n";
-        }
-
-        $patternProperties = $property->getPatternProperties();
-        if (!empty($patternProperties)) {
-            foreach ($patternProperties as $pattern => $prop) {
-                $comment.= ' * @PatternProperties(pattern="' . $this->escapeString($pattern) . '", property=' . $this->getSubSchema($prop) . ')' . "\n";
+        foreach ($tags as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $val) {
+                    $lines[] = ' * @' . $key . ' ' . trim($val);
+                }
+            } else {
+                $lines[] = ' * @' . $key . ' ' . trim($value);
             }
         }
 
-        $additionalProperties = $property->getAdditionalProperties();
-        if (is_bool($additionalProperties)) {
-            $comment.= ' * @AdditionalProperties(' . ($additionalProperties ? 'true' : 'false') . ')' . "\n";
-        } elseif ($additionalProperties instanceof PropertyInterface) {
-            $comment.= ' * @AdditionalProperties(' . $this->getSubSchema($additionalProperties) . ')' . "\n";
+        foreach ($annotations as $key => $value) {
+            if (is_bool($value)) {
+                $lines[] = ' * @' . $key . '(' . ($value ? 'true' : 'false') . ')';
+            } elseif (is_numeric($value)) {
+                $lines[] = ' * @' . $key . '(' . $value . ')';
+            } elseif (is_array($value)) {
+                $lines[] = ' * @' . $key . '({' . $this->arrayList($value) . '})';
+            } else {
+                $lines[] = ' * @' . $key . '("' . $this->escapeString($value) . '")';
+            }
         }
 
-        $required = $property->getRequired();
-        if (!empty($required)) {
-            $comment.= ' * @Required({' . $this->arrayList($required) . '})' . "\n";
+        if (empty($lines)) {
+            return '';
         }
 
-        $minProperties = $property->getMinProperties();
-        if ($minProperties !== null) {
-            $comment.= ' * @MinProperties(' . $minProperties . ')' . "\n";
-        }
-
-        $maxProperties = $property->getMaxProperties();
-        if ($maxProperties !== null) {
-            $comment.= ' * @MaxProperties(' . $maxProperties . ')' . "\n";
-        }
-
-        $comment.= ' */';
-
-        return $comment;
+        return '/**' . "\n" . implode("\n", $lines) . "\n" . ' */';
     }
 
-    protected function getDocCommentForProperty(PropertyInterface $property, $name)
+    private function getAnnotationsForType(TypeInterface $type, ?string $key = null): array
     {
-        $comment = '/**' . "\n";
-        $comment.= ' * @Key("' . $this->escapeString($name) . '")' . "\n";
+        $result = [];
 
-        $type = $this->getRealType($property);
-        if ($type === PropertyType::TYPE_OBJECT) {
-            $comment.= ' * ' . $this->getSubSchema($property) . "\n";
-        } else {
-            $title = $property->getTitle();
-            if (!empty($title)) {
-                $comment.= ' * @Title("' . $title . '")' . "\n";
-            }
-
-            $description = $property->getDescription();
-            if (!empty($description)) {
-                $comment.= ' * @Description("' . $this->escapeString($property->getDescription()) . '")' . "\n";
-            }
-
-            $enum = $property->getEnum();
-            if (!empty($enum)) {
-                $comment.= ' * @Enum({' . $this->arrayList($enum) . '})' . "\n";
-            }
-
-            $type = $property->getType();
-            if (!empty($type)) {
-                if (is_array($type)) {
-                    $comment.= ' * @Type({' . $this->arrayList($type) . '})' . "\n";
-                } else {
-                    $comment.= ' * @Type("' . $type . '")' . "\n";
-                }
-            }
-
-            $allOf = $property->getAllOf();
-            $anyOf = $property->getAnyOf();
-            $oneOf = $property->getOneOf();
-            if (!empty($allOf)) {
-                $result = [];
-                foreach ($allOf as $type) {
-                    $result[] = $this->getSubSchema($type);
-                }
-
-                $comment.= ' * @AllOf(' . implode(', ', $result) . ')' . "\n";
-            } elseif (!empty($anyOf)) {
-                $result = [];
-                foreach ($anyOf as $type) {
-                    $result[] = $this->getSubSchema($type);
-                }
-
-                $comment.= ' * @AnyOf(' . implode(', ', $result) . ')' . "\n";
-            } elseif (!empty($oneOf)) {
-                $result = [];
-                foreach ($oneOf as $type) {
-                    $result[] = $this->getSubSchema($type);
-                }
-
-                $comment.= ' * @OneOf(' . implode(', ', $result) . ')' . "\n";
-            }
-
-            $not = $property->getNot();
-            if ($not instanceof PropertyInterface) {
-                $comment.= ' * @Not(' . $this->getSubSchema($not) . ')' . "\n";
-            }
-
-            // number
-            $maximum = $property->getMaximum();
-            if ($maximum !== null) {
-                $comment.= ' * @Maximum(' . $maximum . ')' . "\n";
-            }
-
-            $minimum = $property->getMinimum();
-            if ($minimum !== null) {
-                $comment.= ' * @Minimum(' . $minimum . ')' . "\n";
-            }
-
-            $exclusiveMaximum = $property->getExclusiveMaximum();
-            if ($exclusiveMaximum !== null) {
-                $comment.= ' * @ExclusiveMaximum(' . ($exclusiveMaximum ? 'true' : 'false') . ')' . "\n";
-            }
-
-            $exclusiveMinimum = $property->getExclusiveMinimum();
-            if ($exclusiveMinimum !== null) {
-                $comment.= ' * @ExclusiveMinimum(' . ($exclusiveMinimum ? 'true' : 'false') . ')' . "\n";
-            }
-
-            $multipleOf = $property->getMultipleOf();
-            if ($multipleOf !== null) {
-                $comment.= ' * @MultipleOf(' . $multipleOf . ')' . "\n";
-            }
-
-            // string
-            $maxLength = $property->getMaxLength();
-            if ($maxLength !== null) {
-                $comment.= ' * @MaxLength(' . $maxLength . ')' . "\n";
-            }
-
-            $minLength = $property->getMinLength();
-            if ($minLength !== null) {
-                $comment.= ' * @MinLength(' . $minLength . ')' . "\n";
-            }
-
-            $pattern = $property->getPattern();
-            if ($pattern !== null) {
-                $comment.= ' * @Pattern("' . $pattern . '")' . "\n";
-            }
-
-            $format = $property->getFormat();
-            if ($format !== null) {
-                $comment.= ' * @Format("' . $format . '")' . "\n";
-            }
-
-            // array
-            $items = $property->getItems();
-            if ($items instanceof PropertyInterface) {
-                $comment.= ' * @Items(' . $this->getSubSchema($items) . ')' . "\n";
-            }
-
-            $additionalItems = $property->getAdditionalItems();
-            if ($additionalItems instanceof PropertyInterface) {
-                $comment.= ' * @AdditionalItems(' . $this->getSubSchema($items) . ')' . "\n";
-            } elseif (is_bool($additionalItems)) {
-                $comment.= ' * @AdditionalItems(' . ($additionalItems ? 'true' : 'false') . ')' . "\n";
-            }
-
-            $uniqueItems = $property->getUniqueItems();
-            if ($uniqueItems !== null) {
-                $comment.= ' * @UniqueItems(' . ($uniqueItems ? 'true' : 'false') . ')' . "\n";
-            }
-
-            $maxItems = $property->getMaxItems();
-            if ($maxItems !== null) {
-                $comment.= ' * @MaxItems(' . $maxItems . ')' . "\n";
-            }
-
-            $minItems = $property->getMinItems();
-            if ($minItems !== null) {
-                $comment.= ' * @MinItems(' . $minItems . ')' . "\n";
-            }
+        if ($key !== null) {
+            $result['Key'] = $key;
         }
 
-        $comment.= ' */';
+        if ($type instanceof TypeAbstract) {
+            $result['Title'] = $type->getTitle();
+            $result['Description'] = $type->getDescription();
+            $result['Nullable'] = $type->isNullable();
+            $result['Deprecated'] = $type->isDeprecated();
+            $result['Readonly'] = $type->isReadonly();
+        }
 
-        return $comment;
+        if ($type instanceof ScalarType) {
+            $result['Enum'] = $type->getEnum();
+        }
+
+        if ($type instanceof StructType) {
+            $result['Required'] = $type->getRequired();
+        } elseif ($type instanceof MapType) {
+            $result['MinProperties'] = $type->getMinProperties();
+            $result['MaxProperties'] = $type->getMaxProperties();
+        } elseif ($type instanceof ArrayType) {
+            $result['MinItems'] = $type->getMinItems();
+            $result['MaxItems'] = $type->getMaxItems();
+            $result['UniqueItems'] = $type->isUniqueItems();
+        } elseif ($type instanceof NumberType) {
+            $result['Minimum'] = $type->getMinimum();
+            $result['Maximum'] = $type->getMaximum();
+            $result['ExclusiveMinimum'] = $type->getExclusiveMinimum();
+            $result['ExclusiveMaximum'] = $type->getExclusiveMaximum();
+            $result['MultipleOf'] = $type->getMultipleOf();
+        } elseif ($type instanceof StringType) {
+            $result['Pattern'] = $type->getPattern();
+            $result['MinLength'] = $type->getMinLength();
+            $result['MaxLength'] = $type->getMaxLength();
+        }
+
+        return array_filter($result, static function($value) {
+            return $value !== null;
+        });
     }
 
-    protected function arrayList(array $values)
+    private function arrayList(array $values)
     {
         $values = array_map(function ($value) {
             return '"' . $this->escapeString($value) . '"';
@@ -344,98 +262,31 @@ class Php extends CodeGeneratorAbstract
         return implode(', ', $values);
     }
 
-    protected function escapeString($data)
+    private function escapeString($data)
     {
         $data = str_replace('"', '""', $data);
 
         return $data;
     }
 
-    protected function getSubSchema(PropertyInterface $property)
+    private function getDefault(TypeInterface $type)
     {
-        $type = $this->getRealType($property);
-        if ($type === PropertyType::TYPE_OBJECT) {
-            $className = $this->getIdentifierForProperty($property);
-            return '@Ref("' . $this->namespace . '\\' . $className . '")';
-        } else {
-            return '@Schema(' . $this->getInlineSchemaForProperty($property) . ')';
+        if (!$type instanceof ScalarType) {
+            return null;
         }
+
+        return $type->getConst();
     }
 
-    protected function getInlineSchemaForProperty(PropertyInterface $property)
+    private function prettyPrint($class)
     {
-        $data   = $property->toArray();
-        $result = [];
+        if ($this->namespace !== null) {
+            $namespace = $this->factory->namespace($this->namespace);
+            $namespace->addStmt($class);
 
-        foreach ($data as $key => $value) {
-            switch ($key) {
-                // string
-                case 'type':
-                case 'title':
-                case 'description':
-                case 'pattern':
-                case 'format':
-                    $result[] = $key . '="' . $this->escapeString($value) . '"';
-                    break;
-
-                // boolean
-                case 'exclusiveMaximum':
-                case 'exclusiveMinimum':
-                case 'uniqueItems':
-                    $result[] = $key . '=' . ($value ? 'true' : 'false');
-                    break;
-
-                // integer
-                case 'maximum':
-                case 'minimum':
-                case 'multipleOf':
-                case 'maxLength':
-                case 'minLength':
-                case 'maxItems':
-                case 'minItems':
-                    $result[] = $key . '=' . intval($value);
-                    break;
-
-                // array
-                case 'enum':
-                    $values = array_map(function ($value) {
-                        return '"' . $this->escapeString($value) . '"';
-                    }, $value);
-
-                    $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
-                    break;
-
-
-                case 'allOf':
-                case 'anyOf':
-                case 'oneOf':
-                    $values = [];
-                    foreach ($value as $row) {
-                        $values[] = $this->getSubSchema($row);
-                    }
-
-                    $result[] = $key . '=' . '{' . implode(', ', $values) . '}';
-                    break;
-
-                case 'not':
-                    $result[] = $key . '=' . $this->getSubSchema($value);
-                    break;
-
-                // array
-                case 'items':
-                    $result[] = $key . '=' . $this->getSubSchema($value);
-                    break;
-
-                case 'additionalItems':
-                    if (is_bool($value)) {
-                        $result[] = $key . '=' . ($value ? 'true' : 'false');
-                    } elseif ($value instanceof PropertyInterface) {
-                        $result[] = $key . '=' . $this->getSubSchema($value);
-                    }
-                    break;
-            }
+            return $this->printer->prettyPrint([$namespace->getNode()]);
+        } else {
+            return $this->printer->prettyPrint([$class->getNode()]);
         }
-
-        return implode(', ', $result);
     }
 }

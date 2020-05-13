@@ -1,29 +1,17 @@
 {
-  "$schema": "http:\/\/json-schema.org\/draft-04\/schema#",
-  "id": "urn:schema.phpsx.org#",
   "definitions": {
-    "Config": {
-      "type": "object",
-      "title": "config",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
     "Author": {
-      "type": "object",
-      "title": "author",
       "description": "An simple author element with some description",
+      "type": "object",
       "properties": {
         "title": {
           "type": "string",
           "pattern": "[A-z]{3,16}"
         },
         "email": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "We will send no spam to this address"
+          "description": "We will send no spam to this address",
+          "nullable": true,
+          "type": "string"
         },
         "categories": {
           "type": "array",
@@ -33,8 +21,8 @@
           "maxItems": 8
         },
         "locations": {
-          "type": "array",
           "description": "Array of locations",
+          "type": "array",
           "items": {
             "$ref": "#\/definitions\/Location"
           }
@@ -43,16 +31,13 @@
           "$ref": "#\/definitions\/Location"
         }
       },
-      "additionalProperties": false,
       "required": [
         "title"
-      ],
-      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Author"
+      ]
     },
     "Location": {
-      "type": "object",
-      "title": "location",
       "description": "Location of the person",
+      "type": "object",
       "properties": {
         "lat": {
           "type": "number"
@@ -61,17 +46,22 @@
           "type": "number"
         }
       },
-      "additionalProperties": true,
       "required": [
         "lat",
         "long"
-      ],
-      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Location"
+      ]
+    },
+    "Meta": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1,
+      "maxProperties": 6
     },
     "Web": {
-      "type": "object",
-      "title": "web",
       "description": "An application",
+      "type": "object",
       "properties": {
         "name": {
           "type": "string"
@@ -80,45 +70,18 @@
           "type": "string"
         }
       },
-      "additionalProperties": {
-        "type": "string"
-      },
-      "minProperties": 2,
-      "maxProperties": 8,
       "required": [
         "name",
         "url"
-      ],
-      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Web"
-    },
-    "Meta": {
-      "type": "object",
-      "title": "meta",
-      "description": "Some meta data",
-      "properties": {
-        "createDate": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "patternProperties": {
-        "^tags_\\d$": {
-          "type": "string"
-        },
-        "^location_\\d$": {
-          "$ref": "#\/definitions\/Location"
-        }
-      },
-      "additionalProperties": false,
-      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Meta"
+      ]
     }
   },
-  "type": "object",
-  "title": "news",
+  "title": "News",
   "description": "An general news entry",
+  "type": "object",
   "properties": {
     "config": {
-      "$ref": "#\/definitions\/Config"
+      "$ref": "#\/definitions\/Meta"
     },
     "tags": {
       "type": "array",
@@ -138,7 +101,6 @@
     "resources": {
       "type": "array",
       "items": {
-        "title": "resource",
         "oneOf": [
           {
             "$ref": "#\/definitions\/Location"
@@ -150,14 +112,13 @@
       }
     },
     "profileImage": {
-      "type": "string",
-      "format": "base64"
+      "format": "base64",
+      "type": "string"
     },
     "read": {
       "type": "boolean"
     },
     "source": {
-      "title": "source",
       "oneOf": [
         {
           "$ref": "#\/definitions\/Author"
@@ -174,16 +135,16 @@
       "$ref": "#\/definitions\/Meta"
     },
     "sendDate": {
-      "type": "string",
-      "format": "date"
+      "format": "date",
+      "type": "string"
     },
     "readDate": {
-      "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "type": "string"
     },
     "expires": {
-      "type": "string",
-      "format": "duration"
+      "format": "duration",
+      "type": "string"
     },
     "price": {
       "type": "number",
@@ -196,42 +157,37 @@
       "maximum": 5
     },
     "content": {
-      "type": "string",
       "description": "Contains the main content of the news entry",
+      "type": "string",
       "minLength": 3,
       "maxLength": 512
     },
     "question": {
-      "type": "string",
       "enum": [
         "foo",
         "bar"
-      ]
+      ],
+      "type": "string"
     },
     "version": {
-      "type": "string",
-      "const": "http:\/\/foo.bar"
+      "const": "http:\/\/foo.bar",
+      "type": "string"
     },
     "coffeeTime": {
-      "type": "string",
-      "format": "time"
+      "format": "time",
+      "type": "string"
     },
     "profileUri": {
-      "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "type": "string"
     },
     "g-recaptcha-response": {
       "type": "string"
     }
   },
-  "additionalProperties": false,
   "required": [
     "receiver",
     "price",
     "content"
-  ],
-  "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\News",
-  "x-psx-mapping": {
-    "g-recaptcha-response": "captcha"
-  }
+  ]
 }

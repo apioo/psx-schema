@@ -42,4 +42,28 @@ class CSharpTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateComplex()
+    {
+        $generator = new CSharp();
+
+        $actual = (string) $generator->generate($this->getComplexSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/csharp_complex.cs');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateOOP()
+    {
+        $generator = new CSharp();
+
+        $actual = (string) $generator->generate($this->getOOPSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/csharp_oop.cs');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }

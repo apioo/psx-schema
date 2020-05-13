@@ -1,0 +1,11 @@
+{
+  "$import": {
+    "foo": "http://acme.com/my/test_schema.json"
+  },
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "foo:Author"
+    }
+  }
+}

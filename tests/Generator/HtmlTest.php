@@ -35,7 +35,7 @@ class HtmlTest extends GeneratorTestCase
     {
         $generator = new Html();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
         $expect = file_get_contents(__DIR__ . '/resource/html.htm');
 
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
@@ -45,18 +45,18 @@ class HtmlTest extends GeneratorTestCase
     {
         $generator = new Html();
 
-        $actual = $generator->generate($this->getComplexSchema());
+        $actual = (string) $generator->generate($this->getComplexSchema());
         $expect = file_get_contents(__DIR__ . '/resource/html_complex.htm');
 
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }
 
-    public function testGenerateHeading()
+    public function testGenerateOOP()
     {
-        $generator = new Html(4);
+        $generator = new Html();
 
-        $actual = $generator->generate($this->getSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/html_heading.htm');
+        $actual = (string) $generator->generate($this->getOOPSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/html_oop.htm');
 
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }

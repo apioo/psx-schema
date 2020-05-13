@@ -20,8 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\StructType;
 
 /**
  * Protobuf
@@ -35,7 +35,7 @@ class Protobuf extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Protobuf();
     }
@@ -43,14 +43,14 @@ class Protobuf extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = '';
-        $code.= 'message ' . $struct->getName() . ' {' . "\n";
+        $code.= 'message ' . $name . ' {' . "\n";
 
         $index = 1;
-        foreach ($struct->getProperties() as $name => $property) {
-            /** @var PropertyInterface $property */
+        foreach ($properties as $name => $property) {
+            /** @var Code\Property $property */
             $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
 
             $index++;
@@ -59,13 +59,5 @@ class Protobuf extends CodeGeneratorAbstract
         $code.= '}' . "\n";
 
         return $code;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(Code\Map $map): string
-    {
-        return '';
     }
 }

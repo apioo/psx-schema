@@ -20,6 +20,10 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StructType;
+
 /**
  * IntersectionResolver
  *
@@ -30,57 +34,45 @@ namespace PSX\Schema;
 class IntersectionResolver
 {
     /**
+     * @var DefinitionsInterface
+     */
+    private $definitions;
+
+    public function __construct(DefinitionsInterface $definitions)
+    {
+        $this->definitions = $definitions;
+    }
+
+    /**
      * If the provided property is an allOf schema it tries to merge all
      * contained sub schemas into a new schema which contains all properties
      * 
-     * @param PropertyInterface $property
-     * @return PropertyInterface|null
+     * @param IntersectionType $type
+     * @return StructType|null
      */
-    public function resolve(PropertyInterface $property): ?PropertyInterface
+    public function resolve(IntersectionType $type): ?StructType
     {
-        $schemas = $this->getSchemasToMerge($property->getAllOf());
-        if (empty($schemas)) {
+        $items = $type->getAllOf();
+        if (empty($items)) {
             return null;
         }
 
-        $newProperty = new PropertyType();
-        foreach ($schemas as $schema) {
-            $this->merge($newProperty, $schema);
+        $newType = new StructType();
+        foreach ($items as $item) {
+            $this->merge($newType, $item);
         }
 
-        return $newProperty;
+        return $newType;
     }
 
-    private function getSchemasToMerge(?array $allOf): ?array
+    private function merge(StructType $left, TypeInterface $right)
     {
-        if (empty($allOf)) {
-            return null;
+        if ($right instanceof ReferenceType) {
+            $right = $this->definitions->getType($right->getRef());
         }
 
-        $result = [];
-        foreach ($allOf as $prop) {
-            /** @var PropertyInterface $prop */
-            // resolve nested intersection
-            if ($prop->getAllOf()) {
-                $prop = $this->resolve($prop);
-            }
-
-            if ($prop->getProperties()) {
-                // we can only merge struct types
-                $result[] = $prop;
-            } else {
-                // this means we have an property which we can not merge
-                return null;
-            }
-        }
-
-        return $result;
-    }
-
-    private function merge(PropertyInterface $left, PropertyInterface $right)
-    {
-        if ($right->getType()) {
-            $left->setType($right->getType());
+        if (!$right instanceof StructType) {
+            throw new \InvalidArgumentException('All of must contain only struct types');
         }
 
         if ($right->getTitle()) {
@@ -91,9 +83,9 @@ class IntersectionResolver
             $left->setDescription($right->getDescription());
         }
 
-        $leftProps  = $left->getProperties()  ?: [];
-        $rightProps = $right->getProperties() ?: [];
-        $left->setProperties(array_merge($leftProps, $rightProps));
+        foreach ($right->getProperties() as $name => $type) {
+            $left->addProperty($name, $type);
+        }
 
         return $left;
     }

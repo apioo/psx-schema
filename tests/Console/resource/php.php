@@ -1,137 +1,309 @@
 /**
- * @Title("news")
+ * @extends ArrayAccess<string, string>
+ * @MinProperties(1)
+ * @MaxProperties(6)
+ */
+class Meta extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("An simple author element with some description")
+ * @Required({"title"})
+ */
+class Author
+{
+    /**
+     * @var string
+     * @Pattern("[A-z]{3,16}")
+     */
+    protected $title;
+    /**
+     * @var string
+     * @Description("We will send no spam to this address")
+     * @Nullable(true)
+     */
+    protected $email;
+    /**
+     * @var array<string>
+     * @MaxItems(8)
+     */
+    protected $categories;
+    /**
+     * @var array<Location>
+     * @Description("Array of locations")
+     */
+    protected $locations;
+    /**
+     * @var Location
+     */
+    protected $origin;
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
+    {
+        $this->title = $title;
+    }
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
+    {
+        return $this->title;
+    }
+    /**
+     * @param string $email
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+    }
+    /**
+     * @return string
+     */
+    public function getEmail() : ?string
+    {
+        return $this->email;
+    }
+    /**
+     * @param array<string> $categories
+     */
+    public function setCategories(?array $categories)
+    {
+        $this->categories = $categories;
+    }
+    /**
+     * @return array<string>
+     */
+    public function getCategories() : ?array
+    {
+        return $this->categories;
+    }
+    /**
+     * @param array<Location> $locations
+     */
+    public function setLocations(?array $locations)
+    {
+        $this->locations = $locations;
+    }
+    /**
+     * @return array<Location>
+     */
+    public function getLocations() : ?array
+    {
+        return $this->locations;
+    }
+    /**
+     * @param Location $origin
+     */
+    public function setOrigin(?Location $origin)
+    {
+        $this->origin = $origin;
+    }
+    /**
+     * @return Location
+     */
+    public function getOrigin() : ?Location
+    {
+        return $this->origin;
+    }
+}
+/**
+ * @Description("Location of the person")
+ * @Required({"lat", "long"})
+ */
+class Location
+{
+    /**
+     * @var float
+     */
+    protected $lat;
+    /**
+     * @var float
+     */
+    protected $long;
+    /**
+     * @param float $lat
+     */
+    public function setLat(?float $lat)
+    {
+        $this->lat = $lat;
+    }
+    /**
+     * @return float
+     */
+    public function getLat() : ?float
+    {
+        return $this->lat;
+    }
+    /**
+     * @param float $long
+     */
+    public function setLong(?float $long)
+    {
+        $this->long = $long;
+    }
+    /**
+     * @return float
+     */
+    public function getLong() : ?float
+    {
+        return $this->long;
+    }
+}
+/**
+ * @Description("An application")
+ * @Required({"name", "url"})
+ */
+class Web
+{
+    /**
+     * @var string
+     */
+    protected $name;
+    /**
+     * @var string
+     */
+    protected $url;
+    /**
+     * @param string $name
+     */
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * @return string
+     */
+    public function getName() : ?string
+    {
+        return $this->name;
+    }
+    /**
+     * @param string $url
+     */
+    public function setUrl(?string $url)
+    {
+        $this->url = $url;
+    }
+    /**
+     * @return string
+     */
+    public function getUrl() : ?string
+    {
+        return $this->url;
+    }
+}
+/**
+ * @Title("News")
  * @Description("An general news entry")
- * @AdditionalProperties(false)
  * @Required({"receiver", "price", "content"})
  */
 class News
 {
     /**
-     * @Key("config")
-     * @Ref("\Config")
+     * @var Meta
      */
     protected $config;
     /**
-     * @Key("tags")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(6)
+     * @var array<string>
      * @MinItems(1)
+     * @MaxItems(6)
      */
     protected $tags;
     /**
-     * @Key("receiver")
-     * @Type("array")
-     * @Items(@Ref("\Author"))
+     * @var array<Author>
      * @MinItems(1)
      */
     protected $receiver;
     /**
-     * @Key("resources")
-     * @Type("array")
-     * @Items(@Schema(oneOf={@Ref("\Location"), @Ref("\Web")}))
+     * @var array<Location|Web>
      */
     protected $resources;
     /**
-     * @Key("profileImage")
-     * @Type("string")
-     * @Format("base64")
+     * @var resource
      */
     protected $profileImage;
     /**
-     * @Key("read")
-     * @Type("boolean")
+     * @var bool
      */
     protected $read;
     /**
-     * @Key("source")
-     * @OneOf(@Ref("\Author"), @Ref("\Web"))
+     * @var Author|Web
      */
     protected $source;
     /**
-     * @Key("author")
-     * @Ref("\Author")
+     * @var Author
      */
     protected $author;
     /**
-     * @Key("meta")
-     * @Ref("\Meta")
+     * @var Meta
      */
     protected $meta;
     /**
-     * @Key("sendDate")
-     * @Type("string")
-     * @Format("date")
+     * @var \PSX\DateTime\Date
      */
     protected $sendDate;
     /**
-     * @Key("readDate")
-     * @Type("string")
-     * @Format("date-time")
+     * @var \DateTime
      */
     protected $readDate;
     /**
-     * @Key("expires")
-     * @Type("string")
-     * @Format("duration")
+     * @var \DateInterval
      */
     protected $expires;
     /**
-     * @Key("price")
-     * @Type("number")
-     * @Maximum(100)
+     * @var float
      * @Minimum(1)
+     * @Maximum(100)
      */
     protected $price;
     /**
-     * @Key("rating")
-     * @Type("integer")
-     * @Maximum(5)
+     * @var int
      * @Minimum(1)
+     * @Maximum(5)
      */
     protected $rating;
     /**
-     * @Key("content")
+     * @var string
      * @Description("Contains the main content of the news entry")
-     * @Type("string")
-     * @MaxLength(512)
      * @MinLength(3)
+     * @MaxLength(512)
      */
     protected $content;
     /**
-     * @Key("question")
+     * @var string
      * @Enum({"foo", "bar"})
-     * @Type("string")
      */
     protected $question;
     /**
-     * @Key("coffeeTime")
-     * @Type("string")
-     * @Format("time")
+     * @var string
+     */
+    protected $version = 'http://foo.bar';
+    /**
+     * @var \PSX\DateTime\Time
      */
     protected $coffeeTime;
     /**
-     * @Key("profileUri")
-     * @Type("string")
-     * @Format("uri")
+     * @var \PSX\Uri\Uri
      */
     protected $profileUri;
     /**
+     * @var string
      * @Key("g-recaptcha-response")
-     * @Type("string")
      */
     protected $captcha;
     /**
-     * @param Config $config
+     * @param Meta $config
      */
-    public function setConfig(?Config $config)
+    public function setConfig(?Meta $config)
     {
         $this->config = $config;
     }
     /**
-     * @return Config
+     * @return Meta
      */
-    public function getConfig() : ?Config
+    public function getConfig() : ?Meta
     {
         return $this->config;
     }
@@ -178,16 +350,16 @@ class News
         return $this->resources;
     }
     /**
-     * @param string $profileImage
+     * @param resource $profileImage
      */
-    public function setProfileImage(?string $profileImage)
+    public function setProfileImage($profileImage)
     {
         $this->profileImage = $profileImage;
     }
     /**
-     * @return string
+     * @return resource
      */
-    public function getProfileImage() : ?string
+    public function getProfileImage()
     {
         return $this->profileImage;
     }
@@ -248,16 +420,16 @@ class News
         return $this->meta;
     }
     /**
-     * @param \DateTime $sendDate
+     * @param \PSX\DateTime\Date $sendDate
      */
-    public function setSendDate(?\DateTime $sendDate)
+    public function setSendDate(?\PSX\DateTime\Date $sendDate)
     {
         $this->sendDate = $sendDate;
     }
     /**
-     * @return \DateTime
+     * @return \PSX\DateTime\Date
      */
-    public function getSendDate() : ?\DateTime
+    public function getSendDate() : ?\PSX\DateTime\Date
     {
         return $this->sendDate;
     }
@@ -346,30 +518,44 @@ class News
         return $this->question;
     }
     /**
-     * @param \DateTime $coffeeTime
+     * @param string $version
      */
-    public function setCoffeeTime(?\DateTime $coffeeTime)
+    public function setVersion(?string $version)
     {
-        $this->coffeeTime = $coffeeTime;
-    }
-    /**
-     * @return \DateTime
-     */
-    public function getCoffeeTime() : ?\DateTime
-    {
-        return $this->coffeeTime;
-    }
-    /**
-     * @param string $profileUri
-     */
-    public function setProfileUri(?string $profileUri)
-    {
-        $this->profileUri = $profileUri;
+        $this->version = $version;
     }
     /**
      * @return string
      */
-    public function getProfileUri() : ?string
+    public function getVersion() : ?string
+    {
+        return $this->version;
+    }
+    /**
+     * @param \PSX\DateTime\Time $coffeeTime
+     */
+    public function setCoffeeTime(?\PSX\DateTime\Time $coffeeTime)
+    {
+        $this->coffeeTime = $coffeeTime;
+    }
+    /**
+     * @return \PSX\DateTime\Time
+     */
+    public function getCoffeeTime() : ?\PSX\DateTime\Time
+    {
+        return $this->coffeeTime;
+    }
+    /**
+     * @param \PSX\Uri\Uri $profileUri
+     */
+    public function setProfileUri(?\PSX\Uri\Uri $profileUri)
+    {
+        $this->profileUri = $profileUri;
+    }
+    /**
+     * @return \PSX\Uri\Uri
+     */
+    public function getProfileUri() : ?\PSX\Uri\Uri
     {
         return $this->profileUri;
     }
@@ -386,248 +572,5 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
-    }
-}
-/**
- * @Title("config")
- * @AdditionalProperties(@Schema(type="string"))
- */
-class Config extends \ArrayObject
-{
-}
-/**
- * @Title("author")
- * @Description("An simple author element with some description")
- * @AdditionalProperties(false)
- * @Required({"title"})
- */
-class Author
-{
-    /**
-     * @Key("title")
-     * @Type("string")
-     * @Pattern("[A-z]{3,16}")
-     */
-    protected $title;
-    /**
-     * @Key("email")
-     * @Description("We will send no spam to this addresss")
-     * @Type("string")
-     */
-    protected $email;
-    /**
-     * @Key("categories")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MaxItems(8)
-     */
-    protected $categories;
-    /**
-     * @Key("locations")
-     * @Description("Array of locations")
-     * @Type("array")
-     * @Items(@Ref("\Location"))
-     */
-    protected $locations;
-    /**
-     * @Key("origin")
-     * @Ref("\Location")
-     */
-    protected $origin;
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-    /**
-     * @return string
-     */
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    /**
-     * @param string $email
-     */
-    public function setEmail(?string $email)
-    {
-        $this->email = $email;
-    }
-    /**
-     * @return string
-     */
-    public function getEmail() : ?string
-    {
-        return $this->email;
-    }
-    /**
-     * @param array<string> $categories
-     */
-    public function setCategories(?array $categories)
-    {
-        $this->categories = $categories;
-    }
-    /**
-     * @return array<string>
-     */
-    public function getCategories() : ?array
-    {
-        return $this->categories;
-    }
-    /**
-     * @param array<Location> $locations
-     */
-    public function setLocations(?array $locations)
-    {
-        $this->locations = $locations;
-    }
-    /**
-     * @return array<Location>
-     */
-    public function getLocations() : ?array
-    {
-        return $this->locations;
-    }
-    /**
-     * @param Location $origin
-     */
-    public function setOrigin(?Location $origin)
-    {
-        $this->origin = $origin;
-    }
-    /**
-     * @return Location
-     */
-    public function getOrigin() : ?Location
-    {
-        return $this->origin;
-    }
-}
-/**
- * @Title("location")
- * @Description("Location of the person")
- * @AdditionalProperties(true)
- * @Required({"lat", "long"})
- */
-class Location
-{
-    /**
-     * @Key("lat")
-     * @Type("number")
-     */
-    protected $lat;
-    /**
-     * @Key("long")
-     * @Type("number")
-     */
-    protected $long;
-    /**
-     * @param float $lat
-     */
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-    /**
-     * @return float
-     */
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-    /**
-     * @param float $long
-     */
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-    /**
-     * @return float
-     */
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-/**
- * @Title("web")
- * @Description("An application")
- * @AdditionalProperties(@Schema(type="string"))
- * @Required({"name", "url"})
- * @MinProperties(2)
- * @MaxProperties(8)
- */
-class Web
-{
-    /**
-     * @Key("name")
-     * @Type("string")
-     */
-    protected $name;
-    /**
-     * @Key("url")
-     * @Type("string")
-     */
-    protected $url;
-    /**
-     * @param string $name
-     */
-    public function setName(?string $name)
-    {
-        $this->name = $name;
-    }
-    /**
-     * @return string
-     */
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-    /**
-     * @param string $url
-     */
-    public function setUrl(?string $url)
-    {
-        $this->url = $url;
-    }
-    /**
-     * @return string
-     */
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-}
-/**
- * @Title("meta")
- * @Description("Some meta data")
- * @PatternProperties(pattern="^tags_\d$", property=@Schema(type="string"))
- * @PatternProperties(pattern="^location_\d$", property=@Ref("\Location"))
- * @AdditionalProperties(false)
- */
-class Meta
-{
-    /**
-     * @Key("createDate")
-     * @Type("string")
-     * @Format("date-time")
-     */
-    protected $createDate;
-    /**
-     * @param \DateTime $createDate
-     */
-    public function setCreateDate(?\DateTime $createDate)
-    {
-        $this->createDate = $createDate;
-    }
-    /**
-     * @return \DateTime
-     */
-    public function getCreateDate() : ?\DateTime
-    {
-        return $this->createDate;
     }
 }

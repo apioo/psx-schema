@@ -59,15 +59,13 @@ class PhpTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateRecursive()
+    public function testGenerateOOP()
     {
-        $schema    = Parser\JsonSchema::fromFile(__DIR__ . '/../Parser/JsonSchema/schema.json');
         $generator = new Php();
 
-        $actual = (string) $generator->generate($schema);
-        $actual = preg_replace('/Object([0-9A-Fa-f]{8})/', 'ObjectId', $actual);
+        $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/php_recursive.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php_oop.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -76,7 +74,7 @@ class PhpTest extends GeneratorTestCase
     public function testExecute()
     {
         $source    = $this->getSchema();
-        $generator = new Php(__NAMESPACE__);
+        $generator = new Php();
         $result    = $generator->generate($source);
         $file      = __DIR__ . '/generated_schema.php';
 
@@ -84,8 +82,31 @@ class PhpTest extends GeneratorTestCase
 
         include_once $file;
 
-        $schemaManager = new SchemaManager(new SimpleAnnotationReader());
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $schemaManager = new SchemaManager($reader);
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
+
+        $this->assertSchema($schema, $source);
+    }
+
+    public function testExecuteOOP()
+    {
+        $source    = $this->getOOPSchema();
+        $generator = new Php();
+        $result    = $generator->generate($source);
+        $file      = __DIR__ . '/generated_schema_oop.php';
+
+        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
+
+        include_once $file;
+
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+
+        $schemaManager = new SchemaManager($reader);
+        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\RootSchema');
 
         $this->assertSchema($schema, $source);
     }

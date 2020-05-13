@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;
 
@@ -52,23 +53,23 @@ class SchemaManagerTest extends TestCase
 
     public function testGetSchemaClass()
     {
-        $schema = $this->schemaManager->getSchema('PSX\Schema\Tests\TestSchema');
+        $schema = $this->schemaManager->getSchema(TestSchema::class);
 
-        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     public function testGetSchemaPopo()
     {
         $schema = $this->schemaManager->getSchema(News::class);
 
-        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     public function testGetSchemaFile()
     {
-        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/JsonSchema/test_schema.json');
+        $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/TypeSchema/test_schema.json');
 
-        $this->assertInstanceOf('PSX\Schema\SchemaInterface', $schema);
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     /**

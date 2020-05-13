@@ -1,179 +1,37 @@
 /**
- * @Title("TypeSchema")
- * @Description("TypeSchema meta schema which describes a TypeSchema")
- * @Required({"title", "type", "properties"})
- */
-class TypeSchema
-{
-    /**
-     * @Key("title")
-     * @Type("string")
-     */
-    protected $title;
-    /**
-     * @Key("description")
-     * @Type("string")
-     */
-    protected $description;
-    /**
-     * @Key("type")
-     * @Enum({"object"})
-     * @Type("string")
-     */
-    protected $type;
-    /**
-     * @Key("definitions")
-     * @Ref("\Definitions")
-     */
-    protected $definitions;
-    /**
-     * @Key("properties")
-     * @Ref("\Properties")
-     */
-    protected $properties;
-    /**
-     * @Key("required")
-     * @Title("stringArray")
-     * @Description("Array string values")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
-     * @MinItems(1)
-     */
-    protected $required;
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-    /**
-     * @return string
-     */
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    /**
-     * @param string $description
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
-    }
-    /**
-     * @return string
-     */
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    /**
-     * @param string $type
-     */
-    public function setType(?string $type)
-    {
-        $this->type = $type;
-    }
-    /**
-     * @return string
-     */
-    public function getType() : ?string
-    {
-        return $this->type;
-    }
-    /**
-     * @param Definitions $definitions
-     */
-    public function setDefinitions(?Definitions $definitions)
-    {
-        $this->definitions = $definitions;
-    }
-    /**
-     * @return Definitions
-     */
-    public function getDefinitions() : ?Definitions
-    {
-        return $this->definitions;
-    }
-    /**
-     * @param Properties $properties
-     */
-    public function setProperties(?Properties $properties)
-    {
-        $this->properties = $properties;
-    }
-    /**
-     * @return Properties
-     */
-    public function getProperties() : ?Properties
-    {
-        return $this->properties;
-    }
-    /**
-     * @param array<string> $required
-     */
-    public function setRequired(?array $required)
-    {
-        $this->required = $required;
-    }
-    /**
-     * @return array<string>
-     */
-    public function getRequired() : ?array
-    {
-        return $this->required;
-    }
-}
-/**
- * @Title("definitions")
- * @Description("Schema definitions which can be reused")
- * @AdditionalProperties(@Schema(title="definitionValue", description="Represents a concrete type definition", oneOf={@Schema(title="objectType", description="An object represents either a struct or map type", oneOf={@Schema(title="structType", description="A struct contains a fix set of defined properties", allOf={@Ref("\CommonProperties"), @Ref("\ContainerProperties"), @Ref("\StructProperties")}), @Schema(title="mapType", description="A map contains variable key value entries of a specific type", allOf={@Ref("\CommonProperties"), @Ref("\ContainerProperties"), @Ref("\MapProperties")})}), @Schema(title="arrayType", description="An array contains an ordered list of variable values", allOf={@Ref("\CommonProperties"), @Ref("\ArrayProperties")}), @Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="combinationType", description="A combination type is either a intersection or union type", oneOf={@Ref("\AllOfProperties"), @Ref("\OneOfProperties")})}))
- */
-class Definitions extends \ArrayObject
-{
-}
-/**
- * @Title("commonProperties")
  * @Description("Common properties which can be used at any schema")
  */
 class CommonProperties
 {
     /**
-     * @Key("title")
+     * @var string
      * @Description("Distinct word which represents this schema")
-     * @Type("string")
      */
     protected $title;
     /**
-     * @Key("description")
+     * @var string
      * @Description("General description of this schema, should not contain any new lines.")
-     * @Type("string")
      */
     protected $description;
     /**
-     * @Key("type")
+     * @var string
      * @Description("JSON type of the property")
      * @Enum({"object", "array", "boolean", "integer", "number", "string"})
-     * @Type("string")
      */
     protected $type;
     /**
-     * @Key("nullable")
+     * @var bool
      * @Description("Indicates whether it is possible to use a null value")
-     * @Type("boolean")
      */
     protected $nullable;
     /**
-     * @Key("deprecated")
+     * @var bool
      * @Description("Indicates whether this schema is deprecated")
-     * @Type("boolean")
      */
     protected $deprecated;
     /**
-     * @Key("readonly")
+     * @var bool
      * @Description("Indicates whether this schema is readonly")
-     * @Type("boolean")
      */
     protected $readonly;
     /**
@@ -261,17 +119,82 @@ class CommonProperties
         return $this->readonly;
     }
 }
+class ScalarProperties
+{
+    /**
+     * @var string
+     * @Description("Describes the specific format of this type i.e. date-time or int64")
+     */
+    protected $format;
+    /**
+     * @var StringArray|NumberArray
+     * @Description("A list of possible enumeration values")
+     */
+    protected $enum;
+    /**
+     * @var string|float|bool
+     * @Description("Represents a scalar value")
+     */
+    protected $default;
+    /**
+     * @param string $format
+     */
+    public function setFormat(?string $format)
+    {
+        $this->format = $format;
+    }
+    /**
+     * @return string
+     */
+    public function getFormat() : ?string
+    {
+        return $this->format;
+    }
+    /**
+     * @param StringArray|NumberArray $enum
+     */
+    public function setEnum($enum)
+    {
+        $this->enum = $enum;
+    }
+    /**
+     * @return StringArray|NumberArray
+     */
+    public function getEnum()
+    {
+        return $this->enum;
+    }
+    /**
+     * @param string|float|bool $default
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+    }
+    /**
+     * @return string|float|bool
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+}
 /**
- * @Title("containerProperties")
+ * @extends ArrayAccess<string, PropertyValue>
+ * @Description("Properties of a schema")
+ */
+class Properties extends \PSX\Record\Record
+{
+}
+/**
  * @Description("Properties specific for a container")
  * @Required({"type"})
  */
 class ContainerProperties
 {
     /**
-     * @Key("type")
+     * @var string
      * @Enum({"object"})
-     * @Type("string")
      */
     protected $type;
     /**
@@ -290,23 +213,18 @@ class ContainerProperties
     }
 }
 /**
- * @Title("structProperties")
  * @Description("Struct specific properties")
  * @Required({"properties"})
  */
 class StructProperties
 {
     /**
-     * @Key("properties")
-     * @Ref("\Properties")
+     * @var Properties
      */
     protected $properties;
     /**
-     * @Key("required")
-     * @Title("stringArray")
+     * @var array<string>
      * @Description("Array string values")
-     * @Type("array")
-     * @Items(@Schema(type="string"))
      * @MinItems(1)
      */
     protected $required;
@@ -340,44 +258,37 @@ class StructProperties
     }
 }
 /**
- * @Title("mapProperties")
  * @Description("Map specific properties")
  * @Required({"additionalProperties"})
  */
 class MapProperties
 {
     /**
-     * @Key("additionalProperties")
-     * @Title("propertyValue")
+     * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
      * @Description("Allowed values of an object property")
-     * @OneOf(@Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="arrayType", description="An array contains an ordered list of variable values", allOf={@Ref("\CommonProperties"), @Ref("\ArrayProperties")}), @Schema(title="combinationType", description="A combination type is either a intersection or union type", oneOf={@Ref("\AllOfProperties"), @Ref("\OneOfProperties")}), @Ref("\ReferenceType"))
      */
     protected $additionalProperties;
     /**
-     * @Key("maxProperties")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $maxProperties;
     /**
-     * @Key("minProperties")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $minProperties;
     /**
-     * @param CommonProperties&ScalarProperties&BooleanProperties|CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ArrayProperties|AllOfProperties|OneOfProperties|ReferenceType $additionalProperties
+     * @param BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType $additionalProperties
      */
     public function setAdditionalProperties($additionalProperties)
     {
         $this->additionalProperties = $additionalProperties;
     }
     /**
-     * @return CommonProperties&ScalarProperties&BooleanProperties|CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ArrayProperties|AllOfProperties|OneOfProperties|ReferenceType
+     * @return BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
      */
     public function getAdditionalProperties()
     {
@@ -413,44 +324,35 @@ class MapProperties
     }
 }
 /**
- * @Title("arrayProperties")
  * @Description("Array properties")
  * @Required({"type", "items"})
  */
 class ArrayProperties
 {
     /**
-     * @Key("type")
+     * @var string
      * @Enum({"array"})
-     * @Type("string")
      */
     protected $type;
     /**
-     * @Key("items")
-     * @Title("arrayValue")
+     * @var BooleanType|NumberType|StringType|ReferenceType|GenericType
      * @Description("Allowed values of an array item")
-     * @OneOf(@Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="combinationType", description="A combination type is either a intersection or union type", oneOf={@Ref("\AllOfProperties"), @Ref("\OneOfProperties")}), @Ref("\ReferenceType"))
      */
     protected $items;
     /**
-     * @Key("maxItems")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $maxItems;
     /**
-     * @Key("minItems")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $minItems;
     /**
-     * @Key("uniqueItems")
-     * @Type("boolean")
+     * @var bool
      */
     protected $uniqueItems;
     /**
@@ -468,14 +370,14 @@ class ArrayProperties
         return $this->type;
     }
     /**
-     * @param CommonProperties&ScalarProperties&BooleanProperties|CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|AllOfProperties|OneOfProperties|ReferenceType $items
+     * @param BooleanType|NumberType|StringType|ReferenceType|GenericType $items
      */
     public function setItems($items)
     {
         $this->items = $items;
     }
     /**
-     * @return CommonProperties&ScalarProperties&BooleanProperties|CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|AllOfProperties|OneOfProperties|ReferenceType
+     * @return BooleanType|NumberType|StringType|ReferenceType|GenericType
      */
     public function getItems()
     {
@@ -525,84 +427,14 @@ class ArrayProperties
     }
 }
 /**
- * @Title("scalarProperties")
- */
-class ScalarProperties
-{
-    /**
-     * @Key("format")
-     * @Description("Describes the specific format of this type i.e. date-time or int64")
-     * @Type("string")
-     */
-    protected $format;
-    /**
-     * @Key("enum")
-     * @Title("enumValue")
-     * @Description("A list of possible enumeration values")
-     * @OneOf(@Schema(type="array", title="stringArray", description="Array string values", items=@Schema(type="string"), minItems=1), @Schema(type="array", title="numberArray", description="Array number values", items=@Schema(type="number"), minItems=1))
-     */
-    protected $enum;
-    /**
-     * @Key("default")
-     * @Title("scalarValue")
-     * @Description("Represents a scalar value")
-     * @OneOf(@Schema(type="string"), @Schema(type="number"), @Schema(type="boolean"))
-     */
-    protected $default;
-    /**
-     * @param string $format
-     */
-    public function setFormat(?string $format)
-    {
-        $this->format = $format;
-    }
-    /**
-     * @return string
-     */
-    public function getFormat() : ?string
-    {
-        return $this->format;
-    }
-    /**
-     * @param array<string>|array<float> $enum
-     */
-    public function setEnum($enum)
-    {
-        $this->enum = $enum;
-    }
-    /**
-     * @return array<string>|array<float>
-     */
-    public function getEnum()
-    {
-        return $this->enum;
-    }
-    /**
-     * @param string|float|bool $default
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
-    }
-    /**
-     * @return string|float|bool
-     */
-    public function getDefault()
-    {
-        return $this->default;
-    }
-}
-/**
- * @Title("booleanProperties")
  * @Description("Boolean properties")
  * @Required({"type"})
  */
 class BooleanProperties
 {
     /**
-     * @Key("type")
+     * @var string
      * @Enum({"boolean"})
-     * @Type("string")
      */
     protected $type;
     /**
@@ -621,43 +453,36 @@ class BooleanProperties
     }
 }
 /**
- * @Title("numberProperties")
  * @Description("Number properties")
  * @Required({"type"})
  */
 class NumberProperties
 {
     /**
-     * @Key("type")
+     * @var string
      * @Enum({"number", "integer"})
-     * @Type("string")
      */
     protected $type;
     /**
-     * @Key("multipleOf")
-     * @Type("number")
+     * @var float
      * @Minimum(0)
      * @ExclusiveMinimum(true)
      */
     protected $multipleOf;
     /**
-     * @Key("maximum")
-     * @Type("number")
+     * @var float
      */
     protected $maximum;
     /**
-     * @Key("exclusiveMaximum")
-     * @Type("boolean")
+     * @var bool
      */
     protected $exclusiveMaximum;
     /**
-     * @Key("minimum")
-     * @Type("number")
+     * @var float
      */
     protected $minimum;
     /**
-     * @Key("exclusiveMinimum")
-     * @Type("boolean")
+     * @var bool
      */
     protected $exclusiveMinimum;
     /**
@@ -746,38 +571,30 @@ class NumberProperties
     }
 }
 /**
- * @Title("stringProperties")
  * @Description("String properties")
  * @Required({"type"})
  */
 class StringProperties
 {
     /**
-     * @Key("type")
+     * @var string
      * @Enum({"string"})
-     * @Type("string")
      */
     protected $type;
     /**
-     * @Key("maxLength")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $maxLength;
     /**
-     * @Key("minLength")
-     * @Title("positiveInteger")
+     * @var int
      * @Description("Positive integer value")
-     * @Type("integer")
      * @Minimum(0)
      */
     protected $minLength;
     /**
-     * @Key("pattern")
-     * @Type("string")
-     * @Format("regex")
+     * @var string
      */
     protected $pattern;
     /**
@@ -838,173 +655,25 @@ class StringProperties
     }
 }
 /**
- * @Title("allOfProperties")
- * @Description("Combination keyword to represent an intersection type")
- * @Required({"allOf"})
+ * @extends ArrayAccess<string, string>
+ * @Description("An object to hold mappings between payload values and schema names or references")
  */
-class AllOfProperties
-{
-    /**
-     * @Key("description")
-     * @Type("string")
-     */
-    protected $description;
-    /**
-     * @Key("allOf")
-     * @Description("Combination values")
-     * @Type("array")
-     * @Items(@Schema(title="ofValue", description="Allowed values in a combination schema", oneOf={@Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Ref("\ReferenceType")}))
-     */
-    protected $allOf;
-    /**
-     * @param string $description
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
-    }
-    /**
-     * @return string
-     */
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    /**
-     * @param array<CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ScalarProperties&BooleanProperties|ReferenceType> $allOf
-     */
-    public function setAllOf(?array $allOf)
-    {
-        $this->allOf = $allOf;
-    }
-    /**
-     * @return array<CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ScalarProperties&BooleanProperties|ReferenceType>
-     */
-    public function getAllOf() : ?array
-    {
-        return $this->allOf;
-    }
-}
-/**
- * @Title("oneOfProperties")
- * @Description("Combination keyword to represent an union type")
- * @Required({"oneOf"})
- */
-class OneOfProperties
-{
-    /**
-     * @Key("description")
-     * @Type("string")
-     */
-    protected $description;
-    /**
-     * @Key("discriminator")
-     * @Ref("\Discriminator")
-     */
-    protected $discriminator;
-    /**
-     * @Key("oneOf")
-     * @Description("Combination values")
-     * @Type("array")
-     * @Items(@Schema(title="ofValue", description="Allowed values in a combination schema", oneOf={@Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Ref("\ReferenceType")}))
-     */
-    protected $oneOf;
-    /**
-     * @param string $description
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
-    }
-    /**
-     * @return string
-     */
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    /**
-     * @param Discriminator $discriminator
-     */
-    public function setDiscriminator(?Discriminator $discriminator)
-    {
-        $this->discriminator = $discriminator;
-    }
-    /**
-     * @return Discriminator
-     */
-    public function getDiscriminator() : ?Discriminator
-    {
-        return $this->discriminator;
-    }
-    /**
-     * @param array<CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ScalarProperties&BooleanProperties|ReferenceType> $oneOf
-     */
-    public function setOneOf(?array $oneOf)
-    {
-        $this->oneOf = $oneOf;
-    }
-    /**
-     * @return array<CommonProperties&ScalarProperties&NumberProperties|CommonProperties&ScalarProperties&StringProperties|CommonProperties&ScalarProperties&BooleanProperties|ReferenceType>
-     */
-    public function getOneOf() : ?array
-    {
-        return $this->oneOf;
-    }
-}
-/**
- * @Title("properties")
- * @Description("Properties of a schema")
- * @AdditionalProperties(@Schema(title="propertyValue", description="Allowed values of an object property", oneOf={@Schema(title="booleanType", description="Represents a boolean value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\BooleanProperties")}), @Schema(title="numberType", description="Represents a number value (contains also integer)", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\NumberProperties")}), @Schema(title="stringType", description="Represents a string value", allOf={@Ref("\CommonProperties"), @Ref("\ScalarProperties"), @Ref("\StringProperties")}), @Schema(title="arrayType", description="An array contains an ordered list of variable values", allOf={@Ref("\CommonProperties"), @Ref("\ArrayProperties")}), @Schema(title="combinationType", description="A combination type is either a intersection or union type", oneOf={@Ref("\AllOfProperties"), @Ref("\OneOfProperties")}), @Ref("\ReferenceType")}))
- */
-class Properties extends \ArrayObject
+class DiscriminatorMapping extends \PSX\Record\Record
 {
 }
 /**
- * @Title("referenceType")
- * @Description("Represents a reference to another schema")
- * @Required({"$ref"})
- */
-class ReferenceType
-{
-    /**
-     * @Key("$ref")
-     * @Description("To disallow nesting we can reference only at the definitions layer")
-     * @Type("string")
-     * @Pattern("^#/definitions/([A-Za-z0-9]+)$")
-     */
-    protected $_ref;
-    /**
-     * @param string $_ref
-     */
-    public function set_ref(?string $_ref)
-    {
-        $this->_ref = $_ref;
-    }
-    /**
-     * @return string
-     */
-    public function get_ref() : ?string
-    {
-        return $this->_ref;
-    }
-}
-/**
- * @Title("discriminator")
  * @Description("Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description")
  * @Required({"propertyName"})
  */
 class Discriminator
 {
     /**
-     * @Key("propertyName")
+     * @var string
      * @Description("The name of the property in the payload that will hold the discriminator value")
-     * @Type("string")
      */
     protected $propertyName;
     /**
-     * @Key("mapping")
-     * @Ref("\DiscriminatorMapping")
+     * @var DiscriminatorMapping
      */
     protected $mapping;
     /**
@@ -1037,10 +706,339 @@ class Discriminator
     }
 }
 /**
- * @Title("discriminatorMapping")
- * @Description("An object to hold mappings between payload values and schema names or references")
- * @AdditionalProperties(@Schema(type="string"))
+ * @Description("An intersection type combines multiple schemas into one")
+ * @Required({"allOf"})
  */
-class DiscriminatorMapping extends \ArrayObject
+class AllOfProperties
 {
+    /**
+     * @var string
+     */
+    protected $description;
+    /**
+     * @var array<OfValue>
+     * @Description("Combination values")
+     */
+    protected $allOf;
+    /**
+     * @param string $description
+     */
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
+    }
+    /**
+     * @return string
+     */
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+    /**
+     * @param array<OfValue> $allOf
+     */
+    public function setAllOf(?array $allOf)
+    {
+        $this->allOf = $allOf;
+    }
+    /**
+     * @return array<OfValue>
+     */
+    public function getAllOf() : ?array
+    {
+        return $this->allOf;
+    }
+}
+/**
+ * @Description("An union type can contain one of the provided schemas")
+ * @Required({"oneOf"})
+ */
+class OneOfProperties
+{
+    /**
+     * @var string
+     */
+    protected $description;
+    /**
+     * @var Discriminator
+     */
+    protected $discriminator;
+    /**
+     * @var array<OfValue>
+     * @Description("Combination values")
+     */
+    protected $oneOf;
+    /**
+     * @param string $description
+     */
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
+    }
+    /**
+     * @return string
+     */
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+    /**
+     * @param Discriminator $discriminator
+     */
+    public function setDiscriminator(?Discriminator $discriminator)
+    {
+        $this->discriminator = $discriminator;
+    }
+    /**
+     * @return Discriminator
+     */
+    public function getDiscriminator() : ?Discriminator
+    {
+        return $this->discriminator;
+    }
+    /**
+     * @param array<OfValue> $oneOf
+     */
+    public function setOneOf(?array $oneOf)
+    {
+        $this->oneOf = $oneOf;
+    }
+    /**
+     * @return array<OfValue>
+     */
+    public function getOneOf() : ?array
+    {
+        return $this->oneOf;
+    }
+}
+/**
+ * @extends ArrayAccess<string, ReferenceType>
+ */
+class TemplateProperties extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("Represents a reference to another schema")
+ * @Required({"$ref"})
+ */
+class ReferenceType
+{
+    /**
+     * @var string
+     * @Key("$ref")
+     * @Description("Reference to the schema under the definitions key")
+     */
+    protected $ref;
+    /**
+     * @var TemplateProperties
+     * @Key("$template")
+     * @Description("Optional concrete schema definitions which replace generic template types")
+     */
+    protected $template;
+    /**
+     * @param string $ref
+     */
+    public function setRef(?string $ref)
+    {
+        $this->ref = $ref;
+    }
+    /**
+     * @return string
+     */
+    public function getRef() : ?string
+    {
+        return $this->ref;
+    }
+    /**
+     * @param TemplateProperties $template
+     */
+    public function setTemplate(?TemplateProperties $template)
+    {
+        $this->template = $template;
+    }
+    /**
+     * @return TemplateProperties
+     */
+    public function getTemplate() : ?TemplateProperties
+    {
+        return $this->template;
+    }
+}
+/**
+ * @Description("Represents a generic type")
+ * @Required({"$generic"})
+ */
+class GenericType
+{
+    /**
+     * @var string
+     * @Key("$generic")
+     */
+    protected $generic;
+    /**
+     * @param string $generic
+     */
+    public function setGeneric(?string $generic)
+    {
+        $this->generic = $generic;
+    }
+    /**
+     * @return string
+     */
+    public function getGeneric() : ?string
+    {
+        return $this->generic;
+    }
+}
+/**
+ * @extends ArrayAccess<string, DefinitionValue>
+ * @Description("Schema definitions which can be reused")
+ */
+class Definitions extends \PSX\Record\Record
+{
+}
+/**
+ * @extends ArrayAccess<string, string>
+ * @Description("Contains external definitions which are imported. The imported schemas can be used via the namespace")
+ */
+class Import extends \PSX\Record\Record
+{
+}
+/**
+ * @Title("TypeSchema")
+ * @Description("TypeSchema meta schema which describes a TypeSchema")
+ * @Required({"title", "type", "properties"})
+ */
+class TypeSchema
+{
+    /**
+     * @var Import
+     * @Key("$import")
+     */
+    protected $import;
+    /**
+     * @var string
+     */
+    protected $title;
+    /**
+     * @var string
+     */
+    protected $description;
+    /**
+     * @var string
+     * @Enum({"object"})
+     */
+    protected $type;
+    /**
+     * @var Definitions
+     */
+    protected $definitions;
+    /**
+     * @var Properties
+     */
+    protected $properties;
+    /**
+     * @var array<string>
+     * @Description("Array string values")
+     * @MinItems(1)
+     */
+    protected $required;
+    /**
+     * @param Import $import
+     */
+    public function setImport(?Import $import)
+    {
+        $this->import = $import;
+    }
+    /**
+     * @return Import
+     */
+    public function getImport() : ?Import
+    {
+        return $this->import;
+    }
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
+    {
+        $this->title = $title;
+    }
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
+    {
+        return $this->title;
+    }
+    /**
+     * @param string $description
+     */
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
+    }
+    /**
+     * @return string
+     */
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+    /**
+     * @param string $type
+     */
+    public function setType(?string $type)
+    {
+        $this->type = $type;
+    }
+    /**
+     * @return string
+     */
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
+    /**
+     * @param Definitions $definitions
+     */
+    public function setDefinitions(?Definitions $definitions)
+    {
+        $this->definitions = $definitions;
+    }
+    /**
+     * @return Definitions
+     */
+    public function getDefinitions() : ?Definitions
+    {
+        return $this->definitions;
+    }
+    /**
+     * @param Properties $properties
+     */
+    public function setProperties(?Properties $properties)
+    {
+        $this->properties = $properties;
+    }
+    /**
+     * @return Properties
+     */
+    public function getProperties() : ?Properties
+    {
+        return $this->properties;
+    }
+    /**
+     * @param array<string> $required
+     */
+    public function setRequired(?array $required)
+    {
+        $this->required = $required;
+    }
+    /**
+     * @return array<string>
+     */
+    public function getRequired() : ?array
+    {
+        return $this->required;
+    }
 }

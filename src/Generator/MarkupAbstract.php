@@ -20,7 +20,11 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\PropertyInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StringType;
+use PSX\Schema\TypeInterface;
 
 /**
  * MarkupAbstract
@@ -54,64 +58,65 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
     }
 
     /**
-     * @param \PSX\Schema\PropertyInterface $property
+     * @param \PSX\Schema\TypeInterface $type
      * @return array
      */
-    protected function getConstraints(PropertyInterface $property)
+    protected function getConstraints(TypeInterface $type)
     {
         $constraints = [];
 
-        // array
-        $minItems = $property->getMinItems();
-        if ($minItems !== null) {
-            $constraints['minItems'] = $minItems;
+        if ($type instanceof ArrayType) {
+            $minItems = $type->getMinItems();
+            if ($minItems !== null) {
+                $constraints['minItems'] = $minItems;
+            }
+
+            $maxItems = $type->getMaxItems();
+            if ($maxItems !== null) {
+                $constraints['maxItems'] = $maxItems;
+            }
+        } elseif ($type instanceof NumberType) {
+            $minimum = $type->getMinimum();
+            if ($minimum !== null) {
+                $constraints['minimum'] = $minimum;
+            }
+
+            $maximum = $type->getMaximum();
+            if ($maximum !== null) {
+                $constraints['maximum'] = $maximum;
+            }
+
+            $multipleOf = $type->getMultipleOf();
+            if ($multipleOf !== null) {
+                $constraints['multipleOf'] = $multipleOf;
+            }
+        } elseif ($type instanceof StringType) {
+            $minLength = $type->getMinLength();
+            if ($minLength !== null) {
+                $constraints['minLength'] = $minLength;
+            }
+
+            $maxLength = $type->getMaxLength();
+            if ($maxLength !== null) {
+                $constraints['maxLength'] = $maxLength;
+            }
+
+            $pattern = $type->getPattern();
+            if ($pattern !== null) {
+                $constraints['pattern'] = $pattern;
+            }
         }
 
-        $maxItems = $property->getMaxItems();
-        if ($maxItems !== null) {
-            $constraints['maxItems'] = $maxItems;
-        }
+        if ($type instanceof ScalarType) {
+            $enum = $type->getEnum();
+            if ($enum !== null) {
+                $constraints['enum'] = $enum;
+            }
 
-        // number
-        $minimum = $property->getMinimum();
-        if ($minimum !== null) {
-            $constraints['minimum'] = $minimum;
-        }
-
-        $maximum = $property->getMaximum();
-        if ($maximum !== null) {
-            $constraints['maximum'] = $maximum;
-        }
-
-        $multipleOf = $property->getMultipleOf();
-        if ($multipleOf !== null) {
-            $constraints['multipleOf'] = $multipleOf;
-        }
-
-        // string
-        $minLength = $property->getMinLength();
-        if ($minLength !== null) {
-            $constraints['minLength'] = $minLength;
-        }
-
-        $maxLength = $property->getMaxLength();
-        if ($maxLength !== null) {
-            $constraints['maxLength'] = $maxLength;
-        }
-
-        $pattern = $property->getPattern();
-        if ($pattern !== null) {
-            $constraints['pattern'] = $pattern;
-        }
-
-        $enum = $property->getEnum();
-        if ($enum !== null) {
-            $constraints['enum'] = $enum;
-        }
-
-        $const = $property->getConst();
-        if ($const !== null) {
-            $constraints['const'] = $const;
+            $const = $type->getConst();
+            if ($const !== null) {
+                $constraints['const'] = $const;
+            }
         }
 
         return $constraints;

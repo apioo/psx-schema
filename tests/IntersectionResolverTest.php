@@ -21,9 +21,15 @@
 namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\Definitions;
 use PSX\Schema\IntersectionResolver;
 use PSX\Schema\Property;
 use PSX\Schema\PropertyType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeFactory;
 
 /**
  * IntersectionResolverTest
@@ -36,44 +42,58 @@ class IntersectionResolverTest extends TestCase
 {
     public function testResolve()
     {
-        $a = new PropertyType();
+        $a = new StructType();
         $a->setProperties([
-            'foo' => Property::getString()
+            'foo' => TypeFactory::getString()
         ]);
 
-        $b = new PropertyType();
+        $b = new StructType();
         $b->setProperties([
-            'bar' => Property::getString()
+            'bar' => TypeFactory::getString()
         ]);
 
-        $property = new PropertyType();
-        $property->setAllOf([$a, $b]);
+        $definitions = new Definitions();
+        $definitions->addType('Foo', $a);
+        $definitions->addType('Bar', $b);
 
-        $resolver = new IntersectionResolver();
-        $result = $resolver->resolve($property);
+        $type = new IntersectionType();
+        $type->setAllOf([
+            TypeFactory::getReference('Foo'),
+            TypeFactory::getReference('Bar')
+        ]);
+
+        $resolver = new IntersectionResolver($definitions);
+        $result = $resolver->resolve($type);
 
         $this->assertEquals(['foo', 'bar'], array_keys($result->getProperties()));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage All of must contain only struct types
+     */
     public function testResolveNotPossible()
     {
-        $a = new PropertyType();
+        $a = new StructType();
         $a->setProperties([
-            'foo' => Property::getString()
+            'foo' => TypeFactory::getString()
         ]);
 
-        $b = new PropertyType();
-        $b->setOneOf([
-            Property::getString(),
-            Property::getBoolean()
+        $b = new BooleanType();
+
+        $definitions = new Definitions();
+        $definitions->addType('Foo', $a);
+        $definitions->addType('Bar', $b);
+
+        $type = new IntersectionType();
+        $type->setAllOf([
+            TypeFactory::getReference('Foo'),
+            TypeFactory::getReference('Bar')
         ]);
 
-        $property = new PropertyType();
-        $property->setAllOf([$a, $b]);
+        $resolver = new IntersectionResolver($definitions);
+        $result = $resolver->resolve($type);
 
-        $resolver = new IntersectionResolver();
-        $result = $resolver->resolve($property);
-
-        $this->assertNull($result);
+        $this->assertEquals(['foo', 'bar'], array_keys($result->getProperties()));
     }
 }

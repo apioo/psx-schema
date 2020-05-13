@@ -20,7 +20,13 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 
 /**
  * Html
@@ -34,7 +40,7 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Html();
     }
@@ -42,59 +48,39 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $return = '<div id="' . $struct->getName() . '" class="psx-object">';
-        $return.= '<h' . $this->heading . '>' . htmlspecialchars($struct->getName()) . '</h' . $this->heading . '>';
+        $title = '<a href="#' . $name . '">' . $name . '</a>';
+        if (!empty($generics)) {
+            $title.= '&lt;' . implode(', ', $generics) . '&gt;';
+        }
 
-        $comment = $struct->getComment();
+        if (!empty($extends)) {
+            $title.= ' extends <a href="#' . $extends . '">' . $extends . '</a>';
+        }
+
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-struct">';
+        $return.= '<h' . $this->heading . '>' . $title . '</h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
         }
 
-        $prop = '<table class="table psx-object-properties">';
-        $prop.= '<colgroup>';
-        $prop.= '<col width="30%" />';
-        $prop.= '<col width="70%" />';
-        $prop.= '</colgroup>';
-        $prop.= '<thead>';
-        $prop.= '<tr>';
-        $prop.= '<th>Field</th>';
-        $prop.= '<th>Description</th>';
-        $prop.= '</tr>';
-        $prop.= '</thead>';
-        $prop.= '<tbody>';
-
-        $json = '<span class="psx-object-json-pun">{</span>' . "\n";
-
-        foreach ($struct->getProperties() as $name => $property) {
+        $rows = [];
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getProperty());
-
-            $prop.= '<tr>';
-            $prop.= '<td><span class="psx-property-name ' . ($property->isRequired() ? 'psx-property-required' : 'psx-property-optional') . '">' . $name . '</span></td>';
-            $prop.= '<td>';
-            $prop.= '<span class="psx-property-type">' . $property->getType() . '</span><br />';
-            $prop.= '<div class="psx-property-description">' . htmlspecialchars($property->getComment()) . '</div>';
-            $prop.= !empty($constraints) ? $this->writeConstraints($constraints) : '';
-            $prop.= '</td>';
-            $prop.= '</tr>';
-
-            $json.= '  ';
-            $json.= '<span class="psx-object-json-key">"' . $name . '"</span>';
-            $json.= '<span class="psx-object-json-pun">: </span>';
-            $json.= '<span class="psx-property-type">' . $property->getType() . '</span>';
-            $json.= '<span class="psx-object-json-pun">,</span>';
-            $json.= "\n";
+            $rows[] = [
+                $name,
+                $property->getType(),
+                $property->isRequired(),
+                $property->getComment(),
+                $this->getConstraints($property->getOrigin()),
+            ];
         }
 
-        $json.= '<span class="psx-object-json-pun">}</span>';
-
-        $prop.= '</tbody>';
-        $prop.= '</table>';
-
-        $return.= '<pre class="psx-object-json">' . $json . '</pre>';
-        $return.= $prop;
+        $return.= $this->generateJson($rows);
+        $return.= $this->generateTable($rows);
         $return.= '</div>';
 
         return $return . "\n";
@@ -103,53 +89,71 @@ class Html extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $return = '<div id="' . $map->getName() . '" class="psx-object">';
-        $return.= '<h' . $this->heading . '>' . htmlspecialchars($map->getName()) . '</h' . $this->heading . '>';
+        $subType = $this->generator->getType($origin);
 
-        $comment = $map->getComment();
-        if (!empty($comment)) {
-            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        $rows = [];
+        $rows[] = ['*', $subType, false, '', null];
+
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-map">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= $this->generateJson($rows);
+        $return.= $this->generateTable($rows);
+        $return.= '</div>';
+
+        return $return . "\n";
+    }
+
+    protected function writeArray(string $name, string $type, ArrayType $origin): string
+    {
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-array">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<pre class="psx-object-json">' . $type . '</pre>';
+        $return.= '</div>';
+
+        return $return . "\n";
+    }
+
+    protected function writeUnion(string $name, string $type, UnionType $origin): string
+    {
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-union">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<pre class="psx-object-json">OneOf: ' . $type . '</pre>';
+        $return.= '</div>';
+
+        return $return . "\n";
+    }
+
+    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
+    {
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-intersection">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<pre class="psx-object-json">AllOf: ' . $type . '</pre>';
+        $return.= '</div>';
+
+        return $return . "\n";
+    }
+
+    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    {
+        $generics = '';
+        $template = $origin->getTemplate();
+        if (!empty($template)) {
+            foreach ($template as $key => $value) {
+                $generics.= "\n";
+                $generics.= '<span class="psx-object-json-key">"' . htmlspecialchars($key) . '"</span>';
+                $generics.= '<span class="psx-object-json-pun"> = </span>';
+                $generics.= '<span class="psx-property-type"><a href="#' . $value . '">' . $value . '</a></span>';
+            }
         }
 
-        $prop = '<table class="table psx-object-properties">';
-        $prop.= '<colgroup>';
-        $prop.= '<col width="30%" />';
-        $prop.= '<col width="70%" />';
-        $prop.= '</colgroup>';
-        $prop.= '<thead>';
-        $prop.= '<tr>';
-        $prop.= '<th>Field</th>';
-        $prop.= '<th>Description</th>';
-        $prop.= '</tr>';
-        $prop.= '</thead>';
-        $prop.= '<tbody>';
-
-        $json = '<span class="psx-object-json-pun">{</span>' . "\n";
-
-        $prop.= '<tr>';
-        $prop.= '<td><span class="psx-property-name psx-property-optional">*</span></td>';
-        $prop.= '<td>';
-        $prop.= '<span class="psx-property-type">' . $map->getType() . '</span><br />';
-        $prop.= '<div class="psx-property-description">' . htmlspecialchars($map->getComment()) . '</div>';
-        $prop.= '</td>';
-        $prop.= '</tr>';
-
-        $json.= '  ';
-        $json.= '<span class="psx-object-json-key">"*"</span>';
-        $json.= '<span class="psx-object-json-pun">: </span>';
-        $json.= '<span class="psx-property-type">' . $map->getType() . '</span>';
-        $json.= '<span class="psx-object-json-pun">,</span>';
-        $json.= "\n";
-
-        $json.= '<span class="psx-object-json-pun">}</span>';
-
-        $prop.= '</tbody>';
-        $prop.= '</table>';
-
-        $return.= '<pre class="psx-object-json">' . $json . '</pre>';
-        $return.= $prop;
+        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-reference">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<pre class="psx-object-json">';
+        $return.= 'Reference: ' . $type;
+        $return.= $generics;
+        $return.= '</pre>';
         $return.= '</div>';
 
         return $return . "\n";
@@ -159,36 +163,90 @@ class Html extends MarkupAbstract
      * @param array $constraints
      * @return string
      */
-    protected function writeConstraints(array $constraints)
+    protected function writeConstraints(array $constraints): string
     {
-        $return = '<dl class="psx-property-constraint">';
+        $html = '<dl class="psx-property-constraint">';
         foreach ($constraints as $name => $constraint) {
             if (empty($constraint)) {
                 continue;
             }
 
-            $return.= '<dt>' . htmlspecialchars(ucfirst($name)) . '</dt>';
-            $return.= '<dd>';
+            $html.= '<dt>' . htmlspecialchars(ucfirst($name)) . '</dt>';
+            $html.= '<dd>';
 
             $type = strtolower($name);
             if ($name == 'enum') {
-                $return.= '<ul class="psx-constraint-enum">';
+                $html.= '<ul class="psx-constraint-enum">';
                 foreach ($constraint as $prop) {
-                    $return.= '<li><code>' . htmlspecialchars(json_encode($prop)) . '</code></li>';
+                    $html.= '<li><code>' . htmlspecialchars(json_encode($prop)) . '</code></li>';
                 }
-                $return.= '</ul>';
+                $html.= '</ul>';
             } elseif ($name == 'const') {
-                $return.= '<span class="psx-constraint-const">';
-                $return.= '<code>' . htmlspecialchars(json_encode($constraint)) . '</code>';
-                $return.= '</span>';
+                $html.= '<span class="psx-constraint-const">';
+                $html.= '<code>' . htmlspecialchars(json_encode($constraint)) . '</code>';
+                $html.= '</span>';
             } else {
-                $return.= '<span class="psx-constraint-' . $type . '">' . htmlspecialchars($constraint) . '</span>';
+                $html.= '<span class="psx-constraint-' . $type . '">' . htmlspecialchars($constraint) . '</span>';
             }
 
-            $return.= '</dd>';
+            $html.= '</dd>';
         }
-        $return.= '</dl>';
+        $html.= '</dl>';
 
-        return $return;
+        return $html;
+    }
+    
+    private function generateTable(array $rows): string
+    {
+        $html = '<table class="table psx-object-properties">';
+        $html.= '<colgroup>';
+        $html.= '<col width="30%" />';
+        $html.= '<col width="70%" />';
+        $html.= '</colgroup>';
+        $html.= '<thead>';
+        $html.= '<tr>';
+        $html.= '<th>Field</th>';
+        $html.= '<th>Description</th>';
+        $html.= '</tr>';
+        $html.= '</thead>';
+        $html.= '<tbody>';
+
+        foreach ($rows as $row) {
+            [$name, $type, $required, $description, $constraints] = $row;
+
+            $html.= '<tr>';
+            $html.= '<td><span class="psx-property-name ' . ($required ? 'psx-property-required' : 'psx-property-optional') . '">' . htmlspecialchars($name) . '</span></td>';
+            $html.= '<td>';
+            $html.= '<span class="psx-property-type">' . $type . '</span><br />';
+            $html.= '<div class="psx-property-description">' . htmlspecialchars($description) . '</div>';
+            $html.= !empty($constraints) ? $this->writeConstraints($constraints) : '';
+            $html.= '</td>';
+            $html.= '</tr>';
+        }
+
+        $html.= '</tbody>';
+        $html.= '</table>';
+
+        return $html;
+    }
+
+    private function generateJson(array $rows): string
+    {
+        $html = '<span class="psx-object-json-pun">{</span>' . "\n";
+
+        foreach ($rows as $row) {
+            [$name, $type] = $row;
+
+            $html.= '  ';
+            $html.= '<span class="psx-object-json-key">"' . htmlspecialchars($name) . '"</span>';
+            $html.= '<span class="psx-object-json-pun">: </span>';
+            $html.= '<span class="psx-property-type">' . $type . '</span>';
+            $html.= '<span class="psx-object-json-pun">,</span>';
+            $html.= "\n";
+        }
+
+        $html.= '<span class="psx-object-json-pun">}</span>';
+
+        return '<pre class="psx-object-json">' . $html . '</pre>';
     }
 }

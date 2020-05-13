@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Tests\Visitor\TypeVisitor;
 
-use PSX\Schema\AdditionalPropertiesInterface;
-
 /**
  * PopoClass
  *
@@ -29,7 +27,7 @@ use PSX\Schema\AdditionalPropertiesInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PopoClass implements AdditionalPropertiesInterface
+class PopoClass
 {
     protected $foo;
     protected $bar;
@@ -58,8 +56,8 @@ class PopoClass implements AdditionalPropertiesInterface
         return $this->bar;
     }
 
-    public function setProperty($name, $value)
+    public function setBar($bar)
     {
-        $this->bar = $value;
+        $this->bar = $bar;
     }
 }

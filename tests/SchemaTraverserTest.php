@@ -114,13 +114,13 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/1 must match one required schema
+     * @expectedExceptionMessage /config must contain less or equal than 6 properties
      */
     public function testInvalidMaxObjectItems()
     {
         $data = $this->getData();
         for ($i = 0; $i < 6; $i++) {
-            $data->resources[1]->{$i . '-foo'} = 'foo-' . $i;
+            $data->config->{$i . '-foo'} = 'foo-' . $i;
         }
 
         $traverser = new SchemaTraverser();
@@ -129,13 +129,12 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/1 must match one required schema
+     * @expectedExceptionMessage /config must contain more or equal than 1 properties
      */
     public function testInvalidMinObjectItems()
     {
         $data = $this->getData();
-        $data->resources[1] = [
-            'name' => 'foo'
+        $data->config = (object) [
         ];
 
         $traverser = new SchemaTraverser();
@@ -263,7 +262,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /question is not in enum ["foo","bar"]
+     * @expectedExceptionMessage /question is not in enumeration ["foo","bar"]
      */
     public function testInvalidEnumeration()
     {
@@ -302,85 +301,15 @@ class SchemaTraverserTest extends SchemaTestCase
 
     /**
      * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta property "foo_0" is not allowed
-     */
-    public function testInvalidAdditionalPatternProperties()
-    {
-        $data = $this->getData();
-        $data->meta->foo_0 = 'foo';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    /**
-     * @expectedException \PSX\Schema\ValidationException
      * @expectedExceptionMessage /meta/tags_0 must be of type string
      */
-    public function testInvalidatternPropertiesTags()
+    public function testInvalidMapProperty()
     {
         $data = $this->getData();
         $data->meta->tags_0 = ['foo'];
 
         $traverser = new SchemaTraverser();
         $traverser->traverse($data, $this->getSchema());
-    }
-
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta/location_0 must be of type object
-     */
-    public function testInvalidatternPropertiesLocation()
-    {
-        $data = $this->getData();
-        $data->meta->location_0 = 'foo';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testRecursion()
-    {
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(RecursionModel::class);
-
-        $data = $this->getRecData(16);
-
-        $traverser = new SchemaTraverser();
-        $result    = $traverser->traverse($data, $schema);
-
-        $this->assertEquals('level1', $result->title);
-        $this->assertEquals('level2', $result->model->title);
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage /model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/model/title max recursion depth reached
-     */
-    public function testMaxRecursion()
-    {
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(RecursionModel::class);
-
-        $data = $this->getRecData(17);
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $schema);
-    }
-
-    protected function getRecData($maxDepth, $depth = 1)
-    {
-        if ($depth > $maxDepth) {
-            return null;
-        }
-
-        $data  = ['title' => 'level' . $depth];
-        $model = $this->getRecData($maxDepth, $depth + 1);
-        if ($model !== null) {
-            $data['model'] = $model;
-        }
-
-        return (object) $data;
     }
 
     protected function getData()

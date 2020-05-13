@@ -21,150 +21,135 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Json\Parser;
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\GeneratorInterface;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
 
 /**
  * JsonSchema
  *
- * @see     http://tools.ietf.org/html/draft-zyp-json-schema-04
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
 class JsonSchema implements GeneratorInterface
 {
-    use GeneratorTrait;
-    
-    const SCHEMA = 'http://json-schema.org/draft-04/schema#';
-
-    protected $targetNamespace;
-    protected $definitions;
-    protected $root;
-
-    public function __construct($targetNamespace = null)
-    {
-        $this->targetNamespace = $targetNamespace ?: 'urn:schema.phpsx.org#';
-    }
-
     public function generate(SchemaInterface $schema)
     {
-        return Parser::encode($this->toArray($schema), JSON_PRETTY_PRINT);
+        $data = $this->toArray(
+            $schema->getType(),
+            $schema->getDefinitions()
+        );
+
+        return Parser::encode($data, JSON_PRETTY_PRINT);
     }
+
 
     /**
-     * Returns the jsonschema as array
-     *
-     * @param \PSX\Schema\SchemaInterface $schema
+     * @param \PSX\Schema\TypeInterface $type
+     * @param \PSX\Schema\DefinitionsInterface $definitions
      * @return array
      */
-    public function toArray(SchemaInterface $schema)
+    public function toArray(TypeInterface $type, DefinitionsInterface $definitions)
     {
-        return $this->generateRootElement($schema->getDefinition());
-    }
-
-    protected function generateRootElement(PropertyInterface $type)
-    {
-        $this->root        = $this->getIdentifierForProperty($type);
-        $this->definitions = [];
-
-        $object = $this->generateObjectType($type);
+        $object = $this->generateType($type);
 
         $result = [
-            '$schema' => self::SCHEMA,
-            'id'      => $this->targetNamespace,
+            'definitions' => $this->generateDefinitions($definitions),
         ];
-
-        if (!empty($this->definitions)) {
-            $result['definitions'] = $this->definitions;
-        }
 
         $result = array_merge($result, $object);
 
         return $result;
     }
 
-    protected function generateObjectType(PropertyInterface $type)
+    protected function generateDefinitions(DefinitionsInterface $definitions)
     {
-        $result = $type->toArray();
+        $result = [];
+        $types  = $definitions->getAllTypes();
 
-        if (isset($result['properties'])) {
-            foreach ($result['properties'] as $index => $property) {
-                $result['properties'][$index] = $this->getRef($property);
-            }
-        }
+        ksort($types);
 
-        if (isset($result['patternProperties'])) {
-            foreach ($result['patternProperties'] as $pattern => $property) {
-                $result['patternProperties'][$pattern] = $this->getRef($property);
-            }
-        }
-
-        if (isset($result['additionalProperties']) && $result['additionalProperties'] instanceof PropertyInterface) {
-            $result['additionalProperties'] = $this->getRef($result['additionalProperties']);
-        }
-
-        if (isset($result['items'])) {
-            if ($result['items'] instanceof PropertyInterface) {
-                $result['items'] = $this->getRef($result['items']);
-            } elseif (is_array($result['items'])) {
-                foreach ($result['items'] as $index => $property) {
-                    $result['items'][$index] = $this->getRef($property);
-                }
-            }
-        }
-
-        if (isset($result['additionalItems']) && $result['additionalItems'] instanceof PropertyInterface) {
-            $result['additionalItems'] = $this->getRef($result['additionalItems']);
-        }
-
-        if (isset($result['allOf'])) {
-            foreach ($result['allOf'] as $index => $property) {
-                $result['allOf'][$index] = $this->getRef($property);
-            }
-        }
-
-        if (isset($result['anyOf'])) {
-            foreach ($result['anyOf'] as $index => $property) {
-                $result['anyOf'][$index] = $this->getRef($property);
-            }
-        }
-
-        if (isset($result['oneOf'])) {
-            foreach ($result['oneOf'] as $index => $property) {
-                $result['oneOf'][$index] = $this->getRef($property);
-            }
-        }
-
-        $attributes = $type->getAttributes();
-        if (!empty($attributes)) {
-            foreach ($attributes as $key => $value) {
-                $result['x-psx-' . $key] = $value;
-            }
+        foreach ($types as $name => $type) {
+            $result[$name] = $this->generateType($type);
         }
 
         return $result;
     }
 
-    protected function getRef(PropertyInterface $property)
+    protected function generateType(TypeInterface $type)
     {
-        if ($this->isObject($property)) {
-            $key = $this->getIdentifierForProperty($property);
+        if ($type instanceof StructType) {
+            $data = $type->toArray();
 
-            if ($this->root === $key) {
-                return ['$ref' => '#'];
+            if (isset($data['properties'])) {
+                $data['properties'] = array_map(function ($property) {
+                    return $this->generateType($property);
+                }, $data['properties']);
             }
 
-            if (!isset($this->definitions[$key])) {
-                $this->definitions[$key] = true;
-                $this->definitions[$key] = $this->generateObjectType($property);
+            if (isset($data['$extends'])) {
+                $extends = $data['$extends'];
+                unset($data['$extends']);
+
+                return [
+                    'allOf' => [
+                        ['$ref' => '#/definitions/' . $extends],
+                        $data,
+                    ]
+                ];
+            } else {
+                return $data;
+            }
+        } elseif ($type instanceof MapType) {
+            $data = $type->toArray();
+
+            if (isset($data['additionalProperties']) && $data['additionalProperties'] instanceof TypeInterface) {
+                $data['additionalProperties'] = $this->generateType($data['additionalProperties']);
             }
 
-            return ['$ref' => '#/definitions/' . $key];
+            return $data;
+        } elseif ($type instanceof ArrayType) {
+            $data = $type->toArray();
+
+            if (isset($data['items']) && $data['items'] instanceof TypeInterface) {
+                $data['items'] = $this->generateType($data['items']);
+            }
+
+            return $data;
+        } elseif ($type instanceof UnionType) {
+            $data = $type->toArray();
+
+            if (isset($data['oneOf'])) {
+                $data['oneOf'] = array_map(function($type){
+                    return $this->generateType($type);
+                }, $data['oneOf']);
+            }
+
+            return $data;
+        } elseif ($type instanceof IntersectionType) {
+            $data = $type->toArray();
+
+            if (isset($data['allOf'])) {
+                $data['allOf'] = array_map(function($type){
+                    return $this->generateType($type);
+                }, $data['allOf']);
+            }
+
+            return $data;
+        } elseif ($type instanceof ReferenceType) {
+            return [
+                '$ref' => '#/definitions/' . $type->getRef()
+            ];
         } else {
-            return $this->generateObjectType($property);
+            return $type->toArray();
         }
     }
 }

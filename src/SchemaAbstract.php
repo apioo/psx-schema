@@ -29,22 +29,47 @@ namespace PSX\Schema;
  */
 abstract class SchemaAbstract implements SchemaInterface
 {
+    /**
+     * @var SchemaManagerInterface
+     */
     protected $schemaManager;
+
+    /**
+     * @var TypeInterface
+     */
+    protected $type;
+
+    /**
+     * @var DefinitionsInterface
+     */
+    protected $definitions;
 
     public function __construct(SchemaManagerInterface $schemaManager)
     {
         $this->schemaManager = $schemaManager;
+        $this->definitions   = new Definitions();
+        $this->type          = $this->build($this->definitions);
     }
 
-    protected function getSchema($name)
+    public function getType()
     {
-        // clone the definition so that we dont change the definition of
-        // another schema
-        return clone $this->schemaManager->getSchema($name)->getDefinition();
+        return $this->type;
+    }
+
+    public function getDefinitions()
+    {
+        return $this->definitions;
+    }
+
+    protected function getSchema($name): SchemaInterface
+    {
+        return $this->schemaManager->getSchema($name);
     }
 
     protected function getSchemaBuilder($name)
     {
         return new Builder($name);
     }
+
+    abstract protected function build(DefinitionsInterface $definitions): TypeInterface;
 }

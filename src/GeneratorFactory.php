@@ -37,7 +37,9 @@ class GeneratorFactory
     const TYPE_MARKDOWN = 'markdown';
     const TYPE_PHP = 'php';
     const TYPE_PROTOBUF = 'protobuf';
-    const TYPE_SERIALIZE = 'serialize';
+    const TYPE_PYTHON = 'python';
+    const TYPE_SWIFT = 'swift';
+    const TYPE_TYPESCHEMA = 'typeschema';
     const TYPE_TYPESCRIPT = 'typescript';
 
     /**
@@ -64,6 +66,10 @@ class GeneratorFactory
                 return new Generator\Java();
                 break;
 
+            case self::TYPE_JSONSCHEMA:
+                return new Generator\JsonSchema();
+                break;
+
             case self::TYPE_MARKDOWN:
                 return new Generator\Markdown($config ?: 1);
                 break;
@@ -76,17 +82,21 @@ class GeneratorFactory
                 return new Generator\Protobuf();
                 break;
 
-            case self::TYPE_SERIALIZE:
-                return new Generator\Serialize();
+            case self::TYPE_PYTHON:
+                return new Generator\Python();
+                break;
+
+            case self::TYPE_SWIFT:
+                return new Generator\Swift();
                 break;
 
             case self::TYPE_TYPESCRIPT:
-                return new Generator\Typescript();
+                return new Generator\TypeScript();
                 break;
 
             default:
-            case self::TYPE_JSONSCHEMA:
-                return new Generator\JsonSchema($config ?: null);
+            case self::TYPE_TYPESCHEMA:
+                return new Generator\TypeSchema();
                 break;
         }
     }
@@ -101,11 +111,14 @@ class GeneratorFactory
             self::TYPE_GO,
             self::TYPE_HTML,
             self::TYPE_JAVA,
+            self::TYPE_JSONSCHEMA,
             self::TYPE_MARKDOWN,
             self::TYPE_PHP,
             self::TYPE_PROTOBUF,
-            self::TYPE_SERIALIZE,
-            self::TYPE_JSONSCHEMA,
+            self::TYPE_PYTHON,
+            self::TYPE_SWIFT,
+            self::TYPE_TYPESCRIPT,
+            self::TYPE_TYPESCHEMA,
         ];
     }
 }

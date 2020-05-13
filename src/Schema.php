@@ -20,8 +20,6 @@
 
 namespace PSX\Schema;
 
-use Serializable;
-
 /**
  * Schema
  *
@@ -29,30 +27,31 @@ use Serializable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Schema implements SchemaInterface, Serializable
+class Schema implements SchemaInterface
 {
     /**
-     * @var \PSX\Schema\PropertyInterface
+     * @var \PSX\Schema\TypeInterface
      */
-    protected $property;
+    protected $type;
 
-    public function __construct(PropertyInterface $property)
+    /**
+     * @var \PSX\Schema\DefinitionsInterface
+     */
+    protected $definitions;
+
+    public function __construct(TypeInterface $type, DefinitionsInterface $definitions)
     {
-        $this->property = $property;
+        $this->type        = $type;
+        $this->definitions = $definitions;
     }
 
-    public function getDefinition()
+    public function getType()
     {
-        return $this->property;
+        return $this->type;
     }
 
-    public function serialize()
+    public function getDefinitions()
     {
-        return serialize($this->property);
-    }
-
-    public function unserialize($data)
-    {
-        $this->property = unserialize($data);
+        return $this->definitions;
     }
 }

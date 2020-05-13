@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
-
 /**
  * TypeAwareInterface
  *
@@ -29,6 +27,6 @@ use PSX\Schema\Generator\Type\TypeInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-interface TypeAwareInterface extends TypeInterface
+interface TypeAwareInterface extends Type\GeneratorInterface
 {
 }

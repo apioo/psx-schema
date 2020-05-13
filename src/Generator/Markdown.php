@@ -20,7 +20,9 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\TypeInterface;
+use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\StructType;
 
 /**
  * Markdown
@@ -34,7 +36,7 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function newType(): TypeInterface
+    protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Markdown();
     }
@@ -42,13 +44,13 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeStruct(Code\Struct $struct): string
+    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $return = '<a name="' . $struct->getName() . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . $struct->getName() . "\n";
+        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
 
-        $comment = $struct->getComment();
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $return.= $comment . "\n";
             $return.= '' . "\n";
@@ -57,9 +59,9 @@ class Markdown extends MarkupAbstract
         $return.= 'Field | Type | Description | Constraints' . "\n";
         $return.= '----- | ---- | ----------- | -----------' . "\n";
 
-        foreach ($struct->getProperties() as $name => $property) {
+        foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getProperty());
+            $constraints = $this->getConstraints($property->getOrigin());
 
             $row = [
                 $name,
@@ -78,25 +80,19 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function writeMap(Code\Map $map): string
+    protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $return = '<a name="' . $map->getName() . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . $map->getName() . "\n";
+        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
+        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
-
-        $comment = $map->getComment();
-        if (!empty($comment)) {
-            $return.= $comment . "\n";
-            $return.= '' . "\n";
-        }
 
         $return.= 'Field | Type | Description | Constraints' . "\n";
         $return.= '----- | ---- | ----------- | -----------' . "\n";
 
         $row = [
             '*',
-            $map->getType(),
-            $map->getComment(),
+            $type,
+            '',
             '',
         ];
 

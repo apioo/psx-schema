@@ -42,4 +42,28 @@ class GoTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateComplex()
+    {
+        $generator = new Go();
+
+        $actual = (string) $generator->generate($this->getComplexSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/go_complex.go');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateOOP()
+    {
+        $generator = new Go();
+
+        $actual = (string) $generator->generate($this->getOOPSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/go_oop.go');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }
