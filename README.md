@@ -21,8 +21,10 @@ currently supported:
 * TypeSchema
 * TypeScript
 
-Please take a look at the [TypeSchema](https://typeschema.org/) website which
-provides an online generator based on this library.
+Beside generating it is also possible to parse an existing schema either from
+a TypeSchema or it can be introspected from a PHP Class. Please take a look at
+the [TypeSchema](https://typeschema.org/) website which provides an online
+generator based on this library.
 
 ## Usage
 
