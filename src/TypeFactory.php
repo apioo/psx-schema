@@ -52,7 +52,7 @@ class TypeFactory
     {
         $array = new ArrayType();
         if ($type !== null) {
-            $array->setItems($array);
+            $array->setItems($type);
         }
         return $array;
     }
