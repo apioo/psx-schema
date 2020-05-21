@@ -22,6 +22,14 @@
         }
       }
     },
+    "RootSchema": {
+      "type": "object",
+      "properties": {
+        "students": {
+          "$ref": "#\/definitions\/StudentMap"
+        }
+      }
+    },
     "Student": {
       "allOf": [
         {
@@ -41,10 +49,5 @@
       "$ref": "#\/definitions\/Map"
     }
   },
-  "type": "object",
-  "properties": {
-    "students": {
-      "$ref": "#\/definitions\/StudentMap"
-    }
-  }
+  "$ref": "#\/definitions\/RootSchema"
 }

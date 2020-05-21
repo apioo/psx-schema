@@ -39,6 +39,7 @@ use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
 use ReflectionClass;
 
@@ -77,12 +78,16 @@ class Popo implements ParserInterface
         }
 
         $definitions = new Definitions();
-        $property    = $this->parseClass($className, $definitions, true);
 
-        return new Schema($property, $definitions);
+        $this->parseClass($className, $definitions);
+
+        $name = (new ReflectionClass($className))->getShortName();
+        $type = TypeFactory::getReference($name);
+
+        return new Schema($type, $definitions);
     }
 
-    protected function parseClass(string $className, DefinitionsInterface $definitions, bool $root = false)
+    protected function parseClass(string $className, DefinitionsInterface $definitions): TypeInterface
     {
         $class = new ReflectionClass($className);
 
@@ -103,9 +108,7 @@ class Popo implements ParserInterface
             }
         }
 
-        if (!$root) {
-            $definitions->addType($class->getShortName(), $type);
-        }
+        $definitions->addType($class->getShortName(), $type);
 
         if ($type instanceof TypeAbstract) {
             $this->parseCommonAnnotations($annotations, $type);

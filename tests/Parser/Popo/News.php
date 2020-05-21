@@ -201,7 +201,6 @@ class Meta extends \PSX\Record\Record
 {
 }
 /**
- * @JS\Title("News")
  * @JS\Description("An general news entry")
  * @JS\Required({"receiver", "price", "content"})
  */

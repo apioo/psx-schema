@@ -25,6 +25,7 @@ use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\NumberType;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
@@ -44,17 +45,16 @@ class Builder
      */
     protected $type;
 
-    public function __construct($name)
+    public function __construct()
     {
         $this->type = TypeFactory::getStruct();
-        $this->type->setTitle($name);
     }
 
     /**
      * @param string $description
      * @return Builder
      */
-    public function setDescription($description): Builder
+    public function setDescription(string $description): Builder
     {
         $this->type->setDescription($description);
 
@@ -73,10 +73,21 @@ class Builder
     }
 
     /**
+     * @param string $ref
+     * @return Builder
+     */
+    public function setExtends(string $ref): Builder
+    {
+        $this->type->setExtends($ref);
+
+        return $this;
+    }
+
+    /**
      * @param string $class
      * @return Builder
      */
-    public function setClass($class): Builder
+    public function setClass(string $class): Builder
     {
         $this->type->setAttribute(TypeAbstract::ATTR_CLASS, $class);
 
@@ -88,7 +99,7 @@ class Builder
      * @param mixed $value
      * @return Builder
      */
-    public function setAttribute($key, $value): Builder
+    public function setAttribute(string $key, $value): Builder
     {
         $this->type->setAttribute($key, $value);
 
@@ -100,7 +111,7 @@ class Builder
      * @param \PSX\Schema\TypeInterface $type
      * @return TypeInterface
      */
-    public function add($name, TypeInterface $type): TypeInterface
+    public function add(string $name, TypeInterface $type): TypeInterface
     {
         $this->type->addProperty($name, $type);
 
@@ -112,7 +123,7 @@ class Builder
      * @param \PSX\Schema\TypeInterface $items
      * @return ArrayType
      */
-    public function addArray($name, TypeInterface $items): ArrayType
+    public function addArray(string $name, TypeInterface $items): ArrayType
     {
         return $this->add($name, TypeFactory::getArray($items));
     }
@@ -121,7 +132,7 @@ class Builder
      * @param string $name
      * @return BooleanType
      */
-    public function addBoolean($name): BooleanType
+    public function addBoolean(string $name): BooleanType
     {
         return $this->add($name, TypeFactory::getBoolean());
     }
@@ -130,7 +141,7 @@ class Builder
      * @param string $name
      * @return IntegerType
      */
-    public function addInteger($name): IntegerType
+    public function addInteger(string $name): IntegerType
     {
         return $this->add($name, TypeFactory::getInteger());
     }
@@ -140,7 +151,7 @@ class Builder
      * @param array $types
      * @return IntersectionType
      */
-    public function addIntersection($name, array $types): IntersectionType
+    public function addIntersection(string $name, array $types): IntersectionType
     {
         return $this->add($name, TypeFactory::getIntersection($types));
     }
@@ -149,16 +160,26 @@ class Builder
      * @param string $name
      * @return NumberType
      */
-    public function addNumber($name): NumberType
+    public function addNumber(string $name): NumberType
     {
         return $this->add($name, TypeFactory::getNumber());
     }
 
     /**
      * @param string $name
+     * @param string $ref
+     * @return ReferenceType
+     */
+    public function addReference(string $name, string $ref): ReferenceType
+    {
+        return $this->add($name, TypeFactory::getReference($ref));
+    }
+
+    /**
+     * @param string $name
      * @return StringType
      */
-    public function addString($name): StringType
+    public function addString(string $name): StringType
     {
         return $this->add($name, TypeFactory::getString());
     }
@@ -168,7 +189,7 @@ class Builder
      * @param array $types
      * @return UnionType
      */
-    public function addUnion($name, array $types): UnionType
+    public function addUnion(string $name, array $types): UnionType
     {
         return $this->add($name, TypeFactory::getUnion($types));
     }
@@ -177,7 +198,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addBinary($name): StringType
+    public function addBinary(string $name): StringType
     {
         return $this->add($name, TypeFactory::getBinary());
     }
@@ -186,7 +207,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addDateTime($name): StringType
+    public function addDateTime(string $name): StringType
     {
         return $this->add($name, TypeFactory::getDateTime());
     }
@@ -195,7 +216,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addDate($name): StringType
+    public function addDate(string $name): StringType
     {
         return $this->add($name, TypeFactory::getDate());
     }
@@ -204,7 +225,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addDuration($name): StringType
+    public function addDuration(string $name): StringType
     {
         return $this->add($name, TypeFactory::getDuration());
     }
@@ -213,7 +234,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addTime($name): StringType
+    public function addTime(string $name): StringType
     {
         return $this->add($name, TypeFactory::getTime());
     }
@@ -222,7 +243,7 @@ class Builder
      * @param string $name
      * @return StringType
      */
-    public function addUri($name): StringType
+    public function addUri(string $name): StringType
     {
         return $this->add($name, TypeFactory::getUri());
     }

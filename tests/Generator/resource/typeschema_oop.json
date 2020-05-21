@@ -22,6 +22,14 @@
         }
       }
     },
+    "RootSchema": {
+      "type": "object",
+      "properties": {
+        "students": {
+          "$ref": "StudentMap"
+        }
+      }
+    },
     "Student": {
       "$extends": "Human",
       "type": "object",
@@ -38,10 +46,5 @@
       }
     }
   },
-  "type": "object",
-  "properties": {
-    "students": {
-      "$ref": "StudentMap"
-    }
-  }
+  "$ref": "RootSchema"
 }

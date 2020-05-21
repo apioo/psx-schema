@@ -36,12 +36,15 @@
           }
         }
       }
+    },
+    "RootSchema": {
+      "type": "object",
+      "properties": {
+        "students": {
+          "$ref": "StudentMap"
+        }
+      }
     }
   },
-  "type": "object",
-  "properties": {
-    "students": {
-      "$ref": "StudentMap"
-    }
-  }
+  "$ref": "RootSchema"
 }

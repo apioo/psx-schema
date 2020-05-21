@@ -62,21 +62,27 @@ class SchemaAbstractTest extends TestCase
      */
     public function testGetSchema()
     {
-        $schemaC = $this->schemaManager->getSchema(SchemaCommon::class)->getType();
-        $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getType();
-        $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getType();
+        $schemaC = $this->schemaManager->getSchema(SchemaCommon::class);
+        $schemaA = $this->schemaManager->getSchema(SchemaA::class);
+        $schemaB = $this->schemaManager->getSchema(SchemaB::class);
 
-        $this->assertInstanceOf(StructType::class, $schemaC);
-        $this->assertNull($schemaC->getProperty('lat')->getTitle());
-        $this->assertNull($schemaC->getProperty('long')->getTitle());
+        $this->assertInstanceOf(ReferenceType::class, $schemaC->getType());
+        $type = $schemaC->getDefinitions()->getType($schemaC->getType()->getRef());
+        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertNull($type->getProperty('lat')->getTitle());
+        $this->assertNull($type->getProperty('long')->getTitle());
 
-        $this->assertInstanceOf(StructType::class, $schemaA);
-        $this->assertEquals('foo', $schemaA->getProperty('lat')->getTitle());
-        $this->assertEquals(null, $schemaA->getProperty('long')->getTitle());
+        $this->assertInstanceOf(ReferenceType::class, $schemaA->getType());
+        $type = $schemaA->getDefinitions()->getType($schemaA->getType()->getRef());
+        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertEquals('foo', $type->getProperty('lat')->getTitle());
+        $this->assertEquals(null, $type->getProperty('long')->getTitle());
 
-        $this->assertInstanceOf(StructType::class, $schemaB);
-        $this->assertEquals(null, $schemaB->getProperty('lat')->getTitle());
-        $this->assertEquals('bar', $schemaB->getProperty('long')->getTitle());
+        $this->assertInstanceOf(ReferenceType::class, $schemaB->getType());
+        $type = $schemaB->getDefinitions()->getType($schemaB->getType()->getRef());
+        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertEquals(null, $type->getProperty('lat')->getTitle());
+        $this->assertEquals('bar', $type->getProperty('long')->getTitle());
     }
     
     public function testSerialize()
@@ -89,52 +95,56 @@ class SchemaAbstractTest extends TestCase
         $schema = unserialize($data);
 
         $this->assertInstanceOf(Schema::class, $schema);
+        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Entry'));
         $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Author'));
-        $this->assertInstanceOf(StructType::class, $schema->getType());
+        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Location'));
+        $this->assertInstanceOf(ReferenceType::class, $schema->getType());
     }
 }
 
 class SchemaCommon extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): TypeInterface
+    public function build(DefinitionsInterface $definitions): string
     {
-        $entry = TypeFactory::getStruct();
-        $entry->addProperty('title', TypeFactory::getInteger());
-        $definitions->addType('Entry', $entry);
+        $entry = $this->newType('Entry');
+        $entry->addInteger('title');
 
-        $author = TypeFactory::getStruct();
-        $author->addProperty('name', TypeFactory::getInteger());
-        $definitions->addType('Author', $author);
+        $author = $this->newType('Author');
+        $author->addInteger('name');
 
-        $location = TypeFactory::getStruct();
+        $location = $this->newType('Location');
         $location->setDescription('Location of the person');
-        $location->addProperty('lat', TypeFactory::getInteger());
-        $location->addProperty('long', TypeFactory::getInteger());
-        $location->addProperty('entry', TypeFactory::getArray()->setItems(TypeFactory::getReference('Entry')));
-        $location->addProperty('author', TypeFactory::getReference('Author'));
+        $location->addInteger('lat');
+        $location->addInteger('long');
+        $location->addArray('entry', TypeFactory::getReference('Entry'));
+        $location->addReference('author', 'Author');
 
-        return $location;
+        return 'Location';
     }
 }
 
 class SchemaA extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): TypeInterface
+    public function build(DefinitionsInterface $definitions): string
     {
-        $location = $this->load(SchemaCommon::class);
+        $this->load(SchemaCommon::class);
+
+        $location = $this->modify('Location', 'LocationA');
         $location->getProperty('lat')->setTitle('foo');
 
-        return $location;
+        return 'LocationA';
     }
 }
 
 class SchemaB extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): TypeInterface
+    public function build(DefinitionsInterface $definitions): string
     {
-        $location = $this->load(SchemaCommon::class);
+        $this->load(SchemaCommon::class);
+
+        $location = $this->modify('Location', 'LocationB');
         $location->getProperty('long')->setTitle('bar');
 
-        return $location;
+        return 'LocationB';
     }
 }

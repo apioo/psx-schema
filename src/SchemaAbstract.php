@@ -32,23 +32,29 @@ abstract class SchemaAbstract implements SchemaInterface
     /**
      * @var SchemaManagerInterface
      */
-    protected $schemaManager;
+    private $schemaManager;
 
     /**
      * @var TypeInterface
      */
-    protected $type;
+    private $type;
 
     /**
      * @var DefinitionsInterface
      */
-    protected $definitions;
+    private $definitions;
 
     public function __construct(SchemaManagerInterface $schemaManager)
     {
         $this->schemaManager = $schemaManager;
         $this->definitions   = new Definitions();
-        $this->type          = $this->build($this->definitions);
+
+        $type = $this->build($this->definitions);
+        if (!$this->definitions->hasType($type)) {
+            throw new InvalidSchemaException('The build method of ' . get_class($this) . ' has not returned a correct type name, have you added the type ' . $type . ' to the definitions?');
+        }
+
+        $this->type = TypeFactory::getReference($type);
     }
 
     public function getType(): TypeInterface
@@ -61,35 +67,52 @@ abstract class SchemaAbstract implements SchemaInterface
         return $this->definitions;
     }
 
-    protected function newBuilder(string $name): Builder
+    protected function newType(string $name): Builder
     {
-        return new Builder($name);
+        $builder = new Builder();
+        $this->definitions->addType($name, $builder->getType());
+
+        return $builder;
     }
 
     /**
-     * Loads a different schema and returns the root type. It creates a clone of
-     * the schema so you can safely modify the schema. It also merges all
-     * definitions to the current schema
+     * Loads all definitions from another schema into this schema, so you can
+     * use all definitions from the schema
      * 
      * @param string $name
-     * @return TypeInterface
      */
-    protected function load($name): TypeInterface
+    protected function load(string $name): void
     {
         $schema = $this->schemaManager->getSchema($name);
         if ($schema instanceof SchemaInterface) {
             $this->definitions->merge($schema->getDefinitions());
-            return clone $schema->getType();
         } else {
             throw new \InvalidArgumentException('Could not load schema ' . $name);
         }
     }
 
     /**
-     * Builds the schema
+     * Clones an existing type under a new name so you that you can modify
+     * specific properties
      * 
-     * @param DefinitionsInterface $definitions
+     * @param string $existingName
+     * @param string $newName
      * @return TypeInterface
      */
-    abstract protected function build(DefinitionsInterface $definitions): TypeInterface;
+    protected function modify(string $existingName, string $newName): TypeInterface
+    {
+        $type = clone $this->definitions->getType($existingName);
+        $this->definitions->addType($newName, $type);
+
+        return $type;
+    }
+
+    /**
+     * Builds the schema and returns the type which you want to use as root.
+     * Note the type which you return must be available at the definitions
+     * 
+     * @param DefinitionsInterface $definitions
+     * @return string
+     */
+    abstract protected function build(DefinitionsInterface $definitions): string;
 }

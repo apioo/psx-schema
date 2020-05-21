@@ -195,7 +195,6 @@ class Meta extends \PSX\Record\Record
 {
 }
 /**
- * @Title("News")
  * @Description("An general news entry")
  * @Required({"receiver", "price", "content"})
  */

@@ -1,201 +1,4 @@
 /**
- * @extends ArrayAccess<string, string>
- * @MinProperties(1)
- * @MaxProperties(6)
- */
-class Meta extends \PSX\Record\Record
-{
-}
-/**
- * @Description("An simple author element with some description")
- * @Required({"title"})
- */
-class Author
-{
-    /**
-     * @var string
-     * @Pattern("[A-z]{3,16}")
-     */
-    protected $title;
-    /**
-     * @var string
-     * @Description("We will send no spam to this address")
-     * @Nullable(true)
-     */
-    protected $email;
-    /**
-     * @var array<string>
-     * @MaxItems(8)
-     */
-    protected $categories;
-    /**
-     * @var array<Location>
-     * @Description("Array of locations")
-     */
-    protected $locations;
-    /**
-     * @var Location
-     */
-    protected $origin;
-    /**
-     * @param string $title
-     */
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-    /**
-     * @return string
-     */
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    /**
-     * @param string $email
-     */
-    public function setEmail(?string $email)
-    {
-        $this->email = $email;
-    }
-    /**
-     * @return string
-     */
-    public function getEmail() : ?string
-    {
-        return $this->email;
-    }
-    /**
-     * @param array<string> $categories
-     */
-    public function setCategories(?array $categories)
-    {
-        $this->categories = $categories;
-    }
-    /**
-     * @return array<string>
-     */
-    public function getCategories() : ?array
-    {
-        return $this->categories;
-    }
-    /**
-     * @param array<Location> $locations
-     */
-    public function setLocations(?array $locations)
-    {
-        $this->locations = $locations;
-    }
-    /**
-     * @return array<Location>
-     */
-    public function getLocations() : ?array
-    {
-        return $this->locations;
-    }
-    /**
-     * @param Location $origin
-     */
-    public function setOrigin(?Location $origin)
-    {
-        $this->origin = $origin;
-    }
-    /**
-     * @return Location
-     */
-    public function getOrigin() : ?Location
-    {
-        return $this->origin;
-    }
-}
-/**
- * @Description("Location of the person")
- * @Required({"lat", "long"})
- */
-class Location
-{
-    /**
-     * @var float
-     */
-    protected $lat;
-    /**
-     * @var float
-     */
-    protected $long;
-    /**
-     * @param float $lat
-     */
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-    /**
-     * @return float
-     */
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-    /**
-     * @param float $long
-     */
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-    /**
-     * @return float
-     */
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-/**
- * @Description("An application")
- * @Required({"name", "url"})
- */
-class Web
-{
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $url;
-    /**
-     * @param string $name
-     */
-    public function setName(?string $name)
-    {
-        $this->name = $name;
-    }
-    /**
-     * @return string
-     */
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-    /**
-     * @param string $url
-     */
-    public function setUrl(?string $url)
-    {
-        $this->url = $url;
-    }
-    /**
-     * @return string
-     */
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-}
-/**
- * @Title("News")
  * @Description("An general news entry")
  * @Required({"receiver", "price", "content"})
  */
@@ -572,5 +375,201 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
+    }
+}
+/**
+ * @extends ArrayAccess<string, string>
+ * @MinProperties(1)
+ * @MaxProperties(6)
+ */
+class Meta extends \PSX\Record\Record
+{
+}
+/**
+ * @Description("An simple author element with some description")
+ * @Required({"title"})
+ */
+class Author
+{
+    /**
+     * @var string
+     * @Pattern("[A-z]{3,16}")
+     */
+    protected $title;
+    /**
+     * @var string
+     * @Description("We will send no spam to this address")
+     * @Nullable(true)
+     */
+    protected $email;
+    /**
+     * @var array<string>
+     * @MaxItems(8)
+     */
+    protected $categories;
+    /**
+     * @var array<Location>
+     * @Description("Array of locations")
+     */
+    protected $locations;
+    /**
+     * @var Location
+     */
+    protected $origin;
+    /**
+     * @param string $title
+     */
+    public function setTitle(?string $title)
+    {
+        $this->title = $title;
+    }
+    /**
+     * @return string
+     */
+    public function getTitle() : ?string
+    {
+        return $this->title;
+    }
+    /**
+     * @param string $email
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+    }
+    /**
+     * @return string
+     */
+    public function getEmail() : ?string
+    {
+        return $this->email;
+    }
+    /**
+     * @param array<string> $categories
+     */
+    public function setCategories(?array $categories)
+    {
+        $this->categories = $categories;
+    }
+    /**
+     * @return array<string>
+     */
+    public function getCategories() : ?array
+    {
+        return $this->categories;
+    }
+    /**
+     * @param array<Location> $locations
+     */
+    public function setLocations(?array $locations)
+    {
+        $this->locations = $locations;
+    }
+    /**
+     * @return array<Location>
+     */
+    public function getLocations() : ?array
+    {
+        return $this->locations;
+    }
+    /**
+     * @param Location $origin
+     */
+    public function setOrigin(?Location $origin)
+    {
+        $this->origin = $origin;
+    }
+    /**
+     * @return Location
+     */
+    public function getOrigin() : ?Location
+    {
+        return $this->origin;
+    }
+}
+/**
+ * @Description("Location of the person")
+ * @Required({"lat", "long"})
+ */
+class Location
+{
+    /**
+     * @var float
+     */
+    protected $lat;
+    /**
+     * @var float
+     */
+    protected $long;
+    /**
+     * @param float $lat
+     */
+    public function setLat(?float $lat)
+    {
+        $this->lat = $lat;
+    }
+    /**
+     * @return float
+     */
+    public function getLat() : ?float
+    {
+        return $this->lat;
+    }
+    /**
+     * @param float $long
+     */
+    public function setLong(?float $long)
+    {
+        $this->long = $long;
+    }
+    /**
+     * @return float
+     */
+    public function getLong() : ?float
+    {
+        return $this->long;
+    }
+}
+/**
+ * @Description("An application")
+ * @Required({"name", "url"})
+ */
+class Web
+{
+    /**
+     * @var string
+     */
+    protected $name;
+    /**
+     * @var string
+     */
+    protected $url;
+    /**
+     * @param string $name
+     */
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+    /**
+     * @return string
+     */
+    public function getName() : ?string
+    {
+        return $this->name;
+    }
+    /**
+     * @param string $url
+     */
+    public function setUrl(?string $url)
+    {
+        $this->url = $url;
+    }
+    /**
+     * @return string
+     */
+    public function getUrl() : ?string
+    {
+        return $this->url;
     }
 }

@@ -74,120 +74,122 @@
         "name",
         "url"
       ]
-    }
-  },
-  "title": "News",
-  "description": "An general news entry",
-  "type": "object",
-  "properties": {
-    "config": {
-      "$ref": "Meta"
     },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "minItems": 1,
-      "maxItems": 6
-    },
-    "receiver": {
-      "type": "array",
-      "items": {
-        "$ref": "Author"
-      },
-      "minItems": 1
-    },
-    "resources": {
-      "type": "array",
-      "items": {
-        "oneOf": [
-          {
-            "$ref": "Location"
+    "News": {
+      "description": "An general news entry",
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "Meta"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          {
-            "$ref": "Web"
+          "minItems": 1,
+          "maxItems": 6
+        },
+        "receiver": {
+          "type": "array",
+          "items": {
+            "$ref": "Author"
+          },
+          "minItems": 1
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "Location"
+              },
+              {
+                "$ref": "Web"
+              }
+            ]
           }
-        ]
-      }
-    },
-    "profileImage": {
-      "format": "base64",
-      "type": "string"
-    },
-    "read": {
-      "type": "boolean"
-    },
-    "source": {
-      "oneOf": [
-        {
+        },
+        "profileImage": {
+          "format": "base64",
+          "type": "string"
+        },
+        "read": {
+          "type": "boolean"
+        },
+        "source": {
+          "oneOf": [
+            {
+              "$ref": "Author"
+            },
+            {
+              "$ref": "Web"
+            }
+          ]
+        },
+        "author": {
           "$ref": "Author"
         },
-        {
-          "$ref": "Web"
+        "meta": {
+          "$ref": "Meta"
+        },
+        "sendDate": {
+          "format": "date",
+          "type": "string"
+        },
+        "readDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "expires": {
+          "format": "duration",
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "content": {
+          "description": "Contains the main content of the news entry",
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 512
+        },
+        "question": {
+          "enum": [
+            "foo",
+            "bar"
+          ],
+          "type": "string"
+        },
+        "version": {
+          "const": "http:\/\/foo.bar",
+          "type": "string"
+        },
+        "coffeeTime": {
+          "format": "time",
+          "type": "string"
+        },
+        "profileUri": {
+          "format": "uri",
+          "type": "string"
+        },
+        "g-recaptcha-response": {
+          "type": "string"
         }
+      },
+      "required": [
+        "receiver",
+        "price",
+        "content"
       ]
-    },
-    "author": {
-      "$ref": "Author"
-    },
-    "meta": {
-      "$ref": "Meta"
-    },
-    "sendDate": {
-      "format": "date",
-      "type": "string"
-    },
-    "readDate": {
-      "format": "date-time",
-      "type": "string"
-    },
-    "expires": {
-      "format": "duration",
-      "type": "string"
-    },
-    "price": {
-      "type": "number",
-      "minimum": 1,
-      "maximum": 100
-    },
-    "rating": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 5
-    },
-    "content": {
-      "description": "Contains the main content of the news entry",
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 512
-    },
-    "question": {
-      "enum": [
-        "foo",
-        "bar"
-      ],
-      "type": "string"
-    },
-    "version": {
-      "const": "http:\/\/foo.bar",
-      "type": "string"
-    },
-    "coffeeTime": {
-      "format": "time",
-      "type": "string"
-    },
-    "profileUri": {
-      "format": "uri",
-      "type": "string"
-    },
-    "g-recaptcha-response": {
-      "type": "string"
     }
   },
-  "required": [
-    "receiver",
-    "price",
-    "content"
-  ]
+  "$ref": "News"
 }

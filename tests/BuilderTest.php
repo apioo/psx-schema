@@ -59,7 +59,7 @@ class BuilderTest extends TestCase
         $type = $builder->getType();
 
         $this->assertInstanceOf(StructType::class, $type);
-        $this->assertEquals('foo', $type->getTitle());
+        $this->assertEquals(null, $type->getTitle());
         $this->assertEquals('bar', $type->getDescription());
         $this->assertEquals('stdClass', $type->getAttribute(TypeAbstract::ATTR_CLASS));
     }
