@@ -34,7 +34,7 @@ interface SchemaInterface
      *
      * @return \PSX\Schema\TypeInterface
      */
-    public function getType();
+    public function getType(): TypeInterface;
 
     /**
      * Returns the definitions for this schema which can be used to resolve
@@ -42,5 +42,5 @@ interface SchemaInterface
      *
      * @return \PSX\Schema\DefinitionsInterface
      */
-    public function getDefinitions();
+    public function getDefinitions(): DefinitionsInterface;
 }

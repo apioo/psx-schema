@@ -27,6 +27,7 @@ use PSX\Schema\Schema;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
@@ -65,12 +66,15 @@ class SchemaAbstractTest extends TestCase
         $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getType();
         $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getType();
 
+        $this->assertInstanceOf(StructType::class, $schemaC);
         $this->assertNull($schemaC->getProperty('lat')->getTitle());
         $this->assertNull($schemaC->getProperty('long')->getTitle());
 
+        $this->assertInstanceOf(StructType::class, $schemaA);
         $this->assertEquals('foo', $schemaA->getProperty('lat')->getTitle());
         $this->assertEquals(null, $schemaA->getProperty('long')->getTitle());
 
+        $this->assertInstanceOf(StructType::class, $schemaB);
         $this->assertEquals(null, $schemaB->getProperty('lat')->getTitle());
         $this->assertEquals('bar', $schemaB->getProperty('long')->getTitle());
     }
@@ -117,10 +121,10 @@ class SchemaA extends SchemaAbstract
 {
     public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $property = clone $this->getSchema(SchemaCommon::class)->getType();
-        $property->getProperty('lat')->setTitle('foo');
+        $location = $this->load(SchemaCommon::class);
+        $location->getProperty('lat')->setTitle('foo');
 
-        return $property;
+        return $location;
     }
 }
 
@@ -128,9 +132,9 @@ class SchemaB extends SchemaAbstract
 {
     public function build(DefinitionsInterface $definitions): TypeInterface
     {
-        $property = clone $this->getSchema(SchemaCommon::class)->getType();
-        $property->getProperty('long')->setTitle('bar');
+        $location = $this->load(SchemaCommon::class);
+        $location->getProperty('long')->setTitle('bar');
 
-        return $property;
+        return $location;
     }
 }

@@ -45,12 +45,12 @@ class Schema implements SchemaInterface
         $this->definitions = $definitions;
     }
 
-    public function getType()
+    public function getType(): TypeInterface
     {
         return $this->type;
     }
 
-    public function getDefinitions()
+    public function getDefinitions(): DefinitionsInterface
     {
         return $this->definitions;
     }

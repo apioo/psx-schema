@@ -51,25 +51,45 @@ abstract class SchemaAbstract implements SchemaInterface
         $this->type          = $this->build($this->definitions);
     }
 
-    public function getType()
+    public function getType(): TypeInterface
     {
         return $this->type;
     }
 
-    public function getDefinitions()
+    public function getDefinitions(): DefinitionsInterface
     {
         return $this->definitions;
     }
 
-    protected function getSchema($name): SchemaInterface
-    {
-        return $this->schemaManager->getSchema($name);
-    }
-
-    protected function getSchemaBuilder($name)
+    protected function newBuilder(string $name): Builder
     {
         return new Builder($name);
     }
 
+    /**
+     * Loads a different schema and returns the root type. It creates a clone of
+     * the schema so you can safely modify the schema. It also merges all
+     * definitions to the current schema
+     * 
+     * @param string $name
+     * @return TypeInterface
+     */
+    protected function load($name): TypeInterface
+    {
+        $schema = $this->schemaManager->getSchema($name);
+        if ($schema instanceof SchemaInterface) {
+            $this->definitions->merge($schema->getDefinitions());
+            return clone $schema->getType();
+        } else {
+            throw new \InvalidArgumentException('Could not load schema ' . $name);
+        }
+    }
+
+    /**
+     * Builds the schema
+     * 
+     * @param DefinitionsInterface $definitions
+     * @return TypeInterface
+     */
     abstract protected function build(DefinitionsInterface $definitions): TypeInterface;
 }
