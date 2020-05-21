@@ -105,7 +105,12 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         foreach ($namespaces as $namespace) {
             $types = $definitions->getTypes($namespace);
             foreach ($types as $name => $type) {
-                $this->addType($namespace . ':' . $name, $type);
+                $fqn = $namespace . ':' . $name;
+                if ($this->hasType($fqn)) {
+                    continue;
+                }
+
+                $this->addType($fqn, $type);
             }
         }
     }
