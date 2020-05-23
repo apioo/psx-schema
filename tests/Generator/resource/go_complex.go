@@ -1,107 +1,107 @@
 // CommonProperties Common properties which can be used at any schema
 type CommonProperties struct {
-    title string `json:"title"`
-    description string `json:"description"`
-    type string `json:"type"`
-    nullable bool `json:"nullable"`
-    deprecated bool `json:"deprecated"`
-    readonly bool `json:"readonly"`
+    Title string `json:"title"`
+    Description string `json:"description"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+    Deprecated bool `json:"deprecated"`
+    Readonly bool `json:"readonly"`
 }
 
 // ScalarProperties
 type ScalarProperties struct {
-    format string `json:"format"`
-    enum interface{} `json:"enum"`
-    default interface{} `json:"default"`
+    Format string `json:"format"`
+    Enum interface{} `json:"enum"`
+    Default interface{} `json:"default"`
 }
 
 // ContainerProperties Properties specific for a container
 type ContainerProperties struct {
-    type string `json:"type"`
+    Type string `json:"type"`
 }
 
 // StructProperties Struct specific properties
 type StructProperties struct {
-    properties map[string]PropertyValue `json:"properties"`
-    required []string `json:"required"`
+    Properties map[string]PropertyValue `json:"properties"`
+    Required []string `json:"required"`
 }
 
 // MapProperties Map specific properties
 type MapProperties struct {
-    additionalProperties interface{} `json:"additionalProperties"`
-    maxProperties int `json:"maxProperties"`
-    minProperties int `json:"minProperties"`
+    AdditionalProperties interface{} `json:"additionalProperties"`
+    MaxProperties int `json:"maxProperties"`
+    MinProperties int `json:"minProperties"`
 }
 
 // ArrayProperties Array properties
 type ArrayProperties struct {
-    type string `json:"type"`
-    items interface{} `json:"items"`
-    maxItems int `json:"maxItems"`
-    minItems int `json:"minItems"`
-    uniqueItems bool `json:"uniqueItems"`
+    Type string `json:"type"`
+    Items interface{} `json:"items"`
+    MaxItems int `json:"maxItems"`
+    MinItems int `json:"minItems"`
+    UniqueItems bool `json:"uniqueItems"`
 }
 
 // BooleanProperties Boolean properties
 type BooleanProperties struct {
-    type string `json:"type"`
+    Type string `json:"type"`
 }
 
 // NumberProperties Number properties
 type NumberProperties struct {
-    type string `json:"type"`
-    multipleOf float64 `json:"multipleOf"`
-    maximum float64 `json:"maximum"`
-    exclusiveMaximum bool `json:"exclusiveMaximum"`
-    minimum float64 `json:"minimum"`
-    exclusiveMinimum bool `json:"exclusiveMinimum"`
+    Type string `json:"type"`
+    MultipleOf float64 `json:"multipleOf"`
+    Maximum float64 `json:"maximum"`
+    ExclusiveMaximum bool `json:"exclusiveMaximum"`
+    Minimum float64 `json:"minimum"`
+    ExclusiveMinimum bool `json:"exclusiveMinimum"`
 }
 
 // StringProperties String properties
 type StringProperties struct {
-    type string `json:"type"`
-    maxLength int `json:"maxLength"`
-    minLength int `json:"minLength"`
-    pattern string `json:"pattern"`
+    Type string `json:"type"`
+    MaxLength int `json:"maxLength"`
+    MinLength int `json:"minLength"`
+    Pattern string `json:"pattern"`
 }
 
 // Discriminator Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 type Discriminator struct {
-    propertyName string `json:"propertyName"`
-    mapping map[string]string `json:"mapping"`
+    PropertyName string `json:"propertyName"`
+    Mapping map[string]string `json:"mapping"`
 }
 
 // AllOfProperties An intersection type combines multiple schemas into one
 type AllOfProperties struct {
-    description string `json:"description"`
-    allOf []OfValue `json:"allOf"`
+    Description string `json:"description"`
+    AllOf []OfValue `json:"allOf"`
 }
 
 // OneOfProperties An union type can contain one of the provided schemas
 type OneOfProperties struct {
-    description string `json:"description"`
-    discriminator Discriminator `json:"discriminator"`
-    oneOf []OfValue `json:"oneOf"`
+    Description string `json:"description"`
+    Discriminator Discriminator `json:"discriminator"`
+    OneOf []OfValue `json:"oneOf"`
 }
 
 // ReferenceType Represents a reference to another schema
 type ReferenceType struct {
-    ref string `json:"$ref"`
-    template map[string]ReferenceType `json:"$template"`
+    Ref string `json:"$ref"`
+    Template map[string]ReferenceType `json:"$template"`
 }
 
 // GenericType Represents a generic type
 type GenericType struct {
-    generic string `json:"$generic"`
+    Generic string `json:"$generic"`
 }
 
 // TypeSchema TypeSchema meta schema which describes a TypeSchema
 type TypeSchema struct {
-    import map[string]string `json:"$import"`
-    title string `json:"title"`
-    description string `json:"description"`
-    type string `json:"type"`
-    definitions map[string]DefinitionValue `json:"definitions"`
-    properties map[string]PropertyValue `json:"properties"`
-    required []string `json:"required"`
+    Import map[string]string `json:"$import"`
+    Title string `json:"title"`
+    Description string `json:"description"`
+    Type string `json:"type"`
+    Definitions map[string]DefinitionValue `json:"definitions"`
+    Properties map[string]PropertyValue `json:"properties"`
+    Required []string `json:"required"`
 }
