@@ -26,6 +26,7 @@ use PhpParser\PrettyPrinter;
 use PSX\Record\Record;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
@@ -33,6 +34,7 @@ use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -106,7 +108,7 @@ class Php extends CodeGeneratorAbstract
 
             $type = $property->getType();
             if (!empty($type)) {
-                $param->setTypeHint(new Node\NullableType(($type)));
+                $param->setType(new Node\NullableType(($type)));
             }
 
             $setter = $this->factory->method('set' . ucfirst($name));
