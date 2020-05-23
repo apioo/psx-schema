@@ -41,6 +41,16 @@ use PSX\Schema\TypeInterface;
  */
 class JsonSchema implements GeneratorInterface
 {
+    /**
+     * @var string
+     */
+    private $refBase;
+
+    public function __construct(string $refBase = '#/definitions/')
+    {
+        $this->refBase = $refBase;
+    }
+
     public function generate(SchemaInterface $schema)
     {
         $data = $this->toArray(
@@ -101,7 +111,7 @@ class JsonSchema implements GeneratorInterface
 
                 return [
                     'allOf' => [
-                        ['$ref' => '#/definitions/' . $extends],
+                        ['$ref' => $this->refBase . $extends],
                         $data,
                     ]
                 ];
@@ -146,7 +156,7 @@ class JsonSchema implements GeneratorInterface
             return $data;
         } elseif ($type instanceof ReferenceType) {
             return [
-                '$ref' => '#/definitions/' . $type->getRef()
+                '$ref' => $this->refBase . $type->getRef()
             ];
         } else {
             return $type->toArray();
