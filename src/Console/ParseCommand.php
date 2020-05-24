@@ -82,7 +82,7 @@ class ParseCommand extends Command
         if ($generator instanceof FileAwareInterface && $response instanceof Chunks) {
             $count = 0;
             foreach ($response->getChunks() as $file => $code) {
-                file_put_contents($target . '/' . $generator->getFileName($file), $code);
+                file_put_contents($target . '/' . $generator->getFileName($file), $generator->getFileContent($code));
                 $count++;
             }
 

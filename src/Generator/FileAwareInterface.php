@@ -36,4 +36,13 @@ interface FileAwareInterface
      * @return string
      */
     public function getFileName(string $file): string;
+
+    /**
+     * Returns the file content which allows a generator to append additional
+     * information to each file
+     * 
+     * @param string $code
+     * @return string
+     */
+    public function getFileContent(string $code): string;
 }

@@ -72,6 +72,11 @@ class Php extends CodeGeneratorAbstract
         return $file . '.php';
     }
 
+    public function getFileContent(string $code): string
+    {
+        return '<?php' . "\n\n" . 'declare(strict_types = 1);' . "\n\n" . $code . "\n";
+    }
+
     protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Php();

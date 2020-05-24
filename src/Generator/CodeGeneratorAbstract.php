@@ -116,6 +116,11 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->generator->getDocType($type);
     }
 
+    public function getFileContent(string $code): string
+    {
+        return $code;
+    }
+
     private function generateRoot(TypeInterface $type)
     {
         if ($type instanceof StructType) {
