@@ -36,6 +36,11 @@ use PSX\Schema\Type\UnionType;
  */
 class CSharp extends CodeGeneratorAbstract
 {
+    public function getFileName(string $file): string
+    {
+        return $file . '.cs';
+    }
+
     /**
      * @inheritDoc
      */

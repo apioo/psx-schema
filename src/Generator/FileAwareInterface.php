@@ -20,49 +20,20 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\StructType;
-
 /**
- * Protobuf
+ * FileAwareInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Protobuf extends CodeGeneratorAbstract
+interface FileAwareInterface
 {
-    public function getFileName(string $file): string
-    {
-        return $file . '.proto';
-    }
-
     /**
-     * @inheritDoc
+     * Appends a fitting file extension to the provided file name
+     * 
+     * @param string $file
+     * @return string
      */
-    protected function newTypeGenerator(): GeneratorInterface
-    {
-        return new Type\Protobuf();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
-    {
-        $code = '';
-        $code.= 'message ' . $name . ' {' . "\n";
-
-        $index = 1;
-        foreach ($properties as $name => $property) {
-            /** @var Code\Property $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
-
-            $index++;
-        }
-
-        $code.= '}' . "\n";
-
-        return $code;
-    }
+    public function getFileName(string $file): string;
 }

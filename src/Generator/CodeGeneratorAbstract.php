@@ -41,7 +41,7 @@ use PSX\Schema\TypeInterface;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface
+abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface, FileAwareInterface
 {
     /**
      * @var TypeGeneratorInterface

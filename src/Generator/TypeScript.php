@@ -37,6 +37,11 @@ use PSX\Schema\Type\UnionType;
  */
 class TypeScript extends CodeGeneratorAbstract
 {
+    public function getFileName(string $file): string
+    {
+        return $file . '.ts';
+    }
+
     protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\TypeScript();

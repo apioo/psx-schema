@@ -34,6 +34,11 @@ use PSX\Schema\Type\StructType;
  */
 class Python extends CodeGeneratorAbstract
 {
+    public function getFileName(string $file): string
+    {
+        return $file . '.py';
+    }
+
     /**
      * @inheritDoc
      */

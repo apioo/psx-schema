@@ -33,6 +33,11 @@ use PSX\Schema\Type\StructType;
  */
 class Markdown extends MarkupAbstract
 {
+    public function getFileName(string $file): string
+    {
+        return $file . '.md';
+    }
+
     /**
      * @inheritDoc
      */

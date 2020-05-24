@@ -37,6 +37,11 @@ use PSX\Schema\Type\UnionType;
  */
 class Swift extends CodeGeneratorAbstract
 {
+    public function getFileName(string $file): string
+    {
+        return $file . '.swift';
+    }
+
     /**
      * @inheritDoc
      */

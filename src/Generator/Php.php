@@ -67,6 +67,11 @@ class Php extends CodeGeneratorAbstract
         $this->printer = new PrettyPrinter\Standard();
     }
 
+    public function getFileName(string $file): string
+    {
+        return $file . '.php';
+    }
+
     protected function newTypeGenerator(): GeneratorInterface
     {
         return new Type\Php();
