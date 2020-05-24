@@ -43,7 +43,7 @@ use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
- * The dumper extracts all data from POPOs containing annotations so that the 
+ * The dumper extracts all data from POPOs containing annotations so that the
  * data can be serialized as json
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
@@ -135,7 +135,9 @@ class Dumper
                     $value = $reflection->getMethod($getter)->invoke($data);
 
                     $type = $this->resolver->resolveProperty($property);
-                    $value = $this->dumpValue($value, $type);
+                    if ($type instanceof TypeInterface) {
+                        $value = $this->dumpValue($value, $type);
+                    }
 
                     if ($value !== null) {
                         $result->setProperty($name, $value);
