@@ -29,6 +29,7 @@ use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo;
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
@@ -221,6 +222,8 @@ class Dumper
             return $this->dump($value);
         } elseif ($type instanceof ReferenceType) {
             return $this->dumpReference($value, $type);
+        } elseif ($type instanceof AnyType) {
+            return $value;
         }
 
         return null;
