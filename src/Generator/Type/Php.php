@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator\Type;
 
 use PSX\DateTime\Date;
 use PSX\DateTime\Time;
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
@@ -73,6 +74,8 @@ class Php extends GeneratorAbstract
             return implode('&', $parts);
         } elseif ($type instanceof GenericType) {
             return $type->getGeneric();
+        } elseif ($type instanceof AnyType) {
+            return 'mixed';
         } else {
             return $this->getType($type);
         }

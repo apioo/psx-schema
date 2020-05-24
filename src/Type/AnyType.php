@@ -29,4 +29,10 @@ namespace PSX\Schema\Type;
  */
 class AnyType extends TypeAbstract
 {
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'type' => 'any',
+        ]);
+    }
 }

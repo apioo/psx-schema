@@ -169,6 +169,8 @@ class Documentor implements ResolverInterface
             return TypeFactory::getNumber();
         } elseif ($type instanceof Types\String_) {
             return TypeFactory::getString();
+        } elseif ($type instanceof Types\Mixed_) {
+            return TypeFactory::getAny();
         } elseif ($type instanceof Types\Resource_) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_BINARY);
         } elseif ($type instanceof Types\Nullable) {

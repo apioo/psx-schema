@@ -374,6 +374,8 @@ class TypeSchema implements ParserInterface
             return TypeFactory::getNumber();
         } elseif ($type === TypeAbstract::TYPE_BOOLEAN) {
             return TypeFactory::getBoolean();
+        } elseif ($type === TypeAbstract::TYPE_ANY) {
+            return TypeFactory::getAny();
         } elseif (isset($data['allOf'])) {
             return TypeFactory::getIntersection();
         } elseif (isset($data['oneOf'])) {

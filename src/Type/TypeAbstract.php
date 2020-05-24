@@ -37,6 +37,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
     const TYPE_NUMBER = 'number';
     const TYPE_INTEGER = 'integer';
     const TYPE_STRING = 'string';
+    const TYPE_ANY = 'any';
 
     const FORMAT_INT32 = 'int32';
     const FORMAT_INT64 = 'int64';
