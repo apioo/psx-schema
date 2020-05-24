@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
@@ -51,8 +52,9 @@ class TypeAssert
             || $type instanceof IntersectionType
             || $type instanceof UnionType
             || $type instanceof ReferenceType
-            || $type instanceof GenericType)) {
-            throw new \InvalidArgumentException('Property must be of type boolean, number, string, array, intersection, union, reference or generic type, got ' . get_class($type));
+            || $type instanceof GenericType
+            || $type instanceof AnyType)) {
+            throw new \InvalidArgumentException('Property must be of type boolean, number, string, array, intersection, union, reference, generic or any type, got ' . get_class($type));
         }
     }
 
