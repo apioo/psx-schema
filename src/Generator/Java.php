@@ -36,6 +36,9 @@ use PSX\Schema\Type\UnionType;
  */
 class Java extends CodeGeneratorAbstract
 {
+    /**
+     * @inheritDoc
+     */
     public function getFileName(string $file): string
     {
         return $file . '.java';

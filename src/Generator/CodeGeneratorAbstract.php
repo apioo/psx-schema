@@ -116,6 +116,9 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->generator->getDocType($type);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFileContent(string $code): string
     {
         return $code;

@@ -32,6 +32,9 @@ use PSX\Schema\Type\StructType;
  */
 class Go extends CodeGeneratorAbstract
 {
+    /**
+     * @inheritDoc
+     */
     public function getFileName(string $file): string
     {
         return $file . '.go';

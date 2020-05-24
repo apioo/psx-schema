@@ -67,11 +67,17 @@ class Php extends CodeGeneratorAbstract
         $this->printer = new PrettyPrinter\Standard();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFileName(string $file): string
     {
         return $file . '.php';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFileContent(string $code): string
     {
         return '<?php' . "\n\n" . 'declare(strict_types = 1);' . "\n\n" . $code . "\n";

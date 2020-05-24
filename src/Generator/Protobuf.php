@@ -32,6 +32,9 @@ use PSX\Schema\Type\StructType;
  */
 class Protobuf extends CodeGeneratorAbstract
 {
+    /**
+     * @inheritDoc
+     */
     public function getFileName(string $file): string
     {
         return $file . '.proto';

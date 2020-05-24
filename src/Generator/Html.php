@@ -37,6 +37,9 @@ use PSX\Schema\Type\UnionType;
  */
 class Html extends MarkupAbstract
 {
+    /**
+     * @inheritDoc
+     */
     public function getFileName(string $file): string
     {
         return $file . '.html';
