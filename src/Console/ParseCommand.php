@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Console;
 
+use PSX\Schema\Generator\Code\Chunks;
+use PSX\Schema\Generator\FileAwareInterface;
 use PSX\Schema\GeneratorFactory;
 use PSX\Schema\SchemaManager;
 use Symfony\Component\Console\Command\Command;
@@ -58,6 +60,7 @@ class ParseCommand extends Command
             ->setName('schema:parse')
             ->setDescription('Parses an arbitrary source and outputs the schema in a specific format')
             ->addArgument('source', InputArgument::REQUIRED, 'The schema source this is either a absolute class name or schema file')
+            ->addArgument('target', InputArgument::OPTIONAL, 'Optional the target folder otherwise the CWD is used')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Optional the output format possible values are: ' . implode(', ', GeneratorFactory::getPossibleTypes()))
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Optional a config value which gets passed to the generator');
     }
@@ -65,13 +68,24 @@ class ParseCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
+        $target = $input->getArgument('target') ?: getcwd();
         $schema = $this->schemaManager->getSchema($source);
+
+        if (!is_dir($target)) {
+            throw new \RuntimeException('Target is not a directory');
+        }
 
         $factory   = new GeneratorFactory();
         $generator = $factory->getGenerator($input->getOption('format'), $input->getOption('config'));
         $response  = $generator->generate($schema);
 
-        $output->write($response);
+        if ($generator instanceof FileAwareInterface && $response instanceof Chunks) {
+            foreach ($response as $file => $code) {
+                file_put_contents($target . '/' . $generator->getFileName($file), $code);
+            }
+        } else {
+            $output->write($response);
+        }
 
         return 0;
     }
