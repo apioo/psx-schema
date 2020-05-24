@@ -43,12 +43,12 @@ use PSX\Uri\Uri;
 class Documentor implements ResolverInterface
 {
     /**
-     * @var ContextFactory 
+     * @var ContextFactory
      */
     private $contextFactory;
 
     /**
-     * @var TypeResolver 
+     * @var TypeResolver
      */
     private $typeResolver;
 
@@ -135,12 +135,12 @@ class Documentor implements ResolverInterface
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
             } elseif ($fqsen === '\\' . Uri::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
-            }
-
-            if (class_exists($fqsen)) {
-                return TypeFactory::getReference($fqsen);
-            } else {
-                return TypeFactory::getGeneric($type->getFqsen()->getName());
+            } elseif (!empty($fqsen)) {
+                if (class_exists($fqsen)) {
+                    return TypeFactory::getReference($fqsen);
+                } else {
+                    return TypeFactory::getGeneric($type->getFqsen()->getName());
+                }
             }
         } elseif ($type instanceof Types\AbstractList) {
             $key = $type->getKeyType();
