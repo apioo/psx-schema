@@ -154,7 +154,7 @@ class Php extends CodeGeneratorAbstract
 
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
+        $subType = $this->generator->getDocType($origin->getAdditionalProperties());
 
         $class = $this->factory->class($name);
         $class->setDocComment($this->buildComment(['extends' => 'ArrayAccess<string, ' . $subType . '>'], $this->getAnnotationsForType($origin)));
