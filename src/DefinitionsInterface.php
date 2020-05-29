@@ -60,21 +60,21 @@ interface DefinitionsInterface
      * the name of the type
      * 
      * @param string $namespace
-     * @return TypeInterface[]
+     * @return array<TypeInterface>
      */
     public function getTypes(string $namespace): iterable;
 
     /**
      * Returns all types registered at this container
      * 
-     * @return TypeInterface[]
+     * @return array<TypeInterface>
      */
     public function getAllTypes(): iterable;
 
     /**
      * Returns all registered namespaces on this definition
      * 
-     * @return string[]
+     * @return array<string>
      */
     public function getNamespaces(): iterable;
 

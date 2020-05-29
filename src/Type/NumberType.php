@@ -57,7 +57,7 @@ class NumberType extends ScalarType
     protected $multipleOf;
 
     /**
-     * @return int
+     * @return int|float
      */
     public function getMinimum()
     {

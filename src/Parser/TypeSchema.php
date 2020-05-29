@@ -155,7 +155,7 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    protected function parseCommon(TypeInterface $type, array $data)
+    protected function parseCommon(TypeAbstract $type, array $data)
     {
         if (isset($data['title'])) {
             $type->setTitle($data['title']);
@@ -286,7 +286,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseString(TypeInterface $type, array $data): void
+    protected function parseString(StringType $type, array $data): void
     {
         if (isset($data['pattern'])) {
             $type->setPattern($data['pattern']);
@@ -301,7 +301,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseIntersection(TypeInterface $type, array $data): void
+    protected function parseIntersection(IntersectionType $type, array $data): void
     {
         if (isset($data['allOf']) && is_array($data['allOf'])) {
             $props = [];
@@ -313,7 +313,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseUnion(TypeInterface $type, array $data): void
+    protected function parseUnion(UnionType $type, array $data): void
     {
         if (isset($data['oneOf']) && is_array($data['oneOf'])) {
             $props = [];

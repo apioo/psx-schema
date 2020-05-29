@@ -350,7 +350,7 @@ class SchemaTraverser
         }
 
         $format = $type->getFormat();
-        if ($format !== null) {
+        if ($format !== null && is_string($data)) {
             if ($format === TypeAbstract::FORMAT_BINARY) {
                 if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);

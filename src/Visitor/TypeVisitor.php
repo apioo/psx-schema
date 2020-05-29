@@ -71,10 +71,7 @@ class TypeVisitor implements VisitorInterface
                 try {
                     $name   = isset($mapping[$key]) ? $mapping[$key] : $key;
                     $method = $class->getMethod('set' . ucfirst($name));
-
-                    if ($method instanceof \ReflectionMethod) {
-                        $method->invokeArgs($record, [$value]);
-                    }
+                    $method->invokeArgs($record, [$value]);
                 } catch (\ReflectionException $e) {
                     // method does not exist
                 }

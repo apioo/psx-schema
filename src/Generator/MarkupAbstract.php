@@ -49,7 +49,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
      * @param integer $heading
      * @param string $prefix
      */
-    public function __construct($heading = 1, string $prefix = 'psx_model_')
+    public function __construct(int $heading = 1, string $prefix = 'psx_model_')
     {
         parent::__construct();
 
