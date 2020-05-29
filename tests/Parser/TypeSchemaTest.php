@@ -93,12 +93,11 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertEquals(['acme.com'], $transaction['request']->getHeader('Host'));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp /^Could not load json schema (.*)$/
-     */
     public function testParseInvalidFile()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/^Could not load json schema (.*)$/');
+
         TypeSchema::fromFile(__DIR__ . '/TypeSchema/foo.json');
     }
 }

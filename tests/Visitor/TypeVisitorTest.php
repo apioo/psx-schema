@@ -37,6 +37,7 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
+use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\TypeVisitor;
 use PSX\Uri\Uri;
 use PSX\Validate\Filter;
@@ -55,15 +56,14 @@ class TypeVisitorTest extends TestCase
         $type = TypeFactory::getArray();
         $data = (new TypeVisitor())->visitArray([10], $type, '');
 
-        $this->assertInternalType('array', $data);
+        $this->assertIsArray($data);
         $this->assertSame([10], $data);
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitArrayValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (array $data) {
                 return count($data) < 2;
@@ -80,15 +80,14 @@ class TypeVisitorTest extends TestCase
         $type = TypeFactory::getBinary();
         $data = (new TypeVisitor())->visitBinary(base64_encode('foo'), $type, '');
 
-        $this->assertInternalType('resource', $data);
+        $this->assertIsResource($data);
         $this->assertSame('foo', stream_get_contents($data));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitBinaryValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function ($data) {
                 return fstat($data)['size'] < 2;
@@ -107,11 +106,10 @@ class TypeVisitorTest extends TestCase
         $this->assertSame(true, (new TypeVisitor())->visitBoolean(true, $type, ''));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitBooleanValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function ($data) {
                 return $data === true;
@@ -158,11 +156,10 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals('foo', $record->getBar());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitStructValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (RecordInterface $data) {
                 return isset($data->foo);
@@ -174,11 +171,10 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitStruct((object) ['bar' => 'foo'], $type, '/foo/bar');
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitStructValidatePopo()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (PopoClass $data) {
                 return $data->getFoo() == 'foo';
@@ -220,22 +216,20 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf('DateTime', (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00+01:00', $type, ''));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Must be valid date time format
-     */
     public function testVisitDateTimeInvalidFormat()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must be valid date time format');
+
         $type = TypeFactory::getDateTime();
 
         (new TypeVisitor())->visitDateTime('foo', $type, '');
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitDateTimeValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (DateTime $data) {
                 return $data->format('d') == 8;
@@ -255,22 +249,20 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(Date::class, (new TypeVisitor())->visitDate('2000-01-01+13:00', $type, ''));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Must be valid date format
-     */
     public function testVisitDateInvalidFormat()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must be valid date format');
+
         $type = TypeFactory::getDate();
 
         (new TypeVisitor())->visitDate('foo', $type, '');
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitDateValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (Date $data) {
                 return $data->format('d') == 8;
@@ -290,22 +282,20 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(Duration::class, (new TypeVisitor())->visitDuration('P1DT12H', $type, ''));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Must be duration forma
-     */
     public function testVisitDurationInvalidFormat()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must be duration forma');
+
         $type = TypeFactory::getDuration();
 
         (new TypeVisitor())->visitDuration('foo', $type, '');
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitDurationValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (Duration $data) {
                 return $data->d == 2;
@@ -324,11 +314,10 @@ class TypeVisitorTest extends TestCase
         $this->assertSame(1.1, (new TypeVisitor())->visitNumber(1.1, $type, ''));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitNumberValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function ($data) {
                 return $data < 2.2;
@@ -347,11 +336,10 @@ class TypeVisitorTest extends TestCase
         $this->assertSame(1, (new TypeVisitor())->visitNumber(1, $type, ''));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitIntegerValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function ($data) {
                 return $data < 2;
@@ -370,12 +358,11 @@ class TypeVisitorTest extends TestCase
         $this->assertSame('foo', (new TypeVisitor())->visitString('foo', $type, ''));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /foo/bar has an invalid length min 8 and max 16 signs
-     */
     public function testVisitStringValidate()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/foo/bar has an invalid length min 8 and max 16 signs');
+
         $validator = new Validator([
             new Field('/foo/bar', [new Filter\Length(8, 16)])
         ]);
@@ -393,22 +380,20 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(Time::class, (new TypeVisitor())->visitTime('10:00:00+02:00', $type, ''));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Must be valid time format
-     */
     public function testVisitTimeInvalidFormat()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Must be valid time format');
+
         $type = TypeFactory::getTime();
 
         (new TypeVisitor())->visitTime('foo', $type, '');
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitTimeValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (Time $data) {
                 return $data->format('H') == 11;
@@ -428,11 +413,10 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(Uri::class, (new TypeVisitor())->visitUri('http://foo.com?foo=bar', $type, ''));
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testVisitUriValidate()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = new Validator([
             new Field('/foo/bar', [function (Uri $data) {
                 return $data->getAuthority() == 'bar.com';

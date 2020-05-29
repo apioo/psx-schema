@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\InvalidSchemaException;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;
@@ -45,7 +46,7 @@ class SchemaManagerTest extends TestCase
      */
     protected $schemaManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader        = new AnnotationReader();
         $this->schemaManager = new SchemaManager($this->reader);
@@ -72,19 +73,17 @@ class SchemaManagerTest extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetSchemaInvalidType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->schemaManager->getSchema(new \stdClass());
     }
 
-    /**
-     * @expectedException \PSX\Schema\InvalidSchemaException
-     */
     public function testGetSchemaNotExisting()
     {
+        $this->expectException(InvalidSchemaException::class);
+
         $schemaManager = new SchemaManager($this->reader);
         $schemaManager->getSchema('foo');
     }

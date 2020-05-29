@@ -23,6 +23,7 @@ namespace PSX\Schema\Tests;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\SchemaTraverser\RecursionModel;
+use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
 
@@ -71,12 +72,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /config/test must be of type string
-     */
     public function testInvalidAdditionalPropertyType()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/config/test must be of type string');
+
         $data = $this->getData();
         $data->config->test = ['foo'];
 
@@ -84,12 +84,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /tags must contain less or equal than 6 items
-     */
     public function testInvalidMaxArrayItems()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/tags must contain less or equal than 6 items');
+
         $data = $this->getData();
         for ($i = 0; $i < 5; $i++) {
             $data->tags[] = 'tag-' . $i;
@@ -99,12 +98,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /tags must contain more or equal than 1 items
-     */
     public function testInvalidMinArrayItems()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/tags must contain more or equal than 1 items');
+
         $data = $this->getData();
         $data->tags = [];
 
@@ -112,12 +110,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /config must contain less or equal than 6 properties
-     */
     public function testInvalidMaxObjectItems()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/config must contain less or equal than 6 properties');
+
         $data = $this->getData();
         for ($i = 0; $i < 6; $i++) {
             $data->config->{$i . '-foo'} = 'foo-' . $i;
@@ -127,12 +124,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /config must contain more or equal than 1 properties
-     */
     public function testInvalidMinObjectItems()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/config must contain more or equal than 1 properties');
+
         $data = $this->getData();
         $data->config = (object) [
         ];
@@ -141,12 +137,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /receiver/1 must be of type object
-     */
     public function testInvalidArrayPrototypeType()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/receiver/1 must be of type object');
+
         $data = $this->getData();
         $data->receiver[] = 'foo';
 
@@ -154,12 +149,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /resources/3 must match one required schema
-     */
     public function testInvalidArrayPrototypeChoiceType()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/resources/3 must match one required schema');
+
         $data = $this->getData();
         $data->resources[] = [
             'baz' => 'foo'
@@ -169,12 +163,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /profileImage must be a valid Base64 encoded string [RFC4648]
-     */
     public function testInvalidBinary()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/profileImage must be a valid Base64 encoded string [RFC4648]');
+
         $data = $this->getData();
         $data->profileImage = 'foo';
 
@@ -182,12 +175,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /price must be greater or equal than 1
-     */
     public function testInvalidMinFloat()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/price must be greater or equal than 1');
+
         $data = $this->getData();
         $data->price = 0;
 
@@ -195,12 +187,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /price must be lower or equal than 100
-     */
     public function testInvalidMaxFloat()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/price must be lower or equal than 100');
+
         $data = $this->getData();
         $data->price = 101;
 
@@ -208,12 +199,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /rating must be greater or equal than 1
-     */
     public function testInvalidMinInteger()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/rating must be greater or equal than 1');
+
         $data = $this->getData();
         $data->rating = 0;
 
@@ -221,12 +211,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /rating must be lower or equal than 5
-     */
     public function testInvalidMaxInteger()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/rating must be lower or equal than 5');
+
         $data = $this->getData();
         $data->rating = 6;
 
@@ -234,12 +223,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /content must contain more or equal than 3 characters
-     */
     public function testInvalidMinString()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/content must contain more or equal than 3 characters');
+
         $data = $this->getData();
         $data->content = 'a';
 
@@ -247,12 +235,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /content must contain less or equal than 512 characters
-     */
     public function testInvalidMaxString()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/content must contain less or equal than 512 characters');
+
         $data = $this->getData();
         $data->content = str_repeat('a', 513);
 
@@ -260,12 +247,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /question is not in enumeration ["foo","bar"]
-     */
     public function testInvalidEnumeration()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/question is not in enumeration ["foo","bar"]');
+
         $data = $this->getData();
         $data->question = 'baz';
 
@@ -273,12 +259,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /version must contain the constant value "http:\/\/foo.bar"
-     */
     public function testInvalidConst()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/version must contain the constant value "http:\/\/foo.bar"');
+
         $data = $this->getData();
         $data->version = 'baz';
 
@@ -286,12 +271,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /author/title does not match pattern [[A-z]{3,16}]
-     */
     public function testInvalidPattern()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/author/title does not match pattern [[A-z]{3,16}]');
+
         $data = $this->getData();
         $data->author->title = '1234';
 
@@ -299,12 +283,11 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     * @expectedExceptionMessage /meta/tags_0 must be of type string
-     */
     public function testInvalidMapProperty()
     {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/meta/tags_0 must be of type string');
+
         $data = $this->getData();
         $data->meta->tags_0 = ['foo'];
 

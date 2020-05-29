@@ -44,11 +44,10 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(ValidatorInterface::class, $validator);
     }
 
-    /**
-     * @expectedException \PSX\Schema\ValidationException
-     */
     public function testValidateInvalid()
     {
+        $this->expectException(ValidationException::class);
+
         $validator = $this->getValidator();
         $validator->validate('/id', 4);
     }

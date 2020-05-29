@@ -68,12 +68,11 @@ class IntersectionResolverTest extends TestCase
         $this->assertEquals(['foo', 'bar'], array_keys($result->getProperties()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage All of must contain only struct types
-     */
     public function testResolveNotPossible()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('All of must contain only struct types');
+
         $a = new StructType();
         $a->setProperties([
             'foo' => TypeFactory::getString()
