@@ -52,7 +52,7 @@ class NumberType extends ScalarType
     protected $exclusiveMaximum;
 
     /**
-     * @var integer
+     * @var integer|float
      */
     protected $multipleOf;
 

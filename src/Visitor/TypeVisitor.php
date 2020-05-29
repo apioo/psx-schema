@@ -47,7 +47,7 @@ use PSX\Uri\Uri;
 class TypeVisitor implements VisitorInterface
 {
     /**
-     * @var \PSX\Schema\Validation\ValidatorInterface
+     * @var \PSX\Schema\Validation\ValidatorInterface|null
      */
     protected $validator;
 
