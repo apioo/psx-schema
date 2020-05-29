@@ -187,7 +187,7 @@ class Author
     }
 }
 /**
- * @extends ArrayAccess<string, string>
+ * @extends \PSX\Record\Record<string>
  * @MinProperties(1)
  * @MaxProperties(6)
  */

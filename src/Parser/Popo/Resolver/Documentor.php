@@ -26,6 +26,7 @@ use phpDocumentor\Reflection\Types;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\Date;
 use PSX\DateTime\Time;
+use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\TypeAbstract;
@@ -63,7 +64,7 @@ class Documentor implements ResolverInterface
      */
     public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
     {
-        if ($reflection->implementsInterface(\ArrayAccess::class)) {
+        if ($reflection->implementsInterface(RecordInterface::class)) {
             $tag = $this->getTag('extends', $reflection->getDocComment());
             if (!empty($tag)) {
                 $context = $this->contextFactory->createFromReflector($reflection);
@@ -142,24 +143,21 @@ class Documentor implements ResolverInterface
                     return TypeFactory::getGeneric($type->getFqsen()->getName());
                 }
             }
-        } elseif ($type instanceof Types\AbstractList) {
-            $key = $type->getKeyType();
+        } elseif ($type instanceof Types\Collection) {
             $value = $type->getValueType();
-
-            if ($key instanceof Types\Compound) {
-                $items = $this->buildType($value);
-                if ($items instanceof TypeInterface) {
-                    return TypeFactory::getArray()->setItems($items);
-                } else {
-                    throw new \RuntimeException('Array without type hint');
-                }
+            $additionalProperties = $this->buildType($value);
+            if ($additionalProperties instanceof TypeInterface) {
+                return TypeFactory::getMap($additionalProperties);
             } else {
-                $additionalProperties = $this->buildType($value);
-                if ($additionalProperties instanceof TypeInterface) {
-                    return TypeFactory::getMap()->setAdditionalProperties($additionalProperties);
-                } else {
-                    throw new \RuntimeException('Array without type hint');
-                }
+                throw new \RuntimeException('Map without type hint');
+            }
+        } elseif ($type instanceof Types\AbstractList) {
+            $value = $type->getValueType();
+            $items = $this->buildType($value);
+            if ($items instanceof TypeInterface) {
+                return TypeFactory::getArray($items);
+            } else {
+                throw new \RuntimeException('Array without type hint');
             }
         } elseif ($type instanceof Types\Boolean) {
             return TypeFactory::getBoolean();

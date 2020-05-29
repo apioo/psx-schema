@@ -180,7 +180,7 @@ class ScalarProperties
     }
 }
 /**
- * @extends ArrayAccess<string, PropertyValue>
+ * @extends \PSX\Record\Record<PropertyValue>
  * @Description("Properties of a schema")
  */
 class Properties extends \PSX\Record\Record
@@ -655,7 +655,7 @@ class StringProperties
     }
 }
 /**
- * @extends ArrayAccess<string, string>
+ * @extends \PSX\Record\Record<string>
  * @Description("An object to hold mappings between payload values and schema names or references")
  */
 class DiscriminatorMapping extends \PSX\Record\Record
@@ -812,7 +812,7 @@ class OneOfProperties
     }
 }
 /**
- * @extends ArrayAccess<string, ReferenceType>
+ * @extends \PSX\Record\Record<ReferenceType>
  */
 class TemplateProperties extends \PSX\Record\Record
 {
@@ -891,14 +891,14 @@ class GenericType
     }
 }
 /**
- * @extends ArrayAccess<string, DefinitionValue>
+ * @extends \PSX\Record\Record<DefinitionValue>
  * @Description("Schema definitions which can be reused")
  */
 class Definitions extends \PSX\Record\Record
 {
 }
 /**
- * @extends ArrayAccess<string, string>
+ * @extends \PSX\Record\Record<string>
  * @Description("Contains external definitions which are imported. The imported schemas can be used via the namespace")
  */
 class Import extends \PSX\Record\Record

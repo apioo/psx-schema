@@ -157,7 +157,7 @@ class Php extends CodeGeneratorAbstract
         $subType = $this->generator->getDocType($origin->getAdditionalProperties());
 
         $class = $this->factory->class($name);
-        $class->setDocComment($this->buildComment(['extends' => 'ArrayAccess<string, ' . $subType . '>'], $this->getAnnotationsForType($origin)));
+        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\Record<' . $subType . '>'], $this->getAnnotationsForType($origin)));
         $class->extend('\\' . Record::class);
 
         return $this->prettyPrint($class);

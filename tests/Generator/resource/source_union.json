@@ -1,0 +1,28 @@
+{
+  "definitions": {
+    "Human": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        }
+      }
+    },
+    "Animal": {
+      "type": "object",
+      "properties": {
+        "nickname": {
+          "type": "string"
+        }
+      }
+    },
+    "Union": {
+      "oneOf": [{
+        "$ref": "Human"
+      }, {
+        "$ref": "Animal"
+      }]
+    }
+  },
+  "$ref": "Union"
+}

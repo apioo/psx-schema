@@ -46,15 +46,19 @@ class ParseCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'source'   => News::class,
+            'target'   => __DIR__ . '/resource',
             '--format' => 'php',
         ));
 
         $actual = $commandTester->getDisplay();
+        $expect = 'Generated 5 files';
 
-        $expect = file_get_contents(__DIR__ . '/resource/php.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertEquals($expect, substr($actual, 0, strlen($expect)), $actual);
+        $this->assertFileExists(__DIR__ . '/resource/Author.php');
+        $this->assertFileExists(__DIR__ . '/resource/Location.php');
+        $this->assertFileExists(__DIR__ . '/resource/Meta.php');
+        $this->assertFileExists(__DIR__ . '/resource/News.php');
+        $this->assertFileExists(__DIR__ . '/resource/Web.php');
     }
 
     protected function getParseCommand()
