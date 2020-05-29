@@ -153,8 +153,8 @@ class Dumper
 
     private function dumpMap($data, MapType $type, ?\ReflectionClass $reflection = null): RecordInterface
     {
-        if (!is_iterable($data)) {
-            throw new \InvalidArgumentException('Map must be iterable');
+        if (!$data instanceof \Traversable) {
+            throw new \InvalidArgumentException('Map must be traversable');
         }
 
         if ($reflection === null) {

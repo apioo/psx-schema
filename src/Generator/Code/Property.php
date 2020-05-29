@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator\Code;
 
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -102,7 +103,7 @@ class Property
      */
     public function getComment(): ?string
     {
-        return $this->origin->getDescription();
+        return $this->origin instanceof TypeAbstract ? $this->origin->getDescription() : null;
     }
 
     /**

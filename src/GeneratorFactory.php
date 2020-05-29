@@ -59,7 +59,7 @@ class GeneratorFactory
                 break;
 
             case self::TYPE_HTML:
-                return new Generator\Html($config ?: 1);
+                return new Generator\Html($config ? (int) $config : 1);
                 break;
 
             case self::TYPE_JAVA:
@@ -71,7 +71,7 @@ class GeneratorFactory
                 break;
 
             case self::TYPE_MARKDOWN:
-                return new Generator\Markdown($config ?: 1);
+                return new Generator\Markdown($config ? (int) $config : 1);
                 break;
 
             case self::TYPE_PHP:

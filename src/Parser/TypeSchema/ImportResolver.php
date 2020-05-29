@@ -56,12 +56,7 @@ class ImportResolver
             throw new \RuntimeException('Could not find resolver for scheme ' . $scheme);
         }
 
-        $schema = $resolver->resolve($source);
-        if (!is_array($schema)) {
-            throw new \RuntimeException('Could not resolve uri');
-        }
-
-        return $schema;
+        return $resolver->resolve($source);
     }
 
     public static function createDefault(ClientInterface $httpClient = null)

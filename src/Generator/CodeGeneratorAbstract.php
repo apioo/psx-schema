@@ -92,10 +92,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             $this->generateDefinition($name, $type);
         }
 
-        $type = $schema->getType();
-        if ($type instanceof TypeInterface) {
-            $this->generateRoot($type);
-        }
+        $this->generateRoot($schema->getType());
 
         return $this->chunks;
     }

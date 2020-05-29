@@ -73,7 +73,7 @@ class Php extends GeneratorAbstract
             }
             return implode('&', $parts);
         } elseif ($type instanceof GenericType) {
-            return $type->getGeneric();
+            return $type->getGeneric() ?? '';
         } elseif ($type instanceof AnyType) {
             return 'mixed';
         } else {

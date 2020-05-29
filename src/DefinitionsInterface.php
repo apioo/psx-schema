@@ -34,7 +34,7 @@ interface DefinitionsInterface
     /**
      * @param string $name
      * @param TypeInterface $type
-     * @return mixed
+     * @return void
      */
     public function addType(string $name, TypeInterface $type): void;
 

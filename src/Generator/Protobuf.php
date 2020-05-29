@@ -59,7 +59,7 @@ class Protobuf extends CodeGeneratorAbstract
         $index = 1;
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ($index !== null ? ' = ' . $index . ';' : '') . "\n";
+            $code.= $this->indent . $property->getType() . ' ' . $name . ' = ' . $index . ';' . "\n";
 
             $index++;
         }

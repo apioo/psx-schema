@@ -74,7 +74,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
                 return $this->getReference($type->getRef());
             }
         } elseif ($type instanceof GenericType) {
-            return $type->getGeneric();
+            return $type->getGeneric() ?? '';
         }
 
         return $this->getAny();
@@ -223,10 +223,10 @@ abstract class GeneratorAbstract implements GeneratorInterface
     abstract protected function getAny(): string;
 
     /**
-     * @param TypeInterface $type
+     * @param StringType $type
      * @return string
      */
-    private function getStringType(TypeInterface $type): string
+    private function getStringType(StringType $type): string
     {
         $format = $type->getFormat();
         if ($format === TypeAbstract::FORMAT_DATE) {
@@ -247,10 +247,10 @@ abstract class GeneratorAbstract implements GeneratorInterface
     }
 
     /**
-     * @param TypeInterface $type
+     * @param IntegerType $type
      * @return string
      */
-    private function getIntegerType(TypeInterface $type): string
+    private function getIntegerType(IntegerType $type): string
     {
         $format = $type->getFormat();
         if ($format === TypeAbstract::FORMAT_INT32) {

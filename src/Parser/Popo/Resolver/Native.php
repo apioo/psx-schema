@@ -52,22 +52,7 @@ class Native implements ResolverInterface
         }
 
         $type = $reflection->getType();
-        if ($type instanceof \ReflectionUnionType) {
-            $types = $type->getTypes();
-            $oneOf = [];
-            foreach ($types as $type) {
-                $property = $this->getPropertyForType($type);
-                if ($property instanceof TypeInterface) {
-                    $oneOf[] = $property;
-                }
-            }
-
-            if (count($oneOf) > 1) {
-                return TypeFactory::getUnion($oneOf);
-            } else {
-                return reset($oneOf);
-            }
-        } elseif ($type instanceof \ReflectionNamedType) {
+        if ($type instanceof \ReflectionNamedType) {
             return $this->getPropertyForType($type, $reflection);
         }
 
@@ -95,7 +80,7 @@ class Native implements ResolverInterface
             $class = $property->getDeclaringClass()->getName();
             return TypeFactory::getReference($class);
         } elseif (class_exists($name)) {
-            return TypeFactory::getReference($type);
+            return TypeFactory::getReference($name);
         }
 
         return null;

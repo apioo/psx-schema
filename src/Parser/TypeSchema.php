@@ -145,13 +145,6 @@ class TypeSchema implements ParserInterface
             $this->parseGeneric($type, $data);
         }
 
-        // PSX specific attributes
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 6) === 'x-psx-') {
-                $type->setAttribute(substr($key, 6), $value);
-            }
-        }
-
         return $type;
     }
 
@@ -175,6 +168,13 @@ class TypeSchema implements ParserInterface
 
         if (isset($data['readonly'])) {
             $type->setReadonly($data['readonly']);
+        }
+
+        // PSX specific attributes
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 6) === 'x-psx-') {
+                $type->setAttribute(substr($key, 6), $value);
+            }
         }
     }
 
@@ -206,11 +206,7 @@ class TypeSchema implements ParserInterface
         if (isset($data['properties']) && is_array($data['properties'])) {
             foreach ($data['properties'] as $name => $row) {
                 if (is_array($row)) {
-                    $prop = $this->parseType($row);
-
-                    if ($prop !== null) {
-                        $type->addProperty($name, $prop);
-                    }
+                    $type->addProperty($name, $this->parseType($row));
                 }
             }
         }
