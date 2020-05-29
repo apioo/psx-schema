@@ -32,7 +32,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
 class Readonly
 {
     /**
-     * @var string
+     * @var boolean
      */
     protected $readonly;
 

@@ -32,7 +32,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
 class Nullable
 {
     /**
-     * @var string
+     * @var boolean
      */
     protected $nullable;
 

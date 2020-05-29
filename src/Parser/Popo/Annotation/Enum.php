@@ -34,7 +34,7 @@ use InvalidArgumentException;
 class Enum
 {
     /**
-     * @var string
+     * @var array
      */
     protected $enum;
 

@@ -32,7 +32,7 @@ namespace PSX\Schema\Parser\Popo\Annotation;
 class Deprecated
 {
     /**
-     * @var string
+     * @var boolean
      */
     protected $deprecated;
 
