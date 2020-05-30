@@ -111,7 +111,7 @@ class Php extends CodeGeneratorAbstract
 
             $prop = $this->factory->property($name);
             $prop->makeProtected();
-            $prop->setDocComment($this->buildComment(['var' => $property->getDocType()], $this->getAnnotationsForType($property->getOrigin(), $realKey)));
+            $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null'], $this->getAnnotationsForType($property->getOrigin(), $realKey)));
 
             $default = $this->getDefault($property->getOrigin());
             if ($default !== null) {
@@ -128,8 +128,9 @@ class Php extends CodeGeneratorAbstract
             }
 
             $setter = $this->factory->method('set' . ucfirst($name));
+            $setter->setReturnType('void');
             $setter->makePublic();
-            $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . ' $' . $name]));
+            $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $name]));
             $setter->addParam($param);
             $setter->addStmt(new Node\Expr\Assign(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
@@ -140,9 +141,11 @@ class Php extends CodeGeneratorAbstract
             $getter = $this->factory->method('get' . ucfirst($name));
             if (!empty($type)) {
                 $getter->setReturnType(new Node\NullableType($type));
+            } else {
+                $setter->setReturnType('void');
             }
             $getter->makePublic();
-            $getter->setDocComment($this->buildComment(['return' => $property->getDocType()]));
+            $getter->setDocComment($this->buildComment(['return' => $property->getDocType() . '|null']));
             $getter->addStmt(new Node\Stmt\Return_(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
             ));
@@ -188,7 +191,7 @@ class Php extends CodeGeneratorAbstract
 
         return $name;
     }
-    
+
     private function buildComment(array $tags, array $annotations = [], ?string $comment = null): string
     {
         $lines = [];
