@@ -9,4 +9,5 @@ before_install:
 install:
   - composer install
 script:
+  - vendor/bin/psalm
   - vendor/bin/phpunit
