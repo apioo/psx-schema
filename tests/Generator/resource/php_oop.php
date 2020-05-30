@@ -1,18 +1,18 @@
 class Human
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $firstName;
     /**
-     * @param string $firstName
+     * @param string|null $firstName
      */
-    public function setFirstName(?string $firstName)
+    public function setFirstName(?string $firstName) : void
     {
         $this->firstName = $firstName;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getFirstName() : ?string
     {
@@ -22,18 +22,18 @@ class Human
 class Student extends Human
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $matricleNumber;
     /**
-     * @param string $matricleNumber
+     * @param string|null $matricleNumber
      */
-    public function setMatricleNumber(?string $matricleNumber)
+    public function setMatricleNumber(?string $matricleNumber) : void
     {
         $this->matricleNumber = $matricleNumber;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getMatricleNumber() : ?string
     {
@@ -52,36 +52,36 @@ class StudentMap extends Map
 class Map
 {
     /**
-     * @var int
+     * @var int|null
      */
     protected $totalResults;
     /**
-     * @var array<T>
+     * @var array<T>|null
      */
     protected $entries;
     /**
-     * @param int $totalResults
+     * @param int|null $totalResults
      */
-    public function setTotalResults(?int $totalResults)
+    public function setTotalResults(?int $totalResults) : void
     {
         $this->totalResults = $totalResults;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getTotalResults() : ?int
     {
         return $this->totalResults;
     }
     /**
-     * @param array<T> $entries
+     * @param array<T>|null $entries
      */
-    public function setEntries(?array $entries)
+    public function setEntries(?array $entries) : void
     {
         $this->entries = $entries;
     }
     /**
-     * @return array<T>
+     * @return array<T>|null
      */
     public function getEntries() : ?array
     {
@@ -91,18 +91,18 @@ class Map
 class RootSchema
 {
     /**
-     * @var StudentMap
+     * @var StudentMap|null
      */
     protected $students;
     /**
-     * @param StudentMap $students
+     * @param StudentMap|null $students
      */
-    public function setStudents(?StudentMap $students)
+    public function setStudents(?StudentMap $students) : void
     {
         $this->students = $students;
     }
     /**
-     * @return StudentMap
+     * @return StudentMap|null
      */
     public function getStudents() : ?StudentMap
     {

@@ -17,11 +17,23 @@
       }
     },
     "Union": {
-      "oneOf": [{
-        "$ref": "Human"
-      }, {
-        "$ref": "Animal"
-      }]
+      "type": "object",
+      "properties": {
+        "union": {
+          "oneOf": [{
+            "$ref": "Human"
+          }, {
+            "$ref": "Animal"
+          }]
+        },
+        "intersection": {
+          "allOf": [{
+            "$ref": "Human"
+          }, {
+            "$ref": "Animal"
+          }]
+        }
+      }
     }
   },
   "$ref": "Union"

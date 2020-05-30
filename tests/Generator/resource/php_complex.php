@@ -4,115 +4,115 @@
 class CommonProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Description("Distinct word which represents this schema")
      */
     protected $title;
     /**
-     * @var string
+     * @var string|null
      * @Description("General description of this schema, should not contain any new lines.")
      */
     protected $description;
     /**
-     * @var string
+     * @var string|null
      * @Description("JSON type of the property")
      * @Enum({"object", "array", "boolean", "integer", "number", "string"})
      */
     protected $type;
     /**
-     * @var bool
+     * @var bool|null
      * @Description("Indicates whether it is possible to use a null value")
      */
     protected $nullable;
     /**
-     * @var bool
+     * @var bool|null
      * @Description("Indicates whether this schema is deprecated")
      */
     protected $deprecated;
     /**
-     * @var bool
+     * @var bool|null
      * @Description("Indicates whether this schema is readonly")
      */
     protected $readonly;
     /**
-     * @param string $title
+     * @param string|null $title
      */
-    public function setTitle(?string $title)
+    public function setTitle(?string $title) : void
     {
         $this->title = $title;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getTitle() : ?string
     {
         return $this->title;
     }
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription(?string $description)
+    public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription() : ?string
     {
         return $this->description;
     }
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
         return $this->type;
     }
     /**
-     * @param bool $nullable
+     * @param bool|null $nullable
      */
-    public function setNullable(?bool $nullable)
+    public function setNullable(?bool $nullable) : void
     {
         $this->nullable = $nullable;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getNullable() : ?bool
     {
         return $this->nullable;
     }
     /**
-     * @param bool $deprecated
+     * @param bool|null $deprecated
      */
-    public function setDeprecated(?bool $deprecated)
+    public function setDeprecated(?bool $deprecated) : void
     {
         $this->deprecated = $deprecated;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getDeprecated() : ?bool
     {
         return $this->deprecated;
     }
     /**
-     * @param bool $readonly
+     * @param bool|null $readonly
      */
-    public function setReadonly(?bool $readonly)
+    public function setReadonly(?bool $readonly) : void
     {
         $this->readonly = $readonly;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getReadonly() : ?bool
     {
@@ -122,57 +122,57 @@ class CommonProperties
 class ScalarProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Description("Describes the specific format of this type i.e. date-time or int64")
      */
     protected $format;
     /**
-     * @var StringArray|NumberArray
+     * @var StringArray|NumberArray|null
      * @Description("A list of possible enumeration values")
      */
     protected $enum;
     /**
-     * @var string|float|bool
+     * @var string|float|bool|null
      * @Description("Represents a scalar value")
      */
     protected $default;
     /**
-     * @param string $format
+     * @param string|null $format
      */
-    public function setFormat(?string $format)
+    public function setFormat(?string $format) : void
     {
         $this->format = $format;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getFormat() : ?string
     {
         return $this->format;
     }
     /**
-     * @param StringArray|NumberArray $enum
+     * @param StringArray|NumberArray|null $enum
      */
-    public function setEnum($enum)
+    public function setEnum($enum) : void
     {
         $this->enum = $enum;
     }
     /**
-     * @return StringArray|NumberArray
+     * @return StringArray|NumberArray|null
      */
     public function getEnum()
     {
         return $this->enum;
     }
     /**
-     * @param string|float|bool $default
+     * @param string|float|bool|null $default
      */
-    public function setDefault($default)
+    public function setDefault($default) : void
     {
         $this->default = $default;
     }
     /**
-     * @return string|float|bool
+     * @return string|float|bool|null
      */
     public function getDefault()
     {
@@ -193,19 +193,19 @@ class Properties extends \PSX\Record\Record
 class ContainerProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Enum({"object"})
      */
     protected $type;
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
@@ -219,38 +219,38 @@ class ContainerProperties
 class StructProperties
 {
     /**
-     * @var Properties
+     * @var Properties|null
      */
     protected $properties;
     /**
-     * @var array<string>
+     * @var array<string>|null
      * @Description("Array string values")
      * @MinItems(1)
      */
     protected $required;
     /**
-     * @param Properties $properties
+     * @param Properties|null $properties
      */
-    public function setProperties(?Properties $properties)
+    public function setProperties(?Properties $properties) : void
     {
         $this->properties = $properties;
     }
     /**
-     * @return Properties
+     * @return Properties|null
      */
     public function getProperties() : ?Properties
     {
         return $this->properties;
     }
     /**
-     * @param array<string> $required
+     * @param array<string>|null $required
      */
-    public function setRequired(?array $required)
+    public function setRequired(?array $required) : void
     {
         $this->required = $required;
     }
     /**
-     * @return array<string>
+     * @return array<string>|null
      */
     public function getRequired() : ?array
     {
@@ -264,59 +264,59 @@ class StructProperties
 class MapProperties
 {
     /**
-     * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
+     * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
      * @Description("Allowed values of an object property")
      */
     protected $additionalProperties;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $maxProperties;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $minProperties;
     /**
-     * @param BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType $additionalProperties
+     * @param BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties
      */
-    public function setAdditionalProperties($additionalProperties)
+    public function setAdditionalProperties($additionalProperties) : void
     {
         $this->additionalProperties = $additionalProperties;
     }
     /**
-     * @return BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType
+     * @return BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
      */
     public function getAdditionalProperties()
     {
         return $this->additionalProperties;
     }
     /**
-     * @param int $maxProperties
+     * @param int|null $maxProperties
      */
-    public function setMaxProperties(?int $maxProperties)
+    public function setMaxProperties(?int $maxProperties) : void
     {
         $this->maxProperties = $maxProperties;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaxProperties() : ?int
     {
         return $this->maxProperties;
     }
     /**
-     * @param int $minProperties
+     * @param int|null $minProperties
      */
-    public function setMinProperties(?int $minProperties)
+    public function setMinProperties(?int $minProperties) : void
     {
         $this->minProperties = $minProperties;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMinProperties() : ?int
     {
@@ -330,96 +330,96 @@ class MapProperties
 class ArrayProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Enum({"array"})
      */
     protected $type;
     /**
-     * @var BooleanType|NumberType|StringType|ReferenceType|GenericType
+     * @var BooleanType|NumberType|StringType|ReferenceType|GenericType|null
      * @Description("Allowed values of an array item")
      */
     protected $items;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $maxItems;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $minItems;
     /**
-     * @var bool
+     * @var bool|null
      */
     protected $uniqueItems;
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
         return $this->type;
     }
     /**
-     * @param BooleanType|NumberType|StringType|ReferenceType|GenericType $items
+     * @param BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items
      */
-    public function setItems($items)
+    public function setItems($items) : void
     {
         $this->items = $items;
     }
     /**
-     * @return BooleanType|NumberType|StringType|ReferenceType|GenericType
+     * @return BooleanType|NumberType|StringType|ReferenceType|GenericType|null
      */
     public function getItems()
     {
         return $this->items;
     }
     /**
-     * @param int $maxItems
+     * @param int|null $maxItems
      */
-    public function setMaxItems(?int $maxItems)
+    public function setMaxItems(?int $maxItems) : void
     {
         $this->maxItems = $maxItems;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaxItems() : ?int
     {
         return $this->maxItems;
     }
     /**
-     * @param int $minItems
+     * @param int|null $minItems
      */
-    public function setMinItems(?int $minItems)
+    public function setMinItems(?int $minItems) : void
     {
         $this->minItems = $minItems;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMinItems() : ?int
     {
         return $this->minItems;
     }
     /**
-     * @param bool $uniqueItems
+     * @param bool|null $uniqueItems
      */
-    public function setUniqueItems(?bool $uniqueItems)
+    public function setUniqueItems(?bool $uniqueItems) : void
     {
         $this->uniqueItems = $uniqueItems;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getUniqueItems() : ?bool
     {
@@ -433,19 +433,19 @@ class ArrayProperties
 class BooleanProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Enum({"boolean"})
      */
     protected $type;
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
@@ -459,111 +459,111 @@ class BooleanProperties
 class NumberProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Enum({"number", "integer"})
      */
     protected $type;
     /**
-     * @var float
+     * @var float|null
      * @Minimum(0)
      * @ExclusiveMinimum(true)
      */
     protected $multipleOf;
     /**
-     * @var float
+     * @var float|null
      */
     protected $maximum;
     /**
-     * @var bool
+     * @var bool|null
      */
     protected $exclusiveMaximum;
     /**
-     * @var float
+     * @var float|null
      */
     protected $minimum;
     /**
-     * @var bool
+     * @var bool|null
      */
     protected $exclusiveMinimum;
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
         return $this->type;
     }
     /**
-     * @param float $multipleOf
+     * @param float|null $multipleOf
      */
-    public function setMultipleOf(?float $multipleOf)
+    public function setMultipleOf(?float $multipleOf) : void
     {
         $this->multipleOf = $multipleOf;
     }
     /**
-     * @return float
+     * @return float|null
      */
     public function getMultipleOf() : ?float
     {
         return $this->multipleOf;
     }
     /**
-     * @param float $maximum
+     * @param float|null $maximum
      */
-    public function setMaximum(?float $maximum)
+    public function setMaximum(?float $maximum) : void
     {
         $this->maximum = $maximum;
     }
     /**
-     * @return float
+     * @return float|null
      */
     public function getMaximum() : ?float
     {
         return $this->maximum;
     }
     /**
-     * @param bool $exclusiveMaximum
+     * @param bool|null $exclusiveMaximum
      */
-    public function setExclusiveMaximum(?bool $exclusiveMaximum)
+    public function setExclusiveMaximum(?bool $exclusiveMaximum) : void
     {
         $this->exclusiveMaximum = $exclusiveMaximum;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getExclusiveMaximum() : ?bool
     {
         return $this->exclusiveMaximum;
     }
     /**
-     * @param float $minimum
+     * @param float|null $minimum
      */
-    public function setMinimum(?float $minimum)
+    public function setMinimum(?float $minimum) : void
     {
         $this->minimum = $minimum;
     }
     /**
-     * @return float
+     * @return float|null
      */
     public function getMinimum() : ?float
     {
         return $this->minimum;
     }
     /**
-     * @param bool $exclusiveMinimum
+     * @param bool|null $exclusiveMinimum
      */
-    public function setExclusiveMinimum(?bool $exclusiveMinimum)
+    public function setExclusiveMinimum(?bool $exclusiveMinimum) : void
     {
         $this->exclusiveMinimum = $exclusiveMinimum;
     }
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getExclusiveMinimum() : ?bool
     {
@@ -577,77 +577,77 @@ class NumberProperties
 class StringProperties
 {
     /**
-     * @var string
+     * @var string|null
      * @Enum({"string"})
      */
     protected $type;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $maxLength;
     /**
-     * @var int
+     * @var int|null
      * @Description("Positive integer value")
      * @Minimum(0)
      */
     protected $minLength;
     /**
-     * @var string
+     * @var string|null
      */
     protected $pattern;
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
         return $this->type;
     }
     /**
-     * @param int $maxLength
+     * @param int|null $maxLength
      */
-    public function setMaxLength(?int $maxLength)
+    public function setMaxLength(?int $maxLength) : void
     {
         $this->maxLength = $maxLength;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaxLength() : ?int
     {
         return $this->maxLength;
     }
     /**
-     * @param int $minLength
+     * @param int|null $minLength
      */
-    public function setMinLength(?int $minLength)
+    public function setMinLength(?int $minLength) : void
     {
         $this->minLength = $minLength;
     }
     /**
-     * @return int
+     * @return int|null
      */
     public function getMinLength() : ?int
     {
         return $this->minLength;
     }
     /**
-     * @param string $pattern
+     * @param string|null $pattern
      */
-    public function setPattern(?string $pattern)
+    public function setPattern(?string $pattern) : void
     {
         $this->pattern = $pattern;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getPattern() : ?string
     {
@@ -668,37 +668,37 @@ class DiscriminatorMapping extends \PSX\Record\Record
 class Discriminator
 {
     /**
-     * @var string
+     * @var string|null
      * @Description("The name of the property in the payload that will hold the discriminator value")
      */
     protected $propertyName;
     /**
-     * @var DiscriminatorMapping
+     * @var DiscriminatorMapping|null
      */
     protected $mapping;
     /**
-     * @param string $propertyName
+     * @param string|null $propertyName
      */
-    public function setPropertyName(?string $propertyName)
+    public function setPropertyName(?string $propertyName) : void
     {
         $this->propertyName = $propertyName;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getPropertyName() : ?string
     {
         return $this->propertyName;
     }
     /**
-     * @param DiscriminatorMapping $mapping
+     * @param DiscriminatorMapping|null $mapping
      */
-    public function setMapping(?DiscriminatorMapping $mapping)
+    public function setMapping(?DiscriminatorMapping $mapping) : void
     {
         $this->mapping = $mapping;
     }
     /**
-     * @return DiscriminatorMapping
+     * @return DiscriminatorMapping|null
      */
     public function getMapping() : ?DiscriminatorMapping
     {
@@ -712,37 +712,37 @@ class Discriminator
 class AllOfProperties
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $description;
     /**
-     * @var array<OfValue>
+     * @var array<OfValue>|null
      * @Description("Combination values")
      */
     protected $allOf;
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription(?string $description)
+    public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription() : ?string
     {
         return $this->description;
     }
     /**
-     * @param array<OfValue> $allOf
+     * @param array<OfValue>|null $allOf
      */
-    public function setAllOf(?array $allOf)
+    public function setAllOf(?array $allOf) : void
     {
         $this->allOf = $allOf;
     }
     /**
-     * @return array<OfValue>
+     * @return array<OfValue>|null
      */
     public function getAllOf() : ?array
     {
@@ -756,55 +756,55 @@ class AllOfProperties
 class OneOfProperties
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $description;
     /**
-     * @var Discriminator
+     * @var Discriminator|null
      */
     protected $discriminator;
     /**
-     * @var array<OfValue>
+     * @var array<OfValue>|null
      * @Description("Combination values")
      */
     protected $oneOf;
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription(?string $description)
+    public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription() : ?string
     {
         return $this->description;
     }
     /**
-     * @param Discriminator $discriminator
+     * @param Discriminator|null $discriminator
      */
-    public function setDiscriminator(?Discriminator $discriminator)
+    public function setDiscriminator(?Discriminator $discriminator) : void
     {
         $this->discriminator = $discriminator;
     }
     /**
-     * @return Discriminator
+     * @return Discriminator|null
      */
     public function getDiscriminator() : ?Discriminator
     {
         return $this->discriminator;
     }
     /**
-     * @param array<OfValue> $oneOf
+     * @param array<OfValue>|null $oneOf
      */
-    public function setOneOf(?array $oneOf)
+    public function setOneOf(?array $oneOf) : void
     {
         $this->oneOf = $oneOf;
     }
     /**
-     * @return array<OfValue>
+     * @return array<OfValue>|null
      */
     public function getOneOf() : ?array
     {
@@ -824,40 +824,40 @@ class TemplateProperties extends \PSX\Record\Record
 class ReferenceType
 {
     /**
-     * @var string
+     * @var string|null
      * @Key("$ref")
      * @Description("Reference to the schema under the definitions key")
      */
     protected $ref;
     /**
-     * @var TemplateProperties
+     * @var TemplateProperties|null
      * @Key("$template")
      * @Description("Optional concrete schema definitions which replace generic template types")
      */
     protected $template;
     /**
-     * @param string $ref
+     * @param string|null $ref
      */
-    public function setRef(?string $ref)
+    public function setRef(?string $ref) : void
     {
         $this->ref = $ref;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getRef() : ?string
     {
         return $this->ref;
     }
     /**
-     * @param TemplateProperties $template
+     * @param TemplateProperties|null $template
      */
-    public function setTemplate(?TemplateProperties $template)
+    public function setTemplate(?TemplateProperties $template) : void
     {
         $this->template = $template;
     }
     /**
-     * @return TemplateProperties
+     * @return TemplateProperties|null
      */
     public function getTemplate() : ?TemplateProperties
     {
@@ -871,19 +871,19 @@ class ReferenceType
 class GenericType
 {
     /**
-     * @var string
+     * @var string|null
      * @Key("$generic")
      */
     protected $generic;
     /**
-     * @param string $generic
+     * @param string|null $generic
      */
-    public function setGeneric(?string $generic)
+    public function setGeneric(?string $generic) : void
     {
         $this->generic = $generic;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getGeneric() : ?string
     {
@@ -912,130 +912,130 @@ class Import extends \PSX\Record\Record
 class TypeSchema
 {
     /**
-     * @var Import
+     * @var Import|null
      * @Key("$import")
      */
     protected $import;
     /**
-     * @var string
+     * @var string|null
      */
     protected $title;
     /**
-     * @var string
+     * @var string|null
      */
     protected $description;
     /**
-     * @var string
+     * @var string|null
      * @Enum({"object"})
      */
     protected $type;
     /**
-     * @var Definitions
+     * @var Definitions|null
      */
     protected $definitions;
     /**
-     * @var Properties
+     * @var Properties|null
      */
     protected $properties;
     /**
-     * @var array<string>
+     * @var array<string>|null
      * @Description("Array string values")
      * @MinItems(1)
      */
     protected $required;
     /**
-     * @param Import $import
+     * @param Import|null $import
      */
-    public function setImport(?Import $import)
+    public function setImport(?Import $import) : void
     {
         $this->import = $import;
     }
     /**
-     * @return Import
+     * @return Import|null
      */
     public function getImport() : ?Import
     {
         return $this->import;
     }
     /**
-     * @param string $title
+     * @param string|null $title
      */
-    public function setTitle(?string $title)
+    public function setTitle(?string $title) : void
     {
         $this->title = $title;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getTitle() : ?string
     {
         return $this->title;
     }
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription(?string $description)
+    public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getDescription() : ?string
     {
         return $this->description;
     }
     /**
-     * @param string $type
+     * @param string|null $type
      */
-    public function setType(?string $type)
+    public function setType(?string $type) : void
     {
         $this->type = $type;
     }
     /**
-     * @return string
+     * @return string|null
      */
     public function getType() : ?string
     {
         return $this->type;
     }
     /**
-     * @param Definitions $definitions
+     * @param Definitions|null $definitions
      */
-    public function setDefinitions(?Definitions $definitions)
+    public function setDefinitions(?Definitions $definitions) : void
     {
         $this->definitions = $definitions;
     }
     /**
-     * @return Definitions
+     * @return Definitions|null
      */
     public function getDefinitions() : ?Definitions
     {
         return $this->definitions;
     }
     /**
-     * @param Properties $properties
+     * @param Properties|null $properties
      */
-    public function setProperties(?Properties $properties)
+    public function setProperties(?Properties $properties) : void
     {
         $this->properties = $properties;
     }
     /**
-     * @return Properties
+     * @return Properties|null
      */
     public function getProperties() : ?Properties
     {
         return $this->properties;
     }
     /**
-     * @param array<string> $required
+     * @param array<string>|null $required
      */
-    public function setRequired(?array $required)
+    public function setRequired(?array $required) : void
     {
         $this->required = $required;
     }
     /**
-     * @return array<string>
+     * @return array<string>|null
      */
     public function getRequired() : ?array
     {
