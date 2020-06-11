@@ -24,6 +24,7 @@ use PSX\Json\Parser;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use PSX\Schema\Parser\TypeSchema\UnknownTypeException;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
@@ -70,12 +71,22 @@ class TypeSchema implements ParserInterface
     {
         $data = Parser::decode($schema, true);
 
+        if (!is_array($data)) {
+            throw new \InvalidArgumentException('Schema must be an object');
+        }
+
         $definitions = new Definitions();
 
         $this->parseDefinitions(Definitions::SELF_NAMESPACE, $data, $definitions);
         $this->parseImport($data, $definitions);
 
-        $type = $this->parseType($data);
+        try {
+            $type = $this->parseType($data);
+        } catch (UnknownTypeException $e) {
+            // in case we parse i.e. an OpenAPI document we have no root schema
+            // and only definitions
+            $type = TypeFactory::getAny();
+        }
 
         return new Schema($type, $definitions);
     }
@@ -382,7 +393,7 @@ class TypeSchema implements ParserInterface
             return TypeFactory::getGeneric();
         }
 
-        throw new \RuntimeException('Could not assign schema to a type');
+        throw new UnknownTypeException('Could not assign schema to a type');
     }
 
     /**
