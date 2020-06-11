@@ -160,7 +160,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
 
         $className  = $this->normalizeClassName($className);
-        $properties = $type->getProperties();
+        $properties = $type->getProperties() ?? [];
         $generics   = [];
         $required   = $type->getRequired() ?: [];
         $mapping    = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
