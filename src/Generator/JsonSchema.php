@@ -24,6 +24,7 @@ use PSX\Json\Parser;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
@@ -158,6 +159,8 @@ class JsonSchema implements GeneratorInterface
             return [
                 '$ref' => $this->refBase . $type->getRef()
             ];
+        } elseif ($type instanceof AnyType) {
+            return [];
         } else {
             return $type->toArray();
         }
