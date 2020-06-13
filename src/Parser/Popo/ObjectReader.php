@@ -21,6 +21,7 @@
 namespace PSX\Schema\Parser\Popo;
 
 use Doctrine\Common\Annotations\Reader;
+use PSX\Schema\Annotation;
 use ReflectionClass;
 
 /**
