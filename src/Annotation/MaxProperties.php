@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Nullable
+ * MaxProperties
  *
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target("CLASS")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Nullable
+class MaxProperties
 {
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $nullable;
+    protected $maxProperties;
 
     public function __construct(array $values)
     {
-        $this->nullable = (bool) current($values);
+        $this->maxProperties = current($values);
     }
 
-    public function isNullable()
+    public function getMaxProperties()
     {
-        return $this->nullable;
+        return $this->maxProperties;
     }
 }

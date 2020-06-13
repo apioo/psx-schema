@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Deprecated
+ * Key
  *
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Deprecated
+class Key
 {
     /**
-     * @var boolean
+     * @var string
      */
-    protected $deprecated;
+    protected $key;
 
     public function __construct(array $values)
     {
-        $this->deprecated = (bool) current($values);
+        $this->key = current($values);
     }
 
-    public function isDeprecated()
+    public function getKey()
     {
-        return $this->deprecated;
+        return $this->key;
     }
 }

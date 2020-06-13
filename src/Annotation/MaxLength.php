@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Pattern
+ * MaxLength
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Format
+class MaxLength
 {
     /**
-     * @var string
+     * @var integer
      */
-    protected $format;
+    protected $maxLength;
 
     public function __construct(array $values)
     {
-        $this->format = current($values);
+        $this->maxLength = current($values);
     }
 
-    public function getFormat()
+    public function getMaxLength()
     {
-        return $this->format;
+        return $this->maxLength;
     }
 }

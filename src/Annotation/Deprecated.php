@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Minimum
+ * Deprecated
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Minimum
+class Deprecated
 {
     /**
-     * @var integer
+     * @var boolean
      */
-    protected $minimum;
+    protected $deprecated;
 
     public function __construct(array $values)
     {
-        $this->minimum = current($values);
+        $this->deprecated = (bool) current($values);
     }
 
-    public function getMinimum()
+    public function isDeprecated()
     {
-        return $this->minimum;
+        return $this->deprecated;
     }
 }

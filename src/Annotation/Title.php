@@ -18,17 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Exclude
+ * Title
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Exclude
+class Title
 {
+    /**
+     * @var string
+     */
+    protected $title;
+
+    public function __construct(array $values)
+    {
+        $this->title = current($values);
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
 }

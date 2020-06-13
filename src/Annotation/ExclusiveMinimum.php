@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Pattern
+ * ExclusiveMinimum
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Pattern
+class ExclusiveMinimum
 {
     /**
-     * @var string
+     * @var boolean
      */
-    protected $pattern;
+    protected $exclusiveMinimum;
 
     public function __construct(array $values)
     {
-        $this->pattern = current($values);
+        $this->exclusiveMinimum = current($values);
     }
 
-    public function getPattern()
+    public function getExclusiveMinimum()
     {
-        return $this->pattern;
+        return $this->exclusiveMinimum;
     }
 }

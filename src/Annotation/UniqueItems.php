@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Key
+ * UniqueItems
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Key
+class UniqueItems
 {
     /**
-     * @var string
+     * @var boolean
      */
-    protected $key;
+    protected $uniqueItems;
 
     public function __construct(array $values)
     {
-        $this->key = current($values);
+        $this->uniqueItems = current($values);
     }
 
-    public function getKey()
+    public function getUniqueItems()
     {
-        return $this->key;
+        return $this->uniqueItems;
     }
 }

@@ -18,38 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
-
-use InvalidArgumentException;
+namespace PSX\Schema\Annotation;
 
 /**
- * Enum
+ * Nullable
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Enum
+class Nullable
 {
     /**
-     * @var array
+     * @var boolean
      */
-    protected $enum;
+    protected $nullable;
 
     public function __construct(array $values)
     {
-        $enum = current($values);
-        if (!is_array($enum)) {
-            throw new InvalidArgumentException('Enum must be an array');
-        }
-
-        $this->enum = $enum;
+        $this->nullable = (bool) current($values);
     }
 
-    public function getEnum()
+    public function isNullable()
     {
-        return $this->enum;
+        return $this->nullable;
     }
 }

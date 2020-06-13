@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Title
+ * Required
  *
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target("CLASS")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Title
+class Required
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $title;
+    protected $required;
 
-    public function __construct(array $values)
+    public function __construct(array $required)
     {
-        $this->title = current($values);
+        $this->required = current($required);
     }
 
-    public function getTitle()
+    public function getRequired()
     {
-        return $this->title;
+        return $this->required;
     }
 }

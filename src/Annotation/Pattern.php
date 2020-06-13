@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * MinProperties
+ * Pattern
  *
  * @Annotation
- * @Target("CLASS")
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MinProperties
+class Pattern
 {
     /**
-     * @var integer
+     * @var string
      */
-    protected $minProperties;
+    protected $pattern;
 
     public function __construct(array $values)
     {
-        $this->minProperties = current($values);
+        $this->pattern = current($values);
     }
 
-    public function getMinProperties()
+    public function getPattern()
     {
-        return $this->minProperties;
+        return $this->pattern;
     }
 }

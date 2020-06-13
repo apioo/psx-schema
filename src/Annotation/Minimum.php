@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * MinLength
+ * Minimum
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MinLength
+class Minimum
 {
     /**
      * @var integer
      */
-    protected $minLength;
+    protected $minimum;
 
     public function __construct(array $values)
     {
-        $this->minLength = current($values);
+        $this->minimum = current($values);
     }
 
-    public function getMinLength()
+    public function getMinimum()
     {
-        return $this->minLength;
+        return $this->minimum;
     }
 }

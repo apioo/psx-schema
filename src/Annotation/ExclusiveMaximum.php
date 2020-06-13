@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * MaxItems
+ * ExclusiveMaximum
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MaxItems
+class ExclusiveMaximum
 {
     /**
-     * @var integer
+     * @var boolean
      */
-    protected $maxItems;
+    protected $exclusiveMaximum;
 
     public function __construct(array $values)
     {
-        $this->maxItems = current($values);
+        $this->exclusiveMaximum = current($values);
     }
 
-    public function getMaxItems()
+    public function getExclusiveMaximum()
     {
-        return $this->maxItems;
+        return $this->exclusiveMaximum;
     }
 }

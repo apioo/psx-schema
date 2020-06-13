@@ -70,7 +70,7 @@ class Dumper
     {
         if ($reader === null) {
             $reader = new SimpleAnnotationReader();
-            $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+            $reader->addNamespace('PSX\\Schema\\Annotation');
         }
 
         $this->reader   = $reader;

@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * MinItems
+ * Pattern
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -29,20 +29,20 @@ namespace PSX\Schema\Parser\Popo\Annotation;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MinItems
+class Format
 {
     /**
-     * @var integer
+     * @var string
      */
-    protected $minItems;
+    protected $format;
 
     public function __construct(array $values)
     {
-        $this->minItems = current($values);
+        $this->format = current($values);
     }
 
-    public function getMinItems()
+    public function getFormat()
     {
-        return $this->minItems;
+        return $this->format;
     }
 }

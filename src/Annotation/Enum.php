@@ -18,31 +18,38 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
+
+use InvalidArgumentException;
 
 /**
- * Required
+ * Enum
  *
  * @Annotation
- * @Target("CLASS")
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Required
+class Enum
 {
     /**
      * @var array
      */
-    protected $required;
+    protected $enum;
 
-    public function __construct(array $required)
+    public function __construct(array $values)
     {
-        $this->required = current($required);
+        $enum = current($values);
+        if (!is_array($enum)) {
+            throw new InvalidArgumentException('Enum must be an array');
+        }
+
+        $this->enum = $enum;
     }
 
-    public function getRequired()
+    public function getEnum()
     {
-        return $this->required;
+        return $this->enum;
     }
 }

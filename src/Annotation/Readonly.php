@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * MultipleOf
+ * Readonly
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"CLASS", "PROPERTY"})
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class MultipleOf
+class Readonly
 {
     /**
-     * @var string
+     * @var boolean
      */
-    protected $multipleOf;
+    protected $readonly;
 
     public function __construct(array $values)
     {
-        $this->multipleOf = current($values);
+        $this->readonly = (bool) current($values);
     }
 
-    public function getMultipleOf()
+    public function isReadonly()
     {
-        return $this->multipleOf;
+        return $this->readonly;
     }
 }

@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * ExclusiveMaximum
+ * MinProperties
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target("CLASS")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class ExclusiveMaximum
+class MinProperties
 {
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $exclusiveMaximum;
+    protected $minProperties;
 
     public function __construct(array $values)
     {
-        $this->exclusiveMaximum = current($values);
+        $this->minProperties = current($values);
     }
 
-    public function getExclusiveMaximum()
+    public function getMinProperties()
     {
-        return $this->exclusiveMaximum;
+        return $this->minProperties;
     }
 }

@@ -18,31 +18,31 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\Popo\Annotation;
+namespace PSX\Schema\Annotation;
 
 /**
- * Description
+ * MultipleOf
  *
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target("PROPERTY")
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Description
+class MultipleOf
 {
     /**
      * @var string
      */
-    protected $description;
+    protected $multipleOf;
 
     public function __construct(array $values)
     {
-        $this->description = current($values);
+        $this->multipleOf = current($values);
     }
 
-    public function getDescription()
+    public function getMultipleOf()
     {
-        return $this->description;
+        return $this->multipleOf;
     }
 }

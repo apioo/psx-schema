@@ -76,7 +76,7 @@ class SchemaManager implements SchemaManagerInterface
     {
         if ($reader === null) {
             $reader = new SimpleAnnotationReader();
-            $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+            $reader->addNamespace('PSX\\Schema\\Annotation');
         }
 
         $this->popoParser = new Parser\Popo($reader);
@@ -106,7 +106,7 @@ class SchemaManager implements SchemaManagerInterface
             $type = $this->guessTypeFromSchema($schemaName);
         }
 
-        if ($type === self::TYPE_TYPESCHEMA || $type === self::TYPE_JSONSCHEMA) {
+        if ($type === self::TYPE_TYPESCHEMA) {
             $resolver = ImportResolver::createDefault($this->httpClient);
             $schema = Parser\TypeSchema::fromFile($schemaName, $resolver);
         } elseif ($type === self::TYPE_CLASS) {
