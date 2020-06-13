@@ -52,6 +52,7 @@ interface DefinitionsInterface
      * 
      * @param string $name
      * @return TypeInterface
+     * @throws TypeNotFoundException
      */
     public function getType(string $name): TypeInterface;
 

@@ -62,11 +62,15 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     {
         [$ns, $name] = $this->split($fqn);
 
-        if (isset($this->container[$ns][$name])) {
-            return $this->container[$ns][$name];
-        } else {
-            throw new \RuntimeException('Type not found');
+        if (!isset($this->container[$ns])) {
+            throw new TypeNotFoundException('Type namespace "' . $ns . '" not found', $ns, $name);
         }
+
+        if (!isset($this->container[$ns][$name])) {
+            throw new TypeNotFoundException('Type "' . $name . '" not found, the following types are available: ' . implode(', ', array_keys($this->container[$ns])), $ns, $name);
+        }
+
+        return $this->container[$ns][$name];
     }
 
     public function getTypes(string $namespace): iterable
