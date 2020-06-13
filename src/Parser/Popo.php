@@ -22,11 +22,9 @@ namespace PSX\Schema\Parser;
 
 use Doctrine\Common\Annotations\Reader;
 use InvalidArgumentException;
+use PSX\Schema\Annotation;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Parser\Popo\Annotation;
-use PSX\Schema\Parser\Popo\ObjectReader;
-use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\Type\ArrayType;
@@ -133,7 +131,7 @@ class Popo implements ParserInterface
 
     private function parseProperties(ReflectionClass $class, StructType $property, DefinitionsInterface $definitions)
     {
-        $properties = ObjectReader::getProperties($this->reader, $class);
+        $properties = Popo\ObjectReader::getProperties($this->reader, $class);
         $mapping    = [];
 
         foreach ($properties as $key => $reflection) {
@@ -337,7 +335,7 @@ class Popo implements ParserInterface
         }
     }
 
-    public static function createDefaultResolver(): ResolverInterface
+    public static function createDefaultResolver(): Popo\ResolverInterface
     {
         return new Popo\Resolver\Composite(
             new Popo\Resolver\Native(),
