@@ -2,11 +2,11 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use PSX\Schema\Parser\Popo\Annotation as JS;
+use PSX\Schema\Annotation as Schema;
 
 /**
- * @JS\Description("Location of the person")
- * @JS\Required({"lat", "long"})
+ * @Schema\Description("Location of the person")
+ * @Schema\Required({"lat", "long"})
  */
 class Location
 {
@@ -48,8 +48,8 @@ class Location
     }
 }
 /**
- * @JS\Description("An application")
- * @JS\Required({"name", "url"})
+ * @Schema\Description("An application")
+ * @Schema\Required({"name", "url"})
  */
 class Web
 {
@@ -91,30 +91,30 @@ class Web
     }
 }
 /**
- * @JS\Description("An simple author element with some description")
- * @JS\Required({"title"})
+ * @Schema\Description("An simple author element with some description")
+ * @Schema\Required({"title"})
  */
 class Author
 {
     /**
      * @var string
-     * @JS\Pattern("[A-z]{3,16}")
+     * @Schema\Pattern("[A-z]{3,16}")
      */
     protected $title;
     /**
      * @var string
-     * @JS\Description("We will send no spam to this address")
-     * @JS\Nullable(true)
+     * @Schema\Description("We will send no spam to this address")
+     * @Schema\Nullable(true)
      */
     protected $email;
     /**
      * @var array<string>
-     * @JS\MaxItems(8)
+     * @Schema\MaxItems(8)
      */
     protected $categories;
     /**
      * @var array<Location>
-     * @JS\Description("Array of locations")
+     * @Schema\Description("Array of locations")
      */
     protected $locations;
     /**
@@ -194,15 +194,15 @@ class Author
 }
 /**
  * @extends \PSX\Record\Record<string>
- * @JS\MinProperties(1)
- * @JS\MaxProperties(6)
+ * @Schema\MinProperties(1)
+ * @Schema\MaxProperties(6)
  */
 class Meta extends \PSX\Record\Record
 {
 }
 /**
- * @JS\Description("An general news entry")
- * @JS\Required({"receiver", "price", "content"})
+ * @Schema\Description("An general news entry")
+ * @Schema\Required({"receiver", "price", "content"})
  */
 class News
 {
@@ -212,13 +212,13 @@ class News
     protected $config;
     /**
      * @var array<string>
-     * @JS\MinItems(1)
-     * @JS\MaxItems(6)
+     * @Schema\MinItems(1)
+     * @Schema\MaxItems(6)
      */
     protected $tags;
     /**
      * @var array<Author>
-     * @JS\MinItems(1)
+     * @Schema\MinItems(1)
      */
     protected $receiver;
     /**
@@ -259,26 +259,26 @@ class News
     protected $expires;
     /**
      * @var float
-     * @JS\Minimum(1)
-     * @JS\Maximum(100)
+     * @Schema\Minimum(1)
+     * @Schema\Maximum(100)
      */
     protected $price;
     /**
      * @var int
-     * @JS\Minimum(1)
-     * @JS\Maximum(5)
+     * @Schema\Minimum(1)
+     * @Schema\Maximum(5)
      */
     protected $rating;
     /**
      * @var string
-     * @JS\Description("Contains the main content of the news entry")
-     * @JS\MinLength(3)
-     * @JS\MaxLength(512)
+     * @Schema\Description("Contains the main content of the news entry")
+     * @Schema\MinLength(3)
+     * @Schema\MaxLength(512)
      */
     protected $content;
     /**
      * @var string
-     * @JS\Enum({"foo", "bar"})
+     * @Schema\Enum({"foo", "bar"})
      */
     protected $question;
     /**
@@ -295,7 +295,7 @@ class News
     protected $profileUri;
     /**
      * @var string
-     * @JS\Key("g-recaptcha-response")
+     * @Schema\Key("g-recaptcha-response")
      */
     protected $captcha;
     /**

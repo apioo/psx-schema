@@ -95,7 +95,7 @@ class PhpTest extends GeneratorTestCase
         include_once $file;
 
         $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+        $reader->addNamespace('PSX\\Schema\\Annotation');
 
         $schemaManager = new SchemaManager($reader);
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
@@ -115,7 +115,7 @@ class PhpTest extends GeneratorTestCase
         include_once $file;
 
         $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
+        $reader->addNamespace('PSX\\Schema\\Annotation');
 
         $schemaManager = new SchemaManager($reader);
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\RootSchema');
