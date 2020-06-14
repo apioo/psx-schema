@@ -23,7 +23,6 @@ namespace PSX\Schema\Parser\TypeSchema\Resolver;
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
 use PSX\Json\Parser;
-use PSX\Schema\Parser\TypeSchema\Document;
 use PSX\Schema\Parser\TypeSchema\ResolverInterface;
 use PSX\Uri\Uri;
 use RuntimeException;
@@ -37,6 +36,9 @@ use RuntimeException;
  */
 class Http implements ResolverInterface
 {
+    /**
+     * @var ClientInterface
+     */
     protected $httpClient;
 
     public function __construct(ClientInterface $httpClient)
@@ -44,7 +46,10 @@ class Http implements ResolverInterface
         $this->httpClient = $httpClient;
     }
 
-    public function resolve(Uri $uri): \stdClass
+    /**
+     * @inheritDoc
+     */
+    public function resolve(Uri $uri, ?string $basePath = null): \stdClass
     {
         $request  = new GetRequest($uri, array('Accept' => 'application/json'));
         $response = $this->httpClient->request($request);

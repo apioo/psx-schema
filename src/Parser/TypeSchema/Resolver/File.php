@@ -34,9 +34,13 @@ use RuntimeException;
  */
 class File implements ResolverInterface
 {
-    public function resolve(Uri $uri): \stdClass
+    /**
+     * @inheritDoc
+     */
+    public function resolve(Uri $uri, ?string $basePath = null): \stdClass
     {
-        $path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
+        $path = $basePath ?? getcwd();
+        $path = $path . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
 
         if (is_file($path)) {
             $schema = file_get_contents($path);

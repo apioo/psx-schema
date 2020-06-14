@@ -35,7 +35,8 @@ interface ResolverInterface
      * Resolves the given uri and returns an JsonSchema document
      *
      * @param \PSX\Uri\Uri $uri
+     * @param string $basePath
      * @return \stdClass
      */
-    public function resolve(Uri $uri): \stdClass;
+    public function resolve(Uri $uri, ?string $basePath = null): \stdClass;
 }

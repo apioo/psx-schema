@@ -60,11 +60,18 @@ class TypeSchema implements ParserInterface
     protected $resolver;
 
     /**
-     * @param \PSX\Schema\Parser\TypeSchema\ImportResolver|null $resolver
+     * @var string
      */
-    public function __construct(ImportResolver $resolver = null)
+    private $basePath;
+
+    /**
+     * @param ImportResolver|null $resolver
+     * @param string|null $basePath
+     */
+    public function __construct(ImportResolver $resolver = null, ?string $basePath = null)
     {
         $this->resolver = $resolver ?: ImportResolver::createDefault();
+        $this->basePath = $basePath;
     }
 
     /**
@@ -126,7 +133,7 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($import as $namespace => $uri) {
-            $data = $this->resolver->resolve(new Uri($uri));
+            $data = $this->resolver->resolve(new Uri($uri), $this->basePath);
             $this->parseDefinitions($namespace, $data, $definitions);
         }
     }
@@ -445,7 +452,8 @@ class TypeSchema implements ParserInterface
     public static function fromFile($file, ImportResolver $resolver = null): SchemaInterface
     {
         if (!empty($file) && is_file($file)) {
-            $parser = new self($resolver);
+            $basePath = pathinfo($file, PATHINFO_DIRNAME);
+            $parser   = new self($resolver, $basePath);
 
             return $parser->parse(file_get_contents($file));
         } else {

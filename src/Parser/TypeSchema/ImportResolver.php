@@ -47,7 +47,7 @@ class ImportResolver
         $this->resolvers[$scheme] = $resolver;
     }
 
-    public function resolve(Uri $source): \stdClass
+    public function resolve(Uri $source, ?string $basePath = null): \stdClass
     {
         $scheme   = $source->getScheme();
         $resolver = $this->resolvers[$scheme] ?? null;
@@ -56,7 +56,7 @@ class ImportResolver
             throw new \RuntimeException('Could not find resolver for scheme ' . $scheme);
         }
 
-        return $resolver->resolve($source);
+        return $resolver->resolve($source, $basePath);
     }
 
     public static function createDefault(ClientInterface $httpClient = null)
