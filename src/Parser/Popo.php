@@ -280,7 +280,7 @@ class Popo implements ParserInterface
     {
         if ($type instanceof MapType) {
             $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof ReferenceType) {
+            if ($additionalProperties instanceof TypeInterface) {
                 $this->parseReferences($additionalProperties, $definitions);
             }
         } elseif ($type instanceof ArrayType) {
