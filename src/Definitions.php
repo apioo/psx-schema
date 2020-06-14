@@ -63,7 +63,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         [$ns, $name] = $this->split($fqn);
 
         if (!isset($this->container[$ns])) {
-            throw new TypeNotFoundException('Type namespace "' . $ns . '" not found', $ns, $name);
+            throw new TypeNotFoundException('Type namespace "' . $ns . '" not found, the following namespaces are available: ' . implode(', ', array_keys($this->container)), $ns, $name);
         }
 
         if (!isset($this->container[$ns][$name])) {
