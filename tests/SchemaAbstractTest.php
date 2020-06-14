@@ -30,7 +30,6 @@ use PSX\Schema\SchemaManager;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\TypeFactory;
-use PSX\Schema\TypeInterface;
 
 /**
  * SchemaAbstractTest

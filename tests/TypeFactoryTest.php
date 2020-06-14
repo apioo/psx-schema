@@ -21,18 +21,14 @@
 namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
-use PSX\Schema\Property;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeInterface;
-use PSX\Schema\PropertyType;
 use PSX\Schema\TypeFactory;
 
 /**

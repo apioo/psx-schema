@@ -20,9 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
-use PSX\Schema\Parser;
 use PSX\Schema\SchemaTraverser;
-use PSX\Schema\Tests\SchemaTraverser\RecursionModel;
 use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;

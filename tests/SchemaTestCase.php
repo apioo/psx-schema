@@ -27,10 +27,7 @@ use PSX\Schema\Property\ArrayType;
 use PSX\Schema\Property\ComplexType;
 use PSX\Schema\Property\CompositeTypeAbstract;
 use PSX\Schema\PropertyAbstract;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\TypeInterface;
 
 /**
  * SchemaTestCase

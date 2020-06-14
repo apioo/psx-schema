@@ -21,7 +21,6 @@
 namespace PSX\Schema\Parser;
 
 use Doctrine\Common\Annotations\Reader;
-use InvalidArgumentException;
 use PSX\Schema\Annotation;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;

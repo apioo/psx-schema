@@ -21,9 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\Proto;
-use PSX\Schema\Generator\Protobuf;
 use PSX\Schema\Generator\Swift;
-use PSX\Schema\Generator\TypeScript;
 
 /**
  * SwiftTest

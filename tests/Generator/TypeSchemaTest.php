@@ -21,7 +21,6 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\TypeSchema;
-use PSX\Schema\Parser;
 
 /**
  * TypeSchemaTest

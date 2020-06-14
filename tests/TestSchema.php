@@ -21,14 +21,10 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Property;
-use PSX\Schema\PropertyInterface;
-use PSX\Schema\PropertyType;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\Tests\Parser\Popo;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
-use PSX\Schema\TypeInterface;
 
 /**
  * TestSchema

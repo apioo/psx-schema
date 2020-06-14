@@ -21,11 +21,8 @@
 namespace PSX\Schema\Tests\Console;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Console\ParseCommand;
-use PSX\Schema\Parser\Popo;
-use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;
 use Symfony\Component\Console\Tester\CommandTester;

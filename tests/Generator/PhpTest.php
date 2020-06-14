@@ -21,9 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use PhpParser\Node\Stmt\Namespace_;
 use PSX\Schema\Generator\Php;
-use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
 
 /**

@@ -26,7 +26,6 @@ use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
-use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo\Dumper;
 use PSX\Uri\Uri;
