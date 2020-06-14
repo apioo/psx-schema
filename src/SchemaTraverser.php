@@ -49,7 +49,7 @@ use RuntimeException;
  */
 class SchemaTraverser
 {
-    private const MAX_RECURSION_DEPTH = 16;
+    private const MAX_RECURSION_DEPTH = 32;
 
     /**
      * @var array
