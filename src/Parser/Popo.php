@@ -27,6 +27,7 @@ use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
@@ -69,12 +70,11 @@ class Popo implements ParserInterface
         $this->resolver = self::createDefaultResolver();
     }
 
-    public function parse($className)
+    /**
+     * @inheritDoc
+     */
+    public function parse(string $className): SchemaInterface
     {
-        if (!is_string($className)) {
-            throw new InvalidArgumentException('Class name must be a string');
-        }
-
         $definitions = new Definitions();
 
         $this->parseClass($className, $definitions);
