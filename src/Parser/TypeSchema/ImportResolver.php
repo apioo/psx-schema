@@ -47,7 +47,7 @@ class ImportResolver
         $this->resolvers[$scheme] = $resolver;
     }
 
-    public function resolve(Uri $source): array
+    public function resolve(Uri $source): \stdClass
     {
         $scheme   = $source->getScheme();
         $resolver = $this->resolvers[$scheme] ?? null;

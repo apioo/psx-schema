@@ -34,13 +34,13 @@ use RuntimeException;
  */
 class File implements ResolverInterface
 {
-    public function resolve(Uri $uri): array
+    public function resolve(Uri $uri): \stdClass
     {
         $path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
 
         if (is_file($path)) {
             $schema = file_get_contents($path);
-            $data   = Parser::decode($schema, true);
+            $data   = Parser::decode($schema);
 
             return $data;
         } else {

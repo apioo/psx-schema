@@ -44,14 +44,14 @@ class Http implements ResolverInterface
         $this->httpClient = $httpClient;
     }
 
-    public function resolve(Uri $uri): array
+    public function resolve(Uri $uri): \stdClass
     {
         $request  = new GetRequest($uri, array('Accept' => 'application/json'));
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() == 200) {
             $schema = (string) $response->getBody();
-            $data   = Parser::decode($schema, true);
+            $data   = Parser::decode($schema);
 
             return $data;
         } else {
