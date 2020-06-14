@@ -24,6 +24,7 @@ use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
@@ -88,7 +89,7 @@ class SchemaTraverser
     {
         $this->pathStack = [];
         $this->recCount  = -1;
-        
+
         if ($visitor === null) {
             $visitor = new NullVisitor();
         }
@@ -172,6 +173,8 @@ class SchemaTraverser
 
             $subType = $definitions->getType($context[$type->getGeneric()]);
             $result = $this->recTraverse($data, $subType, $definitions, $visitor, $context);
+        } elseif ($type instanceof AnyType) {
+            $result = $data;
         } else {
             $result = null;
         }
