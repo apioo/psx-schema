@@ -123,7 +123,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    private function parseType(array $data): TypeInterface
+    public function parseType(array $data): TypeInterface
     {
         $data = $this->transformBcLayer($data);
         $type = $this->newPropertyType($data);
