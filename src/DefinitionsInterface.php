@@ -85,4 +85,13 @@ interface DefinitionsInterface
      * @param DefinitionsInterface $definitions
      */
     public function merge(DefinitionsInterface $definitions): void;
+
+    /**
+     * Adds a schema to the definition. It adds the root type and merges all
+     * definitions into the current definition
+     * 
+     * @param string $fqn
+     * @param SchemaInterface $schema
+     */
+    public function addSchema(string $fqn, SchemaInterface $schema): void;
 }
