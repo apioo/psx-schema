@@ -49,7 +49,7 @@ interface DefinitionsInterface
      * it is used as namespace i.e. acme:my_type tries to resolve the type
      * "my_type" from the namespace "acme". If no colon is provided the self
      * namespace is used
-     * 
+     *
      * @param string $name
      * @return TypeInterface
      * @throws TypeNotFoundException
@@ -59,7 +59,7 @@ interface DefinitionsInterface
     /**
      * Returns all available types for a specific namespace. The key contains
      * the name of the type
-     * 
+     *
      * @param string $namespace
      * @return array<TypeInterface>
      */
@@ -67,29 +67,30 @@ interface DefinitionsInterface
 
     /**
      * Returns all types registered at this container
-     * 
+     *
      * @return array<TypeInterface>
      */
     public function getAllTypes(): iterable;
 
     /**
      * Returns all registered namespaces on this definition
-     * 
+     *
      * @return array<string>
      */
     public function getNamespaces(): iterable;
 
     /**
      * Merges the provided type definitions
-     * 
+     *
      * @param DefinitionsInterface $definitions
      */
     public function merge(DefinitionsInterface $definitions): void;
 
     /**
-     * Adds a schema to the definition. It adds the root type and merges all
-     * definitions into the current definition
-     * 
+     * Adds a schema to the definition. It merges all definitions into the
+     * current definition and also adds the root type in case it is not already
+     * available
+     *
      * @param string $fqn
      * @param SchemaInterface $schema
      */

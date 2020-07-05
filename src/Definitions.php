@@ -121,8 +121,11 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
 
     public function addSchema(string $fqn, SchemaInterface $schema): void
     {
-        $this->addType($fqn, $schema->getType());
         $this->merge($schema->getDefinitions());
+
+        if (!$this->hasType($fqn)) {
+            $this->addType($fqn, $schema->getType());
+        }
     }
 
     public function jsonSerialize()
