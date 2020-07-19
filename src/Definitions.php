@@ -45,7 +45,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
 
         if (isset($this->container[$ns][$name])) {
-            throw new \RuntimeException('Type already registered');
+            throw new \RuntimeException('Type "' . $fqn . '" already registered');
         }
 
         $this->container[$ns][$name] = $type;
@@ -122,10 +122,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     public function addSchema(string $fqn, SchemaInterface $schema): void
     {
         $this->merge($schema->getDefinitions());
-
-        if (!$this->hasType($fqn)) {
-            $this->addType($fqn, $schema->getType());
-        }
+        $this->addType($fqn, $schema->getType());
     }
 
     public function jsonSerialize()
