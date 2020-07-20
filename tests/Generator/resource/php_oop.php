@@ -1,4 +1,4 @@
-class Human
+class Human implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -18,8 +18,14 @@ class Human
     {
         return $this->firstName;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
-class Student extends Human
+class Student extends Human implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -39,6 +45,12 @@ class Student extends Human
     {
         return $this->matricleNumber;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('matricleNumber' => $this->matricleNumber), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @extends Map<Student>
@@ -49,7 +61,7 @@ class StudentMap extends Map
 /**
  * @template T
  */
-class Map
+class Map implements \JsonSerializable
 {
     /**
      * @var int|null
@@ -87,8 +99,14 @@ class Map
     {
         return $this->entries;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('totalResults' => $this->totalResults, 'entries' => $this->entries), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
-class RootSchema
+class RootSchema implements \JsonSerializable
 {
     /**
      * @var StudentMap|null
@@ -107,5 +125,11 @@ class RootSchema
     public function getStudents() : ?StudentMap
     {
         return $this->students;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('students' => $this->students), static function ($value) : bool {
+            return $value !== null;
+        });
     }
 }

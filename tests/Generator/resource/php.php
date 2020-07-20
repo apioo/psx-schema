@@ -2,7 +2,7 @@
  * @Description("Location of the person")
  * @Required({"lat", "long"})
  */
-class Location
+class Location implements \JsonSerializable
 {
     /**
      * @var float|null
@@ -40,12 +40,18 @@ class Location
     {
         return $this->long;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('lat' => $this->lat, 'long' => $this->long), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("An application")
  * @Required({"name", "url"})
  */
-class Web
+class Web implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -83,12 +89,18 @@ class Web
     {
         return $this->url;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('name' => $this->name, 'url' => $this->url), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("An simple author element with some description")
  * @Required({"title"})
  */
-class Author
+class Author implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -185,6 +197,12 @@ class Author
     {
         return $this->origin;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('title' => $this->title, 'email' => $this->email, 'categories' => $this->categories, 'locations' => $this->locations, 'origin' => $this->origin), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @extends \PSX\Record\Record<string>
@@ -198,7 +216,7 @@ class Meta extends \PSX\Record\Record
  * @Description("An general news entry")
  * @Required({"receiver", "price", "content"})
  */
-class News
+class News implements \JsonSerializable
 {
     /**
      * @var Meta|null
@@ -571,5 +589,11 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('config' => $this->config, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha), static function ($value) : bool {
+            return $value !== null;
+        });
     }
 }

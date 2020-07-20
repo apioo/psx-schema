@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
+use PSX\Schema\Generator\Code\Chunks;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\SchemaManager;
 
@@ -84,40 +85,55 @@ class PhpTest extends GeneratorTestCase
     public function testExecute()
     {
         $source    = $this->getSchema();
-        $generator = new Php();
+        $generator = new Php(__NAMESPACE__ . '\\Result');
         $result    = $generator->generate($source);
-        $file      = __DIR__ . '/generated_schema.php';
+        $className = __NAMESPACE__ . '\\Result\\News';
 
-        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
-
-        include_once $file;
+        $this->dumpResult($result);
 
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('PSX\\Schema\\Annotation');
 
         $schemaManager = new SchemaManager($reader);
-        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\News');
+        $schema        = $schemaManager->getSchema($className);
 
         $this->assertSchema($schema, $source);
+
+        /** @var News $news */
+        $news = new $className();
+        $news->setContent('foobar');
+
+        $expect = <<<JSON
+{
+    "content": "foobar",
+    "version": "http://foo.bar"
+}
+JSON;
+
+        $this->assertJsonStringEqualsJsonString($expect, json_encode($news));
     }
 
     public function testExecuteOOP()
     {
         $source    = $this->getOOPSchema();
-        $generator = new Php();
+        $generator = new Php(__NAMESPACE__ . '\\Result');
         $result    = $generator->generate($source);
-        $file      = __DIR__ . '/generated_schema_oop.php';
 
-        file_put_contents($file, '<?php' . "\n" . 'namespace ' . __NAMESPACE__ . ';' . "\n" . $result);
-
-        include_once $file;
+        $this->dumpResult($result);
 
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('PSX\\Schema\\Annotation');
 
         $schemaManager = new SchemaManager($reader);
-        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\RootSchema');
+        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\Result\\RootSchema');
 
         $this->assertSchema($schema, $source);
+    }
+
+    private function dumpResult(Chunks $chunks)
+    {
+        foreach ($chunks->getChunks() as $file => $code) {
+            file_put_contents(__DIR__ . '/Result/' . $file . '.php', '<?php' . "\n" . $code);
+        }
     }
 }

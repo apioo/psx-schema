@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PhpParser\Builder\Class_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
@@ -94,11 +95,14 @@ class Php extends CodeGeneratorAbstract
         }
 
         $class = $this->factory->class($name);
+        $class->implement('\\JsonSerializable');
         $class->setDocComment($this->buildComment($tags, $this->getAnnotationsForType($origin)));
 
         if (!empty($extends)) {
             $class->extend($extends);
         }
+
+        $serialize = [];
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
@@ -106,6 +110,8 @@ class Php extends CodeGeneratorAbstract
             if ($property->getName() !== $name) {
                 $realKey = $property->getName();
             }
+
+            $serialize[$name] = $realKey ?? $name;
 
             $prop = $this->factory->property($name);
             $prop->makeProtected();
@@ -149,6 +155,8 @@ class Php extends CodeGeneratorAbstract
             ));
             $class->addStmt($getter);
         }
+
+        $this->buildJsonSerialize($class, $serialize);
 
         return $this->prettyPrint($class);
     }
@@ -307,5 +315,37 @@ class Php extends CodeGeneratorAbstract
         } else {
             return $this->printer->prettyPrint([$class->getNode()]);
         }
+    }
+
+    private function buildJsonSerialize(Class_ $class, array $properties)
+    {
+        if (empty($properties)) {
+            return;
+        }
+
+        $items = [];
+        foreach ($properties as $name => $key) {
+            $items[] = new Node\Expr\ArrayItem(new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name), new Node\Scalar\String_($key));
+        }
+
+        $closure = new Node\Expr\Closure([
+            'static' => true,
+            'params' => [new Node\Expr\Variable('value')],
+            'returnType' => 'bool',
+            'stmts' => [
+                new Node\Stmt\Return_(new Node\Expr\BinaryOp\NotIdentical(new Node\Expr\Variable('value'), new Node\Expr\ConstFetch(new Node\Name('null'))))
+            ],
+        ]);
+
+        $filter = new Node\Expr\FuncCall(new Node\Name('array_filter'), [
+            new Node\Expr\Array_($items),
+            $closure
+        ]);
+
+        $serialize = $this->factory->method('jsonSerialize');
+        $serialize->makePublic();
+        $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($filter)));
+
+        $class->addStmt($serialize);
     }
 }

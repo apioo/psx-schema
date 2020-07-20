@@ -1,4 +1,4 @@
-class Human
+class Human implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -18,8 +18,14 @@ class Human
     {
         return $this->firstName;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
-class Animal
+class Animal implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -39,8 +45,14 @@ class Animal
     {
         return $this->nickname;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
-class Union
+class Union implements \JsonSerializable
 {
     /**
      * @var Human|Animal|null
@@ -77,5 +89,11 @@ class Union
     public function getIntersection()
     {
         return $this->intersection;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('union' => $this->union, 'intersection' => $this->intersection), static function ($value) : bool {
+            return $value !== null;
+        });
     }
 }

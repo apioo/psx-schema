@@ -1,7 +1,7 @@
 /**
  * @Description("Common properties which can be used at any schema")
  */
-class CommonProperties
+class CommonProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -118,8 +118,14 @@ class CommonProperties
     {
         return $this->readonly;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'nullable' => $this->nullable, 'deprecated' => $this->deprecated, 'readonly' => $this->readonly), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
-class ScalarProperties
+class ScalarProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -178,6 +184,12 @@ class ScalarProperties
     {
         return $this->default;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('format' => $this->format, 'enum' => $this->enum, 'default' => $this->default), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @extends \PSX\Record\Record<PropertyValue>
@@ -190,7 +202,7 @@ class Properties extends \PSX\Record\Record
  * @Description("Properties specific for a container")
  * @Required({"type"})
  */
-class ContainerProperties
+class ContainerProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -211,12 +223,18 @@ class ContainerProperties
     {
         return $this->type;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Struct specific properties")
  * @Required({"properties"})
  */
-class StructProperties
+class StructProperties implements \JsonSerializable
 {
     /**
      * @var Properties|null
@@ -256,12 +274,18 @@ class StructProperties
     {
         return $this->required;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Map specific properties")
  * @Required({"additionalProperties"})
  */
-class MapProperties
+class MapProperties implements \JsonSerializable
 {
     /**
      * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
@@ -322,12 +346,18 @@ class MapProperties
     {
         return $this->minProperties;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('additionalProperties' => $this->additionalProperties, 'maxProperties' => $this->maxProperties, 'minProperties' => $this->minProperties), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Array properties")
  * @Required({"type", "items"})
  */
-class ArrayProperties
+class ArrayProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -425,12 +455,18 @@ class ArrayProperties
     {
         return $this->uniqueItems;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('type' => $this->type, 'items' => $this->items, 'maxItems' => $this->maxItems, 'minItems' => $this->minItems, 'uniqueItems' => $this->uniqueItems), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Boolean properties")
  * @Required({"type"})
  */
-class BooleanProperties
+class BooleanProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -451,12 +487,18 @@ class BooleanProperties
     {
         return $this->type;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Number properties")
  * @Required({"type"})
  */
-class NumberProperties
+class NumberProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -569,12 +611,18 @@ class NumberProperties
     {
         return $this->exclusiveMinimum;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('type' => $this->type, 'multipleOf' => $this->multipleOf, 'maximum' => $this->maximum, 'exclusiveMaximum' => $this->exclusiveMaximum, 'minimum' => $this->minimum, 'exclusiveMinimum' => $this->exclusiveMinimum), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("String properties")
  * @Required({"type"})
  */
-class StringProperties
+class StringProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -653,6 +701,12 @@ class StringProperties
     {
         return $this->pattern;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('type' => $this->type, 'maxLength' => $this->maxLength, 'minLength' => $this->minLength, 'pattern' => $this->pattern), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @extends \PSX\Record\Record<string>
@@ -665,7 +719,7 @@ class DiscriminatorMapping extends \PSX\Record\Record
  * @Description("Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description")
  * @Required({"propertyName"})
  */
-class Discriminator
+class Discriminator implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -704,12 +758,18 @@ class Discriminator
     {
         return $this->mapping;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('propertyName' => $this->propertyName, 'mapping' => $this->mapping), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("An intersection type combines multiple schemas into one")
  * @Required({"allOf"})
  */
-class AllOfProperties
+class AllOfProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -748,12 +808,18 @@ class AllOfProperties
     {
         return $this->allOf;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('description' => $this->description, 'allOf' => $this->allOf), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("An union type can contain one of the provided schemas")
  * @Required({"oneOf"})
  */
-class OneOfProperties
+class OneOfProperties implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -810,6 +876,12 @@ class OneOfProperties
     {
         return $this->oneOf;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('description' => $this->description, 'discriminator' => $this->discriminator, 'oneOf' => $this->oneOf), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @extends \PSX\Record\Record<ReferenceType>
@@ -821,7 +893,7 @@ class TemplateProperties extends \PSX\Record\Record
  * @Description("Represents a reference to another schema")
  * @Required({"$ref"})
  */
-class ReferenceType
+class ReferenceType implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -863,12 +935,18 @@ class ReferenceType
     {
         return $this->template;
     }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('$ref' => $this->ref, '$template' => $this->template), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
 }
 /**
  * @Description("Represents a generic type")
  * @Required({"$generic"})
  */
-class GenericType
+class GenericType implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -888,6 +966,12 @@ class GenericType
     public function getGeneric() : ?string
     {
         return $this->generic;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('$generic' => $this->generic), static function ($value) : bool {
+            return $value !== null;
+        });
     }
 }
 /**
@@ -909,7 +993,7 @@ class Import extends \PSX\Record\Record
  * @Description("TypeSchema meta schema which describes a TypeSchema")
  * @Required({"title", "type", "properties"})
  */
-class TypeSchema
+class TypeSchema implements \JsonSerializable
 {
     /**
      * @var Import|null
@@ -1040,5 +1124,11 @@ class TypeSchema
     public function getRequired() : ?array
     {
         return $this->required;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('$import' => $this->import, 'title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'definitions' => $this->definitions, 'properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
+            return $value !== null;
+        });
     }
 }
