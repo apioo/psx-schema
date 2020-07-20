@@ -338,8 +338,8 @@ class Php extends CodeGeneratorAbstract
         ]);
 
         $filter = new Node\Expr\FuncCall(new Node\Name('array_filter'), [
-            new Node\Expr\Array_($items),
-            $closure
+            new Node\Arg(new Node\Expr\Array_($items)),
+            new Node\Arg($closure)
         ]);
 
         $serialize = $this->factory->method('jsonSerialize');
