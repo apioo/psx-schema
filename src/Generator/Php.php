@@ -156,7 +156,7 @@ class Php extends CodeGeneratorAbstract
             $class->addStmt($getter);
         }
 
-        $this->buildJsonSerialize($class, $serialize);
+        $this->buildJsonSerialize($class, $serialize, !empty($extends));
 
         return $this->prettyPrint($class);
     }
@@ -317,7 +317,7 @@ class Php extends CodeGeneratorAbstract
         }
     }
 
-    private function buildJsonSerialize(Class_ $class, array $properties)
+    private function buildJsonSerialize(Class_ $class, array $properties, bool $hasParent)
     {
         if (empty($properties)) {
             return;
@@ -342,9 +342,18 @@ class Php extends CodeGeneratorAbstract
             new Node\Arg($closure)
         ]);
 
+        if ($hasParent) {
+            $merge = new Node\Expr\FuncCall(new Node\Name('array_merge'), [
+                new Node\Arg(new Node\Expr\StaticCall(new Node\Name('parent'), 'jsonSerialize')),
+                new Node\Arg($filter)
+            ]);
+        } else {
+            $merge = $filter;
+        }
+
         $serialize = $this->factory->method('jsonSerialize');
         $serialize->makePublic();
-        $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($filter)));
+        $serialize->addStmt(new Node\Stmt\Return_($merge));
 
         $class->addStmt($serialize);
     }
