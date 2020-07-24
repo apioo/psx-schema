@@ -344,7 +344,7 @@ class Php extends CodeGeneratorAbstract
 
         if ($hasParent) {
             $merge = new Node\Expr\FuncCall(new Node\Name('array_merge'), [
-                new Node\Arg(new Node\Expr\StaticCall(new Node\Name('parent'), 'jsonSerialize')),
+                new Node\Arg(new Node\Expr\Cast\Array_(new Node\Expr\StaticCall(new Node\Name('parent'), 'jsonSerialize'))),
                 new Node\Arg($filter)
             ]);
         } else {
@@ -353,7 +353,7 @@ class Php extends CodeGeneratorAbstract
 
         $serialize = $this->factory->method('jsonSerialize');
         $serialize->makePublic();
-        $serialize->addStmt(new Node\Stmt\Return_($merge));
+        $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($merge)));
 
         $class->addStmt($serialize);
     }

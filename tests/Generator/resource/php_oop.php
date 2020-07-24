@@ -20,7 +20,7 @@ class Human implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
+        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
             return $value !== null;
         });
     }
@@ -47,7 +47,7 @@ class Student extends Human implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_merge(parent::jsonSerialize(), array_filter(array('matricleNumber' => $this->matricleNumber), static function ($value) : bool {
+        return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('matricleNumber' => $this->matricleNumber), static function ($value) : bool {
             return $value !== null;
         }));
     }
@@ -101,7 +101,7 @@ class Map implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('totalResults' => $this->totalResults, 'entries' => $this->entries), static function ($value) : bool {
+        return (object) array_filter(array('totalResults' => $this->totalResults, 'entries' => $this->entries), static function ($value) : bool {
             return $value !== null;
         });
     }
@@ -128,7 +128,7 @@ class RootSchema implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('students' => $this->students), static function ($value) : bool {
+        return (object) array_filter(array('students' => $this->students), static function ($value) : bool {
             return $value !== null;
         });
     }

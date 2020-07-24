@@ -20,7 +20,7 @@ class Human implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
+        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
             return $value !== null;
         });
     }
@@ -47,7 +47,7 @@ class Animal implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
+        return (object) array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
             return $value !== null;
         });
     }
@@ -92,7 +92,7 @@ class Union implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return array_filter(array('union' => $this->union, 'intersection' => $this->intersection), static function ($value) : bool {
+        return (object) array_filter(array('union' => $this->union, 'intersection' => $this->intersection), static function ($value) : bool {
             return $value !== null;
         });
     }
