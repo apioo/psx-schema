@@ -103,47 +103,37 @@ class SchemaAbstractTest extends TestCase
 
 class SchemaCommon extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): string
+    public function build(): void
     {
-        $entry = $this->newType('Entry');
+        $entry = $this->newStruct('Entry');
         $entry->addInteger('title');
 
-        $author = $this->newType('Author');
+        $author = $this->newStruct('Author');
         $author->addInteger('name');
 
-        $location = $this->newType('Location');
+        $location = $this->newStruct('Location');
         $location->setDescription('Location of the person');
         $location->addInteger('lat');
         $location->addInteger('long');
         $location->addArray('entry', TypeFactory::getReference('Entry'));
         $location->addReference('author', 'Author');
-
-        return 'Location';
     }
 }
 
 class SchemaA extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): string
+    public function build(): void
     {
-        $this->load(SchemaCommon::class);
-
-        $location = $this->modify('Location', 'LocationA');
+        $location = $this->modify(SchemaCommon::class, 'LocationA');
         $location->getProperty('lat')->setTitle('foo');
-
-        return 'LocationA';
     }
 }
 
 class SchemaB extends SchemaAbstract
 {
-    public function build(DefinitionsInterface $definitions): string
+    public function build(): void
     {
-        $this->load(SchemaCommon::class);
-
-        $location = $this->modify('Location', 'LocationB');
+        $location = $this->modify(SchemaCommon::class, 'LocationB');
         $location->getProperty('long')->setTitle('bar');
-
-        return 'LocationB';
     }
 }

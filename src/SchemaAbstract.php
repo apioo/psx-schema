@@ -20,6 +20,9 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\ReferenceType;
+
 /**
  * SchemaAbstract
  *
@@ -44,14 +47,21 @@ abstract class SchemaAbstract implements SchemaInterface
      */
     private $definitions;
 
+    /**
+     * @var string
+     */
+    private $rootName;
+
     public function __construct(SchemaManagerInterface $schemaManager)
     {
         $this->schemaManager = $schemaManager;
         $this->definitions   = new Definitions();
 
-        $type = $this->build($this->definitions);
+        $this->build();
+        $type = $this->rootName;
+
         if (!$this->definitions->hasType($type)) {
-            throw new InvalidSchemaException('The build method of ' . get_class($this) . ' has not returned a correct type name, have you added the type ' . $type . ' to the definitions?');
+            throw new InvalidSchemaException('Root schema does not exist at ' . get_class($this) . ', have you added a type via the newType method?');
         }
 
         $this->type = TypeFactory::getReference($type);
@@ -67,12 +77,73 @@ abstract class SchemaAbstract implements SchemaInterface
         return $this->definitions;
     }
 
-    protected function newType(string $name): Builder
+    /**
+     * @param string $name
+     * @param TypeInterface $type
+     */
+    protected function add(string $name, TypeInterface $type): void
+    {
+        $this->definitions->addType($name, $type);
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    protected function has(string $name): bool
+    {
+        return $this->definitions->hasType($name);
+    }
+
+    /**
+     * Main method to add a new type to the definitions of this schema
+     * 
+     * @param string $name
+     * @return Builder
+     */
+    protected function newStruct(string $name): Builder
     {
         $builder = new Builder();
         $this->definitions->addType($name, $builder->getType());
 
+        $this->rootName = $name;
+
         return $builder;
+    }
+
+    /**
+     * @param string $name
+     * @return MapType
+     */
+    protected function newMap(string $name): MapType
+    {
+        $map = TypeFactory::getMap();
+        $this->definitions->addType($name, $map);
+
+        return $map;
+    }
+
+    /**
+     * Loads a remote schema and returns the root type
+     * 
+     * @param string $name
+     * @return string|null
+     */
+    protected function get(string $name): ?string
+    {
+        $schema = $this->schemaManager->getSchema($name);
+        if (!$schema instanceof SchemaInterface) {
+            throw new \InvalidArgumentException('Could not load schema ' . $name);
+        }
+
+        $this->definitions->merge($schema->getDefinitions());
+
+        $type = $schema->getType();
+        if ($type instanceof ReferenceType) {
+            return $type->getRef();
+        } else {
+            throw new \InvalidArgumentException('Loaded schema ' . $name . ' contains not a reference');
+        }
     }
 
     /**
@@ -101,18 +172,28 @@ abstract class SchemaAbstract implements SchemaInterface
      */
     protected function modify(string $existingName, string $newName): TypeInterface
     {
-        $type = clone $this->definitions->getType($existingName);
+        $type = clone $this->definitions->getType($this->get($existingName));
         $this->definitions->addType($newName, $type);
+
+        $this->rootName = $newName;
 
         return $type;
     }
 
     /**
-     * Builds the schema and returns the type which you want to use as root.
-     * Note the type which you return must be available at the definitions
+     * Defines the root schema of this schema. By defualt the is the last schema
+     * you have added via the newType method
      * 
-     * @param DefinitionsInterface $definitions
-     * @return string
+     * @param string $name
      */
-    abstract protected function build(DefinitionsInterface $definitions): string;
+    protected function setRoot(string $name): void
+    {
+        $this->rootName = $name;
+    }
+
+    /**
+     * Builds the schema, through the add method you can add a new type to the
+     * schema and through the get method you can load an existing type
+     */
+    abstract protected function build(): void;
 }
