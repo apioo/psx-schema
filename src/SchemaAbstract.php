@@ -124,12 +124,12 @@ abstract class SchemaAbstract implements SchemaInterface
     }
 
     /**
-     * Loads a remote schema and returns the root type
+     * Loads a remote schema and returns a reference to the root type
      * 
      * @param string $name
-     * @return string|null
+     * @return ReferenceType
      */
-    protected function get(string $name): ?string
+    protected function get(string $name): ReferenceType
     {
         $schema = $this->schemaManager->getSchema($name);
         if (!$schema instanceof SchemaInterface) {
@@ -139,11 +139,11 @@ abstract class SchemaAbstract implements SchemaInterface
         $this->definitions->merge($schema->getDefinitions());
 
         $type = $schema->getType();
-        if ($type instanceof ReferenceType) {
-            return $type->getRef();
-        } else {
+        if (!$type instanceof ReferenceType) {
             throw new \InvalidArgumentException('Loaded schema ' . $name . ' contains not a reference');
         }
+
+        return clone $type;
     }
 
     /**
@@ -172,7 +172,7 @@ abstract class SchemaAbstract implements SchemaInterface
      */
     protected function modify(string $existingName, string $newName): TypeInterface
     {
-        $type = clone $this->definitions->getType($this->get($existingName));
+        $type = clone $this->definitions->getType($this->get($existingName)->getRef());
         $this->definitions->addType($newName, $type);
 
         $this->rootName = $newName;
