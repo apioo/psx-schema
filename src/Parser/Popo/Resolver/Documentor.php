@@ -25,6 +25,8 @@ use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\Date;
+use PSX\DateTime\DateTime;
+use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo\ResolverInterface;
@@ -128,11 +130,11 @@ class Documentor implements ResolverInterface
             $fqsen = (string) $type->getFqsen();
             if ($fqsen === '\\' . Date::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
-            } elseif ($fqsen === '\\' . \DateTime::class) {
+            } elseif ($fqsen === '\\' . DateTime::class || $fqsen === '\\' . \DateTime::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
             } elseif ($fqsen === '\\' . Time::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
-            } elseif ($fqsen === '\\' . \DateInterval::class) {
+            } elseif ($fqsen === '\\' . Duration::class || $fqsen === '\\' . \DateInterval::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
             } elseif ($fqsen === '\\' . Uri::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
