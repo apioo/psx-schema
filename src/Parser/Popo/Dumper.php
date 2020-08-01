@@ -100,28 +100,23 @@ class Dumper
 
     private function dumpObject($data, string $class)
     {
-        $reflection = new \ReflectionClass($class);
-
-        $type = $this->resolver->resolveClass($reflection);
+        $type = $this->resolver->resolveClass(new \ReflectionClass($class));
         if ($type instanceof StructType) {
-            return $this->dumpStruct($data, $reflection);
+            return $this->dumpStruct($data);
         } elseif ($type instanceof MapType) {
-            return $this->dumpMap($data, $type, $reflection);
+            return $this->dumpMap($data, $type);
         } else {
             throw new \InvalidArgumentException('Could not determine object type');
         }
     }
 
-    private function dumpStruct($data, ?\ReflectionClass $reflection = null): RecordInterface
+    private function dumpStruct($data): RecordInterface
     {
         if (!is_object($data)) {
             throw new \InvalidArgumentException('Struct must be an object');
         }
 
-        if ($reflection === null) {
-            $reflection = new \ReflectionClass(get_class($data));
-        }
-
+        $reflection = new \ReflectionClass(get_class($data));
         $result = new Record($reflection->getShortName());
 
         $properties = ObjectReader::getProperties($this->reader, $reflection);
@@ -151,17 +146,15 @@ class Dumper
         return $result;
     }
 
-    private function dumpMap($data, MapType $type, ?\ReflectionClass $reflection = null): RecordInterface
+    private function dumpMap($data, MapType $type): RecordInterface
     {
         if (!$data instanceof \Traversable) {
             throw new \InvalidArgumentException('Map must be traversable');
         }
 
-        if ($reflection === null) {
-            $reflection = new \ReflectionClass(get_class($data));
-        }
-
+        $reflection = new \ReflectionClass(get_class($data));
         $result = new Record($reflection->getShortName());
+
         foreach ($data as $key => $value) {
             $result->setProperty($key, $this->dumpValue($value, $type->getAdditionalProperties()));
         }
