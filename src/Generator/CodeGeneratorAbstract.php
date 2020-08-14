@@ -283,7 +283,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
      */
     protected function normalizePropertyName(string $name): string
     {
-        return $name;
+        return lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
     }
 
     /**
