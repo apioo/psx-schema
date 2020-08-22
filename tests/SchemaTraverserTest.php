@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\SchemaTraverser;
+use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
@@ -291,6 +292,81 @@ class SchemaTraverserTest extends SchemaTestCase
 
         $traverser = new SchemaTraverser();
         $traverser->traverse($data, $this->getSchema());
+    }
+
+    public function testTraverseDiscriminator()
+    {
+        $schema = $this->schemaManager->getSchema(Form_Container::class);
+        $data = <<<JSON
+{
+    "elements": [{
+        "element": "http://fusio-project.org/ns/2015/form/input"
+    },{
+        "element": "http://fusio-project.org/ns/2015/form/textarea"
+    }]
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $result = $traverser->traverse(\json_decode($data), $schema);
+
+        $actual = json_encode($result, JSON_PRETTY_PRINT);
+
+        $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
+    }
+
+    public function testTraverseDiscriminatorInvalidType()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/elements/0 discriminated union provided type "foo" not available, use one of http://fusio-project.org/ns/2015/form/input, http://fusio-project.org/ns/2015/form/select, http://fusio-project.org/ns/2015/form/tag, http://fusio-project.org/ns/2015/form/textarea');
+
+        $schema = $this->schemaManager->getSchema(Form_Container::class);
+        $data = <<<JSON
+{
+    "elements": [{
+        "element": "foo"
+    },{
+        "element": "http://fusio-project.org/ns/2015/form/textarea"
+    }]
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse(\json_decode($data), $schema);
+    }
+
+    public function testTraverseDiscriminatorInvalidDataType()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/elements/0 discriminated union provided value must be an object');
+
+        $schema = $this->schemaManager->getSchema(Form_Container::class);
+        $data = <<<JSON
+{
+    "elements": ["foo"]
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse(\json_decode($data), $schema);
+    }
+
+    public function testTraverseDiscriminatorNoType()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/elements/0 discriminated union object must have the property "element"');
+
+        $schema = $this->schemaManager->getSchema(Form_Container::class);
+        $data = <<<JSON
+{
+    "elements": [{
+        "foo": "http://fusio-project.org/ns/2015/form/textarea"
+    }]
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse(\json_decode($data), $schema);
     }
 
     protected function getData()

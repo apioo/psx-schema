@@ -314,6 +314,11 @@ class SchemaTraverser
 
     protected function traverseUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
+        $propertyName = $type->getPropertyName();
+        if (!empty($propertyName)) {
+            return $this->traverseDiscriminatedUnion($data, $type, $definitions, $visitor, $context);
+        }
+
         $items = $type->getOneOf();
         $match = 0;
 
@@ -339,6 +344,43 @@ class SchemaTraverser
         }
 
         return $result;
+    }
+
+    private function traverseDiscriminatedUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    {
+        if (!$data instanceof \stdClass) {
+            throw new ValidationException($this->getCurrentPath() . ' discriminated union provided value must be an object', 'oneOf', $this->pathStack);
+        }
+
+        $key = $type->getPropertyName();
+        if (!isset($data->{$key})) {
+            throw new ValidationException($this->getCurrentPath() . ' discriminated union object must have the property "' . $key . '"', 'oneOf', $this->pathStack);
+        }
+
+        $mapping = $type->getMapping();
+        if (!empty($mapping)) {
+            if (!isset($mapping[$data->{$key}])) {
+                throw new ValidationException($this->getCurrentPath() . ' discriminated union provided type "' . $data->{$key} . '" not available, use one of ' . implode(', ', array_keys($mapping)), 'oneOf', $this->pathStack);
+            }
+
+            $ref = $mapping[$data->{$key}];
+        } else {
+            $ref = $data->{$key};
+        }
+
+        $items = $type->getOneOf();
+        foreach ($items as $item) {
+            if (!$item instanceof ReferenceType) {
+                // must be a reference type
+                continue;
+            }
+
+            if ($item->getRef() === $ref) {
+                return $this->recTraverse($data, $item, $definitions, $visitor, $context);
+            }
+        }
+
+        throw new ValidationException($this->getCurrentPath() . ' discriminated union could not match fitting type', 'oneOf', $this->pathStack);
     }
 
     /**
