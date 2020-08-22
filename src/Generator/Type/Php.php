@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator\Type;
 
 use PSX\DateTime\Date;
 use PSX\DateTime\Time;
+use PSX\Record\Record;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
@@ -54,9 +55,9 @@ class Php extends GeneratorAbstract
         } elseif ($type instanceof MapType) {
             $additionalProperties = $type->getAdditionalProperties();
             if ($additionalProperties instanceof TypeInterface) {
-                return 'array<string, ' . $this->getDocType($additionalProperties) . '>';
+                return '\\' . Record::class . '<' . $this->getDocType($additionalProperties) . '>';
             } else {
-                return 'array';
+                return '\\' . Record::class;
             }
         } elseif ($type instanceof StringType && $type->getFormat() === TypeAbstract::FORMAT_BINARY) {
             return 'resource';
@@ -138,7 +139,7 @@ class Php extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'array'; // we use PHP array as map data structure
+        return '\\' . Record::class;
     }
 
     protected function getUnion(array $types): string
