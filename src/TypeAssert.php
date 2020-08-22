@@ -21,13 +21,13 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -45,16 +45,8 @@ class TypeAssert
      */
     public static function assertProperty(TypeInterface $type)
     {
-        if (!($type instanceof BooleanType
-            || $type instanceof NumberType
-            || $type instanceof StringType
-            || $type instanceof ArrayType
-            || $type instanceof IntersectionType
-            || $type instanceof UnionType
-            || $type instanceof ReferenceType
-            || $type instanceof GenericType
-            || $type instanceof AnyType)) {
-            throw new \InvalidArgumentException('Property must be of type boolean, number, string, array, intersection, union, reference, generic or any type, got ' . get_class($type));
+        if ($type instanceof StructType) {
+            throw new \InvalidArgumentException('Property must not contain a nested struct, got ' . get_class($type));
         }
     }
 
@@ -70,8 +62,9 @@ class TypeAssert
             || $type instanceof IntersectionType
             || $type instanceof UnionType
             || $type instanceof ReferenceType
-            || $type instanceof GenericType)) {
-            throw new \InvalidArgumentException('Item must be of type boolean, number, string, intersection, union, reference or generic type, got ' . get_class($type));
+            || $type instanceof GenericType
+            || $type instanceof AnyType)) {
+            throw new \InvalidArgumentException('Item must be of type boolean, number, string, intersection, union, reference, generic or any type, got ' . get_class($type));
         }
     }
 
