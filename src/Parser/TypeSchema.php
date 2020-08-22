@@ -349,6 +349,13 @@ class TypeSchema implements ParserInterface
             }
 
             $type->setOneOf($props);
+
+            if (isset($data->discriminator) && isset($data->discriminator->propertyName)) {
+                $propertyName = $data->discriminator->propertyName;
+                $mapping = $data->discriminator->mapping ?? null;
+
+                $type->setDiscriminator($propertyName, (array) $mapping);
+            }
         }
     }
 
@@ -434,6 +441,15 @@ class TypeSchema implements ParserInterface
             }
         }
 
+        if (isset($data->{'$extends'})) {
+            if (!isset($data->type)) {
+                $data->type = 'object';
+            }
+            if (!isset($data->properties)) {
+                $data->properties = new \stdClass();
+            }
+        }
+
         if (!isset($data->type)) {
             if (isset($data->properties) || isset($data->additionalProperties)) {
                 $data->type = 'object';
@@ -443,6 +459,12 @@ class TypeSchema implements ParserInterface
                 $data->type = 'string';
             } elseif (isset($data->minimum) || isset($data->maximum)) {
                 $data->type = 'number';
+            }
+        }
+
+        if (isset($data->type) && $data->type === 'object') {
+            if (!isset($data->properties) && !isset($data->additionalProperties)) {
+                $data->properties = new \stdClass();
             }
         }
 

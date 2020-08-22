@@ -1,0 +1,82 @@
+{
+  "definitions": {
+    "Form_Container": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "Form_Element_Input"
+              },
+              {
+                "$ref": "Form_Element_Select"
+              },
+              {
+                "$ref": "Form_Element_Tag"
+              },
+              {
+                "$ref": "Form_Element_TextArea"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "element",
+              "mapping": {
+                "http://fusio-project.org/ns/2015/form/input": "Form_Element_Input",
+                "http://fusio-project.org/ns/2015/form/select": "Form_Element_Select",
+                "http://fusio-project.org/ns/2015/form/tag": "Form_Element_Tag",
+                "http://fusio-project.org/ns/2015/form/textarea": "Form_Element_TextArea"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Form_Element": {
+      "type": "object",
+      "properties": {
+        "element": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "element"
+      ]
+    },
+    "Form_Element_Input": {
+      "$extends": "Form_Element",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Form_Element_Select": {
+      "$extends": "Form_Element",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Form_Element_Tag": {
+      "$extends": "Form_Element",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Form_Element_TextArea": {
+      "$extends": "Form_Element",
+      "type": "object",
+      "properties": {
+      }
+    }
+  },
+  "$ref": "Form_Container"
+}

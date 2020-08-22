@@ -69,10 +69,10 @@ class UnionType extends TypeAbstract
 
     /**
      * @param string $propertyName
-     * @param array $mapping
+     * @param array|null $mapping
      * @return $this
      */
-    public function setDiscriminator(string $propertyName, array $mapping): self
+    public function setDiscriminator(string $propertyName, ?array $mapping = null): self
     {
         $this->propertyName = $propertyName;
         $this->mapping = $mapping;

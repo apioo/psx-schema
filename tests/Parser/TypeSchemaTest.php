@@ -54,6 +54,13 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertInstanceOf(TypeInterface::class, $type);
     }
 
+    public function testDiscriminator()
+    {
+        $schema = TypeSchema::fromFile(__DIR__ . '/TypeSchema/form_container.json');
+
+        $this->assertDiscriminator($schema);
+    }
+
     public function testParseExternalResource()
     {
         $mock = new MockHandler([

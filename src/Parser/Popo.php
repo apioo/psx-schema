@@ -173,10 +173,18 @@ class Popo implements ParserInterface
             $this->parseMapAnnotations($annotations, $type);
         } elseif ($type instanceof ArrayType) {
             $this->parseArrayAnnotations($annotations, $type);
+
+            // in case the array property contains an union parse the union annotations
+            $items = $type->getItems();
+            if ($items instanceof UnionType) {
+                $this->parseUnionAnnotations($annotations, $items);
+            }
         } elseif ($type instanceof StringType) {
             $this->parseStringAnnotations($annotations, $type);
         } elseif ($type instanceof NumberType) {
             $this->parseNumberAnnotations($annotations, $type);
+        } elseif ($type instanceof UnionType) {
+            $this->parseUnionAnnotations($annotations, $type);
         }
 
         return $type;
@@ -271,6 +279,15 @@ class Popo implements ParserInterface
                 $type->setExclusiveMaximum($annotation->getExclusiveMaximum());
             } elseif ($annotation instanceof Annotation\MultipleOf) {
                 $type->setMultipleOf($annotation->getMultipleOf());
+            }
+        }
+    }
+
+    private function parseUnionAnnotations(array $annotations, UnionType $type)
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Discriminator) {
+                $type->setDiscriminator($annotation->getPropertyName(), $annotation->getMapping() ?: null);
             }
         }
     }

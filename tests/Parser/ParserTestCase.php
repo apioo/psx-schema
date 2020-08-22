@@ -20,7 +20,11 @@
 
 namespace PSX\Schema\Tests\Parser;
 
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\SchemaTestCase;
+use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\UnionType;
 
 /**
  * ParserTestCase
@@ -31,4 +35,27 @@ use PSX\Schema\Tests\SchemaTestCase;
  */
 abstract class ParserTestCase extends SchemaTestCase
 {
+    protected function assertDiscriminator(SchemaInterface $schema)
+    {
+        /** @var StructType $container */
+        $container = $schema->getDefinitions()->getType('Form_Container');
+        $this->assertInstanceOf(StructType::class, $container);
+
+        /** @var ArrayType $elements */
+        $elements = $container->getProperty('elements');
+        $this->assertInstanceOf(ArrayType::class, $elements);
+
+        /** @var UnionType $items */
+        $expect = [
+            'http://fusio-project.org/ns/2015/form/input' => 'Form_Element_Input',
+            'http://fusio-project.org/ns/2015/form/select' => 'Form_Element_Select',
+            'http://fusio-project.org/ns/2015/form/tag' => 'Form_Element_Tag',
+            'http://fusio-project.org/ns/2015/form/textarea' => 'Form_Element_TextArea',
+        ];
+
+        $items = $elements->getItems();
+        $this->assertInstanceOf(UnionType::class, $items);
+        $this->assertEquals('element', $items->getPropertyName());
+        $this->assertEquals($expect, $items->getMapping());
+    }
 }
