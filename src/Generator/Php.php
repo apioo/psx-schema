@@ -25,6 +25,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
 use PSX\Record\Record;
+use PSX\Schema\Generator\Code\Arguments;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
@@ -34,6 +35,7 @@ use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -216,15 +218,7 @@ class Php extends CodeGeneratorAbstract
         }
 
         foreach ($annotations as $key => $value) {
-            if (is_bool($value)) {
-                $lines[] = ' * @' . $key . '(' . ($value ? 'true' : 'false') . ')';
-            } elseif (is_numeric($value)) {
-                $lines[] = ' * @' . $key . '(' . $value . ')';
-            } elseif (is_array($value)) {
-                $lines[] = ' * @' . $key . '({' . $this->arrayList($value) . '})';
-            } else {
-                $lines[] = ' * @' . $key . '("' . $this->escapeString($value) . '")';
-            }
+            $lines[] = ' * @' . $key . '(' . $this->buildAnnotation($value) . ')';
         }
 
         if (empty($lines)) {
@@ -232,6 +226,29 @@ class Php extends CodeGeneratorAbstract
         }
 
         return '/**' . "\n" . implode("\n", $lines) . "\n" . ' */';
+    }
+
+    private function buildAnnotation($value): string
+    {
+        if ($value instanceof Arguments) {
+            return implode(', ', array_map([$this, 'buildAnnotation'], $value->getArrayCopy()));
+        } elseif (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        } elseif (is_numeric($value)) {
+            return $value;
+        } elseif (is_array($value)) {
+            if (isset($value[0])) {
+                return '{' . $this->arrayList($value) . '}';
+            } else {
+                $parts = [];
+                foreach ($value as $key => $val) {
+                    $parts[] = $this->buildAnnotation($key) . ': ' . $this->buildAnnotation($val);
+                }
+                return '{' . implode(', ', $parts) . '}';
+            }
+        } else {
+            return '"' . $this->escapeString($value) . '"';
+        }
     }
 
     private function getAnnotationsForType(TypeInterface $type, ?string $key = null): array
@@ -273,6 +290,11 @@ class Php extends CodeGeneratorAbstract
             $result['Pattern'] = $type->getPattern();
             $result['MinLength'] = $type->getMinLength();
             $result['MaxLength'] = $type->getMaxLength();
+        } elseif ($type instanceof UnionType && !empty($type->getPropertyName())) {
+            $result['Discriminator'] = new Arguments([
+                $type->getPropertyName(),
+                $type->getMapping(),
+            ]);
         }
 
         return array_filter($result, static function($value) {

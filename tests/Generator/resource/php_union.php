@@ -1,4 +1,34 @@
-class Human implements \JsonSerializable
+/**
+ * @Required({"kind"})
+ */
+class Creature implements \JsonSerializable
+{
+    /**
+     * @var string|null
+     */
+    protected $kind;
+    /**
+     * @param string|null $kind
+     */
+    public function setKind(?string $kind) : void
+    {
+        $this->kind = $kind;
+    }
+    /**
+     * @return string|null
+     */
+    public function getKind() : ?string
+    {
+        return $this->kind;
+    }
+    public function jsonSerialize()
+    {
+        return (object) array_filter(array('kind' => $this->kind), static function ($value) : bool {
+            return $value !== null;
+        });
+    }
+}
+class Human extends Creature implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -20,12 +50,12 @@ class Human implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
+        return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
             return $value !== null;
-        });
+        }));
     }
 }
-class Animal implements \JsonSerializable
+class Animal extends Creature implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -47,9 +77,9 @@ class Animal implements \JsonSerializable
     }
     public function jsonSerialize()
     {
-        return (object) array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
+        return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
             return $value !== null;
-        });
+        }));
     }
 }
 class Union implements \JsonSerializable
@@ -62,6 +92,11 @@ class Union implements \JsonSerializable
      * @var Human&Animal|null
      */
     protected $intersection;
+    /**
+     * @var Human|Animal|null
+     * @Discriminator("kind", {"foo": "Human", "bar": "Animal"})
+     */
+    protected $discriminator;
     /**
      * @param Human|Animal|null $union
      */
@@ -90,9 +125,23 @@ class Union implements \JsonSerializable
     {
         return $this->intersection;
     }
+    /**
+     * @param Human|Animal|null $discriminator
+     */
+    public function setDiscriminator($discriminator) : void
+    {
+        $this->discriminator = $discriminator;
+    }
+    /**
+     * @return Human|Animal|null
+     */
+    public function getDiscriminator()
+    {
+        return $this->discriminator;
+    }
     public function jsonSerialize()
     {
-        return (object) array_filter(array('union' => $this->union, 'intersection' => $this->intersection), static function ($value) : bool {
+        return (object) array_filter(array('union' => $this->union, 'intersection' => $this->intersection, 'discriminator' => $this->discriminator), static function ($value) : bool {
             return $value !== null;
         });
     }
