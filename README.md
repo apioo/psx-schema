@@ -144,7 +144,7 @@ $schema = $schemaManager->getSchema(Person::class);
 try {
     $person = (new SchemaTraverser())->traverse($data, $schema, new TypeVisitor());
     
-    // $example contains now an instance of the Example_Schema class containing 
+    // $example contains now an instance of the Person class containing 
     // the firstName and lastName property
     echo $person->getFirstName();
 
