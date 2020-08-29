@@ -38,67 +38,67 @@ use PSX\Schema\VisitorInterface;
  */
 class NullVisitor implements VisitorInterface
 {
-    public function visitStruct(\stdClass $data, StructType $property, $path)
+    public function visitStruct(\stdClass $data, StructType $type, $path)
     {
         return $data;
     }
 
-    public function visitMap(\stdClass $data, MapType $property, $path)
+    public function visitMap(\stdClass $data, MapType $type, $path)
     {
         return $data;
     }
 
-    public function visitArray(array $data, ArrayType $property, $path)
+    public function visitArray(array $data, ArrayType $type, $path)
     {
         return $data;
     }
 
-    public function visitBinary($data, StringType $property, $path)
+    public function visitBinary($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitBoolean($data, BooleanType $property, $path)
+    public function visitBoolean($data, BooleanType $type, $path)
     {
         return $data;
     }
 
-    public function visitDateTime($data, StringType $property, $path)
+    public function visitDateTime($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitDate($data, StringType $property, $path)
+    public function visitDate($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitDuration($data, StringType $property, $path)
+    public function visitDuration($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitNumber($data, NumberType $property, $path)
+    public function visitNumber($data, NumberType $type, $path)
     {
         return $data;
     }
 
-    public function visitInteger($data, IntegerType $property, $path)
+    public function visitInteger($data, IntegerType $type, $path)
     {
         return $data;
     }
 
-    public function visitString($data, StringType $property, $path)
+    public function visitString($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitTime($data, StringType $property, $path)
+    public function visitTime($data, StringType $type, $path)
     {
         return $data;
     }
 
-    public function visitUri($data, StringType $property, $path)
+    public function visitUri($data, StringType $type, $path)
     {
         return $data;
     }
