@@ -235,7 +235,7 @@ class Php extends CodeGeneratorAbstract
         } elseif (is_bool($value)) {
             return $value ? 'true' : 'false';
         } elseif (is_numeric($value)) {
-            return $value;
+            return (string) $value;
         } elseif (is_array($value)) {
             if (isset($value[0])) {
                 return '{' . $this->arrayList($value) . '}';
