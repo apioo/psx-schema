@@ -51,7 +51,7 @@ class Discriminator
             throw new \InvalidArgumentException('Discriminator annotation first argument must be a string');
         }
 
-        if (!is_array($this->mapping)) {
+        if ($this->mapping !== null && !is_array($this->mapping)) {
             throw new \InvalidArgumentException('Discriminator annotation second argument must be an array');
         }
     }
