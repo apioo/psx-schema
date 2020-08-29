@@ -32,6 +32,11 @@ interface DefinitionsInterface
     public const SELF_NAMESPACE = 'self';
 
     /**
+     * Adds a specific type to the definition. If the name contains a colon
+     * it is used as namespace i.e. acme:my_type adds the type "my_type" to
+     * the namespace "acme". If not namespace is used the type is added to
+     * the "self" namespace
+     * 
      * @param string $name
      * @param TypeInterface $type
      * @return void
@@ -45,7 +50,7 @@ interface DefinitionsInterface
     public function hasType(string $name): bool;
 
     /**
-     * Returns a specific type by the provided ref. If a ref contains a colon
+     * Returns a specific type by the provided name. If a name contains a colon
      * it is used as namespace i.e. acme:my_type tries to resolve the type
      * "my_type" from the namespace "acme". If no colon is provided the self
      * namespace is used
@@ -91,8 +96,8 @@ interface DefinitionsInterface
      * current definition and also adds the root type in case it is not already
      * available
      *
-     * @param string $fqn
+     * @param string $name
      * @param SchemaInterface $schema
      */
-    public function addSchema(string $fqn, SchemaInterface $schema): void;
+    public function addSchema(string $name, SchemaInterface $schema): void;
 }

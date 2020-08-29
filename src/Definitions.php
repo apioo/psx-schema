@@ -36,43 +36,55 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         $this->container = [];
     }
 
-    public function addType(string $fqn, TypeInterface $type): void
+    /**
+     * @inheritDoc
+     */
+    public function addType(string $name, TypeInterface $type): void
     {
-        [$ns, $name] = $this->split($fqn);
+        [$ns, $alias] = $this->split($name);
 
         if (!isset($this->container[$ns])) {
             $this->container[$ns] = [];
         }
 
-        if (isset($this->container[$ns][$name])) {
-            throw new \RuntimeException('Type "' . $fqn . '" already registered');
+        if (isset($this->container[$ns][$alias])) {
+            throw new \RuntimeException('Type "' . $name . '" already registered');
         }
 
-        $this->container[$ns][$name] = $type;
+        $this->container[$ns][$alias] = $type;
     }
 
-    public function hasType(string $fqn): bool
+    /**
+     * @inheritDoc
+     */
+    public function hasType(string $name): bool
     {
-        [$ns, $name] = $this->split($fqn);
+        [$ns, $alias] = $this->split($name);
 
-        return isset($this->container[$ns][$name]);
+        return isset($this->container[$ns][$alias]);
     }
 
-    public function getType(string $fqn): TypeInterface
+    /**
+     * @inheritDoc
+     */
+    public function getType(string $name): TypeInterface
     {
-        [$ns, $name] = $this->split($fqn);
+        [$ns, $alias] = $this->split($name);
 
         if (!isset($this->container[$ns])) {
-            throw new TypeNotFoundException('Type namespace "' . $ns . '" not found, the following namespaces are available: ' . implode(', ', array_keys($this->container)), $ns, $name);
+            throw new TypeNotFoundException('Type namespace "' . $ns . '" not found, the following namespaces are available: ' . implode(', ', array_keys($this->container)), $ns, $alias);
         }
 
-        if (!isset($this->container[$ns][$name])) {
-            throw new TypeNotFoundException('Type "' . $name . '" not found, the following types are available: ' . implode(', ', array_keys($this->container[$ns])), $ns, $name);
+        if (!isset($this->container[$ns][$alias])) {
+            throw new TypeNotFoundException('Type "' . $alias . '" not found, the following types are available: ' . implode(', ', array_keys($this->container[$ns])), $ns, $alias);
         }
 
-        return $this->container[$ns][$name];
+        return $this->container[$ns][$alias];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getTypes(string $namespace): iterable
     {
         if (isset($this->container[$namespace])) {
@@ -82,6 +94,9 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getAllTypes(): iterable
     {
         $result = [];
@@ -98,11 +113,17 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getNamespaces(): iterable
     {
         return array_keys($this->container);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function merge(DefinitionsInterface $definitions): void
     {
         $namespaces = $definitions->getNamespaces();
@@ -119,12 +140,18 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
     }
 
-    public function addSchema(string $fqn, SchemaInterface $schema): void
+    /**
+     * @inheritDoc
+     */
+    public function addSchema(string $name, SchemaInterface $schema): void
     {
         $this->merge($schema->getDefinitions());
-        $this->addType($fqn, $schema->getType());
+        $this->addType($name, $schema->getType());
     }
 
+    /**
+     * @inheritDoc
+     */
     public function jsonSerialize()
     {
         return $this->getAllTypes();
