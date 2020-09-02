@@ -95,6 +95,8 @@ class Popo implements ParserInterface
         $type = $this->resolver->resolveClass($class);
         $annotations = $this->reader->getClassAnnotations($class);
 
+        $definitions->addType($class->getShortName(), $type);
+
         if ($type instanceof StructType) {
             $parent = $class->getParentClass();
             if ($parent instanceof \ReflectionClass) {
@@ -104,8 +106,6 @@ class Popo implements ParserInterface
                 }
             }
         }
-
-        $definitions->addType($class->getShortName(), $type);
 
         if ($type instanceof TypeAbstract) {
             $this->parseCommonAnnotations($annotations, $type);
