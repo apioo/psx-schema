@@ -22,9 +22,11 @@ namespace PSX\Schema\Tests;
 
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
+use PSX\Schema\Tests\Parser\Popo\Form_Element_Input;
 use PSX\Schema\ValidationException;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
+use PSX\Schema\Visitor\TypeVisitor;
 
 /**
  * SchemaTraverserTest
@@ -367,6 +369,36 @@ JSON;
 
         $traverser = new SchemaTraverser();
         $traverser->traverse(\json_decode($data), $schema);
+    }
+
+    public function testTraverseExtends()
+    {
+        $schema = $this->schemaManager->getSchema(Form_Element_Input::class);
+        $data = <<<JSON
+{
+    "element": "text",
+    "name": "foo",
+    "type": "bar",
+    "parent": {
+        "element": "form",
+        "name": "bar",
+        "type": "foo"
+    }
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        /** @var Form_Element_Input $result */
+        $result = $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
+
+        $this->assertInstanceOf(Form_Element_Input::class, $result);
+        $this->assertEquals('text', $result->getElement());
+        $this->assertEquals('foo', $result->getName());
+        $this->assertEquals('bar', $result->getType());
+        $this->assertInstanceOf(Form_Element_Input::class, $result->getParent());
+        $this->assertEquals('form', $result->getParent()->getElement());
+        $this->assertEquals('bar', $result->getParent()->getName());
+        $this->assertEquals('foo', $result->getParent()->getType());
     }
 
     protected function getData()
