@@ -187,14 +187,20 @@ class SchemaTraverser
     protected function traverseStruct(\stdClass $data, StructType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
         $result = new \stdClass();
+        $properties = [];
 
         $extends = $type->getExtends();
-        if (!empty($extends)) {
-            $parentType = $definitions->getType($extends);
-            $result = $this->recTraverse($data, $parentType, $definitions, $visitor, $context);
+        while (!empty($extends)) {
+            $parent = $definitions->getType($extends);
+            if (!$parent instanceof StructType) {
+                break;
+            }
+
+            $properties = array_merge($properties, $parent->getProperties() ?? []);
+            $extends = $parent->getExtends();
         }
 
-        $properties = $type->getProperties();
+        $properties = array_merge($properties, $type->getProperties() ?? []);
         if (!empty($properties)) {
             $data = (array) $data;
             foreach ($properties as $key => $subType) {
