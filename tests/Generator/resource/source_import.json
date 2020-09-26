@@ -1,0 +1,23 @@
+{
+  "$import": {
+    "my_import": "file:///source_oop.json"
+  },
+  "definitions": {
+    "Import": {
+      "type": "object",
+      "properties": {
+        "students": {
+          "$ref": "my_import:StudentMap"
+        },
+        "student": {
+          "$ref": "my_import:Student"
+        }
+      }
+    },
+    "MyMap": {
+      "$extends": "my_import:Student",
+      "type": "object"
+    }
+  },
+  "$ref": "Import"
+}

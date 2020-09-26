@@ -1,7 +1,7 @@
 /**
  * Common properties which can be used at any schema
  */
-interface CommonProperties {
+export interface CommonProperties {
     title?: string
     description?: string
     type?: string
@@ -10,7 +10,7 @@ interface CommonProperties {
     readonly?: boolean
 }
 
-interface ScalarProperties {
+export interface ScalarProperties {
     format?: string
     enum?: EnumValue
     default?: ScalarValue
@@ -23,14 +23,14 @@ type Properties = Record<string, PropertyValue>;
 /**
  * Properties specific for a container
  */
-interface ContainerProperties {
+export interface ContainerProperties {
     type: string
 }
 
 /**
  * Struct specific properties
  */
-interface StructProperties {
+export interface StructProperties {
     properties: Properties
     required?: StringArray
 }
@@ -40,7 +40,7 @@ type StructType = CommonProperties & ContainerProperties & StructProperties;
 /**
  * Map specific properties
  */
-interface MapProperties {
+export interface MapProperties {
     additionalProperties: PropertyValue
     maxProperties?: number
     minProperties?: number
@@ -55,7 +55,7 @@ type ArrayValue = BooleanType | NumberType | StringType | ReferenceType | Generi
 /**
  * Array properties
  */
-interface ArrayProperties {
+export interface ArrayProperties {
     type: string
     items: ArrayValue
     maxItems?: number
@@ -68,7 +68,7 @@ type ArrayType = CommonProperties & ArrayProperties;
 /**
  * Boolean properties
  */
-interface BooleanProperties {
+export interface BooleanProperties {
     type: string
 }
 
@@ -77,7 +77,7 @@ type BooleanType = CommonProperties & ScalarProperties & BooleanProperties;
 /**
  * Number properties
  */
-interface NumberProperties {
+export interface NumberProperties {
     type: string
     multipleOf?: number
     maximum?: number
@@ -91,7 +91,7 @@ type NumberType = CommonProperties & ScalarProperties & NumberProperties;
 /**
  * String properties
  */
-interface StringProperties {
+export interface StringProperties {
     type: string
     maxLength?: number
     minLength?: number
@@ -107,7 +107,7 @@ type DiscriminatorMapping = Record<string, string>;
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
  */
-interface Discriminator {
+export interface Discriminator {
     propertyName: string
     mapping?: DiscriminatorMapping
 }
@@ -115,7 +115,7 @@ interface Discriminator {
 /**
  * An intersection type combines multiple schemas into one
  */
-interface AllOfProperties {
+export interface AllOfProperties {
     description?: string
     allOf: Array<OfValue>
 }
@@ -123,7 +123,7 @@ interface AllOfProperties {
 /**
  * An union type can contain one of the provided schemas
  */
-interface OneOfProperties {
+export interface OneOfProperties {
     description?: string
     discriminator?: Discriminator
     oneOf: Array<OfValue>
@@ -136,7 +136,7 @@ type TemplateProperties = Record<string, ReferenceType>;
 /**
  * Represents a reference to another schema
  */
-interface ReferenceType {
+export interface ReferenceType {
     ref: string
     template?: TemplateProperties
 }
@@ -144,7 +144,7 @@ interface ReferenceType {
 /**
  * Represents a generic type
  */
-interface GenericType {
+export interface GenericType {
     generic: string
 }
 
@@ -165,7 +165,7 @@ type NumberArray = Array<number>;
 /**
  * TypeSchema meta schema which describes a TypeSchema
  */
-interface TypeSchema {
+export interface TypeSchema {
     import?: Import
     title: string
     description?: string

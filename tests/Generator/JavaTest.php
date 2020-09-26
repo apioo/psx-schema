@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\Java;
+use PSX\Schema\Generator\Swift;
 
 /**
  * JavaTest
@@ -62,6 +63,42 @@ class JavaTest extends GeneratorTestCase
         $actual = (string) $generator->generate($this->getOOPSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/java_oop.java');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateUnion()
+    {
+        $generator = new Java();
+
+        $actual = (string) $generator->generate($this->getUnionSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/java_union.java');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImport()
+    {
+        $generator = new Java();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/java_import.java');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImportNamespace()
+    {
+        $generator = new Java('Foo.Bar', ['my_import' => 'My.Import']);
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/java_import_ns.java');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

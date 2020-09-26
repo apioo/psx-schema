@@ -1,18 +1,18 @@
-interface Human {
+export interface Human {
     firstName?: string
 }
 
-interface Student extends Human {
+export interface Student extends Human {
     matricleNumber?: string
 }
 
 type StudentMap = Map<Student>;
 
-interface Map<T> {
+export interface Map<T> {
     totalResults?: number
     entries?: Array<T>
 }
 
-interface RootSchema {
+export interface RootSchema {
     students?: StudentMap
 }

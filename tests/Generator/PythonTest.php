@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\Python;
+use PSX\Schema\Generator\Swift;
 
 /**
  * PythonTest
@@ -62,6 +63,42 @@ class PythonTest extends GeneratorTestCase
         $actual = (string) $generator->generate($this->getOOPSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/python_oop.py');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateUnion()
+    {
+        $generator = new Python();
+
+        $actual = (string) $generator->generate($this->getUnionSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/python_union.py');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImport()
+    {
+        $generator = new Python();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/python_import.py');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImportNamespace()
+    {
+        $generator = new Python('Foo.Bar', ['my_import' => 'My.Import']);
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/python_import_ns.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

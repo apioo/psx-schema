@@ -82,6 +82,30 @@ class PhpTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
+    public function testGenerateImport()
+    {
+        $generator = new Php();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/php_import.php');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImportNamespace()
+    {
+        $generator = new Php('Foo\\Bar', ['my_import' => 'My\\Import']);
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/php_import_ns.php');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
     public function testExecute()
     {
         $source    = $this->getSchema();

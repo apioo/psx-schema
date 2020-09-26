@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Php;
 use PSX\Schema\Generator\Proto;
 use PSX\Schema\Generator\Swift;
 
@@ -63,6 +64,42 @@ class SwiftTest extends GeneratorTestCase
         $actual = (string) $generator->generate($this->getOOPSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/swift_oop.swift');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateUnion()
+    {
+        $generator = new Swift();
+
+        $actual = (string) $generator->generate($this->getUnionSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/swift_union.swift');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImport()
+    {
+        $generator = new Swift();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/swift_import.swift');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImportNamespace()
+    {
+        $generator = new Swift('Foo.Bar', ['my_import' => 'My.Import']);
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/swift_import_ns.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

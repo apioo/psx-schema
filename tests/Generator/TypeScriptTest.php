@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\Proto;
 use PSX\Schema\Generator\TypeScript;
 
 /**
@@ -63,6 +62,42 @@ class TypeScriptTest extends GeneratorTestCase
         $actual = (string) $generator->generate($this->getOOPSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/typescript_oop.ts');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateUnion()
+    {
+        $generator = new TypeScript();
+
+        $actual = (string) $generator->generate($this->getUnionSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/typescript_union.ts');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImport()
+    {
+        $generator = new TypeScript();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/typescript_import.ts');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
+
+    public function testGenerateImportNamespace()
+    {
+        $generator = new TypeScript('Foo.Bar', ['my_import' => 'My.Import']);
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/typescript_import_ns.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

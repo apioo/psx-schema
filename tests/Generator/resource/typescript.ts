@@ -1,7 +1,7 @@
 /**
  * Location of the person
  */
-interface Location {
+export interface Location {
     lat: number
     long: number
 }
@@ -9,7 +9,7 @@ interface Location {
 /**
  * An application
  */
-interface Web {
+export interface Web {
     name: string
     url: string
 }
@@ -17,7 +17,7 @@ interface Web {
 /**
  * An simple author element with some description
  */
-interface Author {
+export interface Author {
     title: string
     email?: string
     categories?: Array<string>
@@ -30,7 +30,7 @@ type Meta = Record<string, string>;
 /**
  * An general news entry
  */
-interface News {
+export interface News {
     config?: Meta
     tags?: Array<string>
     receiver: Array<Author>
