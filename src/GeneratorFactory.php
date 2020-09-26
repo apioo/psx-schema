@@ -55,7 +55,7 @@ class GeneratorFactory
         $mapping = $result['mapping'] ?? null;
         $indent = $result['indent'] ?? 4;
         $heading = $result['heading'] ?? 1;
-        $prefix = $result['prefix'] ?? 1;
+        $prefix = $result['prefix'] ?? 'psx_model_';
 
         switch ($format) {
             case self::TYPE_CSHARP:
