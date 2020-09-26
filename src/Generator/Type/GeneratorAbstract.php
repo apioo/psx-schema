@@ -33,6 +33,7 @@ use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * GeneratorAbstract
@@ -43,6 +44,13 @@ use PSX\Schema\TypeInterface;
  */
 abstract class GeneratorAbstract implements GeneratorInterface
 {
+    private $mapping;
+
+    public function __construct(array $mapping)
+    {
+        $this->mapping = $mapping;
+    }
+
     /**
      * @inheritDoc
      */
@@ -69,7 +77,11 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof ReferenceType) {
             $template = $type->getTemplate();
             if (!empty($template)) {
-                return $this->getReference($type->getRef()) . $this->getGeneric(array_values($template));
+                $types = [];
+                foreach ($template as $value) {
+                    $types[] = $this->getReference($value);
+                }
+                return $this->getReference($type->getRef()) . $this->getGeneric($types);
             } else {
                 return $this->getReference($type->getRef());
             }
@@ -208,7 +220,13 @@ abstract class GeneratorAbstract implements GeneratorInterface
      */
     protected function getReference(string $ref): string
     {
-        return $ref;
+        [$ns, $name] = TypeUtil::split($ref);
+
+        if (!empty($ns) && isset($this->mapping[$ns])) {
+            $name = $this->getNamespaced($this->mapping[$ns], $name);
+        }
+
+        return $name;
     }
 
     /**
@@ -221,6 +239,11 @@ abstract class GeneratorAbstract implements GeneratorInterface
      * @return string
      */
     abstract protected function getAny(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getNamespaced(string $namespace, string $name): string;
 
     /**
      * @param StringType $type

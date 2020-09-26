@@ -83,4 +83,9 @@ class Java extends GeneratorAbstract
     {
         return 'Object';
     }
+
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
 }

@@ -43,9 +43,9 @@ class Go extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Go();
+        return new Type\Go($mapping);
     }
 
     /**

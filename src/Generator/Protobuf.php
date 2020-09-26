@@ -43,9 +43,9 @@ class Protobuf extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Protobuf();
+        return new Type\Protobuf($mapping);
     }
 
     /**

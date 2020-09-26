@@ -47,9 +47,9 @@ class Java extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Java();
+        return new Type\Java($mapping);
     }
 
     /**

@@ -83,4 +83,9 @@ class CSharp extends GeneratorAbstract
     {
         return 'object';
     }
+
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
 }

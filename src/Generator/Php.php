@@ -60,9 +60,9 @@ class Php extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    public function __construct(?string $namespace = null)
+    public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
-        parent::__construct($namespace);
+        parent::__construct($namespace, $mapping, $indent);
 
         $this->factory = new BuilderFactory();
         $this->printer = new PrettyPrinter\Standard();
@@ -84,9 +84,9 @@ class Php extends CodeGeneratorAbstract
         return '<?php' . "\n\n" . 'declare(strict_types = 1);' . "\n\n" . $code . "\n";
     }
 
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Php();
+        return new Type\Php($mapping);
     }
 
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
@@ -179,7 +179,12 @@ class Php extends CodeGeneratorAbstract
         $tags = [];
         $template = $origin->getTemplate();
         if (!empty($template)) {
-            $tags['extends'] = $type . '<' . implode(', ', array_values($template)) . '>';
+            $types = [];
+            foreach ($template as $value) {
+                $types[] = $this->generator->getDocType((new ReferenceType())->setRef($value));
+            }
+
+            $tags['extends'] = $type . '<' . implode(', ', $types) . '>';
         }
 
         $class = $this->factory->class($name);

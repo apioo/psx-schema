@@ -24,7 +24,9 @@ use PSX\Json\Parser;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * TypeSchema
@@ -67,7 +69,7 @@ class TypeSchema implements GeneratorInterface
     protected function generateDefinitions(DefinitionsInterface $definitions)
     {
         $result = [];
-        $types  = $definitions->getAllTypes();
+        $types  = $definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
 
         ksort($types);
 

@@ -47,9 +47,9 @@ class CSharp extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\CSharp();
+        return new Type\CSharp($mapping);
     }
 
     /**

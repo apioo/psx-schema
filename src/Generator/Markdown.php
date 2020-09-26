@@ -44,9 +44,9 @@ class Markdown extends MarkupAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Markdown();
+        return new Type\Markdown($mapping);
     }
 
     /**

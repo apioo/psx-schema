@@ -45,9 +45,9 @@ class Python extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Python();
+        return new Type\Python($mapping);
     }
 
     /**

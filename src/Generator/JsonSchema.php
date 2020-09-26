@@ -32,6 +32,7 @@ use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * JsonSchema
@@ -84,7 +85,7 @@ class JsonSchema implements GeneratorInterface
     protected function generateDefinitions(DefinitionsInterface $definitions)
     {
         $result = [];
-        $types  = $definitions->getAllTypes();
+        $types  = $definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
 
         ksort($types);
 
@@ -97,6 +98,8 @@ class JsonSchema implements GeneratorInterface
 
     protected function generateType(TypeInterface $type)
     {
+        TypeUtil::normalize($type);
+
         if ($type instanceof StructType) {
             $data = $type->toArray();
 

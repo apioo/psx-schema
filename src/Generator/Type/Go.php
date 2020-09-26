@@ -113,4 +113,9 @@ class Go extends GeneratorAbstract
     {
         return 'interface{}';
     }
+
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
 }

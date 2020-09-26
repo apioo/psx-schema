@@ -48,9 +48,9 @@ class Swift extends CodeGeneratorAbstract
     /**
      * @inheritDoc
      */
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Swift();
+        return new Type\Swift($mapping);
     }
 
     /**

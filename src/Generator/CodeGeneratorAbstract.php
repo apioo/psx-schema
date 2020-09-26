@@ -33,6 +33,7 @@ use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * CodeGeneratorAbstract
@@ -59,6 +60,11 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected $indent;
 
     /**
+     * @var array
+     */
+    protected $mapping;
+
+    /**
      * @var DefinitionsInterface
      */
     protected $definitions;
@@ -69,13 +75,15 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     private $chunks;
 
     /**
-     * @param string $namespace
+     * @param string|null $namespace
+     * @param array $mapping
      * @param int $indent
      */
-    public function __construct(?string $namespace = null, int $indent = 4)
+    public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
-        $this->generator = $this->newTypeGenerator();
+        $this->generator = $this->newTypeGenerator($mapping);
         $this->namespace = $namespace;
+        $this->mapping   = $mapping;
         $this->indent    = str_repeat(' ', $indent);
     }
 
@@ -87,7 +95,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $this->chunks      = new Code\Chunks($this->namespace);
         $this->definitions = $schema->getDefinitions();
 
-        $types = $this->definitions->getAllTypes();
+        $types = $this->definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
         foreach ($types as $name => $type) {
             $this->generateDefinition($name, $type);
         }
@@ -150,12 +158,18 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $extends = $type->getExtends();
         if (!empty($extends)) {
-            $parent  = $this->definitions->getType($extends);
-            $extends = $this->normalizeClassName($extends);
-            if ($parent instanceof StructType) {
-                $this->generateStruct($extends, $parent);
+            [$ns, $name] = TypeUtil::split($extends);
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $parent  = $this->definitions->getType($name);
+                $extends = $this->normalizeClassName($name);
+                if ($parent instanceof StructType) {
+                    $this->generateStruct($extends, $parent);
+                } else {
+                    throw new \RuntimeException('Extends must be of type struct');
+                }
             } else {
-                throw new \RuntimeException('Extends must be of type struct');
+                // in case we have an extern namespace we dont need to generate the type
+                $extends = $this->generator->getType((new ReferenceType())->setRef($extends));
             }
         }
 
@@ -296,9 +310,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     }
 
     /**
+     * @param array $mapping
      * @return \PSX\Schema\Generator\Type\GeneratorInterface
      */
-    abstract protected function newTypeGenerator(): TypeGeneratorInterface;
+    abstract protected function newTypeGenerator(array $mapping): TypeGeneratorInterface;
 
     /**
      * @param string $name

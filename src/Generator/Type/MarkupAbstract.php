@@ -124,6 +124,11 @@ abstract class MarkupAbstract extends GeneratorAbstract
         return 'Any';
     }
 
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
+
     /**
      * @param string $name
      * @param string $href

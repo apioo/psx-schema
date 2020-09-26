@@ -45,15 +45,15 @@ class TypeScript extends CodeGeneratorAbstract
         return $file . '.ts';
     }
 
-    protected function newTypeGenerator(): GeneratorInterface
+    protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\TypeScript();
+        return new Type\TypeScript($mapping);
     }
 
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = $this->writeHeader($origin->getDescription());
-        $code.= 'interface ' . $name;
+        $code.= 'export interface ' . $name;
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';

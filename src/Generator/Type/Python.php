@@ -83,4 +83,9 @@ class Python extends GeneratorAbstract
     {
         return 'Any';
     }
+
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
 }

@@ -83,4 +83,9 @@ class TypeScript extends GeneratorAbstract
     {
         return 'any';
     }
+
+    protected function getNamespaced(string $namespace, string $name): string
+    {
+        return $namespace . '.' . $name;
+    }
 }
