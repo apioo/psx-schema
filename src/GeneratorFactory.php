@@ -47,57 +47,53 @@ class GeneratorFactory
      * @param string $config
      * @return \PSX\Schema\GeneratorInterface
      */
-    public function getGenerator($format, $config)
+    public function getGenerator(string $format, ?string $config = null)
     {
+        $result = [];
+        parse_str($config ?? '', $result);
+        $namespace = $result['namespace'] ?? null;
+        $mapping = $result['mapping'] ?? null;
+        $indent = $result['indent'] ?? 4;
+        $heading = $result['heading'] ?? 1;
+        $prefix = $result['prefix'] ?? 1;
+
         switch ($format) {
             case self::TYPE_CSHARP:
-                return new Generator\CSharp();
-                break;
+                return new Generator\CSharp($namespace, $mapping, $indent);
 
             case self::TYPE_GO:
-                return new Generator\Go();
-                break;
+                return new Generator\Go($namespace, $mapping, $indent);
 
             case self::TYPE_HTML:
-                return new Generator\Html($config ? (int) $config : 1);
-                break;
+                return new Generator\Html((int) $heading, $prefix);
 
             case self::TYPE_JAVA:
-                return new Generator\Java();
-                break;
+                return new Generator\Java($namespace, $mapping, $indent);
 
             case self::TYPE_JSONSCHEMA:
                 return new Generator\JsonSchema();
-                break;
 
             case self::TYPE_MARKDOWN:
-                return new Generator\Markdown($config ? (int) $config : 1);
-                break;
+                return new Generator\Markdown((int) $heading, $prefix);
 
             case self::TYPE_PHP:
-                return new Generator\Php($config ?: null);
-                break;
+                return new Generator\Php($namespace, $mapping, $indent);
 
             case self::TYPE_PROTOBUF:
-                return new Generator\Protobuf();
-                break;
+                return new Generator\Protobuf($namespace, $mapping, $indent);
 
             case self::TYPE_PYTHON:
-                return new Generator\Python();
-                break;
+                return new Generator\Python($namespace, $mapping, $indent);
 
             case self::TYPE_SWIFT:
-                return new Generator\Swift();
-                break;
+                return new Generator\Swift($namespace, $mapping, $indent);
 
             case self::TYPE_TYPESCRIPT:
-                return new Generator\TypeScript();
-                break;
+                return new Generator\TypeScript($namespace, $mapping, $indent);
 
             default:
             case self::TYPE_TYPESCHEMA:
                 return new Generator\TypeSchema();
-                break;
         }
     }
 
