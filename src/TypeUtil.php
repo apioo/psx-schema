@@ -114,4 +114,14 @@ class TypeUtil
 
         return [$ns, $name];
     }
+
+    /**
+     * @param string $ref
+     * @return string
+     */
+    public static function getFullyQualifiedName(string $ref): string
+    {
+        [$ns, $name] = self::split($ref);
+        return $ns . ':' . $name;
+    }
 }

@@ -83,6 +83,18 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     }
 
     /**
+     * @param string $name
+     */
+    public function removeType(string $name): void
+    {
+        [$ns, $alias] = TypeUtil::split($name);
+
+        if (isset($this->container[$ns][$alias])) {
+            unset($this->container[$ns][$alias]);
+        }
+    }
+
+    /**
      * @inheritDoc
      */
     public function getTypes(string $namespace): iterable
