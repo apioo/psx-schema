@@ -78,6 +78,13 @@ interface DefinitionsInterface
     public function getAllTypes(): iterable;
 
     /**
+     * Removes a type from the definition
+     * 
+     * @param string $name
+     */
+    public function removeType(string $name): void;
+
+    /**
      * Returns all registered namespaces on this definition
      *
      * @return array<string>

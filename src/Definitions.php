@@ -83,7 +83,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     }
 
     /**
-     * @param string $name
+     * @inheritDoc
      */
     public function removeType(string $name): void
     {
