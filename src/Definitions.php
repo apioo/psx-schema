@@ -41,7 +41,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
      */
     public function addType(string $name, TypeInterface $type): void
     {
-        [$ns, $alias] = $this->split($name);
+        [$ns, $alias] = TypeUtil::split($name);
 
         if (!isset($this->container[$ns])) {
             $this->container[$ns] = [];
@@ -59,7 +59,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
      */
     public function hasType(string $name): bool
     {
-        [$ns, $alias] = $this->split($name);
+        [$ns, $alias] = TypeUtil::split($name);
 
         return isset($this->container[$ns][$alias]);
     }
@@ -69,7 +69,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
      */
     public function getType(string $name): TypeInterface
     {
-        [$ns, $alias] = $this->split($name);
+        [$ns, $alias] = TypeUtil::split($name);
 
         if (!isset($this->container[$ns])) {
             throw new TypeNotFoundException('Type namespace "' . $ns . '" not found, the following namespaces are available: ' . implode(', ', array_keys($this->container)), $ns, $alias);
@@ -102,11 +102,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         $result = [];
         foreach ($this->container as $namespace => $types) {
             foreach ($types as $name => $type) {
-                if ($name === self::SELF_NAMESPACE) {
-                    $result[$name] = $type;
-                } else {
-                    $result[$name] = $type;
-                }
+                $result[$namespace . ':' . $name] = $type;
             }
         }
 
@@ -155,19 +151,5 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->getAllTypes();
-    }
-
-    private function split(string $ref): array
-    {
-        if (strpos($ref, ':') !== false) {
-            $parts = explode(':', $ref, 2);
-            $ns    = $parts[0] ?? '';
-            $name  = $parts[1] ?? '';
-        } else {
-            $ns    = self::SELF_NAMESPACE;
-            $name  = $ref;
-        }
-
-        return [$ns, $name];
     }
 }

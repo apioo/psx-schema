@@ -57,7 +57,7 @@ class TypeSchema implements ParserInterface
     /**
      * @var \PSX\Schema\Parser\TypeSchema\ImportResolver
      */
-    protected $resolver;
+    private $resolver;
 
     /**
      * @var string
@@ -92,8 +92,8 @@ class TypeSchema implements ParserInterface
     {
         $definitions = new Definitions();
 
-        $this->parseDefinitions(Definitions::SELF_NAMESPACE, $data, $definitions);
         $this->parseImport($data, $definitions);
+        $this->parseDefinitions(null, $data, $definitions);
 
         try {
             $type = $this->parseType($data);
@@ -106,7 +106,7 @@ class TypeSchema implements ParserInterface
         return new Schema($type, $definitions);
     }
 
-    private function parseDefinitions(string $namespace, \stdClass $schema, DefinitionsInterface $definitions)
+    private function parseDefinitions(?string $namespace, \stdClass $schema, DefinitionsInterface $definitions)
     {
         $data = null;
         if (isset($schema->definitions)) {
@@ -120,8 +120,13 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($data as $name => $definition) {
-            $type = $this->parseType($definition);
-            $definitions->addType($namespace . ':' . $name, $type);
+            $type = $this->parseType($definition, $namespace);
+
+            if ($namespace !== null) {
+                $definitions->addType($namespace . ':' . $name, $type);
+            } else {
+                $definitions->addType($name, $type);
+            }
         }
     }
 
@@ -138,7 +143,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    public function parseType(\stdClass $data): TypeInterface
+    public function parseType(\stdClass $data, ?string $namespace = null): TypeInterface
     {
         $data = $this->transformBcLayer($data);
         $type = $this->newPropertyType($data);
@@ -152,21 +157,21 @@ class TypeSchema implements ParserInterface
         }
 
         if ($type instanceof StructType) {
-            $this->parseStruct($type, $data);
+            $this->parseStruct($type, $data, $namespace);
         } elseif ($type instanceof MapType) {
-            $this->parseMap($type, $data);
+            $this->parseMap($type, $data, $namespace);
         } elseif ($type instanceof ArrayType) {
-            $this->parseArray($type, $data);
+            $this->parseArray($type, $data, $namespace);
         } elseif ($type instanceof NumberType || $type instanceof IntegerType) {
             $this->parseNumber($type, $data);
         } elseif ($type instanceof StringType) {
             $this->parseString($type, $data);
         } elseif ($type instanceof IntersectionType) {
-            $this->parseIntersection($type, $data);
+            $this->parseIntersection($type, $data, $namespace);
         } elseif ($type instanceof UnionType) {
-            $this->parseUnion($type, $data);
+            $this->parseUnion($type, $data, $namespace);
         } elseif ($type instanceof ReferenceType) {
-            $this->parseReference($type, $data);
+            $this->parseReference($type, $data, $namespace);
         } elseif ($type instanceof GenericType) {
             $this->parseGeneric($type, $data);
         }
@@ -224,16 +229,20 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseStruct(StructType $type, \stdClass $data): void
+    protected function parseStruct(StructType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->{'$extends'})) {
-            $type->setExtends($data->{'$extends'});
+            if ($namespace !== null) {
+                $type->setExtends($namespace . ':' . $data->{'$extends'});
+            } else {
+                $type->setExtends($data->{'$extends'});
+            }
         }
 
         if (isset($data->properties) && $data->properties instanceof \stdClass) {
             foreach ($data->properties as $name => $row) {
                 if ($row instanceof \stdClass) {
-                    $type->addProperty($name, $this->parseType($row));
+                    $type->addProperty($name, $this->parseType($row, $namespace));
                 }
             }
         }
@@ -243,14 +252,14 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseMap(MapType $type, \stdClass $data): void
+    protected function parseMap(MapType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->additionalProperties)) {
             if ($data->additionalProperties === true) {
                 // in TypeSchema we allow only true, which means any value
                 $type->setAdditionalProperties(TypeFactory::getAny());
             } elseif ($data->additionalProperties instanceof \stdClass) {
-                $type->setAdditionalProperties($this->parseType($data->additionalProperties));
+                $type->setAdditionalProperties($this->parseType($data->additionalProperties, $namespace));
             }
         }
 
@@ -263,13 +272,13 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseArray(ArrayType $type, \stdClass $data): void
+    protected function parseArray(ArrayType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->items)) {
             if ($data->items === true) {
                 $type->setItems(TypeFactory::getAny());
             } elseif ($data->items instanceof \stdClass) {
-                $type->setItems($this->parseType($data->items));
+                $type->setItems($this->parseType($data->items, $namespace));
             }
         }
 
@@ -324,13 +333,13 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseIntersection(IntersectionType $type, \stdClass $data): void
+    protected function parseIntersection(IntersectionType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->allOf) && is_array($data->allOf)) {
             $props = [];
             foreach ($data->allOf as $prop) {
                 if ($prop instanceof \stdClass) {
-                    $props[] = $this->parseType($prop);
+                    $props[] = $this->parseType($prop, $namespace);
                 }
             }
 
@@ -338,13 +347,13 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseUnion(UnionType $type, \stdClass $data): void
+    protected function parseUnion(UnionType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->oneOf) && is_array($data->oneOf)) {
             $props = [];
             foreach ($data->oneOf as $prop) {
                 if ($prop instanceof \stdClass) {
-                    $props[] = $this->parseType($prop);
+                    $props[] = $this->parseType($prop, $namespace);
                 }
             }
 
@@ -359,7 +368,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseReference(ReferenceType $type, \stdClass $data): void
+    protected function parseReference(ReferenceType $type, \stdClass $data, ?string $namespace): void
     {
         $ref = $data->{'$ref'} ?? null;
         if (empty($ref) || !is_string($ref)) {
@@ -371,11 +380,26 @@ class TypeSchema implements ParserInterface
         // OpenAPI compatibility
         $ref = str_replace('#/components/schemas/', '', $ref);
 
-        $type->setRef($ref);
+        if (strpos($ref, ':') !== false) {
+            $namespace = null;
+        }
+
+        if ($namespace !== null) {
+            $type->setRef($namespace . ':' . $ref);
+        } else {
+            $type->setRef($ref);
+        }
 
         $template = $data->{'$template'} ?? null;
         if (!empty($template) && $template instanceof \stdClass) {
-            $type->setTemplate(get_object_vars($template));
+            $vars = get_object_vars($template);
+            if ($namespace !== null) {
+                $vars = array_map(static function(string $value) use ($namespace) {
+                    return $namespace . ':' . $value;
+                }, $vars);
+            }
+
+            $type->setTemplate($vars);
         }
     }
 
