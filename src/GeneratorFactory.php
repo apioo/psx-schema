@@ -52,7 +52,7 @@ class GeneratorFactory
         $result = [];
         parse_str($config ?? '', $result);
         $namespace = $result['namespace'] ?? null;
-        $mapping = $result['mapping'] ?? null;
+        $mapping = $result['mapping'] ?? [];
         $indent = $result['indent'] ?? 4;
         $heading = $result['heading'] ?? 1;
         $prefix = $result['prefix'] ?? 'psx_model_';
