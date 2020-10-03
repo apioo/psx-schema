@@ -1,0 +1,88 @@
+{
+  "definitions": {
+    "Animal": {
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/Creature"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "nickname": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Creature": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "Human": {
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/Creature"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "firstName": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Union": {
+      "type": "object",
+      "properties": {
+        "union": {
+          "oneOf": [
+            {
+              "$ref": "#\/definitions\/Human"
+            },
+            {
+              "$ref": "#\/definitions\/Animal"
+            }
+          ]
+        },
+        "intersection": {
+          "allOf": [
+            {
+              "$ref": "#\/definitions\/Human"
+            },
+            {
+              "$ref": "#\/definitions\/Animal"
+            }
+          ]
+        },
+        "discriminator": {
+          "oneOf": [
+            {
+              "$ref": "#\/definitions\/Human"
+            },
+            {
+              "$ref": "#\/definitions\/Animal"
+            }
+          ],
+          "discriminator": {
+            "propertyName": "kind",
+            "mapping": {
+              "foo": "Human",
+              "bar": "Animal"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$ref": "#\/definitions\/Union"
+}

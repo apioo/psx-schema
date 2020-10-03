@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\JsonSchema;
+use PSX\Schema\Generator\TypeSchema;
 
 /**
  * JsonSchemaTest
@@ -57,6 +58,26 @@ class JsonSchemaTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
         $expect = file_get_contents(__DIR__ . '/resource/jsonschema_oop.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateUnion()
+    {
+        $generator = new JsonSchema();
+
+        $actual = (string) $generator->generate($this->getUnionSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_union.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateImport()
+    {
+        $generator = new JsonSchema();
+
+        $actual = (string) $generator->generate($this->getImportSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_import.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

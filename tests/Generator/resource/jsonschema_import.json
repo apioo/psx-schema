@@ -26,40 +26,49 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "my_import:StudentMap"
+          "$ref": "#\/definitions\/my_import:StudentMap"
         }
       }
     },
     "my_import:Student": {
-      "$extends": "my_import:Human",
-      "type": "object",
-      "properties": {
-        "matricleNumber": {
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/my_import:Human"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "matricleNumber": {
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "my_import:StudentMap": {
-      "$ref": "my_import:Map",
-      "$template": {
-        "T": "my_import:Student"
-      }
+      "$ref": "#\/definitions\/my_import:Map"
     },
     "Import": {
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "my_import:StudentMap"
+          "$ref": "#\/definitions\/my_import:StudentMap"
         },
         "student": {
-          "$ref": "my_import:Student"
+          "$ref": "#\/definitions\/my_import:Student"
         }
       }
     },
     "MyMap": {
-      "$extends": "my_import:Student",
-      "type": "object"
+      "allOf": [
+        {
+          "$ref": "#\/definitions\/my_import:Student"
+        },
+        {
+          "type": "object"
+        }
+      ]
     }
   },
-  "$ref": "Import"
+  "$ref": "#\/definitions\/Import"
 }

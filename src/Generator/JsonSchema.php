@@ -85,12 +85,18 @@ class JsonSchema implements GeneratorInterface
     protected function generateDefinitions(DefinitionsInterface $definitions)
     {
         $result = [];
-        $types  = $definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
+        $types  = $definitions->getAllTypes();
 
         ksort($types);
 
-        foreach ($types as $name => $type) {
-            $result[$name] = $this->generateType($type);
+        foreach ($types as $ref => $type) {
+            [$ns, $name] = TypeUtil::split($ref);
+
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $result[$name] = $this->generateType($type);
+            } else {
+                $result[$ref] = $this->generateType($type);
+            }
         }
 
         return $result;
