@@ -88,6 +88,8 @@ class TypeSchema implements GeneratorInterface
 
     protected function generateType(TypeInterface $type)
     {
+        TypeUtil::normalize($type);
+
         return $type->toArray();
     }
 }
