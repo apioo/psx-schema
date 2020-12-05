@@ -38,51 +38,56 @@ use PSX\Schema\Parser\TypeSchema\ImportResolver;
  */
 class SchemaManager implements SchemaManagerInterface
 {
-    const TYPE_TYPESCHEMA = 'typeschema';
-    const TYPE_CLASS      = 'class';
-    const TYPE_ANNOTATION = 'annotation';
+    public const TYPE_TYPESCHEMA = 'typeschema';
+    public const TYPE_CLASS      = 'class';
+    public const TYPE_ANNOTATION = 'annotation';
 
     /**
      * @deprecated
      */
-    const TYPE_JSONSCHEMA = 'jsonschema';
+    public const TYPE_JSONSCHEMA = 'typeschema';
 
     /**
      * @var \PSX\Schema\Parser\Popo
      */
-    protected $popoParser;
+    private $popoParser;
 
     /**
      * @var \Psr\Cache\CacheItemPoolInterface
      */
-    protected $cache;
+    private $cache;
 
     /**
      * @var boolean
      */
-    protected $debug;
+    private $debug;
 
     /**
-     * @var \PSX\Http\Client\ClientInterface
+     * @var ImportResolver
      */
-    protected $httpClient;
+    private $resolver;
 
     /**
      * @param \Doctrine\Common\Annotations\Reader|null $reader
      * @param \Psr\Cache\CacheItemPoolInterface|null $cache
      * @param boolean $debug
+     * @param ImportResolver|null $resolver
      */
-    public function __construct(Reader $reader = null, CacheItemPoolInterface $cache = null, $debug = false)
+    public function __construct(Reader $reader = null, CacheItemPoolInterface $cache = null, bool $debug = false, ?ImportResolver $resolver = null)
     {
         if ($reader === null) {
             $reader = new SimpleAnnotationReader();
             $reader->addNamespace('PSX\\Schema\\Annotation');
         }
 
+        if ($resolver === null) {
+            $resolver = ImportResolver::createDefault(new Client());
+        }
+
         $this->popoParser = new Parser\Popo($reader);
         $this->cache      = $cache === null ? new Pool(new ArrayCache()) : $cache;
         $this->debug      = $debug;
-        $this->httpClient = new Client();
+        $this->resolver   = $resolver;
     }
 
     /**
@@ -107,8 +112,7 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         if ($type === self::TYPE_TYPESCHEMA) {
-            $resolver = ImportResolver::createDefault($this->httpClient);
-            $schema = Parser\TypeSchema::fromFile($schemaName, $resolver);
+            $schema = Parser\TypeSchema::fromFile($schemaName, $this->resolver);
         } elseif ($type === self::TYPE_CLASS) {
             $schema = new $schemaName($this);
         } elseif ($type === self::TYPE_ANNOTATION) {
