@@ -150,7 +150,11 @@ class Php extends CodeGeneratorAbstract
 
             $getter = $this->factory->method('get' . ucfirst($name));
             if (!empty($type)) {
-                $getter->setReturnType(new Node\NullableType($type));
+                if (strpos($type, '|') !== false) {
+                    $getter->setReturnType($type . '|null');
+                } else {
+                    $getter->setReturnType(new Node\NullableType($type));
+                }
             } else {
                 $setter->setReturnType('void');
             }
