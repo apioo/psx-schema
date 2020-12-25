@@ -130,7 +130,11 @@ class Php extends CodeGeneratorAbstract
 
             $type = $property->getType();
             if (!empty($type)) {
-                $param->setType(new Node\NullableType(($type)));
+                if (strpos($type, '|') !== false) {
+                    $param->setType($type . '|null');
+                } else {
+                    $param->setType(new Node\NullableType($type));
+                }
             }
 
             $setter = $this->factory->method('set' . ucfirst($name));
