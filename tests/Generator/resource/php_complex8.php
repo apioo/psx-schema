@@ -166,7 +166,7 @@ class ScalarProperties implements \JsonSerializable
     /**
      * @return StringArray|NumberArray|null
      */
-    public function getEnum(): StringArray|NumberArray|null
+    public function getEnum() : StringArray|NumberArray|null
     {
         return $this->enum;
     }
@@ -180,7 +180,7 @@ class ScalarProperties implements \JsonSerializable
     /**
      * @return string|float|bool|null
      */
-    public function getDefault(): string|float|bool|null
+    public function getDefault() : string|float|bool|null
     {
         return $this->default;
     }
@@ -314,7 +314,7 @@ class MapProperties implements \JsonSerializable
     /**
      * @return BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
      */
-    public function getAdditionalProperties(): BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
+    public function getAdditionalProperties() : BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
     {
         return $this->additionalProperties;
     }
@@ -409,7 +409,7 @@ class ArrayProperties implements \JsonSerializable
     /**
      * @return BooleanType|NumberType|StringType|ReferenceType|GenericType|null
      */
-    public function getItems(): BooleanType|NumberType|StringType|ReferenceType|GenericType|null
+    public function getItems() : BooleanType|NumberType|StringType|ReferenceType|GenericType|null
     {
         return $this->items;
     }

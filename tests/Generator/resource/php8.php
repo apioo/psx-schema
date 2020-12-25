@@ -404,7 +404,7 @@ class News implements \JsonSerializable
     /**
      * @return Author|Web|null
      */
-    public function getSource(): Author|Web|null
+    public function getSource() : Author|Web|null
     {
         return $this->source;
     }

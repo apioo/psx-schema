@@ -107,7 +107,7 @@ class Union implements \JsonSerializable
     /**
      * @return Human|Animal|null
      */
-    public function getUnion(): Human|Animal|null
+    public function getUnion() : Human|Animal|null
     {
         return $this->union;
     }
@@ -135,7 +135,7 @@ class Union implements \JsonSerializable
     /**
      * @return Human|Animal|null
      */
-    public function getDiscriminator(): Human|Animal|null
+    public function getDiscriminator() : Human|Animal|null
     {
         return $this->discriminator;
     }
