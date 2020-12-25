@@ -88,7 +88,7 @@ class ParseCommand extends Command
 
             $output->writeln('Generated ' . $count . ' files at ' . $target);
         } else {
-            $output->write($response);
+            $output->write((string) $response);
         }
 
         return 0;
