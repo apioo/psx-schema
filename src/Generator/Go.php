@@ -53,12 +53,8 @@ class Go extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '// ' . $name;
-
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $code.= ' ' . $comment;
-        }
+        $code = '// ' . $name . "\n";
+        $code.= $this->writeHeader($origin->getDescription());
 
         $code.= "\n";
         $code.= 'type ' . $name . ' struct {' . "\n";
@@ -80,5 +76,21 @@ class Go extends CodeGeneratorAbstract
     protected function normalizeName(string $name)
     {
         return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
+    }
+
+    private function writeHeader(?string $comment): string
+    {
+        $code = "\n";
+
+        if (!empty($this->namespace)) {
+            $code.= 'package ' . $this->namespace . "\n";
+        }
+
+        if (!empty($comment)) {
+            $code.= "\n";
+            $code.= '// ' . $comment . "\n";
+        }
+
+        return $code;
     }
 }
