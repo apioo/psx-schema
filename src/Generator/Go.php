@@ -53,10 +53,9 @@ class Go extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '// ' . $name . "\n";
-        $code.= $this->writeHeader($origin->getDescription());
-
+        $code = $this->writeHeader($origin->getDescription());
         $code.= "\n";
+        $code.= '// ' . $name . "\n";
         $code.= 'type ' . $name . ' struct {' . "\n";
 
         if (!empty($extends)) {

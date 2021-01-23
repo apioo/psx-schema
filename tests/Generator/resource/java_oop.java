@@ -1,4 +1,4 @@
-public static class Human {
+public class Human {
     private String firstName;
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -8,7 +8,7 @@ public static class Human {
     }
 }
 
-public static class Student extends Human {
+public class Student extends Human {
     private String matricleNumber;
     public void setMatricleNumber(String matricleNumber) {
         this.matricleNumber = matricleNumber;
@@ -21,7 +21,7 @@ public static class Student extends Human {
 public class StudentMap extends Map<Student> {
 }
 
-public static class Map<T> {
+public class Map<T> {
     private int totalResults;
     private T[] entries;
     public void setTotalResults(int totalResults) {
@@ -38,7 +38,7 @@ public static class Map<T> {
     }
 }
 
-public static class RootSchema {
+public class RootSchema {
     private StudentMap students;
     public void setStudents(StudentMap students) {
         this.students = students;

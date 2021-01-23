@@ -1,16 +1,28 @@
-// Location Location of the person
+
+
+// Location of the person
+
+// Location
 type Location struct {
     Lat float64 `json:"lat"`
     Long float64 `json:"long"`
 }
 
-// Web An application
+
+
+// An application
+
+// Web
 type Web struct {
     Name string `json:"name"`
     Url string `json:"url"`
 }
 
-// Author An simple author element with some description
+
+
+// An simple author element with some description
+
+// Author
 type Author struct {
     Title string `json:"title"`
     Email string `json:"email"`
@@ -19,7 +31,11 @@ type Author struct {
     Origin Location `json:"origin"`
 }
 
-// News An general news entry
+
+
+// An general news entry
+
+// News
 type News struct {
     Config map[string]string `json:"config"`
     Tags []string `json:"tags"`

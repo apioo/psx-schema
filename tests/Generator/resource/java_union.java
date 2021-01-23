@@ -1,4 +1,4 @@
-public static class Creature {
+public class Creature {
     private String kind;
     public void setKind(String kind) {
         this.kind = kind;
@@ -8,7 +8,7 @@ public static class Creature {
     }
 }
 
-public static class Human extends Creature {
+public class Human extends Creature {
     private String firstName;
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -18,7 +18,7 @@ public static class Human extends Creature {
     }
 }
 
-public static class Animal extends Creature {
+public class Animal extends Creature {
     private String nickname;
     public void setNickname(String nickname) {
         this.nickname = nickname;
@@ -28,7 +28,7 @@ public static class Animal extends Creature {
     }
 }
 
-public static class Union {
+public class Union {
     private Object union;
     private Object intersection;
     private Object discriminator;

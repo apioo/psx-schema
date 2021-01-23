@@ -1,4 +1,4 @@
-public static class Import {
+public class Import {
     private StudentMap students;
     private Student student;
     public void setStudents(StudentMap students) {
@@ -15,5 +15,5 @@ public static class Import {
     }
 }
 
-public static class MyMap extends Student {
+public class MyMap extends Student {
 }

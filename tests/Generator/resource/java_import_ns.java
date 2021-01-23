@@ -1,5 +1,5 @@
 package Foo.Bar;
-public static class Import {
+public class Import {
     private My.Import.StudentMap students;
     private My.Import.Student student;
     public void setStudents(My.Import.StudentMap students) {
@@ -17,5 +17,5 @@ public static class Import {
 }
 
 package Foo.Bar;
-public static class MyMap extends My.Import.Student {
+public class MyMap extends My.Import.Student {
 }

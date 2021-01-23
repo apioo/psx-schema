@@ -1,7 +1,7 @@
 /**
  * Location of the person
  */
-public static class Location {
+public class Location {
     private float lat;
     private float long;
     public void setLat(float lat) {
@@ -21,7 +21,7 @@ public static class Location {
 /**
  * An application
  */
-public static class Web {
+public class Web {
     private String name;
     private String url;
     public void setName(String name) {
@@ -41,7 +41,7 @@ public static class Web {
 /**
  * An simple author element with some description
  */
-public static class Author {
+public class Author {
     private String title;
     private String email;
     private String[] categories;
@@ -85,7 +85,7 @@ public static class Meta<String, String> extends HashMap<String, String> {
 /**
  * An general news entry
  */
-public static class News {
+public class News {
     private Meta config;
     private String[] tags;
     private Author[] receiver;

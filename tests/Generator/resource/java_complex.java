@@ -1,7 +1,7 @@
 /**
  * Common properties which can be used at any schema
  */
-public static class CommonProperties {
+public class CommonProperties {
     private String title;
     private String description;
     private String type;
@@ -46,7 +46,7 @@ public static class CommonProperties {
     }
 }
 
-public static class ScalarProperties {
+public class ScalarProperties {
     private String format;
     private EnumValue enum;
     private ScalarValue default;
@@ -110,7 +110,7 @@ public static class Properties<String, PropertyValue> extends HashMap<String, Pr
 /**
  * Properties specific for a container
  */
-public static class ContainerProperties {
+public class ContainerProperties {
     private String type;
     public void setType(String type) {
         this.type = type;
@@ -123,7 +123,7 @@ public static class ContainerProperties {
 /**
  * Struct specific properties
  */
-public static class StructProperties {
+public class StructProperties {
     private Properties properties;
     private String[] required;
     public void setProperties(Properties properties) {
@@ -162,7 +162,7 @@ public class StructType {
 /**
  * Map specific properties
  */
-public static class MapProperties {
+public class MapProperties {
     private PropertyValue additionalProperties;
     private int maxProperties;
     private int minProperties;
@@ -249,7 +249,7 @@ public class ArrayValue {
 /**
  * Array properties
  */
-public static class ArrayProperties {
+public class ArrayProperties {
     private String type;
     private ArrayValue items;
     private int maxItems;
@@ -306,7 +306,7 @@ public class ArrayType {
 /**
  * Boolean properties
  */
-public static class BooleanProperties {
+public class BooleanProperties {
     private String type;
     public void setType(String type) {
         this.type = type;
@@ -338,7 +338,7 @@ public class BooleanType {
 /**
  * Number properties
  */
-public static class NumberProperties {
+public class NumberProperties {
     private String type;
     private float multipleOf;
     private float maximum;
@@ -405,7 +405,7 @@ public class NumberType {
 /**
  * String properties
  */
-public static class StringProperties {
+public class StringProperties {
     private String type;
     private int maxLength;
     private int minLength;
@@ -486,7 +486,7 @@ public static class DiscriminatorMapping<String, String> extends HashMap<String,
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
  */
-public static class Discriminator {
+public class Discriminator {
     private String propertyName;
     private DiscriminatorMapping mapping;
     public void setPropertyName(String propertyName) {
@@ -506,7 +506,7 @@ public static class Discriminator {
 /**
  * An intersection type combines multiple schemas into one
  */
-public static class AllOfProperties {
+public class AllOfProperties {
     private String description;
     private OfValue[] allOf;
     public void setDescription(String description) {
@@ -526,7 +526,7 @@ public static class AllOfProperties {
 /**
  * An union type can contain one of the provided schemas
  */
-public static class OneOfProperties {
+public class OneOfProperties {
     private String description;
     private Discriminator discriminator;
     private OfValue[] oneOf;
@@ -572,7 +572,7 @@ public static class TemplateProperties<String, ReferenceType> extends HashMap<St
 /**
  * Represents a reference to another schema
  */
-public static class ReferenceType {
+public class ReferenceType {
     private String ref;
     private TemplateProperties template;
     public void setRef(String ref) {
@@ -592,7 +592,7 @@ public static class ReferenceType {
 /**
  * Represents a generic type
  */
-public static class GenericType {
+public class GenericType {
     private String generic;
     public void setGeneric(String generic) {
         this.generic = generic;
@@ -680,7 +680,7 @@ public class ScalarValue {
 /**
  * TypeSchema meta schema which describes a TypeSchema
  */
-public static class TypeSchema {
+public class TypeSchema {
     private Import import;
     private String title;
     private String description;

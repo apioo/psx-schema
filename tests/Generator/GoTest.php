@@ -35,7 +35,7 @@ class GoTest extends GeneratorTestCase
     {
         $generator = new Go();
 
-        $actual = $generator->generate($this->getSchema());
+        $actual = (string) $generator->generate($this->getSchema());
 
         $expect = $expect = file_get_contents(__DIR__ . '/resource/go.go');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
