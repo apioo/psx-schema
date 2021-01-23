@@ -58,7 +58,7 @@ class Java extends CodeGeneratorAbstract
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public static class ' . $name;
+        $code.= 'public class ' . $name;
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
