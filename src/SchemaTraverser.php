@@ -165,6 +165,13 @@ class SchemaTraverser
             $result = $this->traverseUnion($data, $type, $definitions, $visitor, $context);
         } elseif ($type instanceof ReferenceType) {
             $subType = $definitions->getType($type->getRef());
+
+            // in case a reference has a concrete class we inherit this class to the sub type
+            $class = $type->getAttribute(TypeAbstract::ATTR_CLASS);
+            if ($subType instanceof TypeAbstract && !empty($class)) {
+                $subType->setAttribute(TypeAbstract::ATTR_CLASS, $class);
+            }
+
             $result = $this->recTraverse($data, $subType, $definitions, $visitor, $type->getTemplate() ?: []);
         } elseif ($type instanceof GenericType) {
             if (!isset($context[$type->getGeneric()])) {
