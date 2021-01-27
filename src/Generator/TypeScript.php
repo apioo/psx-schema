@@ -27,6 +27,8 @@ use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * TypeScript
@@ -53,6 +55,9 @@ class TypeScript extends CodeGeneratorAbstract
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = $this->writeHeader($origin->getDescription());
+        $code.= "\n";
+        $code.= $this->writeImports($origin);
+        $code.= "\n";
         $code.= 'export interface ' . $name;
 
         if (!empty($generics)) {
@@ -78,27 +83,27 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . ';' . "\n";
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function normalizeName(string $name)
@@ -114,10 +119,6 @@ class TypeScript extends CodeGeneratorAbstract
     {
         $code = '';
 
-        if (!empty($this->namespace)) {
-            $code.= 'namespace ' . $this->namespace . ' {' . "\n";
-        }
-
         if (!empty($comment)) {
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
@@ -129,10 +130,25 @@ class TypeScript extends CodeGeneratorAbstract
 
     private function writerFooter(): string
     {
-        if (!empty($this->namespace)) {
-            return '}' . "\n";
-        } else {
-            return '';
+        return '';
+    }
+
+    private function writeImports(StructType $type): string
+    {
+        $code = '';
+        $refs = [];
+
+        TypeUtil::walk($type, function(TypeInterface $type) use (&$refs){
+            if ($type instanceof ReferenceType) {
+                [$ns, $name] = TypeUtil::split($type->getRef());
+                $refs[$type->getRef()] = $name;
+            }
+        });
+
+        foreach ($refs as $ref) {
+            $code.= 'import {' . $ref . '} from "./' . $ref . '";' . "\n";
         }
+
+        return $code;
     }
 }
