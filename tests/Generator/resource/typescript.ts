@@ -2,21 +2,21 @@
  * Location of the person
  */
 
-
 export interface Location {
     lat: number
     long: number
 }
 
+
 /**
  * An application
  */
-
 
 export interface Web {
     name: string
     url: string
 }
+
 
 /**
  * An simple author element with some description
@@ -32,7 +32,10 @@ export interface Author {
     origin?: Location
 }
 
+
+
 export type Meta = Record<string, string>;
+
 
 /**
  * An general news entry
@@ -65,3 +68,4 @@ export interface News {
     profileUri?: string
     captcha?: string
 }
+

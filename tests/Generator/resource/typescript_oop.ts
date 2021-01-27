@@ -1,5 +1,4 @@
 
-
 export interface Human {
     firstName?: string
 }
@@ -9,6 +8,10 @@ export interface Human {
 export interface Student extends Human {
     matricleNumber?: string
 }
+
+
+
+import {Map} from "./Map";
 
 export type StudentMap = Map<Student>;
 
@@ -20,8 +23,10 @@ export interface Map<T> {
 }
 
 
+
 import {StudentMap} from "./StudentMap";
 
 export interface RootSchema {
     students?: StudentMap
 }
+

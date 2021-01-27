@@ -26,6 +26,7 @@ use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
@@ -54,10 +55,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= "\n";
-        $code.= $this->writeImports($origin);
-        $code.= "\n";
+        $code = $this->writeHeader($origin);
         $code.= 'export interface ' . $name;
 
         if (!empty($generics)) {
@@ -83,27 +81,47 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code = $this->writeHeader($origin);
+        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code.= $this->writerFooter();
+
+        return $code;
     }
 
     protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
-        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code = $this->writeHeader($origin);
+        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code.= $this->writerFooter();
+
+        return $code;
     }
 
     protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
-        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code = $this->writeHeader($origin);
+        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code.= $this->writerFooter();
+
+        return $code;
     }
 
     protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
-        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code = $this->writeHeader($origin);
+        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code.= $this->writerFooter();
+
+        return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code = $this->writeHeader($origin);
+        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
+        $code.= $this->writerFooter();
+
+        return $code;
     }
 
     protected function normalizeName(string $name)
@@ -115,27 +133,40 @@ class TypeScript extends CodeGeneratorAbstract
         return $name;
     }
 
-    private function writeHeader(?string $comment): string
+    private function writeHeader(TypeAbstract $origin): string
     {
         $code = '';
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
             $code.= ' */' . "\n";
         }
 
+        $imports = $this->writeImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= $imports;
+            $code.= "\n";
+        }
+
+        $code.= "\n";
+
         return $code;
     }
 
     private function writerFooter(): string
     {
-        return '';
+        $code = '';
+        $code.= "\n";
+
+        return $code;
     }
 
-    private function writeImports(StructType $type): string
+    private function writeImports(TypeInterface $type): string
     {
-        $code = '';
+        $imports = [];
         $refs = [];
 
         TypeUtil::walk($type, function(TypeInterface $type) use (&$refs){
@@ -146,9 +177,9 @@ class TypeScript extends CodeGeneratorAbstract
         });
 
         foreach ($refs as $ref) {
-            $code.= 'import {' . $ref . '} from "./' . $ref . '";' . "\n";
+            $imports[] = 'import {' . $ref . '} from "./' . $ref . '";';
         }
 
-        return $code;
+        return implode("\n", $imports);
     }
 }

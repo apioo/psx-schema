@@ -11,3 +11,4 @@ export interface Import {
 
 export interface MyMap extends My.Import.Student {
 }
+

@@ -1,5 +1,4 @@
 
-
 export interface Creature {
     kind: string
 }
@@ -17,6 +16,7 @@ export interface Animal extends Creature {
 }
 
 
+
 import {Human} from "./Human";
 import {Animal} from "./Animal";
 
@@ -25,3 +25,4 @@ export interface Union {
     intersection?: Human & Animal
     discriminator?: Human | Animal
 }
+
