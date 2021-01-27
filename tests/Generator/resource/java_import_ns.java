@@ -16,6 +16,8 @@ public class Import {
     }
 }
 
+
 package Foo.Bar;
 public class MyMap extends My.Import.Student {
 }
+

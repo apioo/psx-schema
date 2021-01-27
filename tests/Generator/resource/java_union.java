@@ -8,6 +8,7 @@ public class Creature {
     }
 }
 
+
 public class Human extends Creature {
     private String firstName;
     public void setFirstName(String firstName) {
@@ -18,6 +19,7 @@ public class Human extends Creature {
     }
 }
 
+
 public class Animal extends Creature {
     private String nickname;
     public void setNickname(String nickname) {
@@ -27,6 +29,7 @@ public class Animal extends Creature {
         return this.nickname;
     }
 }
+
 
 public class Union {
     private Object union;
@@ -51,3 +54,4 @@ public class Union {
         return this.discriminator;
     }
 }
+

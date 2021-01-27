@@ -25,6 +25,7 @@ use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -57,7 +58,7 @@ class Java extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
+        $code = $this->writeHeader($origin);
         $code.= 'public class ' . $name;
 
         if (!empty($generics)) {
@@ -87,6 +88,7 @@ class Java extends CodeGeneratorAbstract
         }
 
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
@@ -95,16 +97,17 @@ class Java extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = $this->writeHeader($origin->getDescription());
+        $code = $this->writeHeader($origin);
         $code.= 'public static class ' . $name . '<String, ' . $subType . '> extends HashMap<String, ' . $subType . '> {' . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
 
     protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
+        $code = $this->writeHeader($origin);
         $code.= 'public class ' . $name . ' {' . "\n";
         $code.= $this->indent . 'private object value;' . "\n";
         foreach ($origin->getOneOf() as $item) {
@@ -119,6 +122,7 @@ class Java extends CodeGeneratorAbstract
         $code.= $this->indent . $this->indent . 'return this.value;' . "\n";
         $code.= $this->indent . '}' . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
@@ -126,7 +130,7 @@ class Java extends CodeGeneratorAbstract
     protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
         // @TODO how do we solve this best in Java
-        $code = $this->writeHeader($origin->getDescription());
+        $code = $this->writeHeader($origin);
         $code.= 'public class ' . $name . ' {' . "\n";
         $code.= $this->indent . 'private List<object> values = new ArrayList<object>();' . "\n";
         foreach ($origin->getAllOf() as $item) {
@@ -141,20 +145,22 @@ class Java extends CodeGeneratorAbstract
         $code.= $this->indent . $this->indent . 'return this.values;' . "\n";
         $code.= $this->indent . '}' . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
+        $code = $this->writeHeader($origin);
         $code.= 'public class ' . $name . ' extends ' . $type . ' {' . "\n";
         $code.= '}' . "\n";
+        $code.= $this->writerFooter();
 
         return $code;
     }
 
-    private function writeHeader(?string $comment)
+    private function writeHeader(TypeAbstract $origin)
     {
         $code = '';
 
@@ -162,11 +168,20 @@ class Java extends CodeGeneratorAbstract
             $code.= 'package ' . $this->namespace . ';' . "\n";
         }
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
             $code.= ' */' . "\n";
         }
+
+        return $code;
+    }
+
+    private function writerFooter(): string
+    {
+        $code = '';
+        $code.= "\n";
 
         return $code;
     }

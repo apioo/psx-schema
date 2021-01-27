@@ -46,6 +46,7 @@ public class CommonProperties {
     }
 }
 
+
 public class ScalarProperties {
     private String format;
     private EnumValue enum;
@@ -69,6 +70,7 @@ public class ScalarProperties {
         return this.default;
     }
 }
+
 
 /**
  * Allowed values of an object property
@@ -101,11 +103,13 @@ public class PropertyValue {
     }
 }
 
+
 /**
  * Properties of a schema
  */
 public static class Properties<String, PropertyValue> extends HashMap<String, PropertyValue> {
 }
+
 
 /**
  * Properties specific for a container
@@ -119,6 +123,7 @@ public class ContainerProperties {
         return this.type;
     }
 }
+
 
 /**
  * Struct specific properties
@@ -140,6 +145,7 @@ public class StructProperties {
     }
 }
 
+
 /**
  * A struct contains a fix set of defined properties
  */
@@ -158,6 +164,7 @@ public class StructType {
         return this.values;
     }
 }
+
 
 /**
  * Map specific properties
@@ -186,6 +193,7 @@ public class MapProperties {
     }
 }
 
+
 /**
  * A map contains variable key value entries of a specific type
  */
@@ -205,6 +213,7 @@ public class MapType {
     }
 }
 
+
 /**
  * An object represents either a struct or map type
  */
@@ -220,6 +229,7 @@ public class ObjectType {
         return this.value;
     }
 }
+
 
 /**
  * Allowed values of an array item
@@ -245,6 +255,7 @@ public class ArrayValue {
         return this.value;
     }
 }
+
 
 /**
  * Array properties
@@ -287,6 +298,7 @@ public class ArrayProperties {
     }
 }
 
+
 /**
  * An array contains an ordered list of a specific type
  */
@@ -303,6 +315,7 @@ public class ArrayType {
     }
 }
 
+
 /**
  * Boolean properties
  */
@@ -315,6 +328,7 @@ public class BooleanProperties {
         return this.type;
     }
 }
+
 
 /**
  * Represents a boolean value
@@ -334,6 +348,7 @@ public class BooleanType {
         return this.values;
     }
 }
+
 
 /**
  * Number properties
@@ -383,6 +398,7 @@ public class NumberProperties {
     }
 }
 
+
 /**
  * Represents a number value (contains also integer)
  */
@@ -401,6 +417,7 @@ public class NumberType {
         return this.values;
     }
 }
+
 
 /**
  * String properties
@@ -436,6 +453,7 @@ public class StringProperties {
     }
 }
 
+
 /**
  * Represents a string value
  */
@@ -454,6 +472,7 @@ public class StringType {
         return this.values;
     }
 }
+
 
 /**
  * Allowed values in a combination schema
@@ -477,11 +496,13 @@ public class OfValue {
     }
 }
 
+
 /**
  * An object to hold mappings between payload values and schema names or references
  */
 public static class DiscriminatorMapping<String, String> extends HashMap<String, String> {
 }
+
 
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -503,6 +524,7 @@ public class Discriminator {
     }
 }
 
+
 /**
  * An intersection type combines multiple schemas into one
  */
@@ -522,6 +544,7 @@ public class AllOfProperties {
         return this.allOf;
     }
 }
+
 
 /**
  * An union type can contain one of the provided schemas
@@ -550,6 +573,7 @@ public class OneOfProperties {
     }
 }
 
+
 /**
  * A combination type is either a intersection or union type
  */
@@ -566,8 +590,10 @@ public class CombinationType {
     }
 }
 
+
 public static class TemplateProperties<String, ReferenceType> extends HashMap<String, ReferenceType> {
 }
+
 
 /**
  * Represents a reference to another schema
@@ -589,6 +615,7 @@ public class ReferenceType {
     }
 }
 
+
 /**
  * Represents a generic type
  */
@@ -601,6 +628,7 @@ public class GenericType {
         return this.generic;
     }
 }
+
 
 /**
  * Represents a concrete type definition
@@ -630,17 +658,20 @@ public class DefinitionValue {
     }
 }
 
+
 /**
  * Schema definitions which can be reused
  */
 public static class Definitions<String, DefinitionValue> extends HashMap<String, DefinitionValue> {
 }
 
+
 /**
  * Contains external definitions which are imported. The imported schemas can be used via the namespace
  */
 public static class Import<String, String> extends HashMap<String, String> {
 }
+
 
 /**
  * A list of possible enumeration values
@@ -657,6 +688,7 @@ public class EnumValue {
         return this.value;
     }
 }
+
 
 /**
  * Represents a scalar value
@@ -676,6 +708,7 @@ public class ScalarValue {
         return this.value;
     }
 }
+
 
 /**
  * TypeSchema meta schema which describes a TypeSchema
@@ -731,3 +764,4 @@ public class TypeSchema {
         return this.required;
     }
 }
+

@@ -18,6 +18,7 @@ public class Location {
     }
 }
 
+
 /**
  * An application
  */
@@ -37,6 +38,7 @@ public class Web {
         return this.url;
     }
 }
+
 
 /**
  * An simple author element with some description
@@ -79,8 +81,10 @@ public class Author {
     }
 }
 
+
 public static class Meta<String, String> extends HashMap<String, String> {
 }
+
 
 /**
  * An general news entry
@@ -227,3 +231,4 @@ public class News {
         return this.captcha;
     }
 }
+
