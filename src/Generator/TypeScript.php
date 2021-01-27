@@ -171,13 +171,20 @@ class TypeScript extends CodeGeneratorAbstract
 
         TypeUtil::walk($type, function(TypeInterface $type) use (&$refs){
             if ($type instanceof ReferenceType) {
-                [$ns, $name] = TypeUtil::split($type->getRef());
-                $refs[$type->getRef()] = $name;
+                $refs[$type->getRef()] = $type->getRef();
+                if ($type->getTemplate()) {
+                    foreach ($type->getTemplate() as $type => $ref) {
+                        $refs[$ref] = $ref;
+                    }
+                }
+            } elseif ($type instanceof StructType && $type->getExtends()) {
+                $refs[$type->getExtends()] = $type->getExtends();
             }
         });
 
         foreach ($refs as $ref) {
-            $imports[] = 'import {' . $ref . '} from "./' . $ref . '";';
+            [$ns, $name] = TypeUtil::split($ref);
+            $imports[] = 'import {' . $name . '} from "./' . $name . '";';
         }
 
         return implode("\n", $imports);

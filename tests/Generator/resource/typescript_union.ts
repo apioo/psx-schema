@@ -5,11 +5,15 @@ export interface Creature {
 
 
 
+import {Creature} from "./Creature";
+
 export interface Human extends Creature {
     firstName?: string
 }
 
 
+
+import {Creature} from "./Creature";
 
 export interface Animal extends Creature {
     nickname?: string

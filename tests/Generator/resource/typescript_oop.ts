@@ -5,6 +5,8 @@ export interface Human {
 
 
 
+import {Human} from "./Human";
+
 export interface Student extends Human {
     matricleNumber?: string
 }
@@ -12,6 +14,7 @@ export interface Student extends Human {
 
 
 import {Map} from "./Map";
+import {Student} from "./Student";
 
 export type StudentMap = Map<Student>;
 

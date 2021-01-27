@@ -9,6 +9,8 @@ export interface Import {
 
 
 
+import {Student} from "./Student";
+
 export interface MyMap extends Student {
 }
 
