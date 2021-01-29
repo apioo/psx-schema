@@ -173,7 +173,7 @@ class TypeScript extends CodeGeneratorAbstract
             if ($type instanceof ReferenceType) {
                 $refs[$type->getRef()] = $type->getRef();
                 if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $type => $ref) {
+                    foreach ($type->getTemplate() as $ref) {
                         $refs[$ref] = $ref;
                     }
                 }
