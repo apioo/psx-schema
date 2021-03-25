@@ -31,6 +31,7 @@ class GeneratorFactory
 {
     const TYPE_CSHARP = 'csharp';
     const TYPE_GO = 'go';
+    const TYPE_GRAPHQL = 'graphql';
     const TYPE_HTML = 'html';
     const TYPE_JAVA = 'java';
     const TYPE_JSONSCHEMA = 'jsonschema';
@@ -63,6 +64,9 @@ class GeneratorFactory
 
             case self::TYPE_GO:
                 return new Generator\Go($namespace, $mapping, $indent);
+
+            case self::TYPE_GRAPHQL:
+                return new Generator\GraphQL($namespace, $mapping, $indent);
 
             case self::TYPE_HTML:
                 return new Generator\Html((int) $heading, $prefix);
@@ -105,6 +109,7 @@ class GeneratorFactory
         return [
             self::TYPE_CSHARP,
             self::TYPE_GO,
+            self::TYPE_GRAPHQL,
             self::TYPE_HTML,
             self::TYPE_JAVA,
             self::TYPE_JSONSCHEMA,

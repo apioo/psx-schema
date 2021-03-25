@@ -1,0 +1,40 @@
+type Location {
+    lat: Float!
+    long: Float!
+}
+
+type Web {
+    name: String!
+    url: String!
+}
+
+type Author {
+    title: String!
+    email: String
+    categories: [String]
+    locations: [Location]
+    origin: Location
+}
+
+type News {
+    config: [String]
+    tags: [String]
+    receiver: [Author]!
+    resources: [Location | Web]
+    profileImage: String
+    read: Boolean
+    source: Author | Web
+    author: Author
+    meta: [String]
+    sendDate: String
+    readDate: String
+    expires: String
+    price: Float!
+    rating: Int
+    content: String!
+    question: String
+    version: String
+    coffeeTime: String
+    profileUri: String
+    captcha: String
+}
