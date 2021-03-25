@@ -57,8 +57,8 @@ Options:
   -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 
 Available commands:
-  help          Displays help for a command
-  list          Lists commands
+  help          Display help for a command
+  list          List commands
  schema
   schema:parse  Parses an arbitrary source and outputs the schema in a specific format
 
