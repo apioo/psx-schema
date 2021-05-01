@@ -37,7 +37,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/csharp.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

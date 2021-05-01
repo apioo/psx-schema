@@ -37,7 +37,7 @@ class GraphQLTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = $expect = file_get_contents(__DIR__ . '/resource/graphql.graphql');
+        $expect = file_get_contents(__DIR__ . '/resource/graphql.graphql');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
