@@ -58,13 +58,13 @@ class Html extends MarkupAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $title = '<a href="#' . $name . '">' . $name . '</a>';
+        $title = '<a class="psx-type-link" data-name="' . $name . '">' . htmlspecialchars($name) . '</a>';
         if (!empty($generics)) {
             $title.= '&lt;' . implode(', ', $generics) . '&gt;';
         }
 
         if (!empty($extends)) {
-            $title.= ' extends <a href="#' . $extends . '">' . $extends . '</a>';
+            $title.= ' extends <a class="psx-type-link" data-name="' . $extends . '">' . htmlspecialchars($extends) . '</a>';
         }
 
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-struct">';
@@ -99,15 +99,9 @@ class Html extends MarkupAbstract
      */
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $subType = $this->generator->getType($origin);
-
-        $rows = [];
-        $rows[] = ['*', $subType, false, '', null];
-
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-map">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
-        $return.= $this->generateJson($rows);
-        $return.= $this->generateTable($rows);
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<pre class="psx-object-json">' . $type . '</pre>';
         $return.= '</div>';
 
         return $return . "\n";
@@ -116,7 +110,7 @@ class Html extends MarkupAbstract
     protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-array">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
         $return.= '<pre class="psx-object-json">' . $type . '</pre>';
         $return.= '</div>';
 
@@ -126,7 +120,7 @@ class Html extends MarkupAbstract
     protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-union">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
         $return.= '<pre class="psx-object-json">OneOf: ' . $type . '</pre>';
         $return.= '</div>';
 
@@ -136,7 +130,7 @@ class Html extends MarkupAbstract
     protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-intersection">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
         $return.= '<pre class="psx-object-json">AllOf: ' . $type . '</pre>';
         $return.= '</div>';
 
@@ -225,7 +219,7 @@ class Html extends MarkupAbstract
             $html.= '<tr>';
             $html.= '<td><span class="psx-property-name ' . ($required ? 'psx-property-required' : 'psx-property-optional') . '">' . htmlspecialchars($name) . '</span></td>';
             $html.= '<td>';
-            $html.= '<span class="psx-property-type">' . $type . '</span><br />';
+            $html.= '<span class="psx-property-type"><a class="psx-type-link" data-name="' . $type . '">' . $type . '</a></span><br />';
             $html.= '<div class="psx-property-description">' . htmlspecialchars($description) . '</div>';
             $html.= !empty($constraints) ? $this->writeConstraints($constraints) : '';
             $html.= '</td>';

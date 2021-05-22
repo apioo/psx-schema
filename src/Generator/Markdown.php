@@ -54,8 +54,7 @@ class Markdown extends MarkupAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
+        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
 
         $comment = $origin->getDescription();
@@ -90,8 +89,7 @@ class Markdown extends MarkupAbstract
      */
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $return = '<a name="' . htmlspecialchars($name) . '"></a>' . "\n";
-        $return.= str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
+        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
         $return.= '' . "\n";
 
         $return.= 'Field | Type | Description | Constraints' . "\n";

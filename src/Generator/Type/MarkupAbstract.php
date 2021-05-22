@@ -31,32 +31,32 @@ abstract class MarkupAbstract extends GeneratorAbstract
 {
     protected function getDate(): string
     {
-        return $this->writeLink('Date', 'http://tools.ietf.org/html/rfc3339#section-5.6');
+        return 'Date';
     }
 
     protected function getDateTime(): string
     {
-        return  $this->writeLink('DateTime', 'http://tools.ietf.org/html/rfc3339#section-5.6');
+        return 'DateTime';
     }
 
     protected function getTime(): string
     {
-        return  $this->writeLink('Time', 'http://tools.ietf.org/html/rfc3339#section-5.6');
+        return 'Time';
     }
 
     protected function getDuration(): string
     {
-        return  $this->writeLink('Duration', 'https://en.wikipedia.org/wiki/ISO_8601#Durations');
+        return 'Duration';
     }
 
     protected function getUri(): string
     {
-        return  $this->writeLink('URI', 'http://tools.ietf.org/html/rfc3986');
+        return 'URI';
     }
 
     protected function getBinary(): string
     {
-        return  $this->writeLink('Base64', 'http://tools.ietf.org/html/rfc4648');
+        return 'Base64';
     }
 
     protected function getString(): string
@@ -86,12 +86,12 @@ abstract class MarkupAbstract extends GeneratorAbstract
 
     protected function getStruct(string $type): string
     {
-        return $this->writeLink($type, '#' . $type);
+        return $type;
     }
 
     protected function getMap(string $type): string
     {
-        return $type;
+        return 'Map (' . $type . ')';
     }
 
     protected function getUnion(array $types): string
@@ -111,7 +111,7 @@ abstract class MarkupAbstract extends GeneratorAbstract
 
     protected function getReference(string $ref): string
     {
-        return 'Object (' . $this->writeLink($ref, '#' . $ref) . ')';
+        return $ref;
     }
 
     protected function getGeneric(array $types): string
@@ -131,8 +131,7 @@ abstract class MarkupAbstract extends GeneratorAbstract
 
     /**
      * @param string $name
-     * @param string $href
      * @return string
      */
-    abstract protected function writeLink(string $name, string $href): string;
+    abstract protected function escape(string $name): string;
 }

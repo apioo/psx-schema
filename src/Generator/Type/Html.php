@@ -29,8 +29,8 @@ namespace PSX\Schema\Generator\Type;
  */
 class Html extends MarkupAbstract
 {
-    protected function writeLink(string $name, string $href): string
+    protected function escape(string $name): string
     {
-        return '<a href="' . $href . '">' . htmlspecialchars($name) . '</a>';
+        return htmlspecialchars($name);
     }
 }
