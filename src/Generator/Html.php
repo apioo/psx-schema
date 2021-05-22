@@ -80,9 +80,7 @@ class Html extends MarkupAbstract
             /** @var Code\Property $property */
             $rows[] = [
                 $name,
-                $property->getType(),
-                $property->isRequired(),
-                $property->getComment(),
+                $property,
                 $this->getConstraints($property->getOrigin()),
             ];
         }
@@ -214,13 +212,15 @@ class Html extends MarkupAbstract
         $html.= '<tbody>';
 
         foreach ($rows as $row) {
-            [$name, $type, $required, $description, $constraints] = $row;
+            [$name, $property, $constraints] = $row;
+
+            $classes = $this->getPropertyCssClasses($property);
 
             $html.= '<tr>';
-            $html.= '<td><span class="psx-property-name ' . ($required ? 'psx-property-required' : 'psx-property-optional') . '">' . htmlspecialchars($name) . '</span></td>';
+            $html.= '<td><span class="psx-property-name ' . implode(' ', $classes) . '">' . htmlspecialchars($name) . '</span></td>';
             $html.= '<td>';
-            $html.= '<span class="psx-property-type"><a class="psx-type-link" data-name="' . $type . '">' . $type . '</a></span><br />';
-            $html.= '<div class="psx-property-description">' . htmlspecialchars($description) . '</div>';
+            $html.= '<span class="psx-property-type"><a class="psx-type-link" data-name="' . $property->getType() . '">' . $property->getType() . '</a></span><br />';
+            $html.= '<div class="psx-property-description">' . htmlspecialchars($property->getComment()) . '</div>';
             $html.= !empty($constraints) ? $this->writeConstraints($constraints) : '';
             $html.= '</td>';
             $html.= '</tr>';
@@ -237,12 +237,12 @@ class Html extends MarkupAbstract
         $html = '<span class="psx-object-json-pun">{</span>' . "\n";
 
         foreach ($rows as $row) {
-            [$name, $type] = $row;
+            [$name, $property] = $row;
 
             $html.= '  ';
             $html.= '<span class="psx-object-json-key">"' . htmlspecialchars($name) . '"</span>';
             $html.= '<span class="psx-object-json-pun">: </span>';
-            $html.= '<span class="psx-property-type">' . $type . '</span>';
+            $html.= '<span class="psx-property-type">' . $property->getType() . '</span>';
             $html.= '<span class="psx-object-json-pun">,</span>';
             $html.= "\n";
         }
@@ -250,5 +250,25 @@ class Html extends MarkupAbstract
         $html.= '<span class="psx-object-json-pun">}</span>';
 
         return '<pre class="psx-object-json">' . $html . '</pre>';
+    }
+
+    private function getPropertyCssClasses(Code\Property $property): array
+    {
+        $classes = [];
+        $classes[] = $property->isRequired() ? 'psx-property-required' : 'psx-property-optional';
+
+        if ($property->isDeprecated()) {
+            $classes[] = 'psx-property-deprecated';
+        }
+
+        if ($property->isNullable()) {
+            $classes[] = 'psx-property-nullable';
+        }
+
+        if ($property->isReadonly()) {
+            $classes[] = 'psx-property-readonly';
+        }
+
+        return $classes;
     }
 }

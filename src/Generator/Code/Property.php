@@ -107,6 +107,30 @@ class Property
     }
 
     /**
+     * @return bool
+     */
+    public function isNullable(): ?bool
+    {
+        return $this->origin instanceof TypeAbstract ? $this->origin->isNullable() : null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeprecated(): ?bool
+    {
+        return $this->origin instanceof TypeAbstract ? $this->origin->isDeprecated() : null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReadonly(): ?bool
+    {
+        return $this->origin instanceof TypeAbstract ? $this->origin->isReadonly() : null;
+    }
+
+    /**
      * @return TypeInterface
      */
     public function getOrigin(): TypeInterface
