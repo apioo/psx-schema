@@ -23,13 +23,13 @@ namespace PSX\Schema\Tests\Generator;
 use PSX\Schema\Generator\Ruby;
 
 /**
- * PythonTest
+ * RubyTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class PythonTest extends GeneratorTestCase
+class RubyTest extends GeneratorTestCase
 {
     public function testGenerate()
     {

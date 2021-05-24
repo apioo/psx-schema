@@ -39,6 +39,7 @@ class GeneratorFactory
     const TYPE_PHP = 'php';
     const TYPE_PROTOBUF = 'protobuf';
     const TYPE_PYTHON = 'python';
+    const TYPE_RUBY = 'ruby';
     const TYPE_SWIFT = 'swift';
     const TYPE_TYPESCHEMA = 'typeschema';
     const TYPE_TYPESCRIPT = 'typescript';
@@ -89,6 +90,9 @@ class GeneratorFactory
             case self::TYPE_PYTHON:
                 return new Generator\Python($namespace, $mapping, $indent);
 
+            case self::TYPE_RUBY:
+                return new Generator\Ruby($namespace, $mapping, $indent);
+
             case self::TYPE_SWIFT:
                 return new Generator\Swift($namespace, $mapping, $indent);
 
@@ -117,6 +121,7 @@ class GeneratorFactory
             self::TYPE_PHP,
             self::TYPE_PROTOBUF,
             self::TYPE_PYTHON,
+            self::TYPE_RUBY,
             self::TYPE_SWIFT,
             self::TYPE_TYPESCRIPT,
             self::TYPE_TYPESCHEMA,
