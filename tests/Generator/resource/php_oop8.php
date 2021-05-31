@@ -25,6 +25,7 @@ class Human implements \JsonSerializable
         });
     }
 }
+
 class Student extends Human implements \JsonSerializable
 {
     /**
@@ -52,12 +53,14 @@ class Student extends Human implements \JsonSerializable
         }));
     }
 }
+
 /**
  * @extends Map<Student>
  */
 class StudentMap extends Map
 {
 }
+
 /**
  * @template T
  */
@@ -106,6 +109,7 @@ class Map implements \JsonSerializable
         });
     }
 }
+
 class RootSchema implements \JsonSerializable
 {
     /**

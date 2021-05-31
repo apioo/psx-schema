@@ -28,6 +28,7 @@ class Creature implements \JsonSerializable
         });
     }
 }
+
 class Human extends Creature implements \JsonSerializable
 {
     /**
@@ -55,6 +56,7 @@ class Human extends Creature implements \JsonSerializable
         }));
     }
 }
+
 class Animal extends Creature implements \JsonSerializable
 {
     /**
@@ -82,6 +84,7 @@ class Animal extends Creature implements \JsonSerializable
         }));
     }
 }
+
 class Union implements \JsonSerializable
 {
     /**

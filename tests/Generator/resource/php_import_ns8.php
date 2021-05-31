@@ -46,6 +46,7 @@ class Import implements \JsonSerializable
         });
     }
 }
+
 namespace Foo\Bar;
 
 
