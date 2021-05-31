@@ -53,8 +53,7 @@ class Protobuf extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '';
-        $code.= 'message ' . $name . ' {' . "\n";
+        $code = 'message ' . $name . ' {' . "\n";
 
         $index = 1;
         foreach ($properties as $name => $property) {

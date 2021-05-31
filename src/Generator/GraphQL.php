@@ -53,8 +53,7 @@ class GraphQL extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '';
-        $code.= 'type ' . $name . ' {' . "\n";
+        $code = 'type ' . $name . ' {' . "\n";
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */

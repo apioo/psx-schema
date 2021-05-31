@@ -24,6 +24,7 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 
 /**
  * Ruby
@@ -55,8 +56,7 @@ class Ruby extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'class ' . $name . "\n";
+        $code = 'class ' . $name . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . 'extend ' . $extends . "\n";
@@ -83,23 +83,20 @@ class Ruby extends CodeGeneratorAbstract
         $code.= $this->indent . 'end' . "\n";
 
         $code.= 'end' . "\n";
-        $code.= $this->writeFooter();
 
         return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'class ' . $name . "\n";
+        $code = 'class ' . $name . "\n";
         $code.= $this->indent . 'extend ' . $type . "\n";
         $code.= 'end' . "\n";
-        $code.= $this->writeFooter();
 
         return $code;
     }
 
-    private function writeHeader(?string $comment)
+    protected function writeHeader(TypeAbstract $origin): string
     {
         $code = '';
 
@@ -108,6 +105,7 @@ class Ruby extends CodeGeneratorAbstract
             $code.= "\n";
         }
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '# ' . $comment . "\n";
         }
@@ -115,14 +113,12 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function writeFooter(): string
+    protected function writeFooter(TypeAbstract $origin): string
     {
         $code = '';
-        $code.= "\n";
 
         if (!empty($this->namespace)) {
             $code.= 'end' . "\n";
-            $code.= "\n";
         }
 
         return $code;

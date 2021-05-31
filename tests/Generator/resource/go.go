@@ -1,28 +1,16 @@
-
-
 // Location of the person
-
-// Location
 type Location struct {
     Lat float64 `json:"lat"`
     Long float64 `json:"long"`
 }
 
-
-
 // An application
-
-// Web
 type Web struct {
     Name string `json:"name"`
     Url string `json:"url"`
 }
 
-
-
 // An simple author element with some description
-
-// Author
 type Author struct {
     Title string `json:"title"`
     Email string `json:"email"`
@@ -31,13 +19,11 @@ type Author struct {
     Origin Location `json:"origin"`
 }
 
-
+type Meta = map[string]string
 
 // An general news entry
-
-// News
 type News struct {
-    Config map[string]string `json:"config"`
+    Config Meta `json:"config"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []interface{} `json:"resources"`
@@ -45,7 +31,7 @@ type News struct {
     Read bool `json:"read"`
     Source interface{} `json:"source"`
     Author Author `json:"author"`
-    Meta map[string]string `json:"meta"`
+    Meta Meta `json:"meta"`
     SendDate time.Time `json:"sendDate"`
     ReadDate time.Time `json:"readDate"`
     Expires time.Duration `json:"expires"`

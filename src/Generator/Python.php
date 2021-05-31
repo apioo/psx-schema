@@ -24,6 +24,7 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 
 /**
  * Python
@@ -55,8 +56,7 @@ class Python extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'class ' . $name;
+        $code = 'class ' . $name;
 
         if (!empty($extends)) {
             $code.= '(' . $extends . ')';
@@ -84,21 +84,15 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'class ' . $name . '(Mapping[str, ' . $subType . ']):' . "\n";
-
-        return $code;
+        return 'class ' . $name . '(Mapping[str, ' . $subType . ']):' . "\n";
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'class ' . $name . '(' . $type . '):' . "\n";
-
-        return $code;
+        return 'class ' . $name . '(' . $type . '):' . "\n";
     }
 
-    private function writeHeader(?string $comment)
+    protected function writeHeader(TypeAbstract $origin): string
     {
         $code = '';
 
@@ -106,6 +100,7 @@ class Python extends CodeGeneratorAbstract
             // TODO can we namespace?
         }
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '# ' . $comment . "\n";
         }

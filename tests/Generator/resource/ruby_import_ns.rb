@@ -1,5 +1,4 @@
 module FooBar
-
 class Import
     attr_accessor :students, :student
 
@@ -8,18 +7,13 @@ class Import
         @student = student
     end
 end
-
 end
 
-
 module FooBar
-
 class MyMap
     extend My::Import::Student
 
     def initialize()
     end
 end
-
 end
-

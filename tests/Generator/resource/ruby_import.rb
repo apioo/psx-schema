@@ -7,11 +7,9 @@ class Import
     end
 end
 
-
 class MyMap
     extend Student
 
     def initialize()
     end
 end
-

@@ -8,7 +8,6 @@ public class Human {
     }
 }
 
-
 public class Student extends Human {
     private String matricleNumber;
     public void setMatricleNumber(String matricleNumber) {
@@ -19,10 +18,8 @@ public class Student extends Human {
     }
 }
 
-
 public class StudentMap extends Map<Student> {
 }
-
 
 public class Map<T> {
     private int totalResults;
@@ -41,7 +38,6 @@ public class Map<T> {
     }
 }
 
-
 public class RootSchema {
     private StudentMap students;
     public void setStudents(StudentMap students) {
@@ -51,4 +47,3 @@ public class RootSchema {
         return this.students;
     }
 }
-

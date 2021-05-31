@@ -47,6 +47,7 @@ class Location implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("An application")
  * @Required({"name", "url"})
@@ -96,6 +97,7 @@ class Web implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("An simple author element with some description")
  * @Required({"title"})
@@ -204,6 +206,7 @@ class Author implements \JsonSerializable
         });
     }
 }
+
 /**
  * @extends \PSX\Record\Record<string>
  * @MinProperties(1)
@@ -212,6 +215,7 @@ class Author implements \JsonSerializable
 class Meta extends \PSX\Record\Record
 {
 }
+
 /**
  * @Description("An general news entry")
  * @Required({"receiver", "price", "content"})

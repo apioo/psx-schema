@@ -6,7 +6,6 @@ class Human
     end
 end
 
-
 class Student
     extend Human
     attr_accessor :matricleNumber
@@ -16,11 +15,9 @@ class Student
     end
 end
 
-
 class StudentMap
     extend Map
 end
-
 
 class Map
     attr_accessor :totalResults, :entries
@@ -31,7 +28,6 @@ class Map
     end
 end
 
-
 class RootSchema
     attr_accessor :students
 
@@ -39,4 +35,3 @@ class RootSchema
         @students = students
     end
 end
-

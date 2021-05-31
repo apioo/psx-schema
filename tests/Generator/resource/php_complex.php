@@ -125,6 +125,7 @@ class CommonProperties implements \JsonSerializable
         });
     }
 }
+
 class ScalarProperties implements \JsonSerializable
 {
     /**
@@ -191,6 +192,7 @@ class ScalarProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @extends \PSX\Record\Record<PropertyValue>
  * @Description("Properties of a schema")
@@ -198,6 +200,7 @@ class ScalarProperties implements \JsonSerializable
 class Properties extends \PSX\Record\Record
 {
 }
+
 /**
  * @Description("Properties specific for a container")
  * @Required({"type"})
@@ -230,6 +233,7 @@ class ContainerProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Struct specific properties")
  * @Required({"properties"})
@@ -281,6 +285,7 @@ class StructProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Map specific properties")
  * @Required({"additionalProperties"})
@@ -353,6 +358,7 @@ class MapProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Array properties")
  * @Required({"type", "items"})
@@ -462,6 +468,7 @@ class ArrayProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Boolean properties")
  * @Required({"type"})
@@ -494,6 +501,7 @@ class BooleanProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Number properties")
  * @Required({"type"})
@@ -618,6 +626,7 @@ class NumberProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("String properties")
  * @Required({"type"})
@@ -708,6 +717,7 @@ class StringProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @extends \PSX\Record\Record<string>
  * @Description("An object to hold mappings between payload values and schema names or references")
@@ -715,6 +725,7 @@ class StringProperties implements \JsonSerializable
 class DiscriminatorMapping extends \PSX\Record\Record
 {
 }
+
 /**
  * @Description("Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description")
  * @Required({"propertyName"})
@@ -765,6 +776,7 @@ class Discriminator implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("An intersection type combines multiple schemas into one")
  * @Required({"allOf"})
@@ -815,6 +827,7 @@ class AllOfProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("An union type can contain one of the provided schemas")
  * @Required({"oneOf"})
@@ -883,12 +896,14 @@ class OneOfProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @extends \PSX\Record\Record<ReferenceType>
  */
 class TemplateProperties extends \PSX\Record\Record
 {
 }
+
 /**
  * @Description("Represents a reference to another schema")
  * @Required({"$ref"})
@@ -942,6 +957,7 @@ class ReferenceType implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Represents a generic type")
  * @Required({"$generic"})
@@ -974,6 +990,7 @@ class GenericType implements \JsonSerializable
         });
     }
 }
+
 /**
  * @extends \PSX\Record\Record<DefinitionValue>
  * @Description("Schema definitions which can be reused")
@@ -981,6 +998,7 @@ class GenericType implements \JsonSerializable
 class Definitions extends \PSX\Record\Record
 {
 }
+
 /**
  * @extends \PSX\Record\Record<string>
  * @Description("Contains external definitions which are imported. The imported schemas can be used via the namespace")
@@ -988,6 +1006,7 @@ class Definitions extends \PSX\Record\Record
 class Import extends \PSX\Record\Record
 {
 }
+
 /**
  * @Title("TypeSchema")
  * @Description("TypeSchema meta schema which describes a TypeSchema")

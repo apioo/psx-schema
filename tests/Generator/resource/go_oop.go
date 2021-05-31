@@ -1,29 +1,19 @@
-
-
-// Human
 type Human struct {
     FirstName string `json:"firstName"`
 }
 
-
-
-// Student
 type Student struct {
     *Human
     MatricleNumber string `json:"matricleNumber"`
 }
 
+type StudentMap = Map
 
-
-// Map
 type Map struct {
     TotalResults int `json:"totalResults"`
     Entries []T `json:"entries"`
 }
 
-
-
-// RootSchema
 type RootSchema struct {
-    Students Map `json:"students"`
+    Students StudentMap `json:"students"`
 }

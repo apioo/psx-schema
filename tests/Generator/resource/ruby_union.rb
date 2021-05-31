@@ -6,7 +6,6 @@ class Creature
     end
 end
 
-
 class Human
     extend Creature
     attr_accessor :firstName
@@ -15,7 +14,6 @@ class Human
         @firstName = firstName
     end
 end
-
 
 class Animal
     extend Creature
@@ -26,7 +24,6 @@ class Animal
     end
 end
 
-
 class Union
     attr_accessor :union, :intersection, :discriminator
 
@@ -36,4 +33,3 @@ class Union
         @discriminator = discriminator
     end
 end
-

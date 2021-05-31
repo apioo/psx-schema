@@ -55,8 +55,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export interface ' . $name;
+        $code = 'export interface ' . $name;
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -74,66 +73,36 @@ class TypeScript extends CodeGeneratorAbstract
         }
 
         $code.= '}' . "\n";
-        $code.= $this->writerFooter();
 
         return $code;
     }
 
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeArray(string $name, string $type, ArrayType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeUnion(string $name, string $type, UnionType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        $code = $this->writeHeader($origin);
-        $code.= 'export type ' . $name . ' = ' . $type . ';' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
+        return 'export type ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function normalizeName(string $name)
-    {
-        if (strpos($name, '-') !== false) {
-            $name = '"' . $name . '"';
-        }
-
-        return $name;
-    }
-
-    private function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin): string
     {
         $code = '';
 
@@ -151,14 +120,6 @@ class TypeScript extends CodeGeneratorAbstract
             $code.= "\n";
         }
 
-        $code.= "\n";
-
-        return $code;
-    }
-
-    private function writerFooter(): string
-    {
-        $code = '';
         $code.= "\n";
 
         return $code;

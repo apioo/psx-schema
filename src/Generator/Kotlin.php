@@ -21,26 +21,28 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
 
 /**
- * Go
+ * Kotlin
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Go extends CodeGeneratorAbstract
+class Kotlin extends CodeGeneratorAbstract
 {
     /**
      * @inheritDoc
      */
     public function getFileName(string $file): string
     {
-        return $file . '.go';
+        return $file . '.kt';
     }
 
     /**
@@ -48,7 +50,7 @@ class Go extends CodeGeneratorAbstract
      */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Go($mapping);
+        return new Type\Kotlin($mapping);
     }
 
     /**
@@ -56,15 +58,32 @@ class Go extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'type ' . $name . ' struct {' . "\n";
+        $code = 'open class ' . $name;
+
+        if (!empty($generics)) {
+            $code.= '<' . implode(', ', $generics) . '>';
+        }
 
         if (!empty($extends)) {
-            $code.= $this->indent . '*' . $extends . "\n";
+            $code.= ' : ' . $extends;
+        }
+
+        $code.= ' {' . "\n";
+
+        foreach ($properties as $name => $property) {
+            /** @var Code\Property $property */
+            $code.= $this->indent . 'var ' . $name . ': ' . $property->getType() . '? = null' . "\n";
         }
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . ucfirst($name) . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
+            $code.= $this->indent . 'open fun set' . ucfirst($name) . '(' . $name . ': ' . $property->getType() . '?) {' . "\n";
+            $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
+            $code.= $this->indent . '}' . "\n";
+
+            $code.= $this->indent . 'open fun get' . ucfirst($name) . '(): ' . $property->getType() . '? {' . "\n";
+            $code.= $this->indent . $this->indent . 'return this.' . $name . ';' . "\n";
+            $code.= $this->indent . '}' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -76,26 +95,30 @@ class Go extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        return 'type ' . $name . ' = map[string]' . $subType . "\n";
+        $code = 'open class ' . $name . ' : HashMap<String, ' . $subType . '>() {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . "\n";
+        return 'typealias ' . $name . ' = ' . $type . "\n";
     }
 
     protected function writeHeader(TypeAbstract $origin): string
     {
-        $code = "\n";
+        $code = '';
 
         if (!empty($this->namespace)) {
-            $code.= 'package ' . $this->namespace . "\n";
+            $code.= 'package ' . $this->namespace . ';' . "\n";
         }
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= "\n";
-            $code.= '// ' . $comment . "\n";
+            $code.= '/**' . "\n";
+            $code.= ' * ' . $comment . "\n";
+            $code.= ' */' . "\n";
         }
 
         return $code;

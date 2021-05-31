@@ -46,70 +46,35 @@ public class CommonProperties {
     }
 }
 
-
 public class ScalarProperties {
     private String format;
-    private EnumValue enum;
-    private ScalarValue default;
+    private Object enum;
+    private Object default;
     public void setFormat(String format) {
         this.format = format;
     }
     public String getFormat() {
         return this.format;
     }
-    public void setEnum(EnumValue enum) {
+    public void setEnum(Object enum) {
         this.enum = enum;
     }
-    public EnumValue getEnum() {
+    public Object getEnum() {
         return this.enum;
     }
-    public void setDefault(ScalarValue default) {
+    public void setDefault(Object default) {
         this.default = default;
     }
-    public ScalarValue getDefault() {
+    public Object getDefault() {
         return this.default;
     }
 }
 
-
-/**
- * Allowed values of an object property
- */
-public class PropertyValue {
-    private object value;
-    public void setPropertyValue(BooleanType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(NumberType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(StringType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(ArrayType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(CombinationType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(ReferenceType value) {
-        this.value = value;
-    }
-    public void setPropertyValue(GenericType value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
 /**
  * Properties of a schema
  */
-public static class Properties<String, PropertyValue> extends HashMap<String, PropertyValue> {
+public class Properties<String, PropertyValue> extends HashMap<String, PropertyValue> {
 }
-
 
 /**
  * Properties specific for a container
@@ -123,7 +88,6 @@ public class ContainerProperties {
         return this.type;
     }
 }
-
 
 /**
  * Struct specific properties
@@ -145,38 +109,17 @@ public class StructProperties {
     }
 }
 
-
-/**
- * A struct contains a fix set of defined properties
- */
-public class StructType {
-    private List<object> values = new ArrayList<object>();
-    public void addStructType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addStructType(ContainerProperties value) {
-        this.values.add(value);
-    }
-    public void addStructType(StructProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
-
 /**
  * Map specific properties
  */
 public class MapProperties {
-    private PropertyValue additionalProperties;
+    private Object additionalProperties;
     private int maxProperties;
     private int minProperties;
-    public void setAdditionalProperties(PropertyValue additionalProperties) {
+    public void setAdditionalProperties(Object additionalProperties) {
         this.additionalProperties = additionalProperties;
     }
-    public PropertyValue getAdditionalProperties() {
+    public Object getAdditionalProperties() {
         return this.additionalProperties;
     }
     public void setMaxProperties(int maxProperties) {
@@ -193,76 +136,12 @@ public class MapProperties {
     }
 }
 
-
-/**
- * A map contains variable key value entries of a specific type
- */
-public class MapType {
-    private List<object> values = new ArrayList<object>();
-    public void addMapType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addMapType(ContainerProperties value) {
-        this.values.add(value);
-    }
-    public void addMapType(MapProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
-
-/**
- * An object represents either a struct or map type
- */
-public class ObjectType {
-    private object value;
-    public void setObjectType(StructType value) {
-        this.value = value;
-    }
-    public void setObjectType(MapType value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
-/**
- * Allowed values of an array item
- */
-public class ArrayValue {
-    private object value;
-    public void setArrayValue(BooleanType value) {
-        this.value = value;
-    }
-    public void setArrayValue(NumberType value) {
-        this.value = value;
-    }
-    public void setArrayValue(StringType value) {
-        this.value = value;
-    }
-    public void setArrayValue(ReferenceType value) {
-        this.value = value;
-    }
-    public void setArrayValue(GenericType value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
 /**
  * Array properties
  */
 public class ArrayProperties {
     private String type;
-    private ArrayValue items;
+    private Object items;
     private int maxItems;
     private int minItems;
     private boolean uniqueItems;
@@ -272,10 +151,10 @@ public class ArrayProperties {
     public String getType() {
         return this.type;
     }
-    public void setItems(ArrayValue items) {
+    public void setItems(Object items) {
         this.items = items;
     }
-    public ArrayValue getItems() {
+    public Object getItems() {
         return this.items;
     }
     public void setMaxItems(int maxItems) {
@@ -298,24 +177,6 @@ public class ArrayProperties {
     }
 }
 
-
-/**
- * An array contains an ordered list of a specific type
- */
-public class ArrayType {
-    private List<object> values = new ArrayList<object>();
-    public void addArrayType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addArrayType(ArrayProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
-
 /**
  * Boolean properties
  */
@@ -328,27 +189,6 @@ public class BooleanProperties {
         return this.type;
     }
 }
-
-
-/**
- * Represents a boolean value
- */
-public class BooleanType {
-    private List<object> values = new ArrayList<object>();
-    public void addBooleanType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addBooleanType(ScalarProperties value) {
-        this.values.add(value);
-    }
-    public void addBooleanType(BooleanProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
 
 /**
  * Number properties
@@ -398,27 +238,6 @@ public class NumberProperties {
     }
 }
 
-
-/**
- * Represents a number value (contains also integer)
- */
-public class NumberType {
-    private List<object> values = new ArrayList<object>();
-    public void addNumberType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addNumberType(ScalarProperties value) {
-        this.values.add(value);
-    }
-    public void addNumberType(NumberProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
-
 /**
  * String properties
  */
@@ -453,56 +272,11 @@ public class StringProperties {
     }
 }
 
-
-/**
- * Represents a string value
- */
-public class StringType {
-    private List<object> values = new ArrayList<object>();
-    public void addStringType(CommonProperties value) {
-        this.values.add(value);
-    }
-    public void addStringType(ScalarProperties value) {
-        this.values.add(value);
-    }
-    public void addStringType(StringProperties value) {
-        this.values.add(value);
-    }
-    public List<object> getValues() {
-        return this.values;
-    }
-}
-
-
-/**
- * Allowed values in a combination schema
- */
-public class OfValue {
-    private object value;
-    public void setOfValue(NumberType value) {
-        this.value = value;
-    }
-    public void setOfValue(StringType value) {
-        this.value = value;
-    }
-    public void setOfValue(BooleanType value) {
-        this.value = value;
-    }
-    public void setOfValue(ReferenceType value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
 /**
  * An object to hold mappings between payload values and schema names or references
  */
-public static class DiscriminatorMapping<String, String> extends HashMap<String, String> {
+public class DiscriminatorMapping<String, String> extends HashMap<String, String> {
 }
-
 
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -524,7 +298,6 @@ public class Discriminator {
     }
 }
 
-
 /**
  * An intersection type combines multiple schemas into one
  */
@@ -544,7 +317,6 @@ public class AllOfProperties {
         return this.allOf;
     }
 }
-
 
 /**
  * An union type can contain one of the provided schemas
@@ -573,27 +345,8 @@ public class OneOfProperties {
     }
 }
 
-
-/**
- * A combination type is either a intersection or union type
- */
-public class CombinationType {
-    private object value;
-    public void setCombinationType(AllOfProperties value) {
-        this.value = value;
-    }
-    public void setCombinationType(OneOfProperties value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
+public class TemplateProperties<String, ReferenceType> extends HashMap<String, ReferenceType> {
 }
-
-
-public static class TemplateProperties<String, ReferenceType> extends HashMap<String, ReferenceType> {
-}
-
 
 /**
  * Represents a reference to another schema
@@ -615,7 +368,6 @@ public class ReferenceType {
     }
 }
 
-
 /**
  * Represents a generic type
  */
@@ -629,86 +381,17 @@ public class GenericType {
     }
 }
 
-
-/**
- * Represents a concrete type definition
- */
-public class DefinitionValue {
-    private object value;
-    public void setDefinitionValue(ObjectType value) {
-        this.value = value;
-    }
-    public void setDefinitionValue(ArrayType value) {
-        this.value = value;
-    }
-    public void setDefinitionValue(BooleanType value) {
-        this.value = value;
-    }
-    public void setDefinitionValue(NumberType value) {
-        this.value = value;
-    }
-    public void setDefinitionValue(StringType value) {
-        this.value = value;
-    }
-    public void setDefinitionValue(CombinationType value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
 /**
  * Schema definitions which can be reused
  */
-public static class Definitions<String, DefinitionValue> extends HashMap<String, DefinitionValue> {
+public class Definitions<String, DefinitionValue> extends HashMap<String, DefinitionValue> {
 }
-
 
 /**
  * Contains external definitions which are imported. The imported schemas can be used via the namespace
  */
-public static class Import<String, String> extends HashMap<String, String> {
+public class Import<String, String> extends HashMap<String, String> {
 }
-
-
-/**
- * A list of possible enumeration values
- */
-public class EnumValue {
-    private object value;
-    public void setEnumValue(StringArray value) {
-        this.value = value;
-    }
-    public void setEnumValue(NumberArray value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
-
-/**
- * Represents a scalar value
- */
-public class ScalarValue {
-    private object value;
-    public void setScalarValue(String value) {
-        this.value = value;
-    }
-    public void setScalarValue(float value) {
-        this.value = value;
-    }
-    public void setScalarValue(boolean value) {
-        this.value = value;
-    }
-    public object getValue() {
-        return this.value;
-    }
-}
-
 
 /**
  * TypeSchema meta schema which describes a TypeSchema
@@ -764,4 +447,3 @@ public class TypeSchema {
         return this.required;
     }
 }
-

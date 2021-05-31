@@ -12,7 +12,6 @@ class CommonProperties
     end
 end
 
-
 class ScalarProperties
     attr_accessor :format, :enum, :default
 
@@ -23,7 +22,6 @@ class ScalarProperties
     end
 end
 
-
 # Properties specific for a container
 class ContainerProperties
     attr_accessor :type
@@ -32,7 +30,6 @@ class ContainerProperties
         @type = type
     end
 end
-
 
 # Struct specific properties
 class StructProperties
@@ -44,7 +41,6 @@ class StructProperties
     end
 end
 
-
 # Map specific properties
 class MapProperties
     attr_accessor :additionalProperties, :maxProperties, :minProperties
@@ -55,7 +51,6 @@ class MapProperties
         @minProperties = minProperties
     end
 end
-
 
 # Array properties
 class ArrayProperties
@@ -70,7 +65,6 @@ class ArrayProperties
     end
 end
 
-
 # Boolean properties
 class BooleanProperties
     attr_accessor :type
@@ -79,7 +73,6 @@ class BooleanProperties
         @type = type
     end
 end
-
 
 # Number properties
 class NumberProperties
@@ -95,7 +88,6 @@ class NumberProperties
     end
 end
 
-
 # String properties
 class StringProperties
     attr_accessor :type, :maxLength, :minLength, :pattern
@@ -108,7 +100,6 @@ class StringProperties
     end
 end
 
-
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 class Discriminator
     attr_accessor :propertyName, :mapping
@@ -119,7 +110,6 @@ class Discriminator
     end
 end
 
-
 # An intersection type combines multiple schemas into one
 class AllOfProperties
     attr_accessor :description, :allOf
@@ -129,7 +119,6 @@ class AllOfProperties
         @allOf = allOf
     end
 end
-
 
 # An union type can contain one of the provided schemas
 class OneOfProperties
@@ -142,7 +131,6 @@ class OneOfProperties
     end
 end
 
-
 # Represents a reference to another schema
 class ReferenceType
     attr_accessor :ref, :template
@@ -153,7 +141,6 @@ class ReferenceType
     end
 end
 
-
 # Represents a generic type
 class GenericType
     attr_accessor :generic
@@ -162,7 +149,6 @@ class GenericType
         @generic = generic
     end
 end
-
 
 # TypeSchema meta schema which describes a TypeSchema
 class TypeSchema
@@ -178,4 +164,3 @@ class TypeSchema
         @required = required
     end
 end
-

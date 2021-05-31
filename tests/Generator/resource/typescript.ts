@@ -1,29 +1,24 @@
 /**
  * Location of the person
  */
-
 export interface Location {
     lat: number
     long: number
 }
 
-
 /**
  * An application
  */
-
 export interface Web {
     name: string
     url: string
 }
-
 
 /**
  * An simple author element with some description
  */
 
 import {Location} from "./Location";
-
 export interface Author {
     title: string
     email?: string
@@ -32,10 +27,7 @@ export interface Author {
     origin?: Location
 }
 
-
-
 export type Meta = Record<string, string>;
-
 
 /**
  * An general news entry
@@ -45,7 +37,6 @@ import {Meta} from "./Meta";
 import {Author} from "./Author";
 import {Location} from "./Location";
 import {Web} from "./Web";
-
 export interface News {
     config?: Meta
     tags?: Array<string>
@@ -68,4 +59,3 @@ export interface News {
     profileUri?: string
     captcha?: string
 }
-

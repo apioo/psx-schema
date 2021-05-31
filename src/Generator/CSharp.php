@@ -25,6 +25,7 @@ use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -57,8 +58,7 @@ class CSharp extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public class ' . $name;
+        $code = 'public class ' . $name;
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -77,7 +77,6 @@ class CSharp extends CodeGeneratorAbstract
         }
 
         $code.= '}' . "\n";
-        $code.= $this->writerFooter();
 
         return $code;
     }
@@ -86,74 +85,23 @@ class CSharp extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public class ' . $name . '<string, ' . $subType . '> : IDictionary<string, ' . $subType . '>' . "\n";
+        $code = 'public class ' . $name . '<string, ' . $subType . '> : IDictionary<string, ' . $subType . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
-    }
-
-    protected function writeUnion(string $name, string $type, UnionType $origin): string
-    {
-        // @TODO how do we solve this best in C#
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public class ' . $name . ' : ' . $type . "\n";
-        $code.= '{' . "\n";
-        $code.= $this->indent . 'private object value;' . "\n";
-        foreach ($origin->getOneOf() as $item) {
-            $type = $this->generator->getType($item);
-
-            $code.= $this->indent . 'public void set' . ucfirst($name) . '(' . $type . ' value) {' . "\n";
-            $code.= $this->indent . $this->indent . 'this.value = value;' . "\n";
-            $code.= $this->indent . '}' . "\n";
-        }
-
-        $code.= $this->indent . 'public object getValue() {' . "\n";
-        $code.= $this->indent . $this->indent . 'return this.value;' . "\n";
-        $code.= $this->indent . '}' . "\n";
-        $code.= '}' . "\n";
-        $code.= $this->writerFooter();
-
-        return $code;
-    }
-
-    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
-    {
-        // @TODO how do we solve this best in C#
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public class ' . $name . ' : ' . $type . "\n";
-        $code.= '{' . "\n";
-        $code.= $this->indent . 'private List<object> values = new List<object>();' . "\n";
-        foreach ($origin->getAllOf() as $item) {
-            $type = $this->generator->getType($item);
-
-            $code.= $this->indent . 'public void add' . ucfirst($name) . '(' . $type . ' value) {' . "\n";
-            $code.= $this->indent . $this->indent . 'this.values.add(value);' . "\n";
-            $code.= $this->indent . '}' . "\n";
-        }
-
-        $code.= $this->indent . 'public List<object> getValues() {' . "\n";
-        $code.= $this->indent . $this->indent . 'return this.values;' . "\n";
-        $code.= $this->indent . '}' . "\n";
-        $code.= $this->writerFooter();
 
         return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
     {
-        $code = $this->writeHeader($origin->getDescription());
-        $code.= 'public class ' . $name . ' : ' . $type . "\n";
+        $code = 'public class ' . $name . ' : ' . $type . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
-        $code.= $this->writerFooter();
 
         return $code;
     }
 
-    private function writeHeader(?string $comment)
+    protected function writeHeader(TypeAbstract $origin): string
     {
         $code = '';
 
@@ -162,6 +110,7 @@ class CSharp extends CodeGeneratorAbstract
             $code.= '{' . "\n";
         }
 
+        $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/// <summary>' . "\n";
             $code.= '/// ' . $comment . "\n";
@@ -171,7 +120,7 @@ class CSharp extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function writerFooter()
+    protected function writeFooter(TypeAbstract $origin): string
     {
         if (!empty($this->namespace)) {
             return '}' . "\n";

@@ -27,20 +27,20 @@ use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 
 /**
- * Go
+ * Rust
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class Go extends CodeGeneratorAbstract
+class Rust extends CodeGeneratorAbstract
 {
     /**
      * @inheritDoc
      */
     public function getFileName(string $file): string
     {
-        return $file . '.go';
+        return $file . '.rs';
     }
 
     /**
@@ -48,7 +48,7 @@ class Go extends CodeGeneratorAbstract
      */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Go($mapping);
+        return new Type\Rust($mapping);
     }
 
     /**
@@ -56,7 +56,7 @@ class Go extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'type ' . $name . ' struct {' . "\n";
+        $code = 'struct ' . $name . ' {' . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . '*' . $extends . "\n";
@@ -64,7 +64,7 @@ class Go extends CodeGeneratorAbstract
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . ucfirst($name) . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
+            $code.= $this->indent . $name . ': ' . $property->getType() . ',' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -76,7 +76,10 @@ class Go extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        return 'type ' . $name . ' = map[string]' . $subType . "\n";
+        $code = 'type ' . $name . ' = HashMap<String, ' . $subType . '>() {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string

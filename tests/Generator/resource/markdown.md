@@ -5,7 +5,7 @@ Location of the person
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 lat | Number | **REQUIRED**.  | 
-long | Number | **REQUIRED**.  | 
+long | Number | **REQUIRED**.  |
 
 # Web
 
@@ -14,7 +14,7 @@ An application
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 name | String | **REQUIRED**.  | 
-url | String | **REQUIRED**.  | 
+url | String | **REQUIRED**.  |
 
 # Author
 
@@ -26,13 +26,13 @@ title | String | **REQUIRED**.  | Pattern: `[A-z]{3,16}`
 email | String | We will send no spam to this address | 
 categories | Array (String) |  | MaxItems: `8`
 locations | Array (Location) | Array of locations | 
-origin | Location |  | 
+origin | Location |  |
 
 # Meta
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | Map (String) |  | 
+* | Map (String) |  |
 
 # News
 
@@ -59,4 +59,4 @@ question | String |  |
 version | String |  | Const: `http://foo.bar`
 coffeeTime | Time |  | 
 profileUri | URI |  | 
-captcha | String |  | 
+captcha | String |  |

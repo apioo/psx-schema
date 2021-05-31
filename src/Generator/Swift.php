@@ -26,6 +26,7 @@ use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -58,14 +59,7 @@ class Swift extends CodeGeneratorAbstract
      */
     protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '';
-
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $code.= '// ' . $comment . "\n";
-        }
-
-        $code.= 'class ' . $name . ': ';
+        $code = 'class ' . $name . ': ';
 
         if (!empty($extends)) {
             $code.= $extends . ' ';
@@ -110,8 +104,15 @@ class Swift extends CodeGeneratorAbstract
         return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
     }
 
-    protected function normalizeName(string $name)
+    protected function writeHeader(TypeAbstract $origin): string
     {
-        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
+        $code = '';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $code.= '// ' . $comment . "\n";
+        }
+
+        return $code;
     }
 }

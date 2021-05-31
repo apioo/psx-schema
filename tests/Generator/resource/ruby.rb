@@ -8,7 +8,6 @@ class Location
     end
 end
 
-
 # An application
 class Web
     attr_accessor :name, :url
@@ -18,7 +17,6 @@ class Web
         @url = url
     end
 end
-
 
 # An simple author element with some description
 class Author
@@ -32,7 +30,6 @@ class Author
         @origin = origin
     end
 end
-
 
 # An general news entry
 class News
@@ -61,4 +58,3 @@ class News
         @captcha = captcha
     end
 end
-

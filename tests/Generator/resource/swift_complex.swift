@@ -14,8 +14,10 @@ class ScalarProperties: Codable {
     var default: ScalarValue
 }
 
+// Allowed values of an object property
 typealias PropertyValue = BooleanType | NumberType | StringType | ArrayType | CombinationType | ReferenceType | GenericType;
 
+// Properties of a schema
 typealias Properties = Dictionary<String, PropertyValue>;
 
 // Properties specific for a container
@@ -29,6 +31,7 @@ class StructProperties: Codable {
     var required: StringArray
 }
 
+// A struct contains a fix set of defined properties
 typealias StructType = CommonProperties & ContainerProperties & StructProperties;
 
 // Map specific properties
@@ -38,10 +41,13 @@ class MapProperties: Codable {
     var minProperties: Int
 }
 
+// A map contains variable key value entries of a specific type
 typealias MapType = CommonProperties & ContainerProperties & MapProperties;
 
+// An object represents either a struct or map type
 typealias ObjectType = StructType | MapType;
 
+// Allowed values of an array item
 typealias ArrayValue = BooleanType | NumberType | StringType | ReferenceType | GenericType;
 
 // Array properties
@@ -53,6 +59,7 @@ class ArrayProperties: Codable {
     var uniqueItems: Bool
 }
 
+// An array contains an ordered list of a specific type
 typealias ArrayType = CommonProperties & ArrayProperties;
 
 // Boolean properties
@@ -60,6 +67,7 @@ class BooleanProperties: Codable {
     var type: String
 }
 
+// Represents a boolean value
 typealias BooleanType = CommonProperties & ScalarProperties & BooleanProperties;
 
 // Number properties
@@ -72,6 +80,7 @@ class NumberProperties: Codable {
     var exclusiveMinimum: Bool
 }
 
+// Represents a number value (contains also integer)
 typealias NumberType = CommonProperties & ScalarProperties & NumberProperties;
 
 // String properties
@@ -82,10 +91,13 @@ class StringProperties: Codable {
     var pattern: String
 }
 
+// Represents a string value
 typealias StringType = CommonProperties & ScalarProperties & StringProperties;
 
+// Allowed values in a combination schema
 typealias OfValue = NumberType | StringType | BooleanType | ReferenceType;
 
+// An object to hold mappings between payload values and schema names or references
 typealias DiscriminatorMapping = Dictionary<String, String>;
 
 // Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -107,6 +119,7 @@ class OneOfProperties: Codable {
     var oneOf: Array<OfValue>
 }
 
+// A combination type is either a intersection or union type
 typealias CombinationType = AllOfProperties | OneOfProperties;
 
 typealias TemplateProperties = Dictionary<String, ReferenceType>;
@@ -122,18 +135,25 @@ class GenericType: Codable {
     var generic: String
 }
 
+// Represents a concrete type definition
 typealias DefinitionValue = ObjectType | ArrayType | BooleanType | NumberType | StringType | CombinationType;
 
+// Schema definitions which can be reused
 typealias Definitions = Dictionary<String, DefinitionValue>;
 
+// Contains external definitions which are imported. The imported schemas can be used via the namespace
 typealias Import = Dictionary<String, String>;
 
+// A list of possible enumeration values
 typealias EnumValue = StringArray | NumberArray;
 
+// Represents a scalar value
 typealias ScalarValue = String | Float | Bool;
 
+// Array string values
 typealias StringArray = Array<String>;
 
+// Array number values
 typealias NumberArray = Array<Float>;
 
 // TypeSchema meta schema which describes a TypeSchema
