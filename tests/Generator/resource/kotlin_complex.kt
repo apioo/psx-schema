@@ -48,24 +48,24 @@ open class CommonProperties {
 
 open class ScalarProperties {
     var format: String? = null
-    var enum: Object? = null
-    var default: Object? = null
+    var enum: Any? = null
+    var default: Any? = null
     open fun setFormat(format: String?) {
         this.format = format;
     }
     open fun getFormat(): String? {
         return this.format;
     }
-    open fun setEnum(enum: Object?) {
+    open fun setEnum(enum: Any?) {
         this.enum = enum;
     }
-    open fun getEnum(): Object? {
+    open fun getEnum(): Any? {
         return this.enum;
     }
-    open fun setDefault(default: Object?) {
+    open fun setDefault(default: Any?) {
         this.default = default;
     }
-    open fun getDefault(): Object? {
+    open fun getDefault(): Any? {
         return this.default;
     }
 }
@@ -113,13 +113,13 @@ open class StructProperties {
  * Map specific properties
  */
 open class MapProperties {
-    var additionalProperties: Object? = null
+    var additionalProperties: Any? = null
     var maxProperties: Int? = null
     var minProperties: Int? = null
-    open fun setAdditionalProperties(additionalProperties: Object?) {
+    open fun setAdditionalProperties(additionalProperties: Any?) {
         this.additionalProperties = additionalProperties;
     }
-    open fun getAdditionalProperties(): Object? {
+    open fun getAdditionalProperties(): Any? {
         return this.additionalProperties;
     }
     open fun setMaxProperties(maxProperties: Int?) {
@@ -141,7 +141,7 @@ open class MapProperties {
  */
 open class ArrayProperties {
     var type: String? = null
-    var items: Object? = null
+    var items: Any? = null
     var maxItems: Int? = null
     var minItems: Int? = null
     var uniqueItems: Boolean? = null
@@ -151,10 +151,10 @@ open class ArrayProperties {
     open fun getType(): String? {
         return this.type;
     }
-    open fun setItems(items: Object?) {
+    open fun setItems(items: Any?) {
         this.items = items;
     }
-    open fun getItems(): Object? {
+    open fun getItems(): Any? {
         return this.items;
     }
     open fun setMaxItems(maxItems: Int?) {

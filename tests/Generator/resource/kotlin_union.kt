@@ -29,25 +29,25 @@ open class Animal : Creature {
 }
 
 open class Union {
-    var union: Object? = null
-    var intersection: Object? = null
-    var discriminator: Object? = null
-    open fun setUnion(union: Object?) {
+    var union: Any? = null
+    var intersection: Any? = null
+    var discriminator: Any? = null
+    open fun setUnion(union: Any?) {
         this.union = union;
     }
-    open fun getUnion(): Object? {
+    open fun getUnion(): Any? {
         return this.union;
     }
-    open fun setIntersection(intersection: Object?) {
+    open fun setIntersection(intersection: Any?) {
         this.intersection = intersection;
     }
-    open fun getIntersection(): Object? {
+    open fun getIntersection(): Any? {
         return this.intersection;
     }
-    open fun setDiscriminator(discriminator: Object?) {
+    open fun setDiscriminator(discriminator: Any?) {
         this.discriminator = discriminator;
     }
-    open fun getDiscriminator(): Object? {
+    open fun getDiscriminator(): Any? {
         return this.discriminator;
     }
 }

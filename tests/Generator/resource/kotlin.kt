@@ -89,10 +89,10 @@ open class News {
     var config: Meta? = null
     var tags: Array<String>? = null
     var receiver: Array<Author>? = null
-    var resources: Array<Object>? = null
+    var resources: Array<Any>? = null
     var profileImage: String? = null
     var read: Boolean? = null
-    var source: Object? = null
+    var source: Any? = null
     var author: Author? = null
     var meta: Meta? = null
     var sendDate: String? = null
@@ -124,10 +124,10 @@ open class News {
     open fun getReceiver(): Array<Author>? {
         return this.receiver;
     }
-    open fun setResources(resources: Array<Object>?) {
+    open fun setResources(resources: Array<Any>?) {
         this.resources = resources;
     }
-    open fun getResources(): Array<Object>? {
+    open fun getResources(): Array<Any>? {
         return this.resources;
     }
     open fun setProfileImage(profileImage: String?) {
@@ -142,10 +142,10 @@ open class News {
     open fun getRead(): Boolean? {
         return this.read;
     }
-    open fun setSource(source: Object?) {
+    open fun setSource(source: Any?) {
         this.source = source;
     }
-    open fun getSource(): Object? {
+    open fun getSource(): Any? {
         return this.source;
     }
     open fun setAuthor(author: Author?) {
