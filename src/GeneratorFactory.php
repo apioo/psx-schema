@@ -35,11 +35,13 @@ class GeneratorFactory
     const TYPE_HTML = 'html';
     const TYPE_JAVA = 'java';
     const TYPE_JSONSCHEMA = 'jsonschema';
+    const TYPE_KOTLIN = 'kotlin';
     const TYPE_MARKDOWN = 'markdown';
     const TYPE_PHP = 'php';
     const TYPE_PROTOBUF = 'protobuf';
     const TYPE_PYTHON = 'python';
     const TYPE_RUBY = 'ruby';
+    const TYPE_RUST = 'rust';
     const TYPE_SWIFT = 'swift';
     const TYPE_TYPESCHEMA = 'typeschema';
     const TYPE_TYPESCRIPT = 'typescript';
@@ -78,6 +80,9 @@ class GeneratorFactory
             case self::TYPE_JSONSCHEMA:
                 return new Generator\JsonSchema();
 
+            case self::TYPE_KOTLIN:
+                return new Generator\Kotlin($namespace, $mapping, $indent);
+
             case self::TYPE_MARKDOWN:
                 return new Generator\Markdown((int) $heading, $prefix);
 
@@ -92,6 +97,9 @@ class GeneratorFactory
 
             case self::TYPE_RUBY:
                 return new Generator\Ruby($namespace, $mapping, $indent);
+
+            case self::TYPE_RUST:
+                return new Generator\Rust($namespace, $mapping, $indent);
 
             case self::TYPE_SWIFT:
                 return new Generator\Swift($namespace, $mapping, $indent);
@@ -117,11 +125,13 @@ class GeneratorFactory
             self::TYPE_HTML,
             self::TYPE_JAVA,
             self::TYPE_JSONSCHEMA,
+            self::TYPE_KOTLIN,
             self::TYPE_MARKDOWN,
             self::TYPE_PHP,
             self::TYPE_PROTOBUF,
             self::TYPE_PYTHON,
             self::TYPE_RUBY,
+            self::TYPE_RUST,
             self::TYPE_SWIFT,
             self::TYPE_TYPESCRIPT,
             self::TYPE_TYPESCHEMA,
