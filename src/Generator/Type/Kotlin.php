@@ -61,12 +61,12 @@ class Kotlin extends GeneratorAbstract
 
     protected function getUnion(array $types): string
     {
-        return 'Object';
+        return 'Any';
     }
 
     protected function getIntersection(array $types): string
     {
-        return 'Object';
+        return 'Any';
     }
 
     protected function getGroup(string $type): string
