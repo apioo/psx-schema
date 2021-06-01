@@ -233,6 +233,7 @@ class ContainerProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Struct specific properties")
  * @Required({"properties"})
@@ -500,6 +501,7 @@ class BooleanProperties implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("Number properties")
  * @Required({"type"})
@@ -774,6 +776,7 @@ class Discriminator implements \JsonSerializable
         });
     }
 }
+
 /**
  * @Description("An intersection type combines multiple schemas into one")
  * @Required({"allOf"})
