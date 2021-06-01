@@ -106,13 +106,6 @@ class TypeScript extends CodeGeneratorAbstract
     {
         $code = '';
 
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $code.= '/**' . "\n";
-            $code.= ' * ' . $comment . "\n";
-            $code.= ' */' . "\n";
-        }
-
         $imports = $this->writeImports($origin);
         if (!empty($imports)) {
             $code.= "\n";
@@ -121,6 +114,13 @@ class TypeScript extends CodeGeneratorAbstract
         }
 
         $code.= "\n";
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $code.= '/**' . "\n";
+            $code.= ' * ' . $comment . "\n";
+            $code.= ' */' . "\n";
+        }
 
         return $code;
     }

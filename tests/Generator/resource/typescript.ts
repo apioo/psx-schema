@@ -14,11 +14,11 @@ export interface Web {
     url: string
 }
 
+import {Location} from "./Location";
+
 /**
  * An simple author element with some description
  */
-
-import {Location} from "./Location";
 export interface Author {
     title: string
     email?: string
@@ -29,14 +29,14 @@ export interface Author {
 
 export type Meta = Record<string, string>;
 
-/**
- * An general news entry
- */
-
 import {Meta} from "./Meta";
 import {Author} from "./Author";
 import {Location} from "./Location";
 import {Web} from "./Web";
+
+/**
+ * An general news entry
+ */
 export interface News {
     config?: Meta
     tags?: Array<string>
