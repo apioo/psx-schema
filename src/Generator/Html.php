@@ -226,16 +226,6 @@ class Html extends MarkupAbstract
         return $html;
     }
 
-    protected function normalizeClassName(string $name): string
-    {
-        return $name;
-    }
-
-    protected function normalizePropertyName(string $name): string
-    {
-        return $name;
-    }
-
     private function generateTable(array $rows): string
     {
         $html = '<table class="table psx-object-properties">';

@@ -57,6 +57,16 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
         $this->prefix  = $prefix;
     }
 
+    protected function normalizeClassName(string $name): string
+    {
+        return $name;
+    }
+
+    protected function normalizePropertyName(string $name): string
+    {
+        return $name;
+    }
+
     /**
      * @param \PSX\Schema\TypeInterface $type
      * @return array
