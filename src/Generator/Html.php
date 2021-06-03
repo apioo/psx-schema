@@ -99,6 +99,12 @@ class Html extends MarkupAbstract
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-map">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        }
+
         $return.= '<pre class="psx-object-json">' . $type . '</pre>';
         $return.= '</div>';
 
@@ -109,6 +115,12 @@ class Html extends MarkupAbstract
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-array">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        }
+
         $return.= '<pre class="psx-object-json">' . $type . '</pre>';
         $return.= '</div>';
 
@@ -119,6 +131,12 @@ class Html extends MarkupAbstract
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-union">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        }
+
         $return.= '<pre class="psx-object-json">OneOf: ' . $type . '</pre>';
         $return.= '</div>';
 
@@ -129,6 +147,12 @@ class Html extends MarkupAbstract
     {
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-intersection">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        }
+
         $return.= '<pre class="psx-object-json">AllOf: ' . $type . '</pre>';
         $return.= '</div>';
 
@@ -150,6 +174,12 @@ class Html extends MarkupAbstract
 
         $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-reference">';
         $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+
+        $comment = $origin->getDescription();
+        if (!empty($comment)) {
+            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
+        }
+
         $return.= '<pre class="psx-object-json">';
         $return.= 'Reference: ' . $type;
         $return.= $generics;
@@ -195,7 +225,17 @@ class Html extends MarkupAbstract
 
         return $html;
     }
-    
+
+    protected function normalizeClassName(string $name): string
+    {
+        return $name;
+    }
+
+    protected function normalizePropertyName(string $name): string
+    {
+        return $name;
+    }
+
     private function generateTable(array $rows): string
     {
         $html = '<table class="table psx-object-properties">';
