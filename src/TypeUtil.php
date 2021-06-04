@@ -24,6 +24,7 @@ use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
 
@@ -65,14 +66,49 @@ class TypeUtil
                 self::walk($items, $visitor);
             }
         } elseif ($type instanceof UnionType) {
-            foreach ($type->getOneOf() as $property) {
-                self::walk($property, $visitor);
+            $oneOf = $type->getOneOf();
+            if (is_iterable($oneOf)) {
+                foreach ($oneOf as $property) {
+                    self::walk($property, $visitor);
+                }
             }
         } elseif ($type instanceof IntersectionType) {
-            foreach ($type->getAllOf() as $property) {
-                self::walk($property, $visitor);
+            $allOf = $type->getAllOf();
+            if (is_iterable($allOf)) {
+                foreach ($allOf as $property) {
+                    self::walk($property, $visitor);
+                }
             }
         }
+    }
+
+    /**
+     * Checks whether the type contains a specific type
+     *
+     * @param TypeInterface $type
+     * @param string $class
+     * @return bool
+     */
+    public static function contains(TypeInterface $type, string $class, string $format = null): bool
+    {
+        $found = false;
+        self::walk($type, function(TypeInterface $type) use ($class, $format, &$found) {
+            if ($found === true) {
+                return;
+            }
+
+            if (!$type instanceof $class) {
+                return;
+            }
+
+            if ($format !== null && $type instanceof ScalarType) {
+                $found = $type->getFormat() === $format;
+            } else {
+                $found = true;
+            }
+        });
+
+        return $found;
     }
 
     /**

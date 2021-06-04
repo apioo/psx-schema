@@ -29,6 +29,36 @@ namespace PSX\Schema\Generator\Type;
  */
 class Java extends GeneratorAbstract
 {
+    protected function getDate(): string
+    {
+        return 'LocalDate';
+    }
+
+    protected function getDateTime(): string
+    {
+        return 'LocalDateTime';
+    }
+
+    protected function getTime(): string
+    {
+        return 'LocalTime';
+    }
+
+    protected function getDuration(): string
+    {
+        return 'Duration';
+    }
+
+    protected function getUri(): string
+    {
+        return 'URI';
+    }
+
+    protected function getBinary(): string
+    {
+        return 'byte[]';
+    }
+
     protected function getString(): string
     {
         return 'String';
@@ -56,7 +86,7 @@ class Java extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'HashMap<string, ' . $type . '>';
+        return 'HashMap<String, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string

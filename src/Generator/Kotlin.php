@@ -24,9 +24,11 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeUtil;
 
 /**
  * Kotlin
@@ -75,17 +77,6 @@ class Kotlin extends CodeGeneratorAbstract
             $code.= $this->indent . 'var ' . $name . ': ' . $property->getType() . '? = null' . "\n";
         }
 
-        foreach ($properties as $name => $property) {
-            /** @var Code\Property $property */
-            $code.= $this->indent . 'open fun set' . ucfirst($name) . '(' . $name . ': ' . $property->getType() . '?) {' . "\n";
-            $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
-            $code.= $this->indent . '}' . "\n";
-
-            $code.= $this->indent . 'open fun get' . ucfirst($name) . '(): ' . $property->getType() . '? {' . "\n";
-            $code.= $this->indent . $this->indent . 'return this.' . $name . ';' . "\n";
-            $code.= $this->indent . '}' . "\n";
-        }
-
         $code.= '}' . "\n";
 
         return $code;
@@ -114,6 +105,15 @@ class Kotlin extends CodeGeneratorAbstract
             $code.= 'package ' . $this->namespace . ';' . "\n";
         }
 
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
+        $code.= "\n";
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/**' . "\n";
@@ -122,5 +122,36 @@ class Kotlin extends CodeGeneratorAbstract
         }
 
         return $code;
+    }
+
+    private function getImports(TypeAbstract $origin): array
+    {
+        $imports = [];
+
+        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_URI)) {
+            $imports[] = 'import java.net.URI;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DURATION)) {
+            $imports[] = 'import java.time.Duration;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATE)) {
+            $imports[] = 'import java.time.LocalDate;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_TIME)) {
+            $imports[] = 'import java.time.LocalTime;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATETIME)) {
+            $imports[] = 'import java.time.LocalDateTime;';
+        }
+
+        if (TypeUtil::contains($origin, MapType::class)) {
+            $imports[] = 'import java.util.HashMap;';
+        }
+
+        return $imports;
     }
 }

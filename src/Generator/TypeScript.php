@@ -106,10 +106,10 @@ class TypeScript extends CodeGeneratorAbstract
     {
         $code = '';
 
-        $imports = $this->writeImports($origin);
+        $imports = $this->getImports($origin);
         if (!empty($imports)) {
             $code.= "\n";
-            $code.= $imports;
+            $code.= implode("\n", $imports);
             $code.= "\n";
         }
 
@@ -125,12 +125,10 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function writeImports(TypeInterface $type): string
+    private function getImports(TypeInterface $origin): array
     {
-        $imports = [];
         $refs = [];
-
-        TypeUtil::walk($type, function(TypeInterface $type) use (&$refs){
+        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
             if ($type instanceof ReferenceType) {
                 $refs[$type->getRef()] = $type->getRef();
                 if ($type->getTemplate()) {
@@ -143,11 +141,12 @@ class TypeScript extends CodeGeneratorAbstract
             }
         });
 
+        $imports = [];
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
             $imports[] = 'import {' . $name . '} from "./' . $name . '";';
         }
 
-        return implode("\n", $imports);
+        return $imports;
     }
 }

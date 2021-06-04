@@ -61,7 +61,7 @@ class Python extends GeneratorAbstract
 
     protected function getUnion(array $types): string
     {
-        return '';
+        return 'Union[' . implode(', ', $types) . ']';
     }
 
     protected function getIntersection(array $types): string

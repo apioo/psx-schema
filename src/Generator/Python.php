@@ -21,10 +21,14 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeUtil;
 
 /**
  * Python
@@ -84,7 +88,7 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        return 'class ' . $name . '(Mapping[str, ' . $subType . ']):' . "\n";
+        return 'class ' . $name . '(Dict[str, ' . $subType . ']):' . "\n";
     }
 
     protected function writeReference(string $name, string $type, ReferenceType $origin): string
@@ -100,11 +104,40 @@ class Python extends CodeGeneratorAbstract
             // TODO can we namespace?
         }
 
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
+        $code.= "\n";
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '# ' . $comment . "\n";
         }
 
         return $code;
+    }
+
+    private function getImports(TypeAbstract $origin): array
+    {
+        $imports = [];
+        $imports[] = 'from typing import Any';
+
+        if (TypeUtil::contains($origin, ArrayType::class)) {
+            $imports[] = 'from typing import List';
+        }
+
+        if (TypeUtil::contains($origin, MapType::class)) {
+            $imports[] = 'from typing import Dict';
+        }
+
+        if (TypeUtil::contains($origin, UnionType::class)) {
+            $imports[] = 'from typing import Union';
+        }
+
+        return $imports;
     }
 }

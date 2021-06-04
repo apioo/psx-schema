@@ -18,10 +18,12 @@ public class ScalarProperties
     public object Default { get; set; }
 }
 
+using System.Collections.Generic;
+
 /// <summary>
 /// Properties of a schema
 /// </summary>
-public class Properties<string, PropertyValue> : IDictionary<string, PropertyValue>
+public class Properties : Dictionary<string, PropertyValue>
 {
 }
 
@@ -96,10 +98,12 @@ public class StringProperties
     public string Pattern { get; set; }
 }
 
+using System.Collections.Generic;
+
 /// <summary>
 /// An object to hold mappings between payload values and schema names or references
 /// </summary>
-public class DiscriminatorMapping<string, string> : IDictionary<string, string>
+public class DiscriminatorMapping : Dictionary<string, string>
 {
 }
 
@@ -131,7 +135,8 @@ public class OneOfProperties
     public OfValue[] OneOf { get; set; }
 }
 
-public class TemplateProperties<string, ReferenceType> : IDictionary<string, ReferenceType>
+using System.Collections.Generic;
+public class TemplateProperties : Dictionary<string, ReferenceType>
 {
 }
 
@@ -152,17 +157,21 @@ public class GenericType
     public string Generic { get; set; }
 }
 
+using System.Collections.Generic;
+
 /// <summary>
 /// Schema definitions which can be reused
 /// </summary>
-public class Definitions<string, DefinitionValue> : IDictionary<string, DefinitionValue>
+public class Definitions : Dictionary<string, DefinitionValue>
 {
 }
+
+using System.Collections.Generic;
 
 /// <summary>
 /// Contains external definitions which are imported. The imported schemas can be used via the namespace
 /// </summary>
-public class Import<string, string> : IDictionary<string, string>
+public class Import : Dictionary<string, string>
 {
 }
 

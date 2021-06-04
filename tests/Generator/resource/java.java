@@ -79,8 +79,15 @@ public class Author {
     }
 }
 
-public class Meta<String, String> extends HashMap<String, String> {
+import java.util.HashMap;
+public class Meta extends HashMap<String, String> {
 }
+
+import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 /**
  * An general news entry
@@ -90,21 +97,21 @@ public class News {
     private String[] tags;
     private Author[] receiver;
     private Object[] resources;
-    private String profileImage;
+    private byte[] profileImage;
     private boolean read;
     private Object source;
     private Author author;
     private Meta meta;
-    private String sendDate;
-    private String readDate;
-    private String expires;
+    private LocalDate sendDate;
+    private LocalDateTime readDate;
+    private Duration expires;
     private float price;
     private int rating;
     private String content;
     private String question;
     private String version;
-    private String coffeeTime;
-    private String profileUri;
+    private LocalTime coffeeTime;
+    private URI profileUri;
     private String captcha;
     public void setConfig(Meta config) {
         this.config = config;
@@ -130,10 +137,10 @@ public class News {
     public Object[] getResources() {
         return this.resources;
     }
-    public void setProfileImage(String profileImage) {
+    public void setProfileImage(byte[] profileImage) {
         this.profileImage = profileImage;
     }
-    public String getProfileImage() {
+    public byte[] getProfileImage() {
         return this.profileImage;
     }
     public void setRead(boolean read) {
@@ -160,22 +167,22 @@ public class News {
     public Meta getMeta() {
         return this.meta;
     }
-    public void setSendDate(String sendDate) {
+    public void setSendDate(LocalDate sendDate) {
         this.sendDate = sendDate;
     }
-    public String getSendDate() {
+    public LocalDate getSendDate() {
         return this.sendDate;
     }
-    public void setReadDate(String readDate) {
+    public void setReadDate(LocalDateTime readDate) {
         this.readDate = readDate;
     }
-    public String getReadDate() {
+    public LocalDateTime getReadDate() {
         return this.readDate;
     }
-    public void setExpires(String expires) {
+    public void setExpires(Duration expires) {
         this.expires = expires;
     }
-    public String getExpires() {
+    public Duration getExpires() {
         return this.expires;
     }
     public void setPrice(float price) {
@@ -208,16 +215,16 @@ public class News {
     public String getVersion() {
         return this.version;
     }
-    public void setCoffeeTime(String coffeeTime) {
+    public void setCoffeeTime(LocalTime coffeeTime) {
         this.coffeeTime = coffeeTime;
     }
-    public String getCoffeeTime() {
+    public LocalTime getCoffeeTime() {
         return this.coffeeTime;
     }
-    public void setProfileUri(String profileUri) {
+    public void setProfileUri(URI profileUri) {
         this.profileUri = profileUri;
     }
-    public String getProfileUri() {
+    public URI getProfileUri() {
         return this.profileUri;
     }
     public void setCaptcha(String captcha) {

@@ -1,14 +1,21 @@
+from typing import Any
+
 # Location of the person
 class Location:
     def __init__(self, lat: float, long: float):
         self.lat = lat
         self.long = long
 
+from typing import Any
+
 # An application
 class Web:
     def __init__(self, name: str, url: str):
         self.name = name
         self.url = url
+
+from typing import Any
+from typing import List
 
 # An simple author element with some description
 class Author:
@@ -19,11 +26,17 @@ class Author:
         self.locations = locations
         self.origin = origin
 
-class Meta(Mapping[str, str]):
+from typing import Any
+from typing import Dict
+class Meta(Dict[str, str]):
+
+from typing import Any
+from typing import List
+from typing import Union
 
 # An general news entry
 class News:
-    def __init__(self, config: Meta, tags: List[str], receiver: List[Author], resources: List[], profileImage: str, read: bool, source: , author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str):
+    def __init__(self, config: Meta, tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str):
         self.config = config
         self.tags = tags
         self.receiver = receiver

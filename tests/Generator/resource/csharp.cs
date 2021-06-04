@@ -28,7 +28,8 @@ public class Author
     public Location Origin { get; set; }
 }
 
-public class Meta<string, string> : IDictionary<string, string>
+using System.Collections.Generic;
+public class Meta : Dictionary<string, string>
 {
 }
 

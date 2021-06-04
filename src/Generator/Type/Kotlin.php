@@ -29,6 +29,36 @@ namespace PSX\Schema\Generator\Type;
  */
 class Kotlin extends GeneratorAbstract
 {
+    protected function getDate(): string
+    {
+        return 'LocalDate';
+    }
+
+    protected function getDateTime(): string
+    {
+        return 'LocalDateTime';
+    }
+
+    protected function getTime(): string
+    {
+        return 'LocalTime';
+    }
+
+    protected function getDuration(): string
+    {
+        return 'Duration';
+    }
+
+    protected function getUri(): string
+    {
+        return 'URI';
+    }
+
+    protected function getBinary(): string
+    {
+        return 'ByteArray';
+    }
+
     protected function getString(): string
     {
         return 'String';

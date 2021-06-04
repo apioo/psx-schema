@@ -70,10 +70,12 @@ public class ScalarProperties {
     }
 }
 
+import java.util.HashMap;
+
 /**
  * Properties of a schema
  */
-public class Properties<String, PropertyValue> extends HashMap<String, PropertyValue> {
+public class Properties extends HashMap<String, PropertyValue> {
 }
 
 /**
@@ -272,10 +274,12 @@ public class StringProperties {
     }
 }
 
+import java.util.HashMap;
+
 /**
  * An object to hold mappings between payload values and schema names or references
  */
-public class DiscriminatorMapping<String, String> extends HashMap<String, String> {
+public class DiscriminatorMapping extends HashMap<String, String> {
 }
 
 /**
@@ -345,7 +349,8 @@ public class OneOfProperties {
     }
 }
 
-public class TemplateProperties<String, ReferenceType> extends HashMap<String, ReferenceType> {
+import java.util.HashMap;
+public class TemplateProperties extends HashMap<String, ReferenceType> {
 }
 
 /**
@@ -381,16 +386,20 @@ public class GenericType {
     }
 }
 
+import java.util.HashMap;
+
 /**
  * Schema definitions which can be reused
  */
-public class Definitions<String, DefinitionValue> extends HashMap<String, DefinitionValue> {
+public class Definitions extends HashMap<String, DefinitionValue> {
 }
+
+import java.util.HashMap;
 
 /**
  * Contains external definitions which are imported. The imported schemas can be used via the namespace
  */
-public class Import<String, String> extends HashMap<String, String> {
+public class Import extends HashMap<String, String> {
 }
 
 /**

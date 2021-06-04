@@ -24,9 +24,11 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeUtil;
 
 /**
  * CSharp
@@ -85,7 +87,7 @@ class CSharp extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'public class ' . $name . '<string, ' . $subType . '> : IDictionary<string, ' . $subType . '>' . "\n";
+        $code = 'public class ' . $name . ' : Dictionary<string, ' . $subType . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 
@@ -110,6 +112,15 @@ class CSharp extends CodeGeneratorAbstract
             $code.= '{' . "\n";
         }
 
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
+        $code.= "\n";
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/// <summary>' . "\n";
@@ -127,5 +138,16 @@ class CSharp extends CodeGeneratorAbstract
         } else {
             return '';
         }
+    }
+
+    private function getImports(TypeAbstract $origin): array
+    {
+        $imports = [];
+
+        if (TypeUtil::contains($origin, MapType::class)) {
+            $imports[] = 'using System.Collections.Generic;';
+        }
+
+        return $imports;
     }
 }
