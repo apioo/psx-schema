@@ -2,13 +2,13 @@
   "name": "psx/schema",
   "description": "Parse and generate data schema formats",
   "keywords": ["schema", "json", "jsonschema"],
-  "homepage": "http://phpsx.org",
+  "homepage": "https://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
     {
       "name": "Christoph Kappestein",
       "email": "christoph.kappestein@gmail.com",
-      "homepage": "http://christoph.kappestein.com/"
+      "homepage": "https://chrisk.app"
     }
   ],
   "require": {
