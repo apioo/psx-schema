@@ -33,17 +33,17 @@ class Type implements \JsonSerializable
     public const TYPE_MAP = 'map';
     public const TYPE_REFERENCE = 'reference';
 
-    private ?string $name;
-    private ?string $type;
-    private ?string $description;
-    private ?string $parent;
-    private ?string $ref;
-    private ?string $template;
+    private $name;
+    private $type;
+    private $description;
+    private $parent;
+    private $ref;
+    private $template;
 
     /**
      * @var Property[]
      */
-    private array $properties;
+    private $properties;
 
     public function __construct(array $entity)
     {

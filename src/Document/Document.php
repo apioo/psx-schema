@@ -32,14 +32,14 @@ class Document implements \JsonSerializable
     /**
      * @var Type[]
      */
-    private array $types;
+    private $types;
 
     /**
      * @var Import[]
      */
-    private array $imports;
+    private $imports;
 
-    private ?string $root;
+    private $root;
 
     public function __construct(array $types, ?array $imports = null, ?string $root = null)
     {

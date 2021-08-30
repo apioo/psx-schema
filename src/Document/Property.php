@@ -40,19 +40,19 @@ class Property
     public const TYPE_INTERSECTION = 'intersection';
     public const TYPE_ANY = 'any';
 
-    private ?string $name;
-    private ?string $description;
-    private ?string $type;
-    private ?string $format;
-    private ?string $pattern;
-    private ?int $minLength;
-    private ?int $maxLength;
-    private ?int $minimum;
-    private ?int $maximum;
-    private ?bool $deprecated;
-    private ?bool $nullable;
-    private ?bool $readonly;
-    private ?array $refs;
+    private $name;
+    private $description;
+    private $type;
+    private $format;
+    private $pattern;
+    private $minLength;
+    private $maxLength;
+    private $minimum;
+    private $maximum;
+    private $deprecated;
+    private $nullable;
+    private $readonly;
+    private $refs;
 
     public function __construct(array $property)
     {

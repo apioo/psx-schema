@@ -29,9 +29,9 @@ namespace PSX\Schema\Document;
  */
 class Import implements \JsonSerializable
 {
-    private ?string $alias;
-    private ?string $document;
-    private ?string $version;
+    private $alias;
+    private $document;
+    private $version;
 
     /**
      * @param array $import
