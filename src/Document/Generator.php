@@ -34,7 +34,6 @@ class Generator
      * 
      * @param Document $document
      * @return string
-     * @throws \Doctrine\DBAL\Exception
      */
     public function generate(Document $document): string
     {
@@ -116,7 +115,7 @@ class Generator
                 $result->{'$extends'} = $type->getParent();
             }
 
-            if ($type->getProperties() !== null) {
+            if (count($type->getProperties()) > 0) {
                 $props = new \stdClass();
                 foreach ($type->getProperties() as $property) {
                     $props->{$property->getName()} = $this->generateProperty($property);
