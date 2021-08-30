@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Customer",
+    "type": "object",
+    "properties": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "age",
+        "type": "integer"
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "type": "object",
+    "properties": [
+      {
+        "name": "name",
+        "type": "string",
+        "maxLength": 120
+      },
+      {
+        "name": "price",
+        "type": "number"
+      },
+      {
+        "name": "groups",
+        "type": "array",
+        "refs": [
+          "Group"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Group",
+    "type": "object",
+    "properties": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "Contract",
+    "type": "object",
+    "properties": [
+      {
+        "name": "customer",
+        "type": "object",
+        "refs": [
+          "Customer"
+        ]
+      },
+      {
+        "name": "product",
+        "type": "object",
+        "refs": [
+          "Product"
+        ]
+      }
+    ]
+  }
+]

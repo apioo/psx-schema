@@ -36,10 +36,12 @@ use RuntimeException;
  */
 class Http implements ResolverInterface
 {
+    public const USER_AGENT = 'TypeSchema Resolver (https://github.com/apioo/psx-schema)';
+
     /**
      * @var ClientInterface
      */
-    protected $httpClient;
+    private $httpClient;
 
     public function __construct(ClientInterface $httpClient)
     {
@@ -51,16 +53,13 @@ class Http implements ResolverInterface
      */
     public function resolve(Uri $uri, ?string $basePath = null): \stdClass
     {
-        $request  = new GetRequest($uri, array('Accept' => 'application/json'));
+        $request  = new GetRequest($uri, ['Accept' => 'application/json', 'User-Agent' => self::USER_AGENT]);
         $response = $this->httpClient->request($request);
 
-        if ($response->getStatusCode() == 200) {
-            $schema = (string) $response->getBody();
-            $data   = Parser::decode($schema);
-
-            return $data;
-        } else {
+        if ($response->getStatusCode() !== 200) {
             throw new RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
         }
+
+        return Parser::decode((string) $response->getBody());
     }
 }
