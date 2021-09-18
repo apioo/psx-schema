@@ -1,6 +1,6 @@
 {
   "definitions": {
-    "my_import:Human": {
+    "Human": {
       "type": "object",
       "properties": {
         "firstName": {
@@ -8,7 +8,7 @@
         }
       }
     },
-    "my_import:Map": {
+    "Map": {
       "type": "object",
       "properties": {
         "totalResults": {
@@ -22,18 +22,18 @@
         }
       }
     },
-    "my_import:RootSchema": {
+    "RootSchema": {
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "#\/definitions\/my_import:StudentMap"
+          "$ref": "#\/definitions\/StudentMap"
         }
       }
     },
-    "my_import:Student": {
+    "Student": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/my_import:Human"
+          "$ref": "#\/definitions\/Human"
         },
         {
           "type": "object",
@@ -45,24 +45,24 @@
         }
       ]
     },
-    "my_import:StudentMap": {
-      "$ref": "#\/definitions\/my_import:Map"
+    "StudentMap": {
+      "$ref": "#\/definitions\/Map"
     },
     "Import": {
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "#\/definitions\/my_import:StudentMap"
+          "$ref": "#\/definitions\/StudentMap"
         },
         "student": {
-          "$ref": "#\/definitions\/my_import:Student"
+          "$ref": "#\/definitions\/Student"
         }
       }
     },
     "MyMap": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/my_import:Student"
+          "$ref": "#\/definitions\/Student"
         },
         {
           "type": "object"

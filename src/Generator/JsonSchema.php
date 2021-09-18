@@ -92,11 +92,7 @@ class JsonSchema implements GeneratorInterface
         foreach ($types as $ref => $type) {
             [$ns, $name] = TypeUtil::split($ref);
 
-            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $result[$name] = $this->generateType($type);
-            } else {
-                $result[$ref] = $this->generateType($type);
-            }
+            $result[$name] = $this->generateType($type);
         }
 
         return $result;
@@ -119,9 +115,11 @@ class JsonSchema implements GeneratorInterface
                 $extends = $data['$extends'];
                 unset($data['$extends']);
 
+                [$ns, $name] = TypeUtil::split($extends);
+
                 return [
                     'allOf' => [
-                        ['$ref' => $this->refBase . $extends],
+                        ['$ref' => $this->refBase . $name],
                         $data,
                     ]
                 ];
@@ -165,8 +163,10 @@ class JsonSchema implements GeneratorInterface
 
             return $data;
         } elseif ($type instanceof ReferenceType) {
+            [$ns, $name] = TypeUtil::split($type->getRef());
+
             return [
-                '$ref' => $this->refBase . $type->getRef()
+                '$ref' => $this->refBase . $name
             ];
         } elseif ($type instanceof AnyType) {
             return [];
