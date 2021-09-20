@@ -139,6 +139,7 @@ class TypeSchema implements ParserInterface
 
         foreach ($import as $namespace => $uri) {
             $data = $this->resolver->resolve(new Uri($uri), $this->basePath);
+            $this->parseImport($data, $definitions);
             $this->parseDefinitions($namespace, $data, $definitions);
         }
     }
