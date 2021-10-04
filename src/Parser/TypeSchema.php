@@ -92,7 +92,7 @@ class TypeSchema implements ParserInterface
     {
         $definitions = new Definitions();
 
-        $this->parseImport($data, $definitions);
+        $this->parseImport($data, $definitions, $this->basePath);
         $this->parseDefinitions(null, $data, $definitions);
 
         try {
@@ -130,7 +130,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    private function parseImport(\stdClass $schema, DefinitionsInterface $definitions)
+    private function parseImport(\stdClass $schema, DefinitionsInterface $definitions, ?string $basePath = null)
     {
         $import = $schema->{'$import'} ?? null;
         if (!$import instanceof \stdClass) {
@@ -138,8 +138,12 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($import as $namespace => $uri) {
-            $data = $this->resolver->resolve(new Uri($uri), $this->basePath);
-            $this->parseImport($data, $definitions);
+            $uri = new Uri($uri);
+            $path = $basePath . $uri->getPath();
+            $basePath = pathinfo($path, PATHINFO_DIRNAME);
+
+            $data = $this->resolver->resolve($uri, $basePath);
+            $this->parseImport($data, $definitions, $basePath);
             $this->parseDefinitions($namespace, $data, $definitions);
         }
     }
