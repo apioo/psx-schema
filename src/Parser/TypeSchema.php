@@ -20,14 +20,13 @@
 
 namespace PSX\Schema\Parser;
 
-use Doctrine\DBAL\Schema\SchemaException;
 use PSX\Json\Parser;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\UnknownTypeException;
+use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
@@ -46,7 +45,6 @@ use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
 use PSX\Uri\Uri;
-use RuntimeException;
 
 /**
  * TypeSchema

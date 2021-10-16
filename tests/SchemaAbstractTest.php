@@ -22,7 +22,6 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
-use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaInterface;

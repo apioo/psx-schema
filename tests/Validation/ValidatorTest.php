@@ -21,10 +21,10 @@
 namespace PSX\Schema\Tests\Validation;
 
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
 use PSX\Schema\Validation\ValidatorInterface;
-use PSX\Schema\Exception\ValidationException;
 use PSX\Validate\Filter;
 
 /**

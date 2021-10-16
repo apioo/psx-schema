@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests;
 
-use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\Tests\Parser\Popo;
 use PSX\Schema\Type\TypeAbstract;

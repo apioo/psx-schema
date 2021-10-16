@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Type;
 
-use InvalidArgumentException;
 use PSX\Schema\Exception\InvalidSchemaException;
 
 /**

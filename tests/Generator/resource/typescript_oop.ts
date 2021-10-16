@@ -3,12 +3,14 @@ export interface Human {
 }
 
 import {Human} from "./Human";
+import {Map} from "./Map";
+import {Student} from "./Student";
+import {StudentMap} from "./StudentMap";
+
 export interface Student extends Human {
     matricleNumber?: string
 }
 
-import {Map} from "./Map";
-import {Student} from "./Student";
 export type StudentMap = Map<Student>;
 
 export interface Map<T> {
@@ -16,7 +18,6 @@ export interface Map<T> {
     entries?: Array<T>
 }
 
-import {StudentMap} from "./StudentMap";
 export interface RootSchema {
     students?: StudentMap
 }

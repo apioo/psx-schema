@@ -15,6 +15,9 @@ export interface Web {
 }
 
 import {Location} from "./Location";
+import {Meta} from "./Meta";
+import {Author} from "./Author";
+import {Web} from "./Web";
 
 /**
  * An simple author element with some description
@@ -28,11 +31,6 @@ export interface Author {
 }
 
 export type Meta = Record<string, string>;
-
-import {Meta} from "./Meta";
-import {Author} from "./Author";
-import {Location} from "./Location";
-import {Web} from "./Web";
 
 /**
  * An general news entry
