@@ -29,6 +29,7 @@ use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\TypeAbstract;
@@ -74,7 +75,7 @@ class Documentor implements ResolverInterface
 
                 return $type;
             } else {
-                throw new \RuntimeException('Could not determine type of map');
+                throw new ParserException('Could not determine type of map');
             }
         } else {
             $tag = $this->getTag('extends', $reflection->getDocComment());
@@ -151,7 +152,7 @@ class Documentor implements ResolverInterface
             if ($additionalProperties instanceof TypeInterface) {
                 return TypeFactory::getMap($additionalProperties);
             } else {
-                throw new \RuntimeException('Map without type hint');
+                throw new ParserException('Map without type hint');
             }
         } elseif ($type instanceof Types\AbstractList) {
             $value = $type->getValueType();
@@ -159,7 +160,7 @@ class Documentor implements ResolverInterface
             if ($items instanceof TypeInterface) {
                 return TypeFactory::getArray($items);
             } else {
-                throw new \RuntimeException('Array without type hint');
+                throw new ParserException('Array without type hint');
             }
         } elseif ($type instanceof Types\Boolean) {
             return TypeFactory::getBoolean();

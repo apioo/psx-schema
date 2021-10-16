@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\TypeAssert;
 
 /**
@@ -47,6 +48,7 @@ class IntersectionType extends TypeAbstract
     /**
      * @param array $allOf
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setAllOf(array $allOf): self
     {

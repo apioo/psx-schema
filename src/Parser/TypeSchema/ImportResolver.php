@@ -21,6 +21,7 @@
 namespace PSX\Schema\Parser\TypeSchema;
 
 use PSX\Http\Client\ClientInterface;
+use PSX\Schema\Exception\ParserException;
 use PSX\Uri\Uri;
 
 /**
@@ -53,7 +54,7 @@ class ImportResolver
         $resolver = $this->resolvers[$scheme] ?? null;
         
         if (!$resolver instanceof ResolverInterface) {
-            throw new \RuntimeException('Could not find resolver for scheme ' . $scheme);
+            throw new ParserException('Could not find resolver for scheme ' . $scheme);
         }
 
         return $resolver->resolve($source, $basePath);

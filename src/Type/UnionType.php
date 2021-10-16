@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\TypeAssert;
 
 /**
@@ -57,6 +58,7 @@ class UnionType extends TypeAbstract
     /**
      * @param array $oneOf
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setOneOf(array $oneOf): self
     {

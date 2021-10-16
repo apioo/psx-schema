@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\TypeNotFoundException;
+
 /**
  * Definitions
  *

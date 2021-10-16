@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
@@ -165,7 +166,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                 if ($parent instanceof StructType) {
                     $this->generateStruct($extends, $parent);
                 } else {
-                    throw new \RuntimeException('Extends must be of type struct');
+                    throw new GeneratorException('Extends must be of type struct');
                 }
             } else {
                 // in case we have an extern namespace we dont need to generate the type

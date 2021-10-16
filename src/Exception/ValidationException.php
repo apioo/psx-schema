@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Exception;
 
 use Throwable;
 
@@ -50,7 +50,7 @@ class ValidationException extends \Exception
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct($message, $keyword, array $path, $code = 0, Throwable $previous = null)
+    public function __construct(string $message, string $keyword, array $path, int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
@@ -61,7 +61,7 @@ class ValidationException extends \Exception
     /**
      * @return string
      */
-    public function getKeyword()
+    public function getKeyword(): string
     {
         return $this->keyword;
     }
@@ -69,7 +69,7 @@ class ValidationException extends \Exception
     /**
      * @return array
      */
-    public function getPath()
+    public function getPath(): array
     {
         return $this->path;
     }

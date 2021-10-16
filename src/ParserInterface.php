@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\ParserException;
+
 /**
  * ParserInterface
  *
@@ -33,7 +35,8 @@ interface ParserInterface
      * Parses the given schema
      *
      * @param string $schema
-     * @return \PSX\Schema\SchemaInterface
+     * @return SchemaInterface
+     * @throws ParserException
      */
     public function parse(string $schema): SchemaInterface;
 }

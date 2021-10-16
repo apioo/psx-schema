@@ -27,6 +27,7 @@ use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Cache\Pool;
 use PSX\Http\Client\Client;
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 
 /**

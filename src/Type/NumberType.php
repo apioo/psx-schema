@@ -21,6 +21,7 @@
 namespace PSX\Schema\Type;
 
 use InvalidArgumentException;
+use PSX\Schema\Exception\InvalidSchemaException;
 
 /**
  * NumberType
@@ -67,11 +68,12 @@ class NumberType extends ScalarType
     /**
      * @param int|float $minimum
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setMinimum($minimum): self
     {
         if ($minimum !== null && !is_int($minimum) && !is_float($minimum)) {
-            throw new InvalidArgumentException('Minimum must be either an integer or float');
+            throw new InvalidSchemaException('Minimum must be either an integer or float');
         }
 
         $this->minimum = $minimum;
@@ -90,11 +92,12 @@ class NumberType extends ScalarType
     /**
      * @param int|float $maximum
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setMaximum($maximum): self
     {
         if ($maximum !== null && !is_int($maximum) && !is_float($maximum)) {
-            throw new InvalidArgumentException('Maximum must be either an integer or float');
+            throw new InvalidSchemaException('Maximum must be either an integer or float');
         }
 
         $this->maximum = $maximum;

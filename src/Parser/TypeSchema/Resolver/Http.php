@@ -23,9 +23,9 @@ namespace PSX\Schema\Parser\TypeSchema\Resolver;
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
 use PSX\Json\Parser;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\TypeSchema\ResolverInterface;
 use PSX\Uri\Uri;
-use RuntimeException;
 
 /**
  * Http
@@ -57,7 +57,7 @@ class Http implements ResolverInterface
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() !== 200) {
-            throw new RuntimeException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
+            throw new ParserException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
         }
 
         return Parser::decode((string) $response->getBody());

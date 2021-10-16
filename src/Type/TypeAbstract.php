@@ -93,7 +93,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
      * @param string $title
      * @return self
      */
-    public function setTitle($title): self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -112,7 +112,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
      * @param string $description
      * @return self
      */
-    public function setDescription($description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -181,7 +181,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
      * @param mixed $value
      * @return self
      */
-    public function setAttribute($key, $value): self
+    public function setAttribute(string $key, $value): self
     {
         $this->attributes[$key] = $value;
 
@@ -192,7 +192,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
      * @param string $key
      * @return mixed|null
      */
-    public function getAttribute($key)
+    public function getAttribute(string $key)
     {
         return $this->attributes[$key] ?? null;
     }

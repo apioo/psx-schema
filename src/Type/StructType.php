@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
@@ -74,6 +75,7 @@ class StructType extends ObjectType
     /**
      * @param array $properties
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setProperties(array $properties): self
     {
@@ -89,8 +91,9 @@ class StructType extends ObjectType
      * @param string $name
      * @param \PSX\Schema\TypeInterface $property
      * @return self
+     * @throws InvalidSchemaException
      */
-    public function addProperty($name, TypeInterface $property): self
+    public function addProperty(string $name, TypeInterface $property): self
     {
         TypeAssert::assertProperty($property);
 
@@ -103,16 +106,16 @@ class StructType extends ObjectType
      * @param string $name
      * @return \PSX\Schema\TypeInterface
      */
-    public function getProperty($name): ?TypeInterface
+    public function getProperty(string $name): ?TypeInterface
     {
-        return isset($this->properties[$name]) ? $this->properties[$name] : null;
+        return $this->properties[$name] ?? null;
     }
 
     /**
      * @param string $name
      * @return boolean
      */
-    public function hasProperty($name): bool
+    public function hasProperty(string $name): bool
     {
         return isset($this->properties[$name]);
     }
@@ -121,7 +124,7 @@ class StructType extends ObjectType
      * @param string $name
      * @return self
      */
-    public function removeProperty($name): self
+    public function removeProperty(string $name): self
     {
         if (isset($this->properties[$name])) {
             unset($this->properties[$name]);
@@ -168,7 +171,7 @@ class StructType extends ObjectType
             $this->properties = [];
 
             foreach ($properties as $name => $property) {
-                $this->properties[$name] = clone $properties[$name];
+                $this->properties[$name] = clone $property;
             }
         }
     }

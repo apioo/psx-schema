@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Exception;
 
 use Throwable;
 

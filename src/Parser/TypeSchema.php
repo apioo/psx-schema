@@ -20,11 +20,14 @@
 
 namespace PSX\Schema\Parser;
 
+use Doctrine\DBAL\Schema\SchemaException;
 use PSX\Json\Parser;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
-use PSX\Schema\Parser\TypeSchema\UnknownTypeException;
+use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Exception\UnknownTypeException;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
@@ -82,7 +85,7 @@ class TypeSchema implements ParserInterface
         $data = Parser::decode($schema);
 
         if (!$data instanceof \stdClass) {
-            throw new \InvalidArgumentException('Schema must be an object');
+            throw new ParserException('Schema must be an object');
         }
 
         return $this->parseSchema($data);
@@ -120,7 +123,11 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($data as $name => $definition) {
-            $type = $this->parseType($definition, $namespace);
+            try {
+                $type = $this->parseType($definition, $namespace);
+            } catch (\Exception $e) {
+                throw new ParserException('Type ' . $name . ' contains an invalid schema: ' . $e->getMessage(), 0, $e);
+            }
 
             if ($namespace !== null) {
                 $definitions->addType($namespace . ':' . $name, $type);
@@ -148,6 +155,11 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     * @throws ParserException
+     * @throws UnknownTypeException
+     */
     public function parseType(\stdClass $data, ?string $namespace = null): TypeInterface
     {
         $data = $this->transformBcLayer($data);
@@ -234,6 +246,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseStruct(StructType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->{'$extends'})) {
@@ -257,6 +272,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseMap(MapType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->additionalProperties)) {
@@ -277,6 +295,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseArray(ArrayType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->items)) {
@@ -300,6 +321,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseNumber(NumberType $type, \stdClass $data): void
     {
         if (isset($data->minimum)) {
@@ -338,6 +362,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseIntersection(IntersectionType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->allOf) && is_array($data->allOf)) {
@@ -352,6 +379,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws InvalidSchemaException
+     */
     protected function parseUnion(UnionType $type, \stdClass $data, ?string $namespace): void
     {
         if (isset($data->oneOf) && is_array($data->oneOf)) {
@@ -377,7 +407,7 @@ class TypeSchema implements ParserInterface
     {
         $ref = $data->{'$ref'} ?? null;
         if (empty($ref) || !is_string($ref)) {
-            throw new \RuntimeException('Provided reference must be of type string');
+            throw new ParserException('Provided reference must be of type string');
         }
 
         // JSON Schema compatibility
@@ -412,7 +442,7 @@ class TypeSchema implements ParserInterface
     {
         $generic = $data->{'$generic'} ?? null;
         if (empty($generic) || !is_string($generic)) {
-            throw new \RuntimeException('Provided generic must be of type string');
+            throw new ParserException('Provided generic must be of type string');
         }
 
         $type->setGeneric($generic);
@@ -508,7 +538,7 @@ class TypeSchema implements ParserInterface
 
             return $parser->parse(file_get_contents($file));
         } else {
-            throw new RuntimeException('Could not load json schema ' . $file);
+            throw new ParserException('Could not load json schema ' . $file);
         }
     }
 }

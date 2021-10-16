@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
@@ -42,17 +43,19 @@ class TypeAssert
     /**
      * @param TypeInterface $type
      * @see https://typeschema.org/specification#Properties
+     * @throws InvalidSchemaException
      */
     public static function assertProperty(TypeInterface $type)
     {
         if ($type instanceof StructType) {
-            throw new \InvalidArgumentException('Property must not contain a nested struct, got ' . get_class($type));
+            throw new InvalidSchemaException('Property must not contain a nested struct, got ' . get_class($type));
         }
     }
 
     /**
      * @param TypeInterface $type
      * @see https://typeschema.org/specification#ArrayProperties
+     * @throws InvalidSchemaException
      */
     public static function assertItem(TypeInterface $type)
     {
@@ -64,19 +67,20 @@ class TypeAssert
             || $type instanceof ReferenceType
             || $type instanceof GenericType
             || $type instanceof AnyType)) {
-            throw new \InvalidArgumentException('Item must be of type boolean, number, string, intersection, union, reference, generic or any type, got ' . get_class($type));
+            throw new InvalidSchemaException('Item must be of type boolean, number, string, intersection, union, reference, generic or any type, got ' . get_class($type));
         }
     }
 
     /**
      * @param array $items
      * @see https://typeschema.org/specification#AllOfProperties
+     * @throws InvalidSchemaException
      */
     public static function assertIntersection(array $items)
     {
         foreach ($items as $index => $item) {
             if (!($item instanceof ReferenceType)) {
-                throw new \InvalidArgumentException('All of item must be of type reference, at index ' . $index . ' we got ' . get_class($item));
+                throw new InvalidSchemaException('All of item must be of type reference, at index ' . $index . ' we got ' . get_class($item));
             }
         }
     }
@@ -84,6 +88,7 @@ class TypeAssert
     /**
      * @param array $items
      * @see https://typeschema.org/specification#OneOfProperties
+     * @throws InvalidSchemaException
      */
     public static function assertUnion(array $items)
     {
@@ -92,7 +97,7 @@ class TypeAssert
                 || $item instanceof StringType
                 || $item instanceof BooleanType
                 || $item instanceof ReferenceType)) {
-                throw new \InvalidArgumentException('One of item must be of type string, number, boolean or reference, at index ' . $index . ' we got ' . get_class($item));
+                throw new InvalidSchemaException('One of item must be of type string, number, boolean or reference, at index ' . $index . ' we got ' . get_class($item));
             }
         }
     }

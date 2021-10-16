@@ -23,6 +23,7 @@ namespace PSX\Schema\Parser\TypeSchema\Resolver;
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\PostRequest;
 use PSX\Json\Parser;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\TypeSchema\ResolverInterface;
 use PSX\Uri\Uri;
 use PSX\Uri\Url;
@@ -60,7 +61,7 @@ class Document implements ResolverInterface
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() !== 200) {
-            throw new \RuntimeException('Could not export provided document: ' . $user . '/' . $document . ' received ' . $response->getStatusCode());
+            throw new ParserException('Could not export provided document: ' . $user . '/' . $document . ' received ' . $response->getStatusCode());
         }
 
         return Parser::decode((string) $response->getBody());
@@ -72,14 +73,14 @@ class Document implements ResolverInterface
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() !== 200) {
-            throw new \RuntimeException('Could not export provided document: ' . $user . '/' . $document . ' received ' . $response->getStatusCode());
+            throw new ParserException('Could not export provided document: ' . $user . '/' . $document . ' received ' . $response->getStatusCode());
         }
 
         $data = Parser::decode((string) $response->getBody(), true);
 
         $exportLink = $data['href'] ?? null;
         if (empty($exportLink)) {
-            throw new \RuntimeException('Could not find a fitting export url');
+            throw new ParserException('Could not find a fitting export url');
         }
 
         return new Url($exportLink);

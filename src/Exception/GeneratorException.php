@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\TypeSchema;
+namespace PSX\Schema\Exception;
 
 /**
- * UnknownTypeException
+ * GeneratorException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class UnknownTypeException extends \RuntimeException
+class GeneratorException extends \RuntimeException
 {
 }

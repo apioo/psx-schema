@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
@@ -58,15 +59,16 @@ class MapType extends ObjectType
     /**
      * @param bool|TypeInterface $additionalProperties
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setAdditionalProperties($additionalProperties): self
     {
         if (!is_bool($additionalProperties) && !$additionalProperties instanceof TypeInterface) {
-            throw new \InvalidArgumentException('Additional properties must be either a boolean or TypeInterface');
+            throw new InvalidSchemaException('Additional properties must be either a boolean or TypeInterface');
         }
 
         if ($additionalProperties === false) {
-            throw new \InvalidArgumentException('Map additional properties must not be false only true is allowed as boolean value');
+            throw new InvalidSchemaException('Map additional properties must not be false only true is allowed as boolean value');
         } elseif ($additionalProperties instanceof TypeInterface) {
             TypeAssert::assertProperty($additionalProperties);
         }

@@ -28,6 +28,7 @@ use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\Popo;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
@@ -106,14 +107,14 @@ class Dumper
         } elseif ($type instanceof MapType) {
             return $this->dumpMap($data, $type);
         } else {
-            throw new \InvalidArgumentException('Could not determine object type');
+            throw new ParserException('Could not determine object type');
         }
     }
 
     private function dumpStruct($data): RecordInterface
     {
         if (!is_object($data)) {
-            throw new \InvalidArgumentException('Struct must be an object');
+            throw new ParserException('Struct must be an object');
         }
 
         $reflection = new \ReflectionClass(get_class($data));
@@ -149,7 +150,7 @@ class Dumper
     private function dumpMap($data, MapType $type): RecordInterface
     {
         if (!$data instanceof \Traversable) {
-            throw new \InvalidArgumentException('Map must be traversable');
+            throw new ParserException('Map must be traversable');
         }
 
         $reflection = new \ReflectionClass(get_class($data));
@@ -165,7 +166,7 @@ class Dumper
     private function dumpArray($data, ArrayType $type): array
     {
         if (!is_iterable($data)) {
-            throw new \InvalidArgumentException('Array must be iterable');
+            throw new ParserException('Array must be iterable');
         }
 
         $result = [];

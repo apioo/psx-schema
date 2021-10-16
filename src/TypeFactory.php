@@ -48,6 +48,9 @@ class TypeFactory
         return new AnyType();
     }
 
+    /**
+     * @throws Exception\InvalidSchemaException
+     */
     public static function getArray(?TypeInterface $type = null): ArrayType
     {
         $array = new ArrayType();
@@ -76,6 +79,9 @@ class TypeFactory
         return new IntegerType();
     }
 
+    /**
+     * @throws Exception\InvalidSchemaException
+     */
     public static function getIntersection(?array $types = null): IntersectionType
     {
         $intersection = new IntersectionType();
@@ -85,6 +91,9 @@ class TypeFactory
         return $intersection;
     }
 
+    /**
+     * @throws Exception\InvalidSchemaException
+     */
     public static function getMap(?TypeInterface $type = null): MapType
     {
         $map = new MapType();
@@ -118,6 +127,9 @@ class TypeFactory
         return new StructType();
     }
 
+    /**
+     * @throws Exception\InvalidSchemaException
+     */
     public static function getUnion(?array $types = null): UnionType
     {
         $union = new UnionType();

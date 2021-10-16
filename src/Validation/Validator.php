@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Validation;
 
-use PSX\Schema\ValidationException;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Validate\FilterInterface;
 
 /**
@@ -64,7 +64,7 @@ class Validator implements ValidatorInterface
     /**
      * @param string $path
      * @param mixed $data
-     * @throws \PSX\Schema\ValidationException
+     * @throws \PSX\Schema\Exception\ValidationException
      */
     public function validate($path, $data)
     {

@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Exception;
 
 /**
- * InvalidSchemaException
+ * TraverserException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class InvalidSchemaException extends \Exception
+class TraverserException extends \RuntimeException
 {
 }

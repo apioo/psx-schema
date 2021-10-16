@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
@@ -67,7 +68,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof ArrayType) {
             return $this->getArray($this->getType($type->getItems()));
         } elseif ($type instanceof StructType) {
-            throw new \RuntimeException('Could not determine name of anonymous struct, use a reference to the definitions instead');
+            throw new GeneratorException('Could not determine name of anonymous struct, use a reference to the definitions instead');
         } elseif ($type instanceof MapType) {
             return $this->getMap($this->getType($type->getAdditionalProperties()));
         } elseif ($type instanceof UnionType) {

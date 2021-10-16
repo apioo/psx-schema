@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\TypeAssert;
 use PSX\Schema\TypeInterface;
 
@@ -63,6 +64,7 @@ class ArrayType extends TypeAbstract
     /**
      * @param TypeInterface $items
      * @return self
+     * @throws InvalidSchemaException
      */
     public function setItems(TypeInterface $items): self
     {

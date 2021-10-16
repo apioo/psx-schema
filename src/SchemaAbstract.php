@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
 

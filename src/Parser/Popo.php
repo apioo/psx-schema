@@ -24,6 +24,7 @@ use Doctrine\Common\Annotations\Reader;
 use PSX\Schema\Annotation;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
@@ -120,7 +121,7 @@ class Popo implements ParserInterface
         } elseif ($type instanceof ReferenceType) {
             $this->parseReferences($type, $definitions);
         } else {
-            throw new \RuntimeException('Could not determine class type');
+            throw new ParserException('Could not determine class type');
         }
 
         $type->setAttribute(TypeAbstract::ATTR_CLASS, $class->getName());

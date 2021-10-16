@@ -24,6 +24,9 @@ use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
+use PSX\Schema\Exception\TraverserException;
+use PSX\Schema\Exception\ValidationException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
@@ -39,7 +42,6 @@ use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\Visitor\NullVisitor;
-use RuntimeException;
 
 /**
  * SchemaTraverser
@@ -79,11 +81,9 @@ class SchemaTraverser
      * Traverses through the data and validates it according to the provided
      * schema. Calls also the visitor methods for each type
      *
-     * @param mixed $data
-     * @param SchemaInterface $schema
-     * @param VisitorInterface|null $visitor
      * @return mixed
      * @throws ValidationException
+     * @throws TraverserException
      */
     public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null)
     {
@@ -98,20 +98,16 @@ class SchemaTraverser
     }
 
     /**
-     * @param $data
-     * @param TypeInterface $type
-     * @param DefinitionsInterface $definitions
-     * @param VisitorInterface $visitor
-     * @param array $context
-     * @return mixed
+     * @throws TypeNotFoundException
      * @throws ValidationException
+     * @throws TraverserException
      */
     protected function recTraverse($data, TypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context = [])
     {
         $this->recCount++;
 
         if ($this->recCount > self::MAX_RECURSION_DEPTH) {
-            throw new RuntimeException($this->getCurrentPath() . ' max recursion depth reached');
+            throw new TraverserException($this->getCurrentPath() . ' max recursion depth reached');
         }
 
         if ($type instanceof StructType) {
@@ -175,7 +171,7 @@ class SchemaTraverser
             $result = $this->recTraverse($data, $subType, $definitions, $visitor, $type->getTemplate() ?: []);
         } elseif ($type instanceof GenericType) {
             if (!isset($context[$type->getGeneric()])) {
-                throw new \RuntimeException('Could not resolve generic type from context');
+                throw new TraverserException('Could not resolve generic type from context');
             }
 
             $subType = $definitions->getType($context[$type->getGeneric()]);

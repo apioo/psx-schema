@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Code\Chunks;
 
 /**
@@ -34,8 +35,9 @@ interface GeneratorInterface
     /**
      * Generates a representation of this schema in another schema format
      *
-     * @param \PSX\Schema\SchemaInterface $schema
+     * @param SchemaInterface $schema
      * @return string|Chunks
+     * @throws GeneratorException
      */
     public function generate(SchemaInterface $schema);
 }
