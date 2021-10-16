@@ -2,6 +2,8 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
+use PSX\Schema\Annotation as Schema;
+
 /**
  * @Schema\Description("Location of the person")
  * @Schema\Required({"lat", "long"})
