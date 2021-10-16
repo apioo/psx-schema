@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
 use PSX\Schema\Validation\ValidatorInterface;
-use PSX\Schema\ValidationException;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Validate\Filter;
 
 /**

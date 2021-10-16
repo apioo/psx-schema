@@ -23,7 +23,7 @@ namespace PSX\Schema\Tests;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\Tests\Parser\Popo\Form_Element_Input;
-use PSX\Schema\ValidationException;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
 use PSX\Schema\Visitor\TypeVisitor;

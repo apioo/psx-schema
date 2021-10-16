@@ -22,7 +22,7 @@ namespace PSX\Schema\Tests;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
-use PSX\Schema\InvalidSchemaException;
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Parser\Popo\News;

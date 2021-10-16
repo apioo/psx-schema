@@ -33,7 +33,7 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
-use PSX\Schema\ValidationException;
+use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Visitor\TypeVisitor;
 use PSX\Uri\Uri;
 use PSX\Validate\Filter;
