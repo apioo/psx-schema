@@ -1,0 +1,36 @@
+{
+  "definitions": {
+    "Inlinedc8fb1cd": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      }
+    },
+    "Product": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "integer"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "exclusiveMinimum": "exclusiveMinimum"
+        },
+        "nested": {
+          "$ref": "Inlinedc8fb1cd"
+        }
+      },
+      "required": [
+        "productId",
+        "productName",
+        "price"
+      ]
+    }
+  },
+  "$ref": "Product"
+}
