@@ -1,5 +1,16 @@
 {
   "definitions": {
+    "Inlinec51f76a8": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Group": {
+      "$ref": "Inlinec51f76a8"
+    },
     "Inlinedc8fb1cd": {
       "type": "object",
       "properties": {
@@ -9,20 +20,37 @@
       }
     },
     "Product": {
+      "description": "A product from Acme's catalog",
       "type": "object",
       "properties": {
         "productId": {
+          "description": "The unique identifier for a product",
           "type": "integer"
         },
         "productName": {
+          "description": "Name of the product",
           "type": "string"
         },
         "price": {
+          "description": "The price of the product",
           "type": "number",
           "exclusiveMinimum": "exclusiveMinimum"
         },
         "nested": {
           "$ref": "Inlinedc8fb1cd"
+        },
+        "group": {
+          "$ref": "Group"
+        },
+        "union": {
+          "oneOf": [
+            {
+              "$ref": "Group"
+            },
+            {
+              "$ref": "Inlinedc8fb1cd"
+            }
+          ]
         }
       },
       "required": [

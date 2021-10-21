@@ -2,6 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/product.schema.json",
   "title": "Product",
+  "definitions": {
+    "Group": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  },
   "description": "A product from Acme's catalog",
   "type": "object",
   "properties": {
@@ -25,6 +35,21 @@
           "type": "string"
         }
       }
+    },
+    "group": {
+      "$ref": "#/definitions/Group"
+    },
+    "union": {
+      "oneOf": [{
+        "$ref": "#/definitions/Group"
+      }, {
+        "type": "object",
+        "properties": {
+          "foo": {
+            "type": "string"
+          }
+        }
+      }]
     }
   },
   "required": [ "productId", "productName", "price" ]

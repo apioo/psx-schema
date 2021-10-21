@@ -44,6 +44,7 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\Parser\TypeSchema\BCLayer;
 use PSX\Uri\Uri;
 
 /**
@@ -160,7 +161,7 @@ class TypeSchema implements ParserInterface
      */
     public function parseType(\stdClass $data, ?string $namespace = null): TypeInterface
     {
-        $data = $this->transformBcLayer($data);
+        $data = BCLayer::transform($data);
         $type = $this->newPropertyType($data);
 
         if ($type instanceof TypeAbstract) {

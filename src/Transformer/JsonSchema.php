@@ -21,6 +21,7 @@
 namespace PSX\Schema\Transformer;
 
 use PSX\Schema\Exception\TransformerException;
+use PSX\Schema\Parser\TypeSchema\BCLayer;
 
 /**
  * Transform an existing JSON Schema to a valid TypeSchema
@@ -74,18 +75,13 @@ class JsonSchema
         return \json_encode($result);
     }
 
-    private function convertSchema(\stdClass $schema, array &$definitions): \stdClass
+    private function convertSchema(\stdClass $schema, array &$definitions)
     {
-        if (!isset($schema->type)) {
-            if (isset($schema->properties) || isset($schema->additionalProperties)) {
-                $schema->type = 'object';
-            } elseif (isset($schema->items)) {
-                $schema->type = 'array';
-            } elseif (isset($schema->pattern) || isset($schema->minLength) || isset($schema->maxLength)) {
-                $schema->type = 'string';
-            } elseif (isset($schema->minimum) || isset($schema->maximum)) {
-                $schema->type = 'number';
-            }
+        $schema = BCLayer::transform($schema);
+
+        $result = [];
+        if (isset($schema->description)) {
+            $result['description'] = $schema->description;
         }
 
         $type = $schema->type ?? null;
@@ -93,24 +89,30 @@ class JsonSchema
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
             if (isset($schema->properties) && $schema->properties instanceof \stdClass) {
-                $properties = [];
-                foreach ($schema->properties as $key => $value) {
-                    $properties[$key] = $this->convertSchema($value, $definitions);
-                }
-
-                $result = (object) [
-                    'type' => 'object',
-                    'properties' => $properties,
-                ];
-
+                $rawRequired = [];
                 if (isset($schema->required) && is_array($schema->required)) {
-                    $result->required = $schema->required;
+                    $rawRequired = $schema->required;
                 }
-            } elseif (isset($schema->additionalProperties)) {
-                $result = (object) [
-                    'type' => 'object',
-                    'additionalProperties' => $this->convertSchema($schema->additionalProperties, $definitions),
-                ];
+
+                $required = [];
+                $properties = [];
+                foreach ($schema->properties as $name => $value) {
+                    $properties[$name] = $this->convertSchema($value, $definitions);
+
+                    if (in_array($name, $rawRequired)) {
+                        $required[] = $name;
+                    }
+                }
+
+                $result['type'] = 'object';
+                $result['properties'] = $properties;
+
+                if (!empty($required)) {
+                    $result['required'] = $required;
+                }
+            } elseif (isset($schema->additionalProperties) && $schema->additionalProperties instanceof \stdClass) {
+                $result['type'] = 'object';
+                $result['additionalProperties'] = $this->convertSchema($schema->additionalProperties, $definitions);
             } else {
                 throw new TransformerException('Could not assign object type to either a struct or map');
             }
@@ -121,69 +123,56 @@ class JsonSchema
                 '$ref' => $title,
             ];
         } elseif ($type === 'array') {
-            $result = [
-                'type' => $type
-            ];
+            $result['type'] = 'array';
 
-            if (isset($schema->items)) {
+            if (isset($schema->items) && $schema->items instanceof \stdClass) {
                 $result['items'] = $this->convertSchema($schema->items, $definitions);
+            } else {
+                throw new TransformerException('Array must contain an items property');
             }
-
-            return (object) $result;
         } elseif ($type === 'string') {
-            $result = [
-                'type' => $type
-            ];
-            $allowedKeywords = ['maxLength', 'minLength', 'pattern'];
-            foreach ($allowedKeywords as $keyword) {
-                if (isset($schema->{$keyword})) {
-                    $result[$keyword] = $keyword;
-                }
-            }
-
-            return (object) $result;
+            $result['type'] = 'string';
+            $result = $this->copyKeywords($schema, $result, ['maxLength', 'minLength', 'pattern']);
         } elseif ($type === 'boolean') {
-            $result = [
-                'type' => $type
-            ];
-
-            return (object) $result;
+            $result['type'] = 'boolean';
         } elseif ($type === 'number' || $type === 'integer') {
-            $result = [
-                'type' => $type
-            ];
-            $allowedKeywords = ['multipleOf', 'maximum', 'exclusiveMaximum', 'minimum', 'exclusiveMinimum'];
-            foreach ($allowedKeywords as $keyword) {
-                if (isset($schema->{$keyword})) {
-                    $result[$keyword] = $keyword;
-                }
-            }
-
-            return (object) $result;
-        }
-
-        if (isset($schema->oneOf) && is_array($schema->oneOf)) {
-            $result = [];
+            $result['type'] = $type;
+            $result = $this->copyKeywords($schema, $result, ['multipleOf', 'maximum', 'exclusiveMaximum', 'minimum', 'exclusiveMinimum']);
+        } elseif (isset($schema->oneOf) && is_array($schema->oneOf)) {
+            $list = [];
             foreach ($schema->oneOf as $subSchema) {
-                $result[] = $this->convertSchema($subSchema, $definitions);
+                $list[] = $this->convertSchema($subSchema, $definitions);
             }
 
-            return (object) [
-                'oneOf' => $result
-            ];
+            $result['oneOf'] = $list;
         } elseif (isset($schema->allOf) && is_array($schema->allOf)) {
-            $result = [];
+            $list = [];
             foreach ($schema->allOf as $subSchema) {
-                $result[] = $this->convertSchema($subSchema, $definitions);
+                $list[] = $this->convertSchema($subSchema, $definitions);
             }
 
-            return (object) [
-                'allOf' => $result
-            ];
+            $result['allOf'] = $list;
+        } elseif (isset($schema->{'$ref'})) {
+            $ref = $schema->{'$ref'};
+            $ref = str_replace('#/definitions/', '', $ref);
+            $ref = str_replace('#/$defs/', '', $ref);
+
+            $result['$ref'] = $ref;
+        } else {
+            $result['type'] = 'any';
         }
 
-        return (object) [
-            'type' => 'any'
-        ];
+        return (object) $result;
+    }
+
+    private function copyKeywords(\stdClass $schema, array $result, array $allowedKeywords)
+    {
+        foreach ($allowedKeywords as $keyword) {
+            if (isset($schema->{$keyword})) {
+                $result[$keyword] = $keyword;
+            }
+        }
+
+        return $result;
     }
 }
