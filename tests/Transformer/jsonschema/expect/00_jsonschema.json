@@ -34,7 +34,7 @@
         "price": {
           "description": "The price of the product",
           "type": "number",
-          "exclusiveMinimum": "exclusiveMinimum"
+          "exclusiveMinimum": 0
         },
         "nested": {
           "$ref": "Inlinedc8fb1cd"

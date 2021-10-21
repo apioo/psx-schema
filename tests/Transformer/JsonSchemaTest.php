@@ -41,7 +41,7 @@ class JsonSchemaTest extends TestCase
             }
 
             $schema = file_get_contents(__DIR__ . '/jsonschema/actual/' . $file);
-            $actual = (new JsonSchema())->convert($schema);
+            $actual = (new JsonSchema())->transform($schema);
 
             $expect = file_get_contents(__DIR__ . '/jsonschema/expect/' . $file);
             $this->assertJsonStringEqualsJsonString($expect, $actual);

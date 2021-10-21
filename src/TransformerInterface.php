@@ -20,7 +20,7 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Exception\TransformerException;
 
 /**
  * TransformerInterface
@@ -36,7 +36,7 @@ interface TransformerInterface
      *
      * @param string $schema
      * @return string
-     * @throws ParserException
+     * @throws TransformerException
      */
-    public function parse(string $schema): string;
+    public function transform(string $schema): string;
 }

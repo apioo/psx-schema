@@ -22,6 +22,7 @@ namespace PSX\Schema\Transformer;
 
 use PSX\Schema\Exception\TransformerException;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
+use PSX\Schema\TransformerInterface;
 
 /**
  * Transform an existing JSON Schema to a valid TypeSchema
@@ -30,9 +31,9 @@ use PSX\Schema\Parser\TypeSchema\BCLayer;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class JsonSchema
+class JsonSchema implements TransformerInterface
 {
-    public function convert(string $schema): string
+    public function transform(string $schema): string
     {
         $data = \json_decode($schema);
         if (!$data instanceof \stdClass) {
@@ -74,7 +75,7 @@ class JsonSchema
             $result->{'$ref'} = $root;
         }
 
-        return \json_encode($result);
+        return \json_encode($result, JSON_PRETTY_PRINT);
     }
 
     private function convertSchema(\stdClass $schema, array &$definitions)
@@ -171,7 +172,7 @@ class JsonSchema
     {
         foreach ($allowedKeywords as $keyword) {
             if (isset($schema->{$keyword})) {
-                $result[$keyword] = $keyword;
+                $result[$keyword] = $schema->{$keyword};
             }
         }
 
