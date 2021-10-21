@@ -52,7 +52,9 @@ class JsonSchema
         $defs = [];
         if ($definitions instanceof \stdClass) {
             foreach ($definitions as $name => $type) {
-                $defs[$name] = $this->convertSchema($type, $defs);
+                if ($type instanceof \stdClass) {
+                    $defs[$name] = $this->convertSchema($type, $defs);
+                }
             }
         }
 
