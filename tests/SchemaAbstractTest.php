@@ -23,12 +23,13 @@ namespace PSX\Schema\Tests;
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Schema;
-use PSX\Schema\SchemaAbstract;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\Tests\Schema\SchemaA;
+use PSX\Schema\Tests\Schema\SchemaB;
+use PSX\Schema\Tests\Schema\SchemaCommon;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
-use PSX\Schema\TypeFactory;
 
 /**
  * SchemaAbstractTest
@@ -97,42 +98,5 @@ class SchemaAbstractTest extends TestCase
         $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Author'));
         $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Location'));
         $this->assertInstanceOf(ReferenceType::class, $schema->getType());
-    }
-}
-
-class SchemaCommon extends SchemaAbstract
-{
-    public function build(): void
-    {
-        $entry = $this->newStruct('Entry');
-        $entry->addInteger('title');
-
-        $author = $this->newStruct('Author');
-        $author->addInteger('name');
-
-        $location = $this->newStruct('Location');
-        $location->setDescription('Location of the person');
-        $location->addInteger('lat');
-        $location->addInteger('long');
-        $location->addArray('entry', TypeFactory::getReference('Entry'));
-        $location->addReference('author', 'Author');
-    }
-}
-
-class SchemaA extends SchemaAbstract
-{
-    public function build(): void
-    {
-        $location = $this->modify(SchemaCommon::class, 'LocationA');
-        $location->getProperty('lat')->setTitle('foo');
-    }
-}
-
-class SchemaB extends SchemaAbstract
-{
-    public function build(): void
-    {
-        $location = $this->modify(SchemaCommon::class, 'LocationB');
-        $location->getProperty('long')->setTitle('bar');
     }
 }

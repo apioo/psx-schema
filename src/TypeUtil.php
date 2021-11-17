@@ -20,11 +20,17 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
+use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\UnionType;
 
@@ -159,5 +165,36 @@ class TypeUtil
     {
         [$ns, $name] = self::split($ref);
         return $ns . ':' . $name;
+    }
+
+    public static function getTypeName(TypeInterface $type): string
+    {
+        if ($type instanceof AnyType) {
+            return 'any';
+        } elseif ($type instanceof ArrayType) {
+            return 'array';
+        } elseif ($type instanceof BooleanType) {
+            return 'boolean';
+        } elseif ($type instanceof GenericType) {
+            return 'generic';
+        } elseif ($type instanceof IntegerType) {
+            return 'integer';
+        } elseif ($type instanceof IntersectionType) {
+            return 'intersection';
+        } elseif ($type instanceof MapType) {
+            return 'map';
+        } elseif ($type instanceof NumberType) {
+            return 'number';
+        } elseif ($type instanceof ReferenceType) {
+            return 'reference';
+        } elseif ($type instanceof StringType) {
+            return 'string';
+        } elseif ($type instanceof StructType) {
+            return 'struct';
+        } elseif ($type instanceof UnionType) {
+            return 'union';
+        } else {
+            return 'unknown';
+        }
     }
 }
