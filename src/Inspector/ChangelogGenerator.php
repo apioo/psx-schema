@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Inspector;
 
-use PSX\Schema\Schema;
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
@@ -46,31 +46,24 @@ use PSX\Schema\TypeUtil;
  */
 class ChangelogGenerator
 {
-    public const LEVEL_PATCH = 'patch';
-    public const LEVEL_MINOR = 'minor';
-    public const LEVEL_MAJOR = 'major';
-
-    public function generate(Schema $left, ?Schema $right = null): \Generator
+    public function generate(DefinitionsInterface $left, ?DefinitionsInterface $right = null): \Generator
     {
         if (empty($right)) {
-            yield self::LEVEL_PATCH => 'Initial release';
+            yield SemVer::PATCH => 'Initial release';
             return;
         }
 
-        $leftDefinitions = $left->getDefinitions();
-        $rightDefinitions = $right->getDefinitions();
-
-        foreach ($leftDefinitions->getAllTypes() as $leftName => $leftType) {
-            if ($rightDefinitions->hasType($leftName)) {
-                yield from $this->generateType($leftType, $rightDefinitions->getType($leftName), $leftName);
+        foreach ($left->getAllTypes() as $leftName => $leftType) {
+            if ($right->hasType($leftName)) {
+                yield from $this->generateType($leftType, $right->getType($leftName), $leftName);
             } else {
-                yield self::LEVEL_MAJOR => $this->getMessageRemoved($leftName, null);
+                yield SemVer::MAJOR => $this->getMessageRemoved($leftName, null);
             }
         }
 
-        foreach ($rightDefinitions->getAllTypes() as $rightName => $rightType) {
-            if (!$leftDefinitions->hasType($rightName)) {
-                yield self::LEVEL_PATCH => $this->getMessageAdded($rightName, null);
+        foreach ($right->getAllTypes() as $rightName => $rightType) {
+            if (!$left->hasType($rightName)) {
+                yield SemVer::PATCH => $this->getMessageAdded($rightName, null);
             }
         }
     }
@@ -78,7 +71,7 @@ class ChangelogGenerator
     private function generateType(TypeInterface $leftType, TypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if (get_class($leftType) !== get_class($rightType)) {
-            yield self::LEVEL_MAJOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'type', TypeUtil::getTypeName($leftType), TypeUtil::getTypeName($rightType));
+            yield SemVer::MAJOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'type', TypeUtil::getTypeName($leftType), TypeUtil::getTypeName($rightType));
             return;
         }
 
@@ -114,19 +107,19 @@ class ChangelogGenerator
     private function generateCommon(TypeAbstract $leftType, TypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getDescription() !== $rightType->getDescription()) {
-            yield self::LEVEL_PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
+            yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
         }
 
         if ($leftType->isNullable() !== $rightType->isNullable()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'nullable', $leftType->isNullable(), $rightType->isNullable());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'nullable', $leftType->isNullable(), $rightType->isNullable());
         }
 
         if ($leftType->isDeprecated() !== $rightType->isDeprecated()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'deprecated', $leftType->isDeprecated(), $rightType->isDeprecated());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'deprecated', $leftType->isDeprecated(), $rightType->isDeprecated());
         }
 
         if ($leftType->isReadonly() !== $rightType->isReadonly()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'readonly', $leftType->isReadonly(), $rightType->isReadonly());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'readonly', $leftType->isReadonly(), $rightType->isReadonly());
         }
     }
 
@@ -139,13 +132,13 @@ class ChangelogGenerator
             if (isset($right[$key])) {
                 yield from $this->generateType($property, $right[$key], $typeName, $key);
             } else {
-                yield self::LEVEL_MAJOR => $this->getMessageRemoved($typeName, $key);
+                yield SemVer::MAJOR => $this->getMessageRemoved($typeName, $key);
             }
         }
 
         foreach ($right as $key => $value) {
             if (!isset($left[$key])) {
-                yield self::LEVEL_PATCH => $this->getMessageAdded($typeName, $key);
+                yield SemVer::PATCH => $this->getMessageAdded($typeName, $key);
             }
         }
     }
@@ -213,41 +206,41 @@ class ChangelogGenerator
     private function generateReference(ReferenceType $leftType, ReferenceType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getRef() !== $rightType->getRef()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'ref', $leftType->getRef(), $rightType->getRef());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'ref', $leftType->getRef(), $rightType->getRef());
         }
     }
 
     private function generateString(StringType $leftType, StringType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getPattern() !== $rightType->getPattern()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'pattern', $leftType->getPattern(), $rightType->getPattern());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'pattern', $leftType->getPattern(), $rightType->getPattern());
         }
 
         if ($leftType->getMinLength() !== $rightType->getMinLength()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'min length', $leftType->getMinLength(), $rightType->getMinLength());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'min length', $leftType->getMinLength(), $rightType->getMinLength());
         }
 
         if ($leftType->getMaxLength() !== $rightType->getMaxLength()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'max length', $leftType->getMaxLength(), $rightType->getMaxLength());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'max length', $leftType->getMaxLength(), $rightType->getMaxLength());
         }
     }
 
     private function generateNumber(NumberType $leftType, NumberType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getMinimum() !== $rightType->getMinimum()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'minimum', $leftType->getMinimum(), $rightType->getMinimum());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'minimum', $leftType->getMinimum(), $rightType->getMinimum());
         }
 
         if ($leftType->getMaximum() !== $rightType->getMaximum()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'maximum', $leftType->getMaximum(), $rightType->getMaximum());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'maximum', $leftType->getMaximum(), $rightType->getMaximum());
         }
 
         if ($leftType->getExclusiveMinimum() !== $rightType->getExclusiveMinimum()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive minimum', $leftType->getExclusiveMinimum(), $rightType->getExclusiveMinimum());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive minimum', $leftType->getExclusiveMinimum(), $rightType->getExclusiveMinimum());
         }
 
         if ($leftType->getExclusiveMaximum() !== $rightType->getExclusiveMaximum()) {
-            yield self::LEVEL_MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive maximum', $leftType->getExclusiveMaximum(), $rightType->getExclusiveMaximum());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive maximum', $leftType->getExclusiveMaximum(), $rightType->getExclusiveMaximum());
         }
     }
 

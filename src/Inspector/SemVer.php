@@ -18,32 +18,18 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests;
-
-use PSX\Schema\Inspector\ChangelogGenerator;
-use PSX\Schema\Inspector\SemVerLifter;
-use PSX\Schema\Tests\Schema\SchemaA;
-use PSX\Schema\Tests\Schema\SchemaB;
+namespace PSX\Schema\Inspector;
 
 /**
- * SemVerElevatorTest
+ * SemVer
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class SemVerElevatorTest extends SchemaTestCase
+class SemVer
 {
-    public function testElevate()
-    {
-        $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
-        $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getDefinitions();
-
-        $elevator = new SemVerLifter();
-
-        $this->assertEquals('0.1.0', $elevator->elevate('', $schemaA));
-        $this->assertEquals('1.0.0', $elevator->elevate('0.4.0', $schemaA, $schemaB));
-        $this->assertEquals('2.0.0', $elevator->elevate('1.1.0', $schemaA, $schemaB));
-        $this->assertEquals('1.1.1', $elevator->elevate('1.1.0', $schemaA, $schemaA));
-    }
+    public const PATCH = 'patch';
+    public const MINOR = 'minor';
+    public const MAJOR = 'major';
 }

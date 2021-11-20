@@ -35,8 +35,8 @@ class ChangelogGeneratorTest extends SchemaTestCase
 {
     public function testGenerate()
     {
-        $schemaA = $this->schemaManager->getSchema(SchemaA::class);
-        $schemaB = $this->schemaManager->getSchema(SchemaB::class);
+        $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
+        $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getDefinitions();
 
         $generator = new ChangelogGenerator();
 
