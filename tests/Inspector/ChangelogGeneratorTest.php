@@ -40,10 +40,10 @@ class ChangelogGeneratorTest extends SchemaTestCase
 
         $generator = new ChangelogGenerator();
 
-        $actual = iterator_to_array($generator->generate($schemaA, $schemaB));
+        $actual = iterator_to_array($generator->generate($schemaA, $schemaB), false);
         $expect = [
-            'major' => 'Type "LocationA" was removed',
-            'patch' => 'Type "LocationB" was added',
+            'Type "LocationA" was removed',
+            'Type "LocationB" was added',
         ];
 
         $this->assertEquals($expect, $actual);
