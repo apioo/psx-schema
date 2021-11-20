@@ -148,7 +148,7 @@ try {
     // the firstName and lastName property
     echo $person->getFirstName();
 
-} catch (\PSX\Schema\ValidationException $e) {
+} catch (\PSX\Schema\Exception\ValidationException $e) {
     // the validation failed
     echo $e->getMessage();
 }
