@@ -32,13 +32,9 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Discriminator
 {
-    public function __construct(public ?string $propertyName = null, public ?array $mapping = null)
+    public function __construct(public string $propertyName, public ?array $mapping = null)
     {
-        if (!is_string($this->propertyName)) {
-            throw new \InvalidArgumentException('Discriminator annotation first argument must be a string');
-        }
-
-        if ($this->mapping !== null && !is_array($this->mapping)) {
+        if ($mapping !== null && !is_array($mapping)) {
             throw new \InvalidArgumentException('Discriminator annotation second argument must be an array');
         }
     }
