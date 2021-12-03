@@ -23,7 +23,7 @@ namespace PSX\Schema\Attribute;
 use Attribute;
 
 /**
- * Pattern
+ * Format
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -32,7 +32,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Format
 {
-    public function __construct(public bool $format)
+    public function __construct(public string $format)
     {
     }
 }
