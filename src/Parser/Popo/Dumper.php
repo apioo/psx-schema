@@ -54,19 +54,9 @@ use PSX\Schema\TypeInterface;
  */
 class Dumper
 {
-    /**
-     * @var \Doctrine\Common\Annotations\Reader
-     */
-    protected $reader;
+    private Reader $reader;
+    private ResolverInterface $resolver;
 
-    /**
-     * @var ResolverInterface
-     */
-    protected $resolver;
-
-    /**
-     * @param \Doctrine\Common\Annotations\Reader $reader
-     */
     public function __construct(Reader $reader = null)
     {
         if ($reader === null) {
@@ -118,7 +108,7 @@ class Dumper
         }
 
         $reflection = new \ReflectionClass(get_class($data));
-        $result = new Record($reflection->getShortName());
+        $result = new Record();
 
         $properties = ObjectReader::getProperties($this->reader, $reflection);
         foreach ($properties as $name => $property) {

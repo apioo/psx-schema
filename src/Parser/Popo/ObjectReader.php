@@ -22,6 +22,7 @@ namespace PSX\Schema\Parser\Popo;
 
 use Doctrine\Common\Annotations\Reader;
 use PSX\Schema\Annotation;
+use PSX\Schema\Attribute;
 use ReflectionClass;
 
 /**
@@ -36,7 +37,7 @@ class ObjectReader
     /**
      * Returns all available properties of an object
      *
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param Reader $reader
      * @param \ReflectionClass $class
      * @return \ReflectionProperty[]
      */
@@ -51,18 +52,23 @@ class ObjectReader
                 continue;
             }
 
+            if (PHP_VERSION_ID > 80000 && count($property->getAttributes()) > 0) {
+                $annotations = $property->getAttributes();
+            } else {
+                $annotations = $reader->getPropertyAnnotations($property);
+            }
+
             // check whether we have an exclude annotation
-            $exclude = $reader->getPropertyAnnotation($property, Annotation\Exclude::class);
-            if ($exclude !== null) {
+            if (self::hasExcludeAnnotation($annotations)) {
                 continue;
             }
 
             // get the property name
-            $key  = $reader->getPropertyAnnotation($property, Annotation\Key::class);
+            $key  = self::getAnnotationKey($annotations);
             $name = null;
 
             if ($key !== null) {
-                $name = $key->getKey();
+                $name = $key;
             }
 
             if (empty($name)) {
@@ -73,5 +79,31 @@ class ObjectReader
         }
 
         return $result;
+    }
+
+    private static function hasExcludeAnnotation(array $annotations): bool
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Exclude) {
+                return true;
+            } elseif ($annotation instanceof Attribute\Exclude) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function getAnnotationKey(array $annotations): ?string
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Key) {
+                return $annotation->getKey();
+            } elseif ($annotation instanceof Attribute\Key) {
+                return $annotation->key;
+            }
+        }
+
+        return null;
     }
 }

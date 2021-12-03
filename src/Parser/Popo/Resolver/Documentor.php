@@ -46,20 +46,13 @@ use PSX\Uri\Uri;
  */
 class Documentor implements ResolverInterface
 {
-    /**
-     * @var ContextFactory
-     */
-    private $contextFactory;
-
-    /**
-     * @var TypeResolver
-     */
-    private $typeResolver;
+    private ContextFactory $contextFactory;
+    private TypeResolver $typeResolver;
 
     public function __construct()
     {
         $this->contextFactory = new ContextFactory();
-        $this->typeResolver   = new TypeResolver();
+        $this->typeResolver = new TypeResolver();
     }
 
     /**

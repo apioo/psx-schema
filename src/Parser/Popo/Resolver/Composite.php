@@ -35,7 +35,7 @@ class Composite implements ResolverInterface
     /**
      * @var ResolverInterface[]
      */
-    private $resolver;
+    private array $resolver;
 
     /**
      * @param ResolverInterface ...$resolver
