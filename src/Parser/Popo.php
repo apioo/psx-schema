@@ -87,7 +87,7 @@ class Popo implements ParserInterface
 
         $type = $this->resolver->resolveClass($class);
 
-        if (PHP_VERSION_ID > 80000 && count((new \ReflectionClass($source))->getAttributes()) > 0) {
+        if (PHP_VERSION_ID > 80000 && count($class->getAttributes()) > 0) {
             $annotations = $class->getAttributes();
         } else {
             $annotations = $this->reader->getClassAnnotations($class);
