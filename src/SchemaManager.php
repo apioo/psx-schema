@@ -96,10 +96,6 @@ class SchemaManager implements SchemaManagerInterface
      */
     public function getSchema(string $schemaName, ?string $type = null): SchemaInterface
     {
-        if (!is_string($schemaName)) {
-            throw new InvalidArgumentException('Schema name must be a string');
-        }
-
         $item = null;
         if (!$this->debug) {
             $item = $this->cache->getItem($schemaName);
