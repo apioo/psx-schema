@@ -34,8 +34,5 @@ class Discriminator
 {
     public function __construct(public string $propertyName, public ?array $mapping = null)
     {
-        if ($mapping !== null && !is_array($mapping)) {
-            throw new \InvalidArgumentException('Discriminator annotation second argument must be an array');
-        }
     }
 }
