@@ -46,20 +46,14 @@ use PSX\Uri\Uri;
  */
 class TypeVisitor implements VisitorInterface
 {
-    /**
-     * @var \PSX\Schema\Validation\ValidatorInterface|null
-     */
-    protected $validator;
+    private ?ValidatorInterface $validator;
 
-    /**
-     * @param \PSX\Schema\Validation\ValidatorInterface|null $validator
-     */
     public function __construct(ValidatorInterface $validator = null)
     {
         $this->validator = $validator;
     }
 
-    public function visitStruct(\stdClass $data, StructType $type, $path)
+    public function visitStruct(\stdClass $data, StructType $type, string $path)
     {
         $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
         if (!empty($className)) {
@@ -87,7 +81,7 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitMap(\stdClass $data, MapType $type, $path)
+    public function visitMap(\stdClass $data, MapType $type, string $path)
     {
         $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
         if (!empty($className)) {
@@ -103,7 +97,7 @@ class TypeVisitor implements VisitorInterface
                 throw new \RuntimeException('Map implementation must implement the ArrayAccess interface');
             }
         } else {
-            $record = Record::fromStdClass($data, $type->getTitle() ?: null);
+            $record = Record::fromStdClass($data);
         }
 
         if ($this->validator !== null) {
@@ -113,7 +107,7 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitArray(array $data, ArrayType $type, $path)
+    public function visitArray(array $data, ArrayType $type, string $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -122,7 +116,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitBinary($data, StringType $type, $path)
+    public function visitBinary($data, StringType $type, string $path)
     {
         $binary   = base64_decode($data);
         $resource = fopen('php://temp', 'r+');
@@ -137,7 +131,7 @@ class TypeVisitor implements VisitorInterface
         return $resource;
     }
 
-    public function visitBoolean($data, BooleanType $type, $path)
+    public function visitBoolean($data, BooleanType $type, string $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -146,7 +140,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitDateTime($data, StringType $type, $path)
+    public function visitDateTime($data, StringType $type, string $path)
     {
         $result = new DateTime($data);
 
@@ -157,7 +151,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitDate($data, StringType $type, $path)
+    public function visitDate($data, StringType $type, string $path)
     {
         $result = new Date($data);
 
@@ -168,7 +162,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitDuration($data, StringType $type, $path)
+    public function visitDuration($data, StringType $type, string $path)
     {
         $result = new Duration($data);
 
@@ -179,7 +173,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitNumber($data, NumberType $type, $path)
+    public function visitNumber($data, NumberType $type, string $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -188,7 +182,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitInteger($data, IntegerType $type, $path)
+    public function visitInteger($data, IntegerType $type, string $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -197,7 +191,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitString($data, StringType $type, $path)
+    public function visitString($data, StringType $type, string $path)
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -206,7 +200,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitTime($data, StringType $type, $path)
+    public function visitTime($data, StringType $type, string $path)
     {
         $result = new Time($data);
 
@@ -217,7 +211,7 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitUri($data, StringType $type, $path)
+    public function visitUri($data, StringType $type, string $path)
     {
         $result = new Uri($data);
 

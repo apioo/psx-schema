@@ -31,7 +31,7 @@ use PSX\Schema\Exception\TypeNotFoundException;
  */
 class Definitions implements DefinitionsInterface, \JsonSerializable
 {
-    private $container;
+    private array $container;
 
     public function __construct()
     {

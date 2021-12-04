@@ -24,6 +24,7 @@ use PSX\Schema\Generator\Code\Chunks;
 use PSX\Schema\Generator\FileAwareInterface;
 use PSX\Schema\GeneratorFactory;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\SchemaManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,15 +40,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ParseCommand extends Command
 {
-    /**
-     * @var \PSX\Schema\SchemaManager
-     */
-    protected $schemaManager;
+    private SchemaManagerInterface $schemaManager;
 
-    /**
-     * @param \PSX\Schema\SchemaManager $schemaManager
-     */
-    public function __construct(SchemaManager $schemaManager)
+    public function __construct(SchemaManagerInterface $schemaManager)
     {
         parent::__construct();
 

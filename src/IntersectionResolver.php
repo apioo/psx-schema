@@ -33,10 +33,7 @@ use PSX\Schema\Type\StructType;
  */
 class IntersectionResolver
 {
-    /**
-     * @var DefinitionsInterface
-     */
-    private $definitions;
+    private DefinitionsInterface $definitions;
 
     public function __construct(DefinitionsInterface $definitions)
     {
@@ -46,9 +43,9 @@ class IntersectionResolver
     /**
      * If the provided property is an allOf schema it tries to merge all
      * contained sub schemas into a new schema which contains all properties
-     * 
-     * @param IntersectionType $type
-     * @return StructType|null
+     *
+     * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
      */
     public function resolve(IntersectionType $type): ?StructType
     {
@@ -65,7 +62,11 @@ class IntersectionResolver
         return $newType;
     }
 
-    private function merge(StructType $left, TypeInterface $right)
+    /**
+     * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
+     */
+    private function merge(StructType $left, TypeInterface $right): void
     {
         if ($right instanceof ReferenceType) {
             $right = $this->definitions->getType($right->getRef());
@@ -86,7 +87,5 @@ class IntersectionResolver
         foreach ($right->getProperties() as $name => $type) {
             $left->addProperty($name, $type);
         }
-
-        return $left;
     }
 }

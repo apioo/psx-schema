@@ -33,74 +33,60 @@ use PSX\Validate\FilterInterface;
 class Validator implements ValidatorInterface
 {
     /**
-     * @var \PSX\Schema\Validation\Field[]
+     * @var Field[]
      */
-    protected $fields;
+    private array $fields;
 
-    /**
-     * @param \PSX\Schema\Validation\Field[] $fields
-     */
     public function __construct(array $fields = null)
     {
         $this->fields = $fields;
     }
 
-    /**
-     * @param \PSX\Schema\Validation\Field[] $fields
-     */
     public function setFields(array $fields)
     {
         $this->fields = $fields;
     }
 
-    /**
-     * @return \PSX\Schema\Validation\Field[]
-     */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
     /**
-     * @param string $path
-     * @param mixed $data
-     * @throws \PSX\Schema\Exception\ValidationException
+     * @throws ValidationException
      */
-    public function validate($path, $data)
+    public function validate(string $path, $data)
     {
         $field = $this->getField($path);
+        if (!$field instanceof Field) {
+            return;
+        }
 
-        if ($field instanceof Field) {
-            $filters = $field->getFilters();
-            
-            foreach ($filters as $filter) {
-                $result = null;
-                $error  = null;
-                if ($filter instanceof FilterInterface) {
-                    $result = $filter->apply($data);
-                    $error  = $filter->getErrorMessage();
-                } elseif ($filter instanceof \Closure) {
-                    $result = $filter($data);
+        $filters = $field->getFilters();
+        foreach ($filters as $filter) {
+            $result = null;
+            $error  = null;
+            if ($filter instanceof FilterInterface) {
+                $result = $filter->apply($data);
+                $error  = $filter->getErrorMessage();
+            } elseif ($filter instanceof \Closure) {
+                $result = $filter($data);
+            }
+
+            if ($result === false) {
+                if (empty($error)) {
+                    $error = '%s is not valid';
                 }
 
-                if ($result === false) {
-                    if (empty($error)) {
-                        $error = '%s is not valid';
-                    }
-
-                    throw new ValidationException(sprintf($error, $path), 'filter', explode('/', ltrim($path, '/')));
-                }
+                throw new ValidationException(sprintf($error, $path), 'filter', explode('/', ltrim($path, '/')));
             }
         }
     }
 
     /**
      * Returns the property defined by the name
-     *
-     * @param string $name
-     * @return \PSX\Schema\Validation\Field|null
      */
-    protected function getField($name)
+    protected function getField(string $name): ?Field
     {
         $name = ltrim($name, '/');
 

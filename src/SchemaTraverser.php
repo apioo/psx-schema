@@ -54,24 +54,10 @@ class SchemaTraverser
 {
     private const MAX_RECURSION_DEPTH = 32;
 
-    /**
-     * @var array
-     */
-    private $pathStack;
+    private array $pathStack = [];
+    private int $recCount = -1;
+    private bool $assertConstraints;
 
-    /**
-     * @var integer
-     */
-    private $recCount;
-
-    /**
-     * @var bool
-     */
-    private $assertConstraints;
-
-    /**
-     * @param bool $assertConstraints
-     */
     public function __construct(bool $assertConstraints = true)
     {
         $this->assertConstraints = $assertConstraints;
@@ -281,6 +267,11 @@ class SchemaTraverser
         }
     }
 
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     * @throws Exception\InvalidSchemaException
+     */
     protected function traverseIntersection($data, IntersectionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
         $items = $type->getAllOf();
@@ -321,6 +312,10 @@ class SchemaTraverser
         return $this->recTraverse($data, $newType, $definitions, $visitor, $context);
     }
 
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     */
     protected function traverseUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
         $propertyName = $type->getPropertyName();
@@ -355,6 +350,10 @@ class SchemaTraverser
         return $result;
     }
 
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     */
     private function traverseDiscriminatedUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
         if (!$data instanceof \stdClass) {
@@ -393,8 +392,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param ScalarType $type
      * @throws ValidationException
      */
     protected function assertScalarConstraints($data, ScalarType $type)
@@ -456,8 +453,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param StructType $type
      * @throws ValidationException
      */
     protected function assertStructConstraints($data, StructType $type)
@@ -478,8 +473,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param MapType $type
      * @throws ValidationException
      */
     protected function assertMapConstraints($data, MapType $type)
@@ -506,8 +499,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param ArrayType $type
      * @throws ValidationException
      */
     protected function assertArrayConstraints($data, ArrayType $type)
@@ -532,8 +523,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param NumberType $property
      * @throws ValidationException
      */
     protected function assertNumberConstraints($data, NumberType $property)
@@ -587,8 +576,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param BooleanType $type
      * @throws ValidationException
      */
     protected function assertBooleanConstraints($data, BooleanType $type)
@@ -599,8 +586,6 @@ class SchemaTraverser
     }
 
     /**
-     * @param mixed $data
-     * @param StringType $property
      * @throws ValidationException
      */
     protected function assertStringConstraints($data, StringType $property)

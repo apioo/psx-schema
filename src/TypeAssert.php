@@ -45,7 +45,7 @@ class TypeAssert
      * @see https://typeschema.org/specification#Properties
      * @throws InvalidSchemaException
      */
-    public static function assertProperty(TypeInterface $type)
+    public static function assertProperty(TypeInterface $type): void
     {
         if ($type instanceof StructType) {
             throw new InvalidSchemaException('Property must not contain a nested struct, got ' . get_class($type));
@@ -54,10 +54,10 @@ class TypeAssert
 
     /**
      * @param TypeInterface $type
-     * @see https://typeschema.org/specification#ArrayProperties
+     * @see https://typeschema.org/specification#ArrayType
      * @throws InvalidSchemaException
      */
-    public static function assertItem(TypeInterface $type)
+    public static function assertItem(TypeInterface $type): void
     {
         if (!($type instanceof BooleanType
             || $type instanceof NumberType
@@ -73,10 +73,10 @@ class TypeAssert
 
     /**
      * @param array $items
-     * @see https://typeschema.org/specification#AllOfProperties
+     * @see https://typeschema.org/specification#IntersectionType
      * @throws InvalidSchemaException
      */
-    public static function assertIntersection(array $items)
+    public static function assertIntersection(array $items): void
     {
         foreach ($items as $index => $item) {
             if (!($item instanceof ReferenceType)) {
@@ -87,10 +87,10 @@ class TypeAssert
 
     /**
      * @param array $items
-     * @see https://typeschema.org/specification#OneOfProperties
+     * @see https://typeschema.org/specification#UnionType
      * @throws InvalidSchemaException
      */
-    public static function assertUnion(array $items)
+    public static function assertUnion(array $items): void
     {
         foreach ($items as $index => $item) {
             if (!($item instanceof NumberType

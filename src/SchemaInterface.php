@@ -31,16 +31,11 @@ interface SchemaInterface
 {
     /**
      * Returns the root type for this schema
-     *
-     * @return \PSX\Schema\TypeInterface
      */
     public function getType(): TypeInterface;
 
     /**
-     * Returns the definitions for this schema which can be used to resolve
-     * referenced types
-     *
-     * @return \PSX\Schema\DefinitionsInterface
+     * Returns the definitions for this schema which can be used to resolve referenced types
      */
     public function getDefinitions(): DefinitionsInterface;
 }

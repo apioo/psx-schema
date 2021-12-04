@@ -40,10 +40,7 @@ use PSX\Schema\Type\UnionType;
  */
 class Builder
 {
-    /**
-     * @var StructType
-     */
-    protected $type;
+    private StructType $type;
 
     public function __construct()
     {
@@ -107,9 +104,11 @@ class Builder
     }
 
     /**
+     * @template T of TypeInterface
      * @param string $name
-     * @param \PSX\Schema\TypeInterface $type
-     * @return TypeInterface
+     * @param T $type
+     * @return T
+     * @throws Exception\InvalidSchemaException
      */
     public function add(string $name, TypeInterface $type): TypeInterface
     {
@@ -120,8 +119,9 @@ class Builder
 
     /**
      * @param string $name
-     * @param \PSX\Schema\TypeInterface $items
+     * @param TypeInterface $items
      * @return ArrayType
+     * @throws Exception\InvalidSchemaException
      */
     public function addArray(string $name, TypeInterface $items): ArrayType
     {
@@ -131,6 +131,7 @@ class Builder
     /**
      * @param string $name
      * @return BooleanType
+     * @throws Exception\InvalidSchemaException
      */
     public function addBoolean(string $name): BooleanType
     {
@@ -140,6 +141,7 @@ class Builder
     /**
      * @param string $name
      * @return IntegerType
+     * @throws Exception\InvalidSchemaException
      */
     public function addInteger(string $name): IntegerType
     {
@@ -150,6 +152,7 @@ class Builder
      * @param string $name
      * @param array $types
      * @return IntersectionType
+     * @throws Exception\InvalidSchemaException
      */
     public function addIntersection(string $name, array $types): IntersectionType
     {
@@ -159,6 +162,7 @@ class Builder
     /**
      * @param string $name
      * @return NumberType
+     * @throws Exception\InvalidSchemaException
      */
     public function addNumber(string $name): NumberType
     {
@@ -169,6 +173,7 @@ class Builder
      * @param string $name
      * @param string $ref
      * @return ReferenceType
+     * @throws Exception\InvalidSchemaException
      */
     public function addReference(string $name, string $ref): ReferenceType
     {
@@ -178,6 +183,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addString(string $name): StringType
     {
@@ -188,6 +194,7 @@ class Builder
      * @param string $name
      * @param array $types
      * @return UnionType
+     * @throws Exception\InvalidSchemaException
      */
     public function addUnion(string $name, array $types): UnionType
     {
@@ -197,6 +204,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addBinary(string $name): StringType
     {
@@ -206,6 +214,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addDateTime(string $name): StringType
     {
@@ -215,6 +224,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addDate(string $name): StringType
     {
@@ -224,6 +234,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addDuration(string $name): StringType
     {
@@ -233,6 +244,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addTime(string $name): StringType
     {
@@ -242,6 +254,7 @@ class Builder
     /**
      * @param string $name
      * @return StringType
+     * @throws Exception\InvalidSchemaException
      */
     public function addUri(string $name): StringType
     {

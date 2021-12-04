@@ -29,35 +29,25 @@ namespace PSX\Schema\Validation;
  */
 class Field
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var array
-     */
-    protected $filters;
+    private string $name;
+    private array $filters;
 
     /**
      * The name should be a JSON pointer which locates the target property i.e.
      * /author/name
-     *
-     * @param string $name
-     * @param array $filters
      */
-    public function __construct($name, array $filters = array())
+    public function __construct(string $name, array $filters = [])
     {
         $this->name    = $name;
         $this->filters = $filters;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }

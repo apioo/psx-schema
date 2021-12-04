@@ -29,19 +29,12 @@ namespace PSX\Schema;
  */
 class Schema implements SchemaInterface
 {
-    /**
-     * @var \PSX\Schema\TypeInterface
-     */
-    protected $type;
-
-    /**
-     * @var \PSX\Schema\DefinitionsInterface
-     */
-    protected $definitions;
+    protected TypeInterface $type;
+    protected DefinitionsInterface $definitions;
 
     public function __construct(TypeInterface $type, DefinitionsInterface $definitions)
     {
-        $this->type        = $type;
+        $this->type = $type;
         $this->definitions = $definitions;
     }
 

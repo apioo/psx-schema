@@ -34,8 +34,6 @@ interface TransformerInterface
     /**
      * Transforms an existing schema to a TypeSchema format
      *
-     * @param string $schema
-     * @return string
      * @throws TransformerException
      */
     public function transform(string $schema): string;

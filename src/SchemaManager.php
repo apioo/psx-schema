@@ -94,7 +94,7 @@ class SchemaManager implements SchemaManagerInterface
     /**
      * @inheritdoc
      */
-    public function getSchema($schemaName, $type = null)
+    public function getSchema(string $schemaName, ?string $type = null): SchemaInterface
     {
         if (!is_string($schemaName)) {
             throw new InvalidArgumentException('Schema name must be a string');
