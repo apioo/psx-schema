@@ -73,13 +73,6 @@ class SchemaManagerTest extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaInvalidType()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->schemaManager->getSchema(new \stdClass());
-    }
-
     public function testGetSchemaNotExisting()
     {
         $this->expectException(InvalidSchemaException::class);
