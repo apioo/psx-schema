@@ -29,7 +29,7 @@ use PSX\Schema\Tests\Parser\Popo\News;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class PopoTest extends ParserTestCase
 {

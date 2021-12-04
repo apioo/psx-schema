@@ -27,7 +27,7 @@ use PSX\Schema\Exception\TypeNotFoundException;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class Definitions implements DefinitionsInterface, \JsonSerializable
 {

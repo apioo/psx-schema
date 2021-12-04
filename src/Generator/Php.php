@@ -43,7 +43,7 @@ use PSX\Schema\TypeInterface;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class Php extends CodeGeneratorAbstract
 {
