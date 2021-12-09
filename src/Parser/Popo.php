@@ -87,8 +87,11 @@ class Popo implements ParserInterface
 
         $type = $this->resolver->resolveClass($class);
 
-        if (PHP_VERSION_ID > 80000 && count($class->getAttributes()) > 0) {
-            $annotations = $class->getAttributes();
+        if (PHP_VERSION_ID > 80000) {
+            $annotations = [];
+            foreach ($class->getAttributes() as $attribute) {
+                $annotations[] = $attribute->newInstance();
+            }
         } else {
             $annotations = $this->reader->getClassAnnotations($class);
         }
@@ -157,7 +160,15 @@ class Popo implements ParserInterface
     private function parseProperty(\ReflectionProperty $reflection): ?TypeInterface
     {
         $type = $this->resolver->resolveProperty($reflection);
-        $annotations = $this->reader->getPropertyAnnotations($reflection);
+
+        if (PHP_VERSION_ID > 80000) {
+            $annotations = [];
+            foreach ($reflection->getAttributes() as $attribute) {
+                $annotations[] = $attribute->newInstance();
+            }
+        } else {
+            $annotations = $this->reader->getPropertyAnnotations($reflection);
+        }
 
         if ($type instanceof TypeAbstract) {
             $this->parseCommonAnnotations($annotations, $type);

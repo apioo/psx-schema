@@ -1,6 +1,6 @@
 <?php
 
-namespace PSX\Schema\Tests\Parser\Popo;
+namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Enum;
@@ -8,177 +8,34 @@ use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Maximum;
 use PSX\Schema\Attribute\MaxItems;
 use PSX\Schema\Attribute\MaxLength;
-use PSX\Schema\Attribute\MaxProperties;
 use PSX\Schema\Attribute\Minimum;
 use PSX\Schema\Attribute\MinItems;
 use PSX\Schema\Attribute\MinLength;
-use PSX\Schema\Attribute\MinProperties;
-use PSX\Schema\Attribute\Nullable;
-use PSX\Schema\Attribute\Pattern;
 use PSX\Schema\Attribute\Required;
-
-#[Description('Location of the person')]
-#[Required(['lat', 'long'])]
-class LocationAttribute
-{
-    protected ?float $lat;
-    protected ?float $long;
-
-    public function setLat(?float $lat)
-    {
-        $this->lat = $lat;
-    }
-
-    public function getLat() : ?float
-    {
-        return $this->lat;
-    }
-
-    public function setLong(?float $long)
-    {
-        $this->long = $long;
-    }
-
-    public function getLong() : ?float
-    {
-        return $this->long;
-    }
-}
-#[Description('An application')]
-#[Required(['name', 'url'])]
-class WebAttribute
-{
-    protected ?string $name;
-    protected ?string $url;
-
-    public function setName(?string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-
-    public function setUrl(?string $url)
-    {
-        $this->url = $url;
-    }
-
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-}
-#[Description('An simple author element with some description')]
-#[Required(['title'])]
-class AuthorAttribute
-{
-    #[Pattern('[A-z]{3,16}')]
-    protected ?string $title;
-
-    #[Description('We will send no spam to this address')]
-    #[Nullable(true)]
-    protected $email;
-
-    /**
-     * @var array<string>
-     */
-    #[MaxItems(8)]
-    protected array $categories;
-
-    /**
-     * @var array<LocationAttribute>
-     */
-    #[Description('Array of locations')]
-    protected $locations;
-
-    protected ?LocationAttribute $origin;
-
-    public function setTitle(?string $title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-
-    public function setEmail(?string $email)
-    {
-        $this->email = $email;
-    }
-
-    public function getEmail() : ?string
-    {
-        return $this->email;
-    }
-
-    public function setCategories(?array $categories)
-    {
-        $this->categories = $categories;
-    }
-
-    public function getCategories() : ?array
-    {
-        return $this->categories;
-    }
-
-    public function setLocations(?array $locations)
-    {
-        $this->locations = $locations;
-    }
-
-    public function getLocations() : ?array
-    {
-        return $this->locations;
-    }
-
-    public function setOrigin(?LocationAttribute $origin)
-    {
-        $this->origin = $origin;
-    }
-
-    public function getOrigin() : ?LocationAttribute
-    {
-        return $this->origin;
-    }
-}
-
-/**
- * @extends \PSX\Record\Record<string>
- */
-#[MinProperties(1)]
-#[MaxProperties(6)]
-class MetaAttribute extends \PSX\Record\Record
-{
-}
 
 #[Description('An general news entry')]
 #[Required(['receiver', 'price', 'content'])]
-class NewsAttribute
+class News
 {
-    protected ?MetaAttribute $config;
+    protected ?Meta $config = null;
 
     /**
      * @var array<string>
      */
     #[MinItems(1)]
     #[MaxItems(6)]
-    protected $tags;
+    protected ?array $tags = null;
 
     /**
-     * @var array<AuthorAttribute>
+     * @var array<Author>
      */
     #[MinItems(1)]
-    protected $receiver;
+    protected ?array $receiver = null;
 
     /**
-     * @var array<LocationAttribute|WebAttribute>
+     * @var array<Location|Web>
      */
-    protected $resources;
+    protected ?array $resources = null;
 
     /**
      * @var resource
@@ -187,45 +44,45 @@ class NewsAttribute
 
     protected ?bool $read;
     /**
-     * @var AuthorAttribute|WebAttribute
+     * @var Author|Web
      */
     protected $source;
 
-    protected ?AuthorAttribute $author;
-    protected ?MetaAttribute $meta;
+    protected ?Author $author;
+    protected ?Meta $meta;
     protected ?\PSX\DateTime\Date $sendDate;
     protected ?\DateTime $readDate;
     protected ?\DateInterval $expires;
 
     #[Minimum(1)]
     #[Maximum(100)]
-    protected ?float $price;
+    protected ?float $price = null;
 
     #[Minimum(1)]
     #[Maximum(5)]
-    protected ?int $rating;
+    protected ?int $rating = null;
 
     #[Description('Contains the main content of the news entry')]
     #[MinLength(3)]
     #[MaxLength(512)]
-    protected ?string $content;
+    protected ?string $content = null;
 
     #[Enum(['foo', 'bar'])]
-    protected ?string $question;
+    protected ?string $question = null;
 
     protected ?string $version = 'http://foo.bar';
-    protected ?\PSX\DateTime\Time $coffeeTime;
-    protected ?\PSX\Uri\Uri $profileUri;
+    protected ?\PSX\DateTime\Time $coffeeTime = null;
+    protected ?\PSX\Uri\Uri $profileUri = null;
 
     #[Key('g-recaptcha-response')]
-    protected ?string $captcha;
+    protected ?string $captcha = null;
 
-    public function setConfig(?MetaAttribute $config)
+    public function setConfig(?Meta $config)
     {
         $this->config = $config;
     }
 
-    public function getConfig() : ?MetaAttribute
+    public function getConfig() : ?Meta
     {
         return $this->config;
     }
@@ -290,22 +147,22 @@ class NewsAttribute
         return $this->source;
     }
 
-    public function setAuthor(?AuthorAttribute $author)
+    public function setAuthor(?Author $author)
     {
         $this->author = $author;
     }
 
-    public function getAuthor() : ?AuthorAttribute
+    public function getAuthor() : ?Author
     {
         return $this->author;
     }
 
-    public function setMeta(?MetaAttribute $meta)
+    public function setMeta(?Meta $meta)
     {
         $this->meta = $meta;
     }
 
-    public function getMeta() : ?MetaAttribute
+    public function getMeta() : ?Meta
     {
         return $this->meta;
     }

@@ -22,8 +22,6 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\Parser;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
-use PSX\Schema\Tests\Parser\Popo\News;
-use PSX\Schema\Tests\Parser\Popo\NewsAttribute;
 
 /**
  * PopoTest
@@ -36,8 +34,12 @@ class PopoTest extends ParserTestCase
 {
     public function testParse()
     {
+        if (PHP_VERSION_ID >= 80000) {
+            $this->markTestSkipped('Works only at PHP 7.4');
+        }
+
         $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(News::class);
+        $schema = $parser->parse(Popo\Annotation\News::class);
 
         $this->assertSchema($this->getSchema(), $schema);
     }
@@ -49,7 +51,7 @@ class PopoTest extends ParserTestCase
         }
 
         $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(NewsAttribute::class);
+        $schema = $parser->parse(Popo\Attribute\News::class);
 
         $this->assertSchema($this->getSchema(), $schema);
     }

@@ -25,6 +25,7 @@ use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
 use PSX\Schema\Parser\Popo\ResolverInterface;
+use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
@@ -57,12 +58,19 @@ class Native implements ResolverInterface
             return null;
         }
 
-        $type = $reflection->getType();
-        if ($type instanceof \ReflectionNamedType) {
-            return $this->getPropertyForType($type, $reflection);
+        $reflectionType = $reflection->getType();
+        if (!$reflectionType instanceof \ReflectionNamedType) {
+            return null;
         }
 
-        return null;
+        $type = $this->getPropertyForType($reflectionType, $reflection);
+        if ($type instanceof ScalarType) {
+            if (PHP_VERSION_ID > 80000 && $reflection->getDefaultValue() !== null) {
+                $type->setConst($reflection->getDefaultValue());
+            }
+        }
+
+        return $type;
     }
 
     private function getPropertyForType(\ReflectionNamedType $type, \ReflectionProperty $property): ?TypeInterface

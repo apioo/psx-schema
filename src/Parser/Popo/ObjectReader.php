@@ -52,8 +52,11 @@ class ObjectReader
                 continue;
             }
 
-            if (PHP_VERSION_ID > 80000 && count($property->getAttributes()) > 0) {
-                $annotations = $property->getAttributes();
+            if (PHP_VERSION_ID > 80000) {
+                $annotations = [];
+                foreach ($property->getAttributes() as $attribute) {
+                    $annotations[] = $attribute->newInstance();
+                }
             } else {
                 $annotations = $reader->getPropertyAnnotations($property);
             }
