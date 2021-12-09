@@ -188,41 +188,32 @@ Beside PHP classes this library can generate the following types:
 * TypeSchema
 * TypeScript
 
-## Annotations
+## Attributes
 
-Please note that we use the [doctrine/annotations](https://github.com/doctrine/annotations)
-library to parse the annotations. Because of this you need to setup a fitting
-annotation loader which can load the classes. To use the registered autoloader
-you can simply use: `AnnotationRegistry::registerLoader('class_exists')`. More
-information how to configure the loader at the
-[documentation](https://www.doctrine-project.org/projects/doctrine-annotations/en/1.6/annotations.html#registering-annotations).
-For PHP 8 we plan to use native annotations so in the long term we will remove the
-`doctrine/annotations` library.
+The following attributes are available:
 
-The following annotations are available:
-
-| Annotation            | Target         | Example                                           |
+| Attribute             | Target         | Example                                           |
 |-----------------------|----------------|---------------------------------------------------|
-| @Deprecated           | Property       | @Deprecated(true)                            |
-| @Description          | Class/Property | @Description("content")                           |
-| @Discriminator        | Property       | @Discriminator("type")                           |
-| @Enum                 | Property       | @Enum({"foo", "bar"})                             |
-| @Exclude              | Property       | @Exclude                                          |
-| @ExclusiveMaximum     | Property       | @ExclusiveMaximum(true)                           |
-| @ExclusiveMinimum     | Property       | @ExclusiveMinimum(true)                           |
-| @Format               | Property       | @Format("uri")                                    |
-| @Key                  | Property       | @Key("$ref")                                      |
-| @Maximum              | Property       | @Maximum(16)                                      |
-| @MaxItems             | Property       | @MaxItems(16)                                     |
-| @MaxLength            | Property       | @MaxLength(16)                                    |
-| @MaxProperties        | Class          | @MaxProperties(16)                                |
-| @Minimum              | Property       | @Minimum(4)                                       |
-| @MinItems             | Property       | @MinItems(4)                                      |
-| @MinLength            | Property       | @MinLength(4)                                     |
-| @MinProperties        | Property       | @MinProperties(4)                                 |
-| @MultipleOf           | Property       | @MultipleOf(2)                                    |
-| @Nullable             | Property       | @Nullable(true)                                    |
-| @Pattern              | Property       | @Pattern("A-z+")                                  |
-| @Required             | Class          | @Required({"name", "title"})                      |
-| @Title                | Class          | @Title("foo")                                     |
-| @UniqueItems          | Property       | @UniqueItems(true)                                |
+| #Deprecated           | Property       | #Deprecated(true)                                 |
+| #Description          | Class/Property | #Description("content")                           |
+| #Discriminator        | Property       | #Discriminator("type")                            |
+| #Enum                 | Property       | #Enum({"foo", "bar"})                             |
+| #Exclude              | Property       | #Exclude                                          |
+| #ExclusiveMaximum     | Property       | #ExclusiveMaximum(true)                           |
+| #ExclusiveMinimum     | Property       | #ExclusiveMinimum(true)                           |
+| #Format               | Property       | #Format("uri")                                    |
+| #Key                  | Property       | #Key("$ref")                                      |
+| #Maximum              | Property       | #Maximum(16)                                      |
+| #MaxItems             | Property       | #MaxItems(16)                                     |
+| #MaxLength            | Property       | #MaxLength(16)                                    |
+| #MaxProperties        | Class          | #MaxProperties(16)                                |
+| #Minimum              | Property       | #Minimum(4)                                       |
+| #MinItems             | Property       | #MinItems(4)                                      |
+| #MinLength            | Property       | #MinLength(4)                                     |
+| #MinProperties        | Property       | #MinProperties(4)                                 |
+| #MultipleOf           | Property       | #MultipleOf(2)                                    |
+| #Nullable             | Property       | #Nullable(true)                                   |
+| #Pattern              | Property       | #Pattern("A-z+")                                  |
+| #Required             | Class          | #Required(["name", "title"])                      |
+| #Title                | Class          | #Title("foo")                                     |
+| #UniqueItems          | Property       | #UniqueItems(true)                                |
