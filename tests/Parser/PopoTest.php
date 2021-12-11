@@ -58,6 +58,10 @@ class PopoTest extends ParserTestCase
 
     public function testDiscriminator()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $parser = new Parser\Popo($this->reader);
         $schema = $parser->parse(Form_Container::class);
 
