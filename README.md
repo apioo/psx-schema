@@ -1,7 +1,7 @@
 
 # Schema
 
-This library can parse a [TypeSchema](https://typeschema.org/) specification either from a JSON file, or from PHP
+This library can parse a [TypeSchema](https://typeschema.org/) specification either from a JSON file or from PHP
 classes using reflection and attributes. Based on this schema it can generate source code and transform raw JSON data
 into DTO objects. Through this you can work with fully typed objects in your API for incoming and outgoing data. It
 provides basically the following features:
