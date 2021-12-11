@@ -298,6 +298,10 @@ class SchemaTraverserTest extends SchemaTestCase
 
     public function testTraverseDiscriminator()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
 {
@@ -319,6 +323,10 @@ JSON;
 
     public function testTraverseDiscriminatorInvalidType()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('/elements/0 discriminated union provided type "foo" not available, use one of http://fusio-project.org/ns/2015/form/input, http://fusio-project.org/ns/2015/form/select, http://fusio-project.org/ns/2015/form/tag, http://fusio-project.org/ns/2015/form/textarea');
 
@@ -339,6 +347,10 @@ JSON;
 
     public function testTraverseDiscriminatorInvalidDataType()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('/elements/0 discriminated union provided value must be an object');
 
@@ -355,6 +367,10 @@ JSON;
 
     public function testTraverseDiscriminatorNoType()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('/elements/0 discriminated union object must have the property "element"');
 
@@ -373,6 +389,10 @@ JSON;
 
     public function testTraverseExtends()
     {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Works only at PHP 8.0');
+        }
+
         $schema = $this->schemaManager->getSchema(Form_Element_Input::class);
         $data = <<<JSON
 {
