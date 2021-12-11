@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\Tests\Parser\Popo\News;
+use PSX\Schema\Tests\Parser\Popo\Attribute\News;
 
 /**
  * SchemaManagerTest

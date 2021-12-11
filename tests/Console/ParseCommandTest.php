@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Console\ParseCommand;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\Tests\Parser\Popo\News;
+use PSX\Schema\Tests\Parser\Popo\Attribute\News;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**

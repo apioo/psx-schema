@@ -1,119 +1,66 @@
-/**
- * @Description("Common properties which can be used at any schema")
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+
+#[Description('Common properties which can be used at any schema')]
 class CommonProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Description("Distinct word which represents this schema")
-     */
-    protected $title;
-    /**
-     * @var string|null
-     * @Description("General description of this schema, should not contain any new lines.")
-     */
-    protected $description;
-    /**
-     * @var string|null
-     * @Description("JSON type of the property")
-     * @Enum({"object", "array", "boolean", "integer", "number", "string"})
-     */
-    protected $type;
-    /**
-     * @var bool|null
-     * @Description("Indicates whether it is possible to use a null value")
-     */
-    protected $nullable;
-    /**
-     * @var bool|null
-     * @Description("Indicates whether this schema is deprecated")
-     */
-    protected $deprecated;
-    /**
-     * @var bool|null
-     * @Description("Indicates whether this schema is readonly")
-     */
-    protected $readonly;
-    /**
-     * @param string|null $title
-     */
+    #[Description('Distinct word which represents this schema')]
+    protected ?string $title = null;
+    #[Description('General description of this schema, should not contain any new lines.')]
+    protected ?string $description = null;
+    #[Description('JSON type of the property')]
+    #[Enum(array('object', 'array', 'boolean', 'integer', 'number', 'string'))]
+    protected ?string $type = null;
+    #[Description('Indicates whether it is possible to use a null value')]
+    protected ?bool $nullable = null;
+    #[Description('Indicates whether this schema is deprecated')]
+    protected ?bool $deprecated = null;
+    #[Description('Indicates whether this schema is readonly')]
+    protected ?bool $readonly = null;
     public function setTitle(?string $title) : void
     {
         $this->title = $title;
     }
-    /**
-     * @return string|null
-     */
     public function getTitle() : ?string
     {
         return $this->title;
     }
-    /**
-     * @param string|null $description
-     */
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
-    /**
-     * @return string|null
-     */
     public function getDescription() : ?string
     {
         return $this->description;
     }
-    /**
-     * @param string|null $type
-     */
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
     }
-    /**
-     * @param bool|null $nullable
-     */
     public function setNullable(?bool $nullable) : void
     {
         $this->nullable = $nullable;
     }
-    /**
-     * @return bool|null
-     */
     public function getNullable() : ?bool
     {
         return $this->nullable;
     }
-    /**
-     * @param bool|null $deprecated
-     */
     public function setDeprecated(?bool $deprecated) : void
     {
         $this->deprecated = $deprecated;
     }
-    /**
-     * @return bool|null
-     */
     public function getDeprecated() : ?bool
     {
         return $this->deprecated;
     }
-    /**
-     * @param bool|null $readonly
-     */
     public function setReadonly(?bool $readonly) : void
     {
         $this->readonly = $readonly;
     }
-    /**
-     * @return bool|null
-     */
     public function getReadonly() : ?bool
     {
         return $this->readonly;
@@ -126,62 +73,37 @@ class CommonProperties implements \JsonSerializable
     }
 }
 
+use PSX\Schema\Attribute\Description;
+
 class ScalarProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Description("Describes the specific format of this type i.e. date-time or int64")
-     */
-    protected $format;
-    /**
-     * @var StringArray|NumberArray|null
-     * @Description("A list of possible enumeration values")
-     */
-    protected $enum;
-    /**
-     * @var string|float|bool|null
-     * @Description("Represents a scalar value")
-     */
-    protected $default;
-    /**
-     * @param string|null $format
-     */
+    #[Description('Describes the specific format of this type i.e. date-time or int64')]
+    protected ?string $format = null;
+    #[Description('A list of possible enumeration values')]
+    protected StringArray|NumberArray|null $enum = null;
+    #[Description('Represents a scalar value')]
+    protected string|float|bool|null $default = null;
     public function setFormat(?string $format) : void
     {
         $this->format = $format;
     }
-    /**
-     * @return string|null
-     */
     public function getFormat() : ?string
     {
         return $this->format;
     }
-    /**
-     * @param StringArray|NumberArray|null $enum
-     */
-    public function setEnum($enum) : void
+    public function setEnum(StringArray|NumberArray|null $enum) : void
     {
         $this->enum = $enum;
     }
-    /**
-     * @return StringArray|NumberArray|null
-     */
-    public function getEnum()
+    public function getEnum() : StringArray|NumberArray|null
     {
         return $this->enum;
     }
-    /**
-     * @param string|float|bool|null $default
-     */
-    public function setDefault($default) : void
+    public function setDefault(string|float|bool|null $default) : void
     {
         $this->default = $default;
     }
-    /**
-     * @return string|float|bool|null
-     */
-    public function getDefault()
+    public function getDefault() : string|float|bool|null
     {
         return $this->default;
     }
@@ -193,35 +115,29 @@ class ScalarProperties implements \JsonSerializable
     }
 }
 
+use PSX\Schema\Attribute\Description;
 /**
  * @extends \PSX\Record\Record<PropertyValue>
- * @Description("Properties of a schema")
  */
+#[Description('Properties of a schema')]
 class Properties extends \PSX\Record\Record
 {
 }
 
-/**
- * @Description("Properties specific for a container")
- * @Required({"type"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Properties specific for a container')]
+#[Required(array('type'))]
 class ContainerProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Enum({"object"})
-     */
-    protected $type;
-    /**
-     * @param string|null $type
-     */
+    #[Enum(array('object'))]
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
@@ -234,46 +150,33 @@ class ContainerProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Struct specific properties")
- * @Required({"properties"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\MinItems;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Struct specific properties')]
+#[Required(array('properties'))]
 class StructProperties implements \JsonSerializable
 {
-    /**
-     * @var Properties|null
-     */
-    protected $properties;
+    protected ?Properties $properties = null;
     /**
      * @var array<string>|null
-     * @Description("Array string values")
-     * @MinItems(1)
      */
-    protected $required;
-    /**
-     * @param Properties|null $properties
-     */
+    #[Description('Array string values')]
+    #[MinItems(1)]
+    protected ?array $required = null;
     public function setProperties(?Properties $properties) : void
     {
         $this->properties = $properties;
     }
-    /**
-     * @return Properties|null
-     */
     public function getProperties() : ?Properties
     {
         return $this->properties;
     }
-    /**
-     * @param array<string>|null $required
-     */
     public function setRequired(?array $required) : void
     {
         $this->required = $required;
     }
-    /**
-     * @return array<string>|null
-     */
     public function getRequired() : ?array
     {
         return $this->required;
@@ -286,67 +189,42 @@ class StructProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Map specific properties")
- * @Required({"additionalProperties"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Minimum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Map specific properties')]
+#[Required(array('additionalProperties'))]
 class MapProperties implements \JsonSerializable
 {
-    /**
-     * @var BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
-     * @Description("Allowed values of an object property")
-     */
-    protected $additionalProperties;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $maxProperties;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $minProperties;
-    /**
-     * @param BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties
-     */
-    public function setAdditionalProperties($additionalProperties) : void
+    #[Description('Allowed values of an object property')]
+    protected BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $maxProperties = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $minProperties = null;
+    public function setAdditionalProperties(BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties) : void
     {
         $this->additionalProperties = $additionalProperties;
     }
-    /**
-     * @return BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
-     */
-    public function getAdditionalProperties()
+    public function getAdditionalProperties() : BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
     {
         return $this->additionalProperties;
     }
-    /**
-     * @param int|null $maxProperties
-     */
     public function setMaxProperties(?int $maxProperties) : void
     {
         $this->maxProperties = $maxProperties;
     }
-    /**
-     * @return int|null
-     */
     public function getMaxProperties() : ?int
     {
         return $this->maxProperties;
     }
-    /**
-     * @param int|null $minProperties
-     */
     public function setMinProperties(?int $minProperties) : void
     {
         $this->minProperties = $minProperties;
     }
-    /**
-     * @return int|null
-     */
     public function getMinProperties() : ?int
     {
         return $this->minProperties;
@@ -359,104 +237,62 @@ class MapProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Array properties")
- * @Required({"type", "items"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Minimum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Array properties')]
+#[Required(array('type', 'items'))]
 class ArrayProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Enum({"array"})
-     */
-    protected $type;
-    /**
-     * @var BooleanType|NumberType|StringType|ReferenceType|GenericType|null
-     * @Description("Allowed values of an array item")
-     */
-    protected $items;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $maxItems;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $minItems;
-    /**
-     * @var bool|null
-     */
-    protected $uniqueItems;
-    /**
-     * @param string|null $type
-     */
+    #[Enum(array('array'))]
+    protected ?string $type = null;
+    #[Description('Allowed values of an array item')]
+    protected BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $maxItems = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $minItems = null;
+    protected ?bool $uniqueItems = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
     }
-    /**
-     * @param BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items
-     */
-    public function setItems($items) : void
+    public function setItems(BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items) : void
     {
         $this->items = $items;
     }
-    /**
-     * @return BooleanType|NumberType|StringType|ReferenceType|GenericType|null
-     */
-    public function getItems()
+    public function getItems() : BooleanType|NumberType|StringType|ReferenceType|GenericType|null
     {
         return $this->items;
     }
-    /**
-     * @param int|null $maxItems
-     */
     public function setMaxItems(?int $maxItems) : void
     {
         $this->maxItems = $maxItems;
     }
-    /**
-     * @return int|null
-     */
     public function getMaxItems() : ?int
     {
         return $this->maxItems;
     }
-    /**
-     * @param int|null $minItems
-     */
     public function setMinItems(?int $minItems) : void
     {
         $this->minItems = $minItems;
     }
-    /**
-     * @return int|null
-     */
     public function getMinItems() : ?int
     {
         return $this->minItems;
     }
-    /**
-     * @param bool|null $uniqueItems
-     */
     public function setUniqueItems(?bool $uniqueItems) : void
     {
         $this->uniqueItems = $uniqueItems;
     }
-    /**
-     * @return bool|null
-     */
     public function getUniqueItems() : ?bool
     {
         return $this->uniqueItems;
@@ -469,27 +305,20 @@ class ArrayProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Boolean properties")
- * @Required({"type"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Boolean properties')]
+#[Required(array('type'))]
 class BooleanProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Enum({"boolean"})
-     */
-    protected $type;
-    /**
-     * @param string|null $type
-     */
+    #[Enum(array('boolean'))]
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
@@ -502,119 +331,67 @@ class BooleanProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Number properties")
- * @Required({"type"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Minimum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Number properties')]
+#[Required(array('type'))]
 class NumberProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Enum({"number", "integer"})
-     */
-    protected $type;
-    /**
-     * @var float|null
-     * @Minimum(0)
-     * @ExclusiveMinimum(true)
-     */
-    protected $multipleOf;
-    /**
-     * @var float|null
-     */
-    protected $maximum;
-    /**
-     * @var bool|null
-     */
-    protected $exclusiveMaximum;
-    /**
-     * @var float|null
-     */
-    protected $minimum;
-    /**
-     * @var bool|null
-     */
-    protected $exclusiveMinimum;
-    /**
-     * @param string|null $type
-     */
+    #[Enum(array('number', 'integer'))]
+    protected ?string $type = null;
+    #[Minimum(0)]
+    protected ?float $multipleOf = null;
+    protected ?float $maximum = null;
+    protected ?bool $exclusiveMaximum = null;
+    protected ?float $minimum = null;
+    protected ?bool $exclusiveMinimum = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
     }
-    /**
-     * @param float|null $multipleOf
-     */
     public function setMultipleOf(?float $multipleOf) : void
     {
         $this->multipleOf = $multipleOf;
     }
-    /**
-     * @return float|null
-     */
     public function getMultipleOf() : ?float
     {
         return $this->multipleOf;
     }
-    /**
-     * @param float|null $maximum
-     */
     public function setMaximum(?float $maximum) : void
     {
         $this->maximum = $maximum;
     }
-    /**
-     * @return float|null
-     */
     public function getMaximum() : ?float
     {
         return $this->maximum;
     }
-    /**
-     * @param bool|null $exclusiveMaximum
-     */
     public function setExclusiveMaximum(?bool $exclusiveMaximum) : void
     {
         $this->exclusiveMaximum = $exclusiveMaximum;
     }
-    /**
-     * @return bool|null
-     */
     public function getExclusiveMaximum() : ?bool
     {
         return $this->exclusiveMaximum;
     }
-    /**
-     * @param float|null $minimum
-     */
     public function setMinimum(?float $minimum) : void
     {
         $this->minimum = $minimum;
     }
-    /**
-     * @return float|null
-     */
     public function getMinimum() : ?float
     {
         return $this->minimum;
     }
-    /**
-     * @param bool|null $exclusiveMinimum
-     */
     public function setExclusiveMinimum(?bool $exclusiveMinimum) : void
     {
         $this->exclusiveMinimum = $exclusiveMinimum;
     }
-    /**
-     * @return bool|null
-     */
     public function getExclusiveMinimum() : ?bool
     {
         return $this->exclusiveMinimum;
@@ -627,85 +404,52 @@ class NumberProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("String properties")
- * @Required({"type"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Minimum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('String properties')]
+#[Required(array('type'))]
 class StringProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Enum({"string"})
-     */
-    protected $type;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $maxLength;
-    /**
-     * @var int|null
-     * @Description("Positive integer value")
-     * @Minimum(0)
-     */
-    protected $minLength;
-    /**
-     * @var string|null
-     */
-    protected $pattern;
-    /**
-     * @param string|null $type
-     */
+    #[Enum(array('string'))]
+    protected ?string $type = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $maxLength = null;
+    #[Description('Positive integer value')]
+    #[Minimum(0)]
+    protected ?int $minLength = null;
+    protected ?string $pattern = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
     }
-    /**
-     * @param int|null $maxLength
-     */
     public function setMaxLength(?int $maxLength) : void
     {
         $this->maxLength = $maxLength;
     }
-    /**
-     * @return int|null
-     */
     public function getMaxLength() : ?int
     {
         return $this->maxLength;
     }
-    /**
-     * @param int|null $minLength
-     */
     public function setMinLength(?int $minLength) : void
     {
         $this->minLength = $minLength;
     }
-    /**
-     * @return int|null
-     */
     public function getMinLength() : ?int
     {
         return $this->minLength;
     }
-    /**
-     * @param string|null $pattern
-     */
     public function setPattern(?string $pattern) : void
     {
         $this->pattern = $pattern;
     }
-    /**
-     * @return string|null
-     */
     public function getPattern() : ?string
     {
         return $this->pattern;
@@ -718,53 +462,37 @@ class StringProperties implements \JsonSerializable
     }
 }
 
+use PSX\Schema\Attribute\Description;
 /**
  * @extends \PSX\Record\Record<string>
- * @Description("An object to hold mappings between payload values and schema names or references")
  */
+#[Description('An object to hold mappings between payload values and schema names or references')]
 class DiscriminatorMapping extends \PSX\Record\Record
 {
 }
 
-/**
- * @Description("Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description")
- * @Required({"propertyName"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description')]
+#[Required(array('propertyName'))]
 class Discriminator implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Description("The name of the property in the payload that will hold the discriminator value")
-     */
-    protected $propertyName;
-    /**
-     * @var DiscriminatorMapping|null
-     */
-    protected $mapping;
-    /**
-     * @param string|null $propertyName
-     */
+    #[Description('The name of the property in the payload that will hold the discriminator value')]
+    protected ?string $propertyName = null;
+    protected ?DiscriminatorMapping $mapping = null;
     public function setPropertyName(?string $propertyName) : void
     {
         $this->propertyName = $propertyName;
     }
-    /**
-     * @return string|null
-     */
     public function getPropertyName() : ?string
     {
         return $this->propertyName;
     }
-    /**
-     * @param DiscriminatorMapping|null $mapping
-     */
     public function setMapping(?DiscriminatorMapping $mapping) : void
     {
         $this->mapping = $mapping;
     }
-    /**
-     * @return DiscriminatorMapping|null
-     */
     public function getMapping() : ?DiscriminatorMapping
     {
         return $this->mapping;
@@ -777,45 +505,31 @@ class Discriminator implements \JsonSerializable
     }
 }
 
-/**
- * @Description("An intersection type combines multiple schemas into one")
- * @Required({"allOf"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Required;
+
+#[Description('An intersection type combines multiple schemas into one')]
+#[Required(array('allOf'))]
 class AllOfProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $description;
+    protected ?string $description = null;
     /**
      * @var array<OfValue>|null
-     * @Description("Combination values")
      */
-    protected $allOf;
-    /**
-     * @param string|null $description
-     */
+    #[Description('Combination values')]
+    protected ?array $allOf = null;
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
-    /**
-     * @return string|null
-     */
     public function getDescription() : ?string
     {
         return $this->description;
     }
-    /**
-     * @param array<OfValue>|null $allOf
-     */
     public function setAllOf(?array $allOf) : void
     {
         $this->allOf = $allOf;
     }
-    /**
-     * @return array<OfValue>|null
-     */
     public function getAllOf() : ?array
     {
         return $this->allOf;
@@ -828,63 +542,40 @@ class AllOfProperties implements \JsonSerializable
     }
 }
 
-/**
- * @Description("An union type can contain one of the provided schemas")
- * @Required({"oneOf"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Required;
+
+#[Description('An union type can contain one of the provided schemas')]
+#[Required(array('oneOf'))]
 class OneOfProperties implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $description;
-    /**
-     * @var Discriminator|null
-     */
-    protected $discriminator;
+    protected ?string $description = null;
+    protected ?Discriminator $discriminator = null;
     /**
      * @var array<OfValue>|null
-     * @Description("Combination values")
      */
-    protected $oneOf;
-    /**
-     * @param string|null $description
-     */
+    #[Description('Combination values')]
+    protected ?array $oneOf = null;
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
-    /**
-     * @return string|null
-     */
     public function getDescription() : ?string
     {
         return $this->description;
     }
-    /**
-     * @param Discriminator|null $discriminator
-     */
     public function setDiscriminator(?Discriminator $discriminator) : void
     {
         $this->discriminator = $discriminator;
     }
-    /**
-     * @return Discriminator|null
-     */
     public function getDiscriminator() : ?Discriminator
     {
         return $this->discriminator;
     }
-    /**
-     * @param array<OfValue>|null $oneOf
-     */
     public function setOneOf(?array $oneOf) : void
     {
         $this->oneOf = $oneOf;
     }
-    /**
-     * @return array<OfValue>|null
-     */
     public function getOneOf() : ?array
     {
         return $this->oneOf;
@@ -904,48 +595,32 @@ class TemplateProperties extends \PSX\Record\Record
 {
 }
 
-/**
- * @Description("Represents a reference to another schema")
- * @Required({"$ref"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Key;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Represents a reference to another schema')]
+#[Required(array('$ref'))]
 class ReferenceType implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Key("$ref")
-     * @Description("Reference to the schema under the definitions key")
-     */
-    protected $ref;
-    /**
-     * @var TemplateProperties|null
-     * @Key("$template")
-     * @Description("Optional concrete schema definitions which replace generic template types")
-     */
-    protected $template;
-    /**
-     * @param string|null $ref
-     */
+    #[Key('$ref')]
+    #[Description('Reference to the schema under the definitions key')]
+    protected ?string $ref = null;
+    #[Key('$template')]
+    #[Description('Optional concrete schema definitions which replace generic template types')]
+    protected ?TemplateProperties $template = null;
     public function setRef(?string $ref) : void
     {
         $this->ref = $ref;
     }
-    /**
-     * @return string|null
-     */
     public function getRef() : ?string
     {
         return $this->ref;
     }
-    /**
-     * @param TemplateProperties|null $template
-     */
     public function setTemplate(?TemplateProperties $template) : void
     {
         $this->template = $template;
     }
-    /**
-     * @return TemplateProperties|null
-     */
     public function getTemplate() : ?TemplateProperties
     {
         return $this->template;
@@ -958,27 +633,20 @@ class ReferenceType implements \JsonSerializable
     }
 }
 
-/**
- * @Description("Represents a generic type")
- * @Required({"$generic"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Key;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Represents a generic type')]
+#[Required(array('$generic'))]
 class GenericType implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     * @Key("$generic")
-     */
-    protected $generic;
-    /**
-     * @param string|null $generic
-     */
+    #[Key('$generic')]
+    protected ?string $generic = null;
     public function setGeneric(?string $generic) : void
     {
         $this->generic = $generic;
     }
-    /**
-     * @return string|null
-     */
     public function getGeneric() : ?string
     {
         return $this->generic;
@@ -991,155 +659,102 @@ class GenericType implements \JsonSerializable
     }
 }
 
+use PSX\Schema\Attribute\Description;
 /**
  * @extends \PSX\Record\Record<DefinitionValue>
- * @Description("Schema definitions which can be reused")
  */
+#[Description('Schema definitions which can be reused')]
 class Definitions extends \PSX\Record\Record
 {
 }
 
+use PSX\Schema\Attribute\Description;
 /**
  * @extends \PSX\Record\Record<string>
- * @Description("Contains external definitions which are imported. The imported schemas can be used via the namespace")
  */
+#[Description('Contains external definitions which are imported. The imported schemas can be used via the namespace')]
 class Import extends \PSX\Record\Record
 {
 }
 
-/**
- * @Title("TypeSchema")
- * @Description("TypeSchema meta schema which describes a TypeSchema")
- * @Required({"title", "type", "properties"})
- */
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Key;
+use PSX\Schema\Attribute\MinItems;
+use PSX\Schema\Attribute\Required;
+use PSX\Schema\Attribute\Title;
+
+#[Title('TypeSchema')]
+#[Description('TypeSchema meta schema which describes a TypeSchema')]
+#[Required(array('title', 'type', 'properties'))]
 class TypeSchema implements \JsonSerializable
 {
-    /**
-     * @var Import|null
-     * @Key("$import")
-     */
-    protected $import;
-    /**
-     * @var string|null
-     */
-    protected $title;
-    /**
-     * @var string|null
-     */
-    protected $description;
-    /**
-     * @var string|null
-     * @Enum({"object"})
-     */
-    protected $type;
-    /**
-     * @var Definitions|null
-     */
-    protected $definitions;
-    /**
-     * @var Properties|null
-     */
-    protected $properties;
+    #[Key('$import')]
+    protected ?Import $import = null;
+    protected ?string $title = null;
+    protected ?string $description = null;
+    #[Enum(array('object'))]
+    protected ?string $type = null;
+    protected ?Definitions $definitions = null;
+    protected ?Properties $properties = null;
     /**
      * @var array<string>|null
-     * @Description("Array string values")
-     * @MinItems(1)
      */
-    protected $required;
-    /**
-     * @param Import|null $import
-     */
+    #[Description('Array string values')]
+    #[MinItems(1)]
+    protected ?array $required = null;
     public function setImport(?Import $import) : void
     {
         $this->import = $import;
     }
-    /**
-     * @return Import|null
-     */
     public function getImport() : ?Import
     {
         return $this->import;
     }
-    /**
-     * @param string|null $title
-     */
     public function setTitle(?string $title) : void
     {
         $this->title = $title;
     }
-    /**
-     * @return string|null
-     */
     public function getTitle() : ?string
     {
         return $this->title;
     }
-    /**
-     * @param string|null $description
-     */
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
     }
-    /**
-     * @return string|null
-     */
     public function getDescription() : ?string
     {
         return $this->description;
     }
-    /**
-     * @param string|null $type
-     */
     public function setType(?string $type) : void
     {
         $this->type = $type;
     }
-    /**
-     * @return string|null
-     */
     public function getType() : ?string
     {
         return $this->type;
     }
-    /**
-     * @param Definitions|null $definitions
-     */
     public function setDefinitions(?Definitions $definitions) : void
     {
         $this->definitions = $definitions;
     }
-    /**
-     * @return Definitions|null
-     */
     public function getDefinitions() : ?Definitions
     {
         return $this->definitions;
     }
-    /**
-     * @param Properties|null $properties
-     */
     public function setProperties(?Properties $properties) : void
     {
         $this->properties = $properties;
     }
-    /**
-     * @return Properties|null
-     */
     public function getProperties() : ?Properties
     {
         return $this->properties;
     }
-    /**
-     * @param array<string>|null $required
-     */
     public function setRequired(?array $required) : void
     {
         $this->required = $required;
     }
-    /**
-     * @return array<string>|null
-     */
     public function getRequired() : ?array
     {
         return $this->required;

@@ -58,12 +58,23 @@ class Native implements ResolverInterface
             return null;
         }
 
+        $type = null;
         $reflectionType = $reflection->getType();
-        if (!$reflectionType instanceof \ReflectionNamedType) {
-            return null;
+        if (PHP_VERSION_ID > 80000 && $reflectionType instanceof \ReflectionUnionType) {
+            $types = [];
+            foreach ($reflectionType->getTypes() as $type) {
+                $value = $this->getPropertyForType($type, $reflection);
+                if ($value !== null) {
+                    $types[] = $value;
+                }
+            }
+            $type = TypeFactory::getUnion($types);
         }
 
-        $type = $this->getPropertyForType($reflectionType, $reflection);
+        if ($reflectionType instanceof \ReflectionNamedType) {
+            $type = $this->getPropertyForType($reflectionType, $reflection);
+        }
+
         if ($type instanceof ScalarType) {
             if (PHP_VERSION_ID > 80000 && $reflection->getDefaultValue() !== null) {
                 $type->setConst($reflection->getDefaultValue());
