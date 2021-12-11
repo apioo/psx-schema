@@ -162,7 +162,6 @@ class Php extends CodeGeneratorAbstract
             $setter = $this->factory->method('set' . ucfirst($name));
             $setter->setReturnType('void');
             $setter->makePublic();
-            //$setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $name]));
             $setter->addParam($param);
             $setter->addStmt(new Node\Expr\Assign(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
@@ -181,7 +180,6 @@ class Php extends CodeGeneratorAbstract
                 $setter->setReturnType('void');
             }
             $getter->makePublic();
-            //$getter->setDocComment($this->buildComment(['return' => $property->getDocType() . '|null']));
             $getter->addStmt(new Node\Stmt\Return_(
                 new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
             ));
