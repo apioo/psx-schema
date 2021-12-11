@@ -3,38 +3,20 @@ namespace Foo\Bar;
 
 class Import implements \JsonSerializable
 {
-    /**
-     * @var \My\Import\StudentMap|null
-     */
-    protected $students;
-    /**
-     * @var \My\Import\Student|null
-     */
-    protected $student;
-    /**
-     * @param \My\Import\StudentMap|null $students
-     */
+    protected ?\My\Import\StudentMap $students = null;
+    protected ?\My\Import\Student $student = null;
     public function setStudents(?\My\Import\StudentMap $students) : void
     {
         $this->students = $students;
     }
-    /**
-     * @return \My\Import\StudentMap|null
-     */
     public function getStudents() : ?\My\Import\StudentMap
     {
         return $this->students;
     }
-    /**
-     * @param \My\Import\Student|null $student
-     */
     public function setStudent(?\My\Import\Student $student) : void
     {
         $this->student = $student;
     }
-    /**
-     * @return \My\Import\Student|null
-     */
     public function getStudent() : ?\My\Import\Student
     {
         return $this->student;

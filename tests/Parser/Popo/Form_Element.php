@@ -2,37 +2,16 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use PSX\Schema\Annotation as Schema;
+use PSX\Schema\Attribute\Required;
 
-/**
- * @Schema\Required({"element"})
- */
+#[Required(['element'])]
 class Form_Element
 {
-    /**
-     * @var string
-     */
-    private $element;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
-     */
-    private $help;
-
-    /**
-     * @var Form_Element_Input
-     */
-    private $parent;
+    private ?string $element;
+    private ?string $name;
+    private ?string $title;
+    private ?string $help;
+    private ?Form_Element_Input $parent;
 
     public function getElement(): ?string
     {

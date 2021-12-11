@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,34 +29,19 @@ use PSX\Schema\Type\ReferenceType;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 abstract class SchemaAbstract implements SchemaInterface
 {
-    /**
-     * @var SchemaManagerInterface
-     */
-    private $schemaManager;
-
-    /**
-     * @var TypeInterface
-     */
-    private $type;
-
-    /**
-     * @var DefinitionsInterface
-     */
-    private $definitions;
-
-    /**
-     * @var string
-     */
-    private $rootName;
+    private SchemaManagerInterface $schemaManager;
+    private TypeInterface $type;
+    private DefinitionsInterface $definitions;
+    private ?string $rootName;
 
     public function __construct(SchemaManagerInterface $schemaManager)
     {
         $this->schemaManager = $schemaManager;
-        $this->definitions   = new Definitions();
+        $this->definitions = new Definitions();
 
         $this->build();
         $type = $this->rootName;
@@ -78,19 +63,11 @@ abstract class SchemaAbstract implements SchemaInterface
         return $this->definitions;
     }
 
-    /**
-     * @param string $name
-     * @param TypeInterface $type
-     */
     protected function add(string $name, TypeInterface $type): void
     {
         $this->definitions->addType($name, $type);
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     protected function has(string $name): bool
     {
         return $this->definitions->hasType($name);
@@ -98,9 +75,6 @@ abstract class SchemaAbstract implements SchemaInterface
 
     /**
      * Main method to add a new type to the definitions of this schema
-     * 
-     * @param string $name
-     * @return Builder
      */
     protected function newStruct(string $name): Builder
     {
@@ -113,8 +87,7 @@ abstract class SchemaAbstract implements SchemaInterface
     }
 
     /**
-     * @param string $name
-     * @return MapType
+     * @throws Exception\InvalidSchemaException
      */
     protected function newMap(string $name): MapType
     {
@@ -126,22 +99,18 @@ abstract class SchemaAbstract implements SchemaInterface
 
     /**
      * Loads a remote schema and returns a reference to the root type
-     * 
-     * @param string $name
-     * @return ReferenceType
+     *
+     * @throws Exception\InvalidSchemaException
      */
     protected function get(string $name): ReferenceType
     {
         $schema = $this->schemaManager->getSchema($name);
-        if (!$schema instanceof SchemaInterface) {
-            throw new \InvalidArgumentException('Could not load schema ' . $name);
-        }
 
         $this->definitions->merge($schema->getDefinitions());
 
         $type = $schema->getType();
         if (!$type instanceof ReferenceType) {
-            throw new \InvalidArgumentException('Loaded schema ' . $name . ' contains not a reference');
+            throw new InvalidSchemaException('Loaded schema ' . $name . ' contains not a reference');
         }
 
         return clone $type;
@@ -150,26 +119,21 @@ abstract class SchemaAbstract implements SchemaInterface
     /**
      * Loads all definitions from another schema into this schema, so you can
      * use all definitions from the schema
-     * 
-     * @param string $name
+     *
+     * @throws Exception\InvalidSchemaException
      */
     protected function load(string $name): void
     {
         $schema = $this->schemaManager->getSchema($name);
-        if ($schema instanceof SchemaInterface) {
-            $this->definitions->merge($schema->getDefinitions());
-        } else {
-            throw new \InvalidArgumentException('Could not load schema ' . $name);
-        }
+        $this->definitions->merge($schema->getDefinitions());
     }
 
     /**
      * Clones an existing type under a new name so you that you can modify
      * specific properties
-     * 
-     * @param string $existingName
-     * @param string $newName
-     * @return TypeInterface
+     *
+     * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
      */
     protected function modify(string $existingName, string $newName): TypeInterface
     {

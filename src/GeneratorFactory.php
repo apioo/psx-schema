@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,33 +25,28 @@ namespace PSX\Schema;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class GeneratorFactory
 {
-    const TYPE_CSHARP = 'csharp';
-    const TYPE_GO = 'go';
-    const TYPE_GRAPHQL = 'graphql';
-    const TYPE_HTML = 'html';
-    const TYPE_JAVA = 'java';
-    const TYPE_JSONSCHEMA = 'jsonschema';
-    const TYPE_KOTLIN = 'kotlin';
-    const TYPE_MARKDOWN = 'markdown';
-    const TYPE_PHP = 'php';
-    const TYPE_PROTOBUF = 'protobuf';
-    const TYPE_PYTHON = 'python';
-    const TYPE_RUBY = 'ruby';
-    const TYPE_RUST = 'rust';
-    const TYPE_SWIFT = 'swift';
-    const TYPE_TYPESCHEMA = 'typeschema';
-    const TYPE_TYPESCRIPT = 'typescript';
+    public const TYPE_CSHARP = 'csharp';
+    public const TYPE_GO = 'go';
+    public const TYPE_GRAPHQL = 'graphql';
+    public const TYPE_HTML = 'html';
+    public const TYPE_JAVA = 'java';
+    public const TYPE_JSONSCHEMA = 'jsonschema';
+    public const TYPE_KOTLIN = 'kotlin';
+    public const TYPE_MARKDOWN = 'markdown';
+    public const TYPE_PHP = 'php';
+    public const TYPE_PROTOBUF = 'protobuf';
+    public const TYPE_PYTHON = 'python';
+    public const TYPE_RUBY = 'ruby';
+    public const TYPE_RUST = 'rust';
+    public const TYPE_SWIFT = 'swift';
+    public const TYPE_TYPESCHEMA = 'typeschema';
+    public const TYPE_TYPESCRIPT = 'typescript';
 
-    /**
-     * @param string $format
-     * @param string $config
-     * @return \PSX\Schema\GeneratorInterface
-     */
-    public function getGenerator(string $format, ?string $config = null)
+    public function getGenerator(string $format, ?string $config = null): GeneratorInterface
     {
         $result = [];
         parse_str($config ?? '', $result);
@@ -113,10 +108,7 @@ class GeneratorFactory
         }
     }
 
-    /**
-     * @return array
-     */
-    public static function getPossibleTypes()
+    public static function getPossibleTypes(): array
     {
         return [
             self::TYPE_CSHARP,

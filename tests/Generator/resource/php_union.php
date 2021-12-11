@@ -1,22 +1,13 @@
-/**
- * @Required({"kind"})
- */
+use PSX\Schema\Attribute\Required;
+
+#[Required(array('kind'))]
 class Creature implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $kind;
-    /**
-     * @param string|null $kind
-     */
+    protected ?string $kind = null;
     public function setKind(?string $kind) : void
     {
         $this->kind = $kind;
     }
-    /**
-     * @return string|null
-     */
     public function getKind() : ?string
     {
         return $this->kind;
@@ -31,20 +22,11 @@ class Creature implements \JsonSerializable
 
 class Human extends Creature implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $firstName;
-    /**
-     * @param string|null $firstName
-     */
+    protected ?string $firstName = null;
     public function setFirstName(?string $firstName) : void
     {
         $this->firstName = $firstName;
     }
-    /**
-     * @return string|null
-     */
     public function getFirstName() : ?string
     {
         return $this->firstName;
@@ -59,20 +41,11 @@ class Human extends Creature implements \JsonSerializable
 
 class Animal extends Creature implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $nickname;
-    /**
-     * @param string|null $nickname
-     */
+    protected ?string $nickname = null;
     public function setNickname(?string $nickname) : void
     {
         $this->nickname = $nickname;
     }
-    /**
-     * @return string|null
-     */
     public function getNickname() : ?string
     {
         return $this->nickname;
@@ -85,60 +58,38 @@ class Animal extends Creature implements \JsonSerializable
     }
 }
 
+use PSX\Schema\Attribute\Discriminator;
+
 class Union implements \JsonSerializable
 {
-    /**
-     * @var Human|Animal|null
-     */
-    protected $union;
+    protected Human|Animal|null $union = null;
     /**
      * @var Human&Animal|null
      */
-    protected $intersection;
-    /**
-     * @var Human|Animal|null
-     * @Discriminator("kind", {"foo": "Human", "bar": "Animal"})
-     */
-    protected $discriminator;
-    /**
-     * @param Human|Animal|null $union
-     */
-    public function setUnion($union) : void
+    protected $intersection = null;
+    #[Discriminator('kind', array('Human', 'Animal'))]
+    protected Human|Animal|null $discriminator = null;
+    public function setUnion(Human|Animal|null $union) : void
     {
         $this->union = $union;
     }
-    /**
-     * @return Human|Animal|null
-     */
-    public function getUnion()
+    public function getUnion() : Human|Animal|null
     {
         return $this->union;
     }
-    /**
-     * @param Human&Animal|null $intersection
-     */
     public function setIntersection($intersection) : void
     {
         $this->intersection = $intersection;
     }
-    /**
-     * @return Human&Animal|null
-     */
     public function getIntersection()
     {
         return $this->intersection;
     }
-    /**
-     * @param Human|Animal|null $discriminator
-     */
-    public function setDiscriminator($discriminator) : void
+    public function setDiscriminator(Human|Animal|null $discriminator) : void
     {
         $this->discriminator = $discriminator;
     }
-    /**
-     * @return Human|Animal|null
-     */
-    public function getDiscriminator()
+    public function getDiscriminator() : Human|Animal|null
     {
         return $this->discriminator;
     }

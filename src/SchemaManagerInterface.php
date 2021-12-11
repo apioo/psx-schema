@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,22 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\InvalidSchemaException;
+
 /**
  * SchemaManagerInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 interface SchemaManagerInterface
 {
     /**
      * The schema manager knows how to create a schema instance from the given
      * schema name. Returns a schema interface or must throw an exception
-     *
-     * @param string $schemaName
-     * @param string $type
-     * @return \PSX\Schema\SchemaInterface
+     * 
+     * @throws InvalidSchemaException
      */
-    public function getSchema($schemaName, $type = null);
+    public function getSchema(string $schemaName, ?string $type = null): SchemaInterface;
 }

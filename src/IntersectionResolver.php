@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,11 @@ use PSX\Schema\Type\StructType;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class IntersectionResolver
 {
-    /**
-     * @var DefinitionsInterface
-     */
-    private $definitions;
+    private DefinitionsInterface $definitions;
 
     public function __construct(DefinitionsInterface $definitions)
     {
@@ -46,9 +43,9 @@ class IntersectionResolver
     /**
      * If the provided property is an allOf schema it tries to merge all
      * contained sub schemas into a new schema which contains all properties
-     * 
-     * @param IntersectionType $type
-     * @return StructType|null
+     *
+     * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
      */
     public function resolve(IntersectionType $type): ?StructType
     {
@@ -65,7 +62,11 @@ class IntersectionResolver
         return $newType;
     }
 
-    private function merge(StructType $left, TypeInterface $right)
+    /**
+     * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
+     */
+    private function merge(StructType $left, TypeInterface $right): void
     {
         if ($right instanceof ReferenceType) {
             $right = $this->definitions->getType($right->getRef());
@@ -86,7 +87,5 @@ class IntersectionResolver
         foreach ($right->getProperties() as $name => $type) {
             $left->addProperty($name, $type);
         }
-
-        return $left;
     }
 }

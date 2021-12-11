@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,27 +24,33 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Generator\Code\Chunks;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\Tests\Generator\Result\News;
 
 /**
  * PhpTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class PhpTest extends GeneratorTestCase
 {
+    protected function setUp(): void
+    {
+        if (PHP_MAJOR_VERSION < 8) {
+            $this->markTestSkipped('Requires PHP 8');
+        }
+
+        parent::setUp();
+    }
+
     public function testGenerate()
     {
         $generator = new Php();
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -56,11 +62,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php_complex8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php_complex.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php_complex.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -72,11 +74,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php_oop8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php_oop.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php_oop.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -88,11 +86,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php_union8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php_union.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php_union.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -104,11 +98,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php_import8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php_import.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php_import.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -120,11 +110,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        if (PHP_MAJOR_VERSION >= 8) {
-            $expect = file_get_contents(__DIR__ . '/resource/php_import_ns8.php');
-        } else {
-            $expect = file_get_contents(__DIR__ . '/resource/php_import_ns.php');
-        }
+        $expect = file_get_contents(__DIR__ . '/resource/php_import_ns.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

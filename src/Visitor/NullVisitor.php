@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,71 +34,71 @@ use PSX\Schema\VisitorInterface;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class NullVisitor implements VisitorInterface
 {
-    public function visitStruct(\stdClass $data, StructType $type, $path)
+    public function visitStruct(\stdClass $data, StructType $type, string $path)
     {
         return $data;
     }
 
-    public function visitMap(\stdClass $data, MapType $type, $path)
+    public function visitMap(\stdClass $data, MapType $type, string $path)
     {
         return $data;
     }
 
-    public function visitArray(array $data, ArrayType $type, $path)
+    public function visitArray(array $data, ArrayType $type, string $path)
     {
         return $data;
     }
 
-    public function visitBinary($data, StringType $type, $path)
+    public function visitBinary($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitBoolean($data, BooleanType $type, $path)
+    public function visitBoolean($data, BooleanType $type, string $path)
     {
         return $data;
     }
 
-    public function visitDateTime($data, StringType $type, $path)
+    public function visitDateTime($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitDate($data, StringType $type, $path)
+    public function visitDate($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitDuration($data, StringType $type, $path)
+    public function visitDuration($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitNumber($data, NumberType $type, $path)
+    public function visitNumber($data, NumberType $type, string $path)
     {
         return $data;
     }
 
-    public function visitInteger($data, IntegerType $type, $path)
+    public function visitInteger($data, IntegerType $type, string $path)
     {
         return $data;
     }
 
-    public function visitString($data, StringType $type, $path)
+    public function visitString($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitTime($data, StringType $type, $path)
+    public function visitTime($data, StringType $type, string $path)
     {
         return $data;
     }
 
-    public function visitUri($data, StringType $type, $path)
+    public function visitUri($data, StringType $type, string $path)
     {
         return $data;
     }

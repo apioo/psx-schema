@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ namespace PSX\Schema\Parser\Popo;
 
 use Doctrine\Common\Annotations\Reader;
 use PSX\Schema\Annotation;
+use PSX\Schema\Attribute;
 use ReflectionClass;
 
 /**
@@ -29,14 +30,14 @@ use ReflectionClass;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class ObjectReader
 {
     /**
      * Returns all available properties of an object
      *
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param Reader $reader
      * @param \ReflectionClass $class
      * @return \ReflectionProperty[]
      */
@@ -51,18 +52,26 @@ class ObjectReader
                 continue;
             }
 
+            if (PHP_VERSION_ID > 80000) {
+                $annotations = [];
+                foreach ($property->getAttributes() as $attribute) {
+                    $annotations[] = $attribute->newInstance();
+                }
+            } else {
+                $annotations = $reader->getPropertyAnnotations($property);
+            }
+
             // check whether we have an exclude annotation
-            $exclude = $reader->getPropertyAnnotation($property, Annotation\Exclude::class);
-            if ($exclude !== null) {
+            if (self::hasExcludeAnnotation($annotations)) {
                 continue;
             }
 
             // get the property name
-            $key  = $reader->getPropertyAnnotation($property, Annotation\Key::class);
+            $key  = self::getAnnotationKey($annotations);
             $name = null;
 
             if ($key !== null) {
-                $name = $key->getKey();
+                $name = $key;
             }
 
             if (empty($name)) {
@@ -73,5 +82,31 @@ class ObjectReader
         }
 
         return $result;
+    }
+
+    private static function hasExcludeAnnotation(array $annotations): bool
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Exclude) {
+                return true;
+            } elseif ($annotation instanceof Attribute\Exclude) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function getAnnotationKey(array $annotations): ?string
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation\Key) {
+                return $annotation->getKey();
+            } elseif ($annotation instanceof Attribute\Key) {
+                return $annotation->key;
+            }
+        }
+
+        return null;
     }
 }

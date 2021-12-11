@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,23 @@
 
 namespace PSX\Schema\Parser\Popo\Resolver;
 
+use PSX\DateTime\Date;
+use PSX\DateTime\DateTime;
+use PSX\DateTime\Duration;
+use PSX\DateTime\Time;
 use PSX\Schema\Parser\Popo\ResolverInterface;
+use PSX\Schema\Type\ScalarType;
+use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
+use PSX\Uri\Uri;
 
 /**
  * Native
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class Native implements ResolverInterface
 {
@@ -51,12 +58,30 @@ class Native implements ResolverInterface
             return null;
         }
 
-        $type = $reflection->getType();
-        if ($type instanceof \ReflectionNamedType) {
-            return $this->getPropertyForType($type, $reflection);
+        $type = null;
+        $reflectionType = $reflection->getType();
+        if (PHP_VERSION_ID > 80000 && $reflectionType instanceof \ReflectionUnionType) {
+            $types = [];
+            foreach ($reflectionType->getTypes() as $type) {
+                $value = $this->getPropertyForType($type, $reflection);
+                if ($value !== null) {
+                    $types[] = $value;
+                }
+            }
+            $type = TypeFactory::getUnion($types);
         }
 
-        return null;
+        if ($reflectionType instanceof \ReflectionNamedType) {
+            $type = $this->getPropertyForType($reflectionType, $reflection);
+        }
+
+        if ($type instanceof ScalarType) {
+            if (PHP_VERSION_ID > 80000 && $reflection->getDefaultValue() !== null) {
+                $type->setConst($reflection->getDefaultValue());
+            }
+        }
+
+        return $type;
     }
 
     private function getPropertyForType(\ReflectionNamedType $type, \ReflectionProperty $property): ?TypeInterface
@@ -79,6 +104,16 @@ class Native implements ResolverInterface
         } elseif ($name === 'self') {
             $class = $property->getDeclaringClass()->getName();
             return TypeFactory::getReference($class);
+        } elseif ($name === Date::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
+        } elseif ($name === DateTime::class || $name === \DateTime::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
+        } elseif ($name === Time::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
+        } elseif ($name === Duration::class || $name === \DateInterval::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
+        } elseif ($name === Uri::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
         } elseif (class_exists($name)) {
             return TypeFactory::getReference($name);
         }

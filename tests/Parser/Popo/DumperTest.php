@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
@@ -35,40 +34,38 @@ use PSX\Uri\Uri;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class DumperTest extends TestCase
 {
     public function testDump()
     {
-        include_once __DIR__ . '/News.php';
-
-        $config = new Meta();
+        $config = new Attribute\Meta();
         $config['foo'] = 'bar';
 
-        $location = new Location();
+        $location = new Attribute\Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
 
-        $author = new Author();
+        $author = new Attribute\Author();
         $author->setTitle('foo');
         $author->setEmail('foo@bar.com');
         $author->setCategories(['foo', 'bar']);
         $author->setLocations([$location, $location]);
         $author->setOrigin($location);
 
-        $web = new Web();
+        $web = new Attribute\Web();
         $web->setName('foo');
         $web->setUrl('http://google.com');
 
         $profileImage = fopen('php://memory', 'r+');
         fwrite($profileImage, 'foobar');
 
-        $meta = new Meta();
+        $meta = new Attribute\Meta();
         $meta['tags_0'] = 'foo';
         $meta['tags_1'] = 'bar';
 
-        $news = new News();
+        $news = new Attribute\News();
         $news->setConfig($config);
         $news->setTags(['foo', 'bar']);
         $news->setReceiver([$author]);
@@ -88,8 +85,7 @@ class DumperTest extends TestCase
         $news->setCoffeeTime(new Time('10:49:00'));
         $news->setProfileUri(new Uri('urn:foo:image'));
 
-        $reader = new AnnotationReader();
-        $dumper = new Dumper($reader);
+        $dumper = new Dumper();
         $actual = $dumper->dump($news);
 
         $this->assertInstanceOf(RecordInterface::class, $actual);
@@ -102,9 +98,7 @@ class DumperTest extends TestCase
 
     public function testDumpTraversable()
     {
-        include_once __DIR__ . '/News.php';
-
-        $location = new Location();
+        $location = new Attribute\Location();
         $location->setLat(12.34);
         $location->setLong(56.78);
 
@@ -113,11 +107,10 @@ class DumperTest extends TestCase
             $location,
         ];
 
-        $author = new Author();
+        $author = new Attribute\Author();
         $author->setLocations($locations);
 
-        $reader = new AnnotationReader();
-        $dumper = new Dumper($reader);
+        $dumper = new Dumper();
         $actual = $dumper->dump($author);
 
         $this->assertInstanceOf(RecordInterface::class, $actual);

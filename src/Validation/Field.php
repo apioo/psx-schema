@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2020 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,39 +25,29 @@ namespace PSX\Schema\Validation;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class Field
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var array
-     */
-    protected $filters;
+    private string $name;
+    private array $filters;
 
     /**
      * The name should be a JSON pointer which locates the target property i.e.
      * /author/name
-     *
-     * @param string $name
-     * @param array $filters
      */
-    public function __construct($name, array $filters = array())
+    public function __construct(string $name, array $filters = [])
     {
         $this->name    = $name;
         $this->filters = $filters;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
