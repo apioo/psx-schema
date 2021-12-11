@@ -1,13 +1,10 @@
-PSX Schema
-===
 
-## About
+# Schema
 
-This library can parse a [TypeSchema](https://typeschema.org/) specification either
-from a JSON file, or from PHP classes using reflection and annotations. Based on
-this schema it can generate source code and transform raw JSON data into DTO objects.
-Through this you can work with fully typed objects in your API for incoming and
-outgoing data. It provides basically the following features:
+This library can parse a [TypeSchema](https://typeschema.org/) specification either from a JSON file, or from PHP
+classes using reflection and attributes. Based on this schema it can generate source code and transform raw JSON data
+into DTO objects. Through this you can work with fully typed objects in your API for incoming and outgoing data. It
+provides basically the following features:
 
 * Transform raw JSON data into DTO objects
 * Generate source code based on a schema (i.e. PHP, Typescript)
@@ -15,9 +12,8 @@ outgoing data. It provides basically the following features:
 
 ## Usage
 
-At first, we need to describe our data format with a [TypeSchema](https://typeschema.org/)
-specification. Then we can generate based on this specification the fitting PHP
-classes.
+At first, we need to describe our data format with a [TypeSchema](https://typeschema.org/) specification. Then we can
+generate based on this specification the fitting PHP classes.
 
 ```json
 {
@@ -47,76 +43,50 @@ classes.
 }
 ```
 
-To generate the PHP classes we use the following command:   
+To generate the PHP classes we use the following command:
 
 ```
 vendor/bin/schema schema:parse --format=php schema.json
 ```
 
-This generates the following `Person.php` file:
+Note you can also skip this step and directly write the PHP class by your self. The advantage of starting with a JSON
+representation is that you have defined your models in a neutral format so that you can generate the models for
+different environments i.e. also for the frontend using the TypeScript generator. The command generates the following
+source code:
 
 ```php
 <?php
 
 declare(strict_types = 1);
 
-/**
- * @Required({"firstName", "lastName"})
- */
+#[Required(["firstName", "lastName"])]
 class Person implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    protected $firstName;
-    /**
-     * @var string|null
-     */
-    protected $lastName;
-    /**
-     * @var int|null
-     * @Description("Age in years")
-     * @Minimum(0)
-     */
-    protected $age;
-    /**
-     * @param string|null $firstName
-     */
+    protected ?string $firstName = null;
+    protected ?string $lastName = null;
+     #[Description("Age in years")]
+     #[Minimum(0)]
+    protected ?int $age = null;
     public function setFirstName(?string $firstName) : void
     {
         $this->firstName = $firstName;
     }
-    /**
-     * @return string|null
-     */
     public function getFirstName() : ?string
     {
         return $this->firstName;
     }
-    /**
-     * @param string|null $lastName
-     */
     public function setLastName(?string $lastName) : void
     {
         $this->lastName = $lastName;
     }
-    /**
-     * @return string|null
-     */
     public function getLastName() : ?string
     {
         return $this->lastName;
     }
-    /**
-     * @param int|null $age
-     */
     public function setAge(?int $age) : void
     {
         $this->age = $age;
     }
-    /**
-     * @return int|null
-     */
     public function getAge() : ?int
     {
         return $this->age;
@@ -136,7 +106,7 @@ Now we can parse raw JSON data and fill this in to our object model:
 // the data which we want to import
 $data = json_decode('{"firstName": "foo", "lastName": "bar"}');
 
-$schemaManager = new \PSX\Schema\SchemaManager();
+$schemaManager = new SchemaManager();
 
 // we read the schema from the class
 $schema = $schemaManager->getSchema(Person::class);
@@ -155,8 +125,7 @@ try {
 
 ```
 
-Every generated PHP class implements also the `JsonSerializable` interface so
-you can simply encode an object to json.
+Every generated PHP class implements also the `JsonSerializable` interface so you can simply encode an object to json.
 
 ```php
 $schema = new Person();
@@ -192,28 +161,29 @@ Beside PHP classes this library can generate the following types:
 
 The following attributes are available:
 
-| Attribute             | Target         | Example                                           |
-|-----------------------|----------------|---------------------------------------------------|
-| #Deprecated           | Property       | #Deprecated(true)                                 |
-| #Description          | Class/Property | #Description("content")                           |
-| #Discriminator        | Property       | #Discriminator("type")                            |
-| #Enum                 | Property       | #Enum({"foo", "bar"})                             |
-| #Exclude              | Property       | #Exclude                                          |
-| #ExclusiveMaximum     | Property       | #ExclusiveMaximum(true)                           |
-| #ExclusiveMinimum     | Property       | #ExclusiveMinimum(true)                           |
-| #Format               | Property       | #Format("uri")                                    |
-| #Key                  | Property       | #Key("$ref")                                      |
-| #Maximum              | Property       | #Maximum(16)                                      |
-| #MaxItems             | Property       | #MaxItems(16)                                     |
-| #MaxLength            | Property       | #MaxLength(16)                                    |
-| #MaxProperties        | Class          | #MaxProperties(16)                                |
-| #Minimum              | Property       | #Minimum(4)                                       |
-| #MinItems             | Property       | #MinItems(4)                                      |
-| #MinLength            | Property       | #MinLength(4)                                     |
-| #MinProperties        | Property       | #MinProperties(4)                                 |
-| #MultipleOf           | Property       | #MultipleOf(2)                                    |
-| #Nullable             | Property       | #Nullable(true)                                   |
-| #Pattern              | Property       | #Pattern("A-z+")                                  |
-| #Required             | Class          | #Required(["name", "title"])                      |
-| #Title                | Class          | #Title("foo")                                     |
-| #UniqueItems          | Property       | #UniqueItems(true)                                |
+| Attribute            | Target         | Example                          |
+|----------------------|----------------|----------------------------------|
+| Deprecated           | Property       | #[Deprecated(true)]              |
+| Description          | Class/Property | #[Description("content")]        |
+| Discriminator        | Property       | #[Discriminator("type")]         |
+| Enum                 | Property       | #[Enum({"foo", "bar"})]          |
+| Exclude              | Property       | #[Exclude]                       |
+| ExclusiveMaximum     | Property       | #[ExclusiveMaximum(true)]        |
+| ExclusiveMinimum     | Property       | #[ExclusiveMinimum(true)]        |
+| Format               | Property       | #[Format("uri")]                 |
+| Key                  | Property       | #[Key("$ref")]                   |
+| Maximum              | Property       | #[Maximum(16)]                   |
+| MaxItems             | Property       | #[MaxItems(16)]                  |
+| MaxLength            | Property       | #[MaxLength(16)]                 |
+| MaxProperties        | Class          | #[MaxProperties(16)]             |
+| Minimum              | Property       | #[Minimum(4)]                    |
+| MinItems             | Property       | #[MinItems(4)]                   |
+| MinLength            | Property       | #[MinLength(4)]                  |
+| MinProperties        | Property       | #[MinProperties(4)]              |
+| MultipleOf           | Property       | #[MultipleOf(2)]                 |
+| Nullable             | Property       | #[Nullable(true)]                |
+| Pattern              | Property       | #[Pattern("A-z+")]               |
+| Required             | Class          | #[Required(["name", "title"])]   |
+| Title                | Class          | #[Title("foo")]                  |
+| UniqueItems          | Property       | #[UniqueItems(true)]             |
+
