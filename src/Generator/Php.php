@@ -353,9 +353,7 @@ class Php extends CodeGeneratorAbstract
             $result[] = $this->newAttribute('Discriminator', $args, $uses);
         }
 
-        return array_filter($result, static function($value) {
-            return $value !== null;
-        });
+        return $result;
     }
 
     private function newAttribute(string $attributeClass, array $args, array &$uses): Node\Attribute
