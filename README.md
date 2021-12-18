@@ -64,8 +64,8 @@ class Person implements \JsonSerializable
 {
     protected ?string $firstName = null;
     protected ?string $lastName = null;
-     #[Description("Age in years")]
-     #[Minimum(0)]
+    #[Description("Age in years")]
+    #[Minimum(0)]
     protected ?int $age = null;
     public function setFirstName(?string $firstName) : void
     {
