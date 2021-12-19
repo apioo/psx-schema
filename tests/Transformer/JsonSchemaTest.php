@@ -32,19 +32,31 @@ use PSX\Schema\Transformer\JsonSchema;
  */
 class JsonSchemaTest extends TestCase
 {
-    public function testConvert()
+    /**
+     * @dataProvider testProvider
+     */
+    public function testConvert(string $file)
     {
+        $schema = file_get_contents(__DIR__ . '/jsonschema/actual/' . $file);
+        $actual = (new JsonSchema())->transform(\json_decode($schema));
+
+        $expectFile = __DIR__ . '/jsonschema/expect/' . $file;
+
+        $this->assertJsonStringEqualsJsonFile($expectFile, \json_encode($actual));
+    }
+
+    public function testProvider(): array
+    {
+        $result = [];
         $tests = scandir(__DIR__ . '/jsonschema/actual');
         foreach ($tests as $file) {
             if ($file[0] === '.') {
                 continue;
             }
 
-            $schema = file_get_contents(__DIR__ . '/jsonschema/actual/' . $file);
-            $actual = (new JsonSchema())->transform($schema);
-
-            $expect = file_get_contents(__DIR__ . '/jsonschema/expect/' . $file);
-            $this->assertJsonStringEqualsJsonString($expect, $actual);
+            $result[] = [$file];
         }
+
+        return $result;
     }
 }

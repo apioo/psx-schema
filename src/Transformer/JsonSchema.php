@@ -33,16 +33,11 @@ use PSX\Schema\TransformerInterface;
  */
 class JsonSchema implements TransformerInterface
 {
-    public function transform(string $schema): string
+    public function transform(\stdClass $schema): \stdClass
     {
-        $data = \json_decode($schema);
-        if (!$data instanceof \stdClass) {
-            throw new TransformerException('Provided schema must be an object');
-        }
-
         $keywords = [];
         $definitions = new \stdClass();
-        foreach ($data as $key => $value) {
+        foreach ($schema as $key => $value) {
             if ($key === 'definitions' || $key === '$defs') {
                 $definitions = $value;
             } else {
@@ -75,10 +70,10 @@ class JsonSchema implements TransformerInterface
             $result->{'$ref'} = $root;
         }
 
-        return \json_encode($result, JSON_PRETTY_PRINT);
+        return $result;
     }
 
-    private function convertSchema(\stdClass $schema, array &$definitions)
+    private function convertSchema(\stdClass $schema, array &$definitions): \stdClass
     {
         $schema = BCLayer::transform($schema);
 
@@ -117,7 +112,14 @@ class JsonSchema implements TransformerInterface
                 $result['type'] = 'object';
                 $result['additionalProperties'] = $this->convertSchema($schema->additionalProperties, $definitions);
             } else {
-                throw new TransformerException('Could not assign object type to either a struct or map');
+                // some schemas contain only the object keyword to indicate that any objects are allowed at TypeSchema
+                // this is not possible so we use a map with any types
+                return (object) [
+                    'type' => 'object',
+                    'additionalProperties' => [
+                        'type' => 'any'
+                    ]
+                ];
             }
 
             $definitions[$title] = $result;
@@ -159,6 +161,7 @@ class JsonSchema implements TransformerInterface
             $ref = $schema->{'$ref'};
             $ref = str_replace('#/definitions/', '', $ref);
             $ref = str_replace('#/$defs/', '', $ref);
+            $ref = str_replace('#/components/schemas/', '', $ref);
 
             $result['$ref'] = $ref;
         } else {
@@ -168,7 +171,7 @@ class JsonSchema implements TransformerInterface
         return (object) $result;
     }
 
-    private function copyKeywords(\stdClass $schema, array $result, array $allowedKeywords)
+    private function copyKeywords(\stdClass $schema, array $result, array $allowedKeywords): array
     {
         foreach ($allowedKeywords as $keyword) {
             if (isset($schema->{$keyword})) {

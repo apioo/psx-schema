@@ -36,5 +36,5 @@ interface TransformerInterface
      *
      * @throws TransformerException
      */
-    public function transform(string $schema): string;
+    public function transform(\stdClass $schema): \stdClass;
 }
