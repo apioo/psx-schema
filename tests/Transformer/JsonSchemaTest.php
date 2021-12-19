@@ -21,6 +21,8 @@
 namespace PSX\Schema\Tests\Transformer;
 
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\Parser\TypeSchema;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\Transformer\JsonSchema;
 
 /**
@@ -43,6 +45,10 @@ class JsonSchemaTest extends TestCase
         $expectFile = __DIR__ . '/jsonschema/expect/' . $file;
 
         $this->assertJsonStringEqualsJsonFile($expectFile, \json_encode($actual));
+
+        // try to parse the schema
+        $schema = TypeSchema::fromFile($expectFile);
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
     public function transformProvider(): array
