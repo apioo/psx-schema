@@ -33,7 +33,7 @@ use PSX\Schema\Transformer\JsonSchema;
 class JsonSchemaTest extends TestCase
 {
     /**
-     * @dataProvider testProvider
+     * @dataProvider transformProvider
      */
     public function testConvert(string $file)
     {
@@ -45,7 +45,7 @@ class JsonSchemaTest extends TestCase
         $this->assertJsonStringEqualsJsonFile($expectFile, \json_encode($actual));
     }
 
-    public function testProvider(): array
+    public function transformProvider(): array
     {
         $result = [];
         $tests = scandir(__DIR__ . '/jsonschema/actual');
