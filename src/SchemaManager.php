@@ -96,7 +96,7 @@ class SchemaManager implements SchemaManagerInterface
     {
         $item = null;
         if (!$this->debug) {
-            $item = $this->cache->getItem($schemaName);
+            $item = $this->cache->getItem(md5($schemaName));
             if ($item->isHit()) {
                 return $item->get();
             }

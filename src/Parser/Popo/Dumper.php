@@ -143,9 +143,7 @@ class Dumper
             throw new ParserException('Map must be traversable');
         }
 
-        $reflection = new \ReflectionClass(get_class($data));
-        $result = new Record($reflection->getShortName());
-
+        $result = new Record();
         foreach ($data as $key => $value) {
             $result->setProperty($key, $this->dumpValue($value, $type->getAdditionalProperties()));
         }
