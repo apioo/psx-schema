@@ -106,6 +106,9 @@ class Author implements \JsonSerializable
     {
         return $this->email;
     }
+    /**
+     * @param array<string>|null $categories
+     */
     public function setCategories(?array $categories) : void
     {
         $this->categories = $categories;
@@ -114,6 +117,9 @@ class Author implements \JsonSerializable
     {
         return $this->categories;
     }
+    /**
+     * @param array<Location>|null $locations
+     */
     public function setLocations(?array $locations) : void
     {
         $this->locations = $locations;
@@ -216,6 +222,9 @@ class News implements \JsonSerializable
     {
         return $this->config;
     }
+    /**
+     * @param array<string>|null $tags
+     */
     public function setTags(?array $tags) : void
     {
         $this->tags = $tags;
@@ -224,6 +233,9 @@ class News implements \JsonSerializable
     {
         return $this->tags;
     }
+    /**
+     * @param array<Author>|null $receiver
+     */
     public function setReceiver(?array $receiver) : void
     {
         $this->receiver = $receiver;
@@ -232,6 +244,9 @@ class News implements \JsonSerializable
     {
         return $this->receiver;
     }
+    /**
+     * @param array<Location|Web>|null $resources
+     */
     public function setResources(?array $resources) : void
     {
         $this->resources = $resources;

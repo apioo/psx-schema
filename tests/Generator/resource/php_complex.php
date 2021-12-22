@@ -173,6 +173,9 @@ class StructProperties implements \JsonSerializable
     {
         return $this->properties;
     }
+    /**
+     * @param array<string>|null $required
+     */
     public function setRequired(?array $required) : void
     {
         $this->required = $required;
@@ -526,6 +529,9 @@ class AllOfProperties implements \JsonSerializable
     {
         return $this->description;
     }
+    /**
+     * @param array<OfValue>|null $allOf
+     */
     public function setAllOf(?array $allOf) : void
     {
         $this->allOf = $allOf;
@@ -572,6 +578,9 @@ class OneOfProperties implements \JsonSerializable
     {
         return $this->discriminator;
     }
+    /**
+     * @param array<OfValue>|null $oneOf
+     */
     public function setOneOf(?array $oneOf) : void
     {
         $this->oneOf = $oneOf;
@@ -751,6 +760,9 @@ class TypeSchema implements \JsonSerializable
     {
         return $this->properties;
     }
+    /**
+     * @param array<string>|null $required
+     */
     public function setRequired(?array $required) : void
     {
         $this->required = $required;

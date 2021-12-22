@@ -61,6 +61,9 @@ class Map implements \JsonSerializable
     {
         return $this->totalResults;
     }
+    /**
+     * @param array<T>|null $entries
+     */
     public function setEntries(?array $entries) : void
     {
         $this->entries = $entries;
