@@ -71,7 +71,7 @@ class TypeVisitor implements VisitorInterface
                 }
             }
         } else {
-            $record = Record::fromStdClass($data, $type->getTitle() ?: null);
+            $record = Record::fromStdClass($data);
         }
 
         if ($this->validator !== null) {
