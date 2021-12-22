@@ -61,12 +61,6 @@ class Php extends GeneratorAbstract
             }
         } elseif ($type instanceof StringType && $type->getFormat() === TypeAbstract::FORMAT_BINARY) {
             return 'resource';
-        } elseif ($type instanceof UnionType) {
-            $parts = [];
-            foreach ($type->getOneOf() as $item) {
-                $parts[] = $this->getDocType($item);
-            }
-            return implode('|', $parts);
         } elseif ($type instanceof IntersectionType) {
             $parts = [];
             foreach ($type->getAllOf() as $item) {
@@ -75,8 +69,6 @@ class Php extends GeneratorAbstract
             return implode('&', $parts);
         } elseif ($type instanceof GenericType) {
             return $type->getGeneric() ?? '';
-        } elseif ($type instanceof AnyType) {
-            return 'mixed';
         } else {
             return $this->getType($type);
         }
@@ -144,11 +136,7 @@ class Php extends GeneratorAbstract
 
     protected function getUnion(array $types): string
     {
-        if (PHP_MAJOR_VERSION >= 8) {
-            return implode('|', $types);
-        } else {
-            return '';
-        }
+        return implode('|', $types);
     }
 
     protected function getIntersection(array $types): string
@@ -168,7 +156,7 @@ class Php extends GeneratorAbstract
 
     protected function getAny(): string
     {
-        return '';
+        return 'mixed';
     }
 
     protected function getNamespaced(string $namespace, string $name): string

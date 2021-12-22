@@ -47,15 +47,8 @@ use PSX\Schema\TypeUtil;
  */
 class Php extends CodeGeneratorAbstract
 {
-    /**
-     * @var \PhpParser\BuilderFactory
-     */
-    protected $factory;
-
-    /**
-     * @var \PhpParser\PrettyPrinter\Standard
-     */
-    protected $printer;
+    private BuilderFactory $factory;
+    private PrettyPrinter\Standard $printer;
 
     /**
      * @inheritDoc
@@ -148,18 +141,22 @@ class Php extends CodeGeneratorAbstract
 
             $class->addStmt($prop);
 
-            $param = $this->factory->param($name);
+            $setter = $this->factory->method('set' . ucfirst($name));
 
+            $param = $this->factory->param($name);
             $type = $property->getType();
             if (!empty($type)) {
                 if (strpos($type, '|') !== false) {
                     $param->setType($type . '|null');
                 } else {
+                    if ($type === 'array') {
+                        // in case we have an array we must add a var annotation to describe which type is inside the array
+                        $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $name]));
+                    }
                     $param->setType(new Node\NullableType($type));
                 }
             }
 
-            $setter = $this->factory->method('set' . ucfirst($name));
             $setter->setReturnType('void');
             $setter->makePublic();
             $setter->addParam($param);
