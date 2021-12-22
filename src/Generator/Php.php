@@ -126,7 +126,11 @@ class Php extends CodeGeneratorAbstract
                         // in case we have an array we must add a var annotation to describe which type is inside the array
                         $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
                     }
-                    $prop->setType(new Node\NullableType($type));
+                    if ($type !== 'mixed') {
+                        $prop->setType(new Node\NullableType($type));
+                    } else {
+                        $prop->setType($type);
+                    }
                 }
             } else {
                 $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
@@ -153,7 +157,11 @@ class Php extends CodeGeneratorAbstract
                         // in case we have an array we must add a var annotation to describe which type is inside the array
                         $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $name]));
                     }
-                    $param->setType(new Node\NullableType($type));
+                    if ($type !== 'mixed') {
+                        $param->setType(new Node\NullableType($type));
+                    } else {
+                        $param->setType($type);
+                    }
                 }
             }
 
