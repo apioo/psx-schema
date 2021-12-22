@@ -45,4 +45,5 @@ type News struct {
     CoffeeTime time.Time `json:"coffeeTime"`
     ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
+    Payload interface{} `json:"payload"`
 }

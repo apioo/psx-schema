@@ -101,6 +101,8 @@ class Native implements ResolverInterface
             return null;
         } elseif ($name === 'void') {
             return null;
+        } elseif ($name === 'mixed') {
+            return TypeFactory::getAny();
         } elseif ($name === 'self') {
             $class = $property->getDeclaringClass()->getName();
             return TypeFactory::getReference($class);

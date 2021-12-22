@@ -59,4 +59,5 @@ question | String |  |
 version | String |  | Const: `http://foo.bar`
 coffeeTime | Time |  | 
 profileUri | URI |  | 
-captcha | String |  |
+captcha | String |  | 
+payload | Any |  |

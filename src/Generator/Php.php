@@ -179,7 +179,11 @@ class Php extends CodeGeneratorAbstract
                 if (strpos($type, '|') !== false) {
                     $getter->setReturnType($type . '|null');
                 } else {
-                    $getter->setReturnType(new Node\NullableType($type));
+                    if ($type !== 'mixed') {
+                        $getter->setReturnType(new Node\NullableType($type));
+                    } else {
+                        $getter->setReturnType($type);
+                    }
                 }
             } else {
                 $setter->setReturnType('void');

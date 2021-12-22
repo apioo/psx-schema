@@ -58,4 +58,5 @@ public class News
     public string CoffeeTime { get; set; }
     public string ProfileUri { get; set; }
     public string Captcha { get; set; }
+    public object Payload { get; set; }
 }

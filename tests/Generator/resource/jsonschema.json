@@ -166,7 +166,8 @@
         },
         "g-recaptcha-response": {
           "type": "string"
-        }
+        },
+        "payload": []
       },
       "required": [
         "receiver",

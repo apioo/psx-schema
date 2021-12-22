@@ -59,4 +59,5 @@ open class News {
     var coffeeTime: LocalTime? = null
     var profileUri: URI? = null
     var captcha: String? = null
+    var payload: Any? = null
 }

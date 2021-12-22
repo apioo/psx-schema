@@ -33,9 +33,9 @@ end
 
 # An general news entry
 class News
-    attr_accessor :config, :tags, :receiver, :resources, :profileImage, :read, :source, :author, :meta, :sendDate, :readDate, :expires, :price, :rating, :content, :question, :version, :coffeeTime, :profileUri, :captcha
+    attr_accessor :config, :tags, :receiver, :resources, :profileImage, :read, :source, :author, :meta, :sendDate, :readDate, :expires, :price, :rating, :content, :question, :version, :coffeeTime, :profileUri, :captcha, :payload
 
-    def initialize(config, tags, receiver, resources, profileImage, read, source, author, meta, sendDate, readDate, expires, price, rating, content, question, version, coffeeTime, profileUri, captcha)
+    def initialize(config, tags, receiver, resources, profileImage, read, source, author, meta, sendDate, readDate, expires, price, rating, content, question, version, coffeeTime, profileUri, captcha, payload)
         @config = config
         @tags = tags
         @receiver = receiver
@@ -56,5 +56,6 @@ class News
         @coffeeTime = coffeeTime
         @profileUri = profileUri
         @captcha = captcha
+        @payload = payload
     end
 end

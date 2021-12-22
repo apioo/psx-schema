@@ -43,4 +43,5 @@ class News: Codable {
     var coffeeTime: String
     var profileUri: String
     var captcha: String
+    var payload: Any
 }

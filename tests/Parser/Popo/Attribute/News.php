@@ -77,6 +77,7 @@ class News
 
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
+    protected mixed $payload = null;
 
     public function setConfig(?Meta $config)
     {
@@ -277,5 +278,15 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
+    }
+
+    public function getPayload(): mixed
+    {
+        return $this->payload;
+    }
+
+    public function setPayload(mixed $payload): void
+    {
+        $this->payload = $payload;
     }
 }

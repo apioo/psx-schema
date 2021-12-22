@@ -113,6 +113,7 @@ public class News {
     private LocalTime coffeeTime;
     private URI profileUri;
     private String captcha;
+    private Object payload;
     public void setConfig(Meta config) {
         this.config = config;
     }
@@ -232,5 +233,11 @@ public class News {
     }
     public String getCaptcha() {
         return this.captcha;
+    }
+    public void setPayload(Object payload) {
+        this.payload = payload;
+    }
+    public Object getPayload() {
+        return this.payload;
     }
 }

@@ -36,7 +36,7 @@ from typing import Union
 
 # An general news entry
 class News:
-    def __init__(self, config: Meta, tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str):
+    def __init__(self, config: Meta, tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str, payload: Any):
         self.config = config
         self.tags = tags
         self.receiver = receiver
@@ -57,3 +57,4 @@ class News:
         self.coffeeTime = coffeeTime
         self.profileUri = profileUri
         self.captcha = captcha
+        self.payload = payload

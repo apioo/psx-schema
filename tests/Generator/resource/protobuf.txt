@@ -37,4 +37,5 @@ message News {
     string coffeeTime = 18;
     string profileUri = 19;
     string captcha = 20;
+    Any payload = 21;
 }

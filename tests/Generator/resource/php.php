@@ -214,6 +214,7 @@ class News implements \JsonSerializable
     protected ?\PSX\Uri\Uri $profileUri = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
+    protected mixed $payload = null;
     public function setConfig(?Meta $config) : void
     {
         $this->config = $config;
@@ -383,9 +384,17 @@ class News implements \JsonSerializable
     {
         return $this->captcha;
     }
+    public function setPayload(mixed $payload) : void
+    {
+        $this->payload = $payload;
+    }
+    public function getPayload() : mixed
+    {
+        return $this->payload;
+    }
     public function jsonSerialize()
     {
-        return (object) array_filter(array('config' => $this->config, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha), static function ($value) : bool {
+        return (object) array_filter(array('config' => $this->config, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha, 'payload' => $this->payload), static function ($value) : bool {
             return $value !== null;
         });
     }

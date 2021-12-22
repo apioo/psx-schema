@@ -58,4 +58,5 @@ export interface News {
     coffeeTime?: string
     profileUri?: string
     captcha?: string
+    payload?: any
 }

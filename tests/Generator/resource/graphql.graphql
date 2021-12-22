@@ -37,4 +37,5 @@ type News {
     coffeeTime: String
     profileUri: String
     captcha: String
+    payload: Any
 }

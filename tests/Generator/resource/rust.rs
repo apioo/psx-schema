@@ -44,4 +44,5 @@ struct News {
     coffeeTime: time.Time,
     profileUri: String,
     captcha: String,
+    payload: Object,
 }
