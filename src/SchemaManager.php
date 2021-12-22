@@ -22,13 +22,11 @@ namespace PSX\Schema;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
-use Doctrine\Common\Cache\ArrayCache;
-use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
-use PSX\Cache\Pool;
 use PSX\Http\Client\Client;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * SchemaManager
@@ -86,7 +84,7 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         $this->popoParser = new Parser\Popo($reader);
-        $this->cache      = $cache === null ? new Pool(new ArrayCache()) : $cache;
+        $this->cache      = $cache === null ? new ArrayAdapter() : $cache;
         $this->debug      = $debug;
         $this->resolver   = $resolver;
     }
