@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Console;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Console\ParseCommand;
 use PSX\Schema\SchemaManager;
@@ -60,6 +59,6 @@ class ParseCommandTest extends TestCase
 
     protected function getParseCommand()
     {
-        return new ParseCommand(new SchemaManager(new AnnotationReader()));
+        return new ParseCommand(new SchemaManager());
     }
 }

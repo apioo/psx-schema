@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\SchemaInterface;
@@ -36,20 +35,11 @@ use PSX\Schema\Tests\Parser\Popo\Attribute\News;
  */
 class SchemaManagerTest extends TestCase
 {
-    /**
-     * @var \Doctrine\Common\Annotations\Reader
-     */
-    protected $reader;
-
-    /**
-     * @var \PSX\Schema\SchemaManager
-     */
-    protected $schemaManager;
+    protected SchemaManager $schemaManager;
 
     protected function setUp(): void
     {
-        $this->reader        = new AnnotationReader();
-        $this->schemaManager = new SchemaManager($this->reader);
+        $this->schemaManager = new SchemaManager();
     }
 
     public function testGetSchemaClass()
@@ -77,7 +67,7 @@ class SchemaManagerTest extends TestCase
     {
         $this->expectException(InvalidSchemaException::class);
 
-        $schemaManager = new SchemaManager($this->reader);
+        $schemaManager = new SchemaManager();
         $schemaManager->getSchema('foo');
     }
 }

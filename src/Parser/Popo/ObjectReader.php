@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use Doctrine\Common\Annotations\Reader;
-use PSX\Schema\Annotation;
 use PSX\Schema\Attribute;
 use ReflectionClass;
 
@@ -37,11 +35,9 @@ class ObjectReader
     /**
      * Returns all available properties of an object
      *
-     * @param Reader $reader
-     * @param \ReflectionClass $class
      * @return \ReflectionProperty[]
      */
-    public static function getProperties(Reader $reader, ReflectionClass $class)
+    public static function getProperties(ReflectionClass $class): array
     {
         $props  = $class->getProperties();
         $result = [];
@@ -52,13 +48,9 @@ class ObjectReader
                 continue;
             }
 
-            if (PHP_VERSION_ID > 80000) {
-                $annotations = [];
-                foreach ($property->getAttributes() as $attribute) {
-                    $annotations[] = $attribute->newInstance();
-                }
-            } else {
-                $annotations = $reader->getPropertyAnnotations($property);
+            $annotations = [];
+            foreach ($property->getAttributes() as $attribute) {
+                $annotations[] = $attribute->newInstance();
             }
 
             // check whether we have an exclude annotation
@@ -87,9 +79,7 @@ class ObjectReader
     private static function hasExcludeAnnotation(array $annotations): bool
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Exclude) {
-                return true;
-            } elseif ($annotation instanceof Attribute\Exclude) {
+            if ($annotation instanceof Attribute\Exclude) {
                 return true;
             }
         }
@@ -100,9 +90,7 @@ class ObjectReader
     private static function getAnnotationKey(array $annotations): ?string
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Key) {
-                return $annotation->getKey();
-            } elseif ($annotation instanceof Attribute\Key) {
+            if ($annotation instanceof Attribute\Key) {
                 return $annotation->key;
             }
         }

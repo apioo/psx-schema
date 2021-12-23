@@ -20,8 +20,6 @@
 
 namespace PSX\Schema;
 
-use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Http\Client\Client;
 use PSX\Schema\Exception\InvalidSchemaException;
@@ -46,52 +44,23 @@ class SchemaManager implements SchemaManagerInterface
      */
     public const TYPE_JSONSCHEMA = 'typeschema';
 
-    /**
-     * @var \PSX\Schema\Parser\Popo
-     */
-    private $popoParser;
+    private Parser\Popo $popoParser;
+    private ?CacheItemPoolInterface $cache;
+    private bool $debug;
+    private ImportResolver $resolver;
 
-    /**
-     * @var \Psr\Cache\CacheItemPoolInterface
-     */
-    private $cache;
-
-    /**
-     * @var boolean
-     */
-    private $debug;
-
-    /**
-     * @var ImportResolver
-     */
-    private $resolver;
-
-    /**
-     * @param \Doctrine\Common\Annotations\Reader|null $reader
-     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     * @param boolean $debug
-     * @param ImportResolver|null $resolver
-     */
-    public function __construct(Reader $reader = null, CacheItemPoolInterface $cache = null, bool $debug = false, ?ImportResolver $resolver = null)
+    public function __construct(?CacheItemPoolInterface $cache = null, bool $debug = false, ?ImportResolver $resolver = null)
     {
-        if ($reader === null) {
-            $reader = new SimpleAnnotationReader();
-            $reader->addNamespace('PSX\\Schema\\Annotation');
-        }
-
         if ($resolver === null) {
             $resolver = ImportResolver::createDefault(new Client());
         }
 
-        $this->popoParser = new Parser\Popo($reader);
+        $this->popoParser = new Parser\Popo();
         $this->cache      = $cache === null ? new ArrayAdapter() : $cache;
         $this->debug      = $debug;
         $this->resolver   = $resolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getSchema(string $schemaName, ?string $type = null): SchemaInterface
     {
         $item = null;
@@ -125,11 +94,7 @@ class SchemaManager implements SchemaManagerInterface
         return $schema;
     }
 
-    /**
-     * @param string $schemaName
-     * @return string|null
-     */
-    private function guessTypeFromSchema($schemaName)
+    private function guessTypeFromSchema(string $schemaName): ?string
     {
         if (strpos($schemaName, '.') !== false) {
             return self::TYPE_TYPESCHEMA;

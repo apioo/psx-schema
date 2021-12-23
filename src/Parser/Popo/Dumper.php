@@ -20,8 +20,6 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
@@ -54,17 +52,10 @@ use PSX\Schema\TypeInterface;
  */
 class Dumper
 {
-    private Reader $reader;
     private ResolverInterface $resolver;
 
-    public function __construct(Reader $reader = null)
+    public function __construct()
     {
-        if ($reader === null) {
-            $reader = new SimpleAnnotationReader();
-            $reader->addNamespace('PSX\\Schema\\Annotation');
-        }
-
-        $this->reader   = $reader;
         $this->resolver = Popo::createDefaultResolver();
     }
 
@@ -110,7 +101,7 @@ class Dumper
         $reflection = new \ReflectionClass(get_class($data));
         $result = new Record();
 
-        $properties = ObjectReader::getProperties($this->reader, $reflection);
+        $properties = ObjectReader::getProperties($reflection);
         foreach ($properties as $name => $property) {
             $getters = [
                 'get' . ucfirst($property->getName()),

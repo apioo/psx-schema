@@ -60,7 +60,7 @@ class Native implements ResolverInterface
 
         $type = null;
         $reflectionType = $reflection->getType();
-        if (PHP_VERSION_ID > 80000 && $reflectionType instanceof \ReflectionUnionType) {
+        if ($reflectionType instanceof \ReflectionUnionType) {
             $types = [];
             foreach ($reflectionType->getTypes() as $type) {
                 $value = $this->getPropertyForType($type, $reflection);
@@ -76,7 +76,7 @@ class Native implements ResolverInterface
         }
 
         if ($type instanceof ScalarType) {
-            if (PHP_VERSION_ID > 80000 && $reflection->getDefaultValue() !== null) {
+            if ($reflection->getDefaultValue() !== null) {
                 $type->setConst($reflection->getDefaultValue());
             }
         }

@@ -36,12 +36,7 @@ foreach ($files as $file) {
 if (!empty($autoloadFile)) {
     $loader = require_once($autoloadFile);
 
-    \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-
-    $reader = new \Doctrine\Common\Annotations\SimpleAnnotationReader();
-    $reader->addNamespace('PSX\\Schema\\Parser\\Popo\\Annotation');
-
-    $schemaManager = new \PSX\Schema\SchemaManager($reader);
+    $schemaManager = new \PSX\Schema\SchemaManager();
 
     $application = new Symfony\Component\Console\Application('PSX Schema');
     $application->add(new \PSX\Schema\Console\ParseCommand($schemaManager));

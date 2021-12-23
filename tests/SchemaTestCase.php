@@ -20,13 +20,8 @@
 
 namespace PSX\Schema\Tests;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Generator\TypeSchema;
-use PSX\Schema\Property\ArrayType;
-use PSX\Schema\Property\ComplexType;
-use PSX\Schema\Property\CompositeTypeAbstract;
-use PSX\Schema\PropertyAbstract;
 use PSX\Schema\SchemaManager;
 
 /**
@@ -38,20 +33,11 @@ use PSX\Schema\SchemaManager;
  */
 abstract class SchemaTestCase extends TestCase
 {
-    /**
-     * @var \Doctrine\Common\Annotations\Reader
-     */
-    protected $reader;
-
-    /**
-     * @var \PSX\Schema\SchemaManager
-     */
-    protected $schemaManager;
+    protected SchemaManager $schemaManager;
 
     protected function setUp(): void
     {
-        $this->reader        = new AnnotationReader();
-        $this->schemaManager = new SchemaManager($this->reader);
+        $this->schemaManager = new SchemaManager();
     }
 
     protected function getSchema()

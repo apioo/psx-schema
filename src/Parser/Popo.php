@@ -20,9 +20,7 @@
 
 namespace PSX\Schema\Parser;
 
-use Doctrine\Common\Annotations\Reader;
 use PSX\Schema\Attribute;
-use PSX\Schema\Annotation;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\ParserException;
@@ -53,12 +51,10 @@ use ReflectionClass;
  */
 class Popo implements ParserInterface
 {
-    private Reader $reader;
     private ResolverInterface $resolver;
 
-    public function __construct(Reader $reader)
+    public function __construct()
     {
-        $this->reader = $reader;
         $this->resolver = self::createDefaultResolver();
     }
 
@@ -87,13 +83,9 @@ class Popo implements ParserInterface
 
         $type = $this->resolver->resolveClass($class);
 
-        if (PHP_VERSION_ID > 80000) {
-            $annotations = [];
-            foreach ($class->getAttributes() as $attribute) {
-                $annotations[] = $attribute->newInstance();
-            }
-        } else {
-            $annotations = $this->reader->getClassAnnotations($class);
+        $annotations = [];
+        foreach ($class->getAttributes() as $attribute) {
+            $annotations[] = $attribute->newInstance();
         }
 
         $definitions->addType($class->getShortName(), $type);
@@ -131,7 +123,7 @@ class Popo implements ParserInterface
 
     private function parseProperties(ReflectionClass $class, StructType $property, DefinitionsInterface $definitions)
     {
-        $properties = Popo\ObjectReader::getProperties($this->reader, $class);
+        $properties = Popo\ObjectReader::getProperties($class);
         $mapping    = [];
 
         foreach ($properties as $key => $reflection) {
@@ -161,13 +153,9 @@ class Popo implements ParserInterface
     {
         $type = $this->resolver->resolveProperty($reflection);
 
-        if (PHP_VERSION_ID > 80000) {
-            $annotations = [];
-            foreach ($reflection->getAttributes() as $attribute) {
-                $annotations[] = $attribute->newInstance();
-            }
-        } else {
-            $annotations = $this->reader->getPropertyAnnotations($reflection);
+        $annotations = [];
+        foreach ($reflection->getAttributes() as $attribute) {
+            $annotations[] = $attribute->newInstance();
         }
 
         if ($type instanceof TypeAbstract) {
@@ -202,24 +190,14 @@ class Popo implements ParserInterface
     private function parseCommonAnnotations(array $annotations, TypeAbstract $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Title) {
-                $type->setTitle($annotation->getTitle());
-            } elseif ($annotation instanceof Attribute\Title) {
+            if ($annotation instanceof Attribute\Title) {
                 $type->setTitle($annotation->title);
-            } elseif ($annotation instanceof Annotation\Description) {
-                $type->setDescription($annotation->getDescription());
             } elseif ($annotation instanceof Attribute\Description) {
                 $type->setDescription($annotation->description);
-            } elseif ($annotation instanceof Annotation\Nullable) {
-                $type->setNullable($annotation->isNullable());
             } elseif ($annotation instanceof Attribute\Nullable) {
                 $type->setNullable($annotation->nullable);
-            } elseif ($annotation instanceof Annotation\Deprecated) {
-                $type->setDeprecated($annotation->isDeprecated());
             } elseif ($annotation instanceof Attribute\Deprecated) {
                 $type->setDeprecated($annotation->deprecated);
-            } elseif ($annotation instanceof Annotation\Readonly) {
-                $type->setReadonly($annotation->isReadonly());
             } elseif ($annotation instanceof Attribute\Readonly) {
                 $type->setReadonly($annotation->readonly);
             }
@@ -229,12 +207,8 @@ class Popo implements ParserInterface
     private function parseScalarAnnotations(array $annotations, ScalarType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Format) {
-                $type->setFormat($annotation->getFormat());
-            } elseif ($annotation instanceof Attribute\Format) {
+            if ($annotation instanceof Attribute\Format) {
                 $type->setFormat($annotation->format);
-            } elseif ($annotation instanceof Annotation\Enum) {
-                $type->setEnum($annotation->getEnum());
             } elseif ($annotation instanceof Attribute\Enum) {
                 $type->setEnum($annotation->enum);
             }
@@ -244,9 +218,7 @@ class Popo implements ParserInterface
     private function parseStructAnnotations(array $annotations, StructType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Required) {
-                $type->setRequired($annotation->getRequired());
-            } elseif ($annotation instanceof Attribute\Required) {
+            if ($annotation instanceof Attribute\Required) {
                 $type->setRequired($annotation->required);
             }
         }
@@ -255,12 +227,8 @@ class Popo implements ParserInterface
     private function parseMapAnnotations(array $annotations, MapType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\MinProperties) {
-                $type->setMinProperties($annotation->getMinProperties());
-            } elseif ($annotation instanceof Attribute\MinProperties) {
+            if ($annotation instanceof Attribute\MinProperties) {
                 $type->setMinProperties($annotation->minProperties);
-            } elseif ($annotation instanceof Annotation\MaxProperties) {
-                $type->setMaxProperties($annotation->getMaxProperties());
             } elseif ($annotation instanceof Attribute\MaxProperties) {
                 $type->setMaxProperties($annotation->maxProperties);
             }
@@ -270,16 +238,10 @@ class Popo implements ParserInterface
     private function parseArrayAnnotations(array $annotations, ArrayType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\MinItems) {
-                $type->setMinItems($annotation->getMinItems());
-            } elseif ($annotation instanceof Attribute\MinItems) {
+            if ($annotation instanceof Attribute\MinItems) {
                 $type->setMinItems($annotation->minItems);
-            } elseif ($annotation instanceof Annotation\MaxItems) {
-                $type->setMaxItems($annotation->getMaxItems());
             } elseif ($annotation instanceof Attribute\MaxItems) {
                 $type->setMaxItems($annotation->maxItems);
-            } elseif ($annotation instanceof Annotation\UniqueItems) {
-                $type->setUniqueItems($annotation->getUniqueItems());
             } elseif ($annotation instanceof Attribute\UniqueItems) {
                 $type->setUniqueItems($annotation->uniqueItems);
             }
@@ -289,20 +251,12 @@ class Popo implements ParserInterface
     private function parseStringAnnotations(array $annotations, StringType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\MinLength) {
-                $type->setMinLength($annotation->getMinLength());
-            } elseif ($annotation instanceof Attribute\MinLength) {
+            if ($annotation instanceof Attribute\MinLength) {
                 $type->setMinLength($annotation->minLength);
-            } elseif ($annotation instanceof Annotation\MaxLength) {
-                $type->setMaxLength($annotation->getMaxLength());
             } elseif ($annotation instanceof Attribute\MaxLength) {
                 $type->setMaxLength($annotation->maxLength);
-            } elseif ($annotation instanceof Annotation\Pattern) {
-                $type->setPattern($annotation->getPattern());
             } elseif ($annotation instanceof Attribute\Pattern) {
                 $type->setPattern($annotation->pattern);
-            } elseif ($annotation instanceof Annotation\Format) {
-                $type->setFormat($annotation->getFormat());
             } elseif ($annotation instanceof Attribute\Format) {
                 $type->setFormat($annotation->format);
             }
@@ -312,24 +266,14 @@ class Popo implements ParserInterface
     private function parseNumberAnnotations(array $annotations, NumberType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Minimum) {
-                $type->setMinimum($annotation->getMinimum());
-            } elseif ($annotation instanceof Attribute\Minimum) {
+            if ($annotation instanceof Attribute\Minimum) {
                 $type->setMinimum($annotation->minimum);
-            } elseif ($annotation instanceof Annotation\Maximum) {
-                $type->setMaximum($annotation->getMaximum());
             } elseif ($annotation instanceof Attribute\Maximum) {
                 $type->setMaximum($annotation->maximum);
-            } elseif ($annotation instanceof Annotation\ExclusiveMinimum) {
-                $type->setExclusiveMinimum($annotation->getExclusiveMinimum());
             } elseif ($annotation instanceof Attribute\ExclusiveMinimum) {
                 $type->setExclusiveMinimum($annotation->exclusiveMinimum);
-            } elseif ($annotation instanceof Annotation\ExclusiveMaximum) {
-                $type->setExclusiveMaximum($annotation->getExclusiveMaximum());
             } elseif ($annotation instanceof Attribute\ExclusiveMaximum) {
                 $type->setExclusiveMaximum($annotation->exclusiveMaximum);
-            } elseif ($annotation instanceof Annotation\MultipleOf) {
-                $type->setMultipleOf($annotation->getMultipleOf());
             } elseif ($annotation instanceof Attribute\MultipleOf) {
                 $type->setMultipleOf($annotation->multipleOf);
             }
@@ -339,9 +283,7 @@ class Popo implements ParserInterface
     private function parseUnionAnnotations(array $annotations, UnionType $type)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Annotation\Discriminator) {
-                $type->setDiscriminator($annotation->getPropertyName(), $annotation->getMapping() ?: null);
-            } elseif ($annotation instanceof Attribute\Discriminator) {
+            if ($annotation instanceof Attribute\Discriminator) {
                 $type->setDiscriminator($annotation->propertyName, $annotation->mapping);
             }
         }

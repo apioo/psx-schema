@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PSX\Schema\Generator\Code\Chunks;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\SchemaManager;
@@ -35,15 +34,6 @@ use PSX\Schema\Tests\Generator\Result\News;
  */
 class PhpTest extends GeneratorTestCase
 {
-    protected function setUp(): void
-    {
-        if (PHP_MAJOR_VERSION < 8) {
-            $this->markTestSkipped('Requires PHP 8');
-        }
-
-        parent::setUp();
-    }
-
     public function testGenerate()
     {
         $generator = new Php();
@@ -125,10 +115,7 @@ class PhpTest extends GeneratorTestCase
 
         $this->dumpResult($result);
 
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Annotation');
-
-        $schemaManager = new SchemaManager($reader);
+        $schemaManager = new SchemaManager();
         $schema        = $schemaManager->getSchema($className);
 
         $this->assertSchema($schema, $source);
@@ -155,10 +142,7 @@ JSON;
 
         $this->dumpResult($result);
 
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('PSX\\Schema\\Annotation');
-
-        $schemaManager = new SchemaManager($reader);
+        $schemaManager = new SchemaManager();
         $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\Result\\RootSchema');
 
         $this->assertSchema($schema, $source);

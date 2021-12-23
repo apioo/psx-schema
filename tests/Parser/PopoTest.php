@@ -34,23 +34,7 @@ class PopoTest extends ParserTestCase
 {
     public function testParse()
     {
-        if (PHP_VERSION_ID >= 80000) {
-            $this->markTestSkipped('Works only at PHP 7.4');
-        }
-
-        $parser = new Parser\Popo($this->reader);
-        $schema = $parser->parse(Popo\Annotation\News::class);
-
-        $this->assertSchema($this->getSchema(), $schema);
-    }
-
-    public function testParseAttribute()
-    {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
-        $parser = new Parser\Popo($this->reader);
+        $parser = new Parser\Popo();
         $schema = $parser->parse(Popo\Attribute\News::class);
 
         $this->assertSchema($this->getSchema(), $schema);
@@ -58,11 +42,7 @@ class PopoTest extends ParserTestCase
 
     public function testDiscriminator()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
-        $parser = new Parser\Popo($this->reader);
+        $parser = new Parser\Popo();
         $schema = $parser->parse(Form_Container::class);
 
         $this->assertDiscriminator($schema);
