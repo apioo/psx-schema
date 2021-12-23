@@ -68,6 +68,10 @@ class BCLayer
             }
         }
 
+        if (isset($data->type) && $data->type === 'int') {
+            $data->type = 'integer';
+        }
+
         if (isset($data->type) && $data->type === 'object') {
             if (!isset($data->properties) && !isset($data->additionalProperties)) {
                 $data->properties = new \stdClass();
