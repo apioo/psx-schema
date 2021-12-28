@@ -93,7 +93,7 @@ class Document implements \JsonSerializable
         return $this->root;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'imports' => $this->imports,

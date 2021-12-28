@@ -58,7 +58,7 @@ class Import implements \JsonSerializable
         return $this->version;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'alias' => $this->alias,

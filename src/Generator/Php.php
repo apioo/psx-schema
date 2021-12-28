@@ -468,6 +468,7 @@ class Php extends CodeGeneratorAbstract
 
         $serialize = $this->factory->method('jsonSerialize');
         $serialize->makePublic();
+        $serialize->setReturnType('array');
         $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($merge)));
 
         $class->addStmt($serialize);

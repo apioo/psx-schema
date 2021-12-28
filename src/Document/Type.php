@@ -110,7 +110,7 @@ class Type implements \JsonSerializable
         return null;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'name' => $this->name,

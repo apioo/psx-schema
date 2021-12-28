@@ -218,7 +218,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         });
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
