@@ -9,7 +9,7 @@ class Human implements \JsonSerializable
     {
         return $this->firstName;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
             return $value !== null;
@@ -28,7 +28,7 @@ class Student extends Human implements \JsonSerializable
     {
         return $this->matricleNumber;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('matricleNumber' => $this->matricleNumber), static function ($value) : bool {
             return $value !== null;
@@ -72,7 +72,7 @@ class Map implements \JsonSerializable
     {
         return $this->entries;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('totalResults' => $this->totalResults, 'entries' => $this->entries), static function ($value) : bool {
             return $value !== null;
@@ -91,7 +91,7 @@ class RootSchema implements \JsonSerializable
     {
         return $this->students;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('students' => $this->students), static function ($value) : bool {
             return $value !== null;

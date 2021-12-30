@@ -12,7 +12,7 @@ class Creature implements \JsonSerializable
     {
         return $this->kind;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('kind' => $this->kind), static function ($value) : bool {
             return $value !== null;
@@ -31,7 +31,7 @@ class Human extends Creature implements \JsonSerializable
     {
         return $this->firstName;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
             return $value !== null;
@@ -50,7 +50,7 @@ class Animal extends Creature implements \JsonSerializable
     {
         return $this->nickname;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('nickname' => $this->nickname), static function ($value) : bool {
             return $value !== null;
@@ -93,7 +93,7 @@ class Union implements \JsonSerializable
     {
         return $this->discriminator;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('union' => $this->union, 'intersection' => $this->intersection, 'discriminator' => $this->discriminator), static function ($value) : bool {
             return $value !== null;

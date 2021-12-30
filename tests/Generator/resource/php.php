@@ -23,7 +23,7 @@ class Location implements \JsonSerializable
     {
         return $this->long;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('lat' => $this->lat, 'long' => $this->long), static function ($value) : bool {
             return $value !== null;
@@ -56,7 +56,7 @@ class Web implements \JsonSerializable
     {
         return $this->url;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('name' => $this->name, 'url' => $this->url), static function ($value) : bool {
             return $value !== null;
@@ -136,7 +136,7 @@ class Author implements \JsonSerializable
     {
         return $this->origin;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('title' => $this->title, 'email' => $this->email, 'categories' => $this->categories, 'locations' => $this->locations, 'origin' => $this->origin), static function ($value) : bool {
             return $value !== null;
@@ -392,7 +392,7 @@ class News implements \JsonSerializable
     {
         return $this->payload;
     }
-    public function jsonSerialize()
+    public function jsonSerialize() : \stdClass
     {
         return (object) array_filter(array('config' => $this->config, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha, 'payload' => $this->payload), static function ($value) : bool {
             return $value !== null;
