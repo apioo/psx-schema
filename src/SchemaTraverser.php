@@ -52,17 +52,10 @@ use PSX\Schema\Visitor\NullVisitor;
  */
 class SchemaTraverser
 {
-    private const MAX_RECURSION_DEPTH = 32;
-
     /**
      * @var array
      */
     private $pathStack;
-
-    /**
-     * @var integer
-     */
-    private $recCount;
 
     /**
      * @var bool
@@ -88,7 +81,6 @@ class SchemaTraverser
     public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null)
     {
         $this->pathStack = [];
-        $this->recCount  = -1;
 
         if ($visitor === null) {
             $visitor = new NullVisitor();
@@ -104,12 +96,6 @@ class SchemaTraverser
      */
     protected function recTraverse($data, TypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context = [])
     {
-        $this->recCount++;
-
-        if ($this->recCount > self::MAX_RECURSION_DEPTH) {
-            throw new TraverserException($this->getCurrentPath() . ' max recursion depth reached');
-        }
-
         if ($type instanceof StructType) {
             if ($this->assertConstraints) {
                 $this->assertStructConstraints($data, $type);
@@ -181,8 +167,6 @@ class SchemaTraverser
         } else {
             $result = null;
         }
-
-        $this->recCount--;
 
         return $result;
     }
@@ -308,7 +292,6 @@ class SchemaTraverser
 
                 $match++;
             } catch (ValidationException $e) {
-                $this->recCount--;
             } finally {
                 $this->assertConstraints = $assertConstraints;
             }
@@ -342,7 +325,6 @@ class SchemaTraverser
 
                 $match++;
             } catch (ValidationException $e) {
-                $this->recCount--;
             } finally {
                 $this->assertConstraints = $assertConstraints;
             }
