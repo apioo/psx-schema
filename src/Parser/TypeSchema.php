@@ -26,6 +26,7 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\UnknownTypeException;
+use PSX\Schema\Parser\TypeSchema\BCLayer;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
@@ -44,7 +45,6 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
-use PSX\Schema\Parser\TypeSchema\BCLayer;
 use PSX\Uri\Uri;
 
 /**
@@ -56,33 +56,18 @@ use PSX\Uri\Uri;
  */
 class TypeSchema implements ParserInterface
 {
-    /**
-     * @var \PSX\Schema\Parser\TypeSchema\ImportResolver
-     */
-    private $resolver;
+    private ImportResolver $resolver;
+    private ?string $basePath;
 
-    /**
-     * @var string
-     */
-    private $basePath;
-
-    /**
-     * @param ImportResolver|null $resolver
-     * @param string|null $basePath
-     */
     public function __construct(ImportResolver $resolver = null, ?string $basePath = null)
     {
         $this->resolver = $resolver ?: ImportResolver::createDefault();
         $this->basePath = $basePath;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function parse(string $schema): SchemaInterface
     {
         $data = Parser::decode($schema);
-
         if (!$data instanceof \stdClass) {
             throw new ParserException('Schema must be an object');
         }
@@ -479,54 +464,6 @@ class TypeSchema implements ParserInterface
         }
 
         throw new UnknownTypeException('Could not assign schema to a type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
-    }
-
-    /**
-     * This method takes a look at the schema and adds missing properties
-     *
-     * @param \stdClass $data
-     * @return \stdClass
-     */
-    private function transformBcLayer(\stdClass $data): \stdClass
-    {
-        if (isset($data->patternProperties) && !isset($data->properties) && !isset($data->additionalProperties)) {
-            // in this case we have a schema with only pattern properties
-            $vars = get_object_vars($data->patternProperties);
-            if (count($vars) === 1) {
-                $data->additionalProperties = reset($vars);
-            } else {
-                $data->additionalProperties = true;
-            }
-        }
-
-        if (isset($data->{'$extends'})) {
-            if (!isset($data->type)) {
-                $data->type = 'object';
-            }
-            if (!isset($data->properties)) {
-                $data->properties = new \stdClass();
-            }
-        }
-
-        if (!isset($data->type)) {
-            if (isset($data->properties) || isset($data->additionalProperties)) {
-                $data->type = 'object';
-            } elseif (isset($data->items)) {
-                $data->type = 'array';
-            } elseif (isset($data->pattern) || isset($data->minLength) || isset($data->maxLength)) {
-                $data->type = 'string';
-            } elseif (isset($data->minimum) || isset($data->maximum)) {
-                $data->type = 'number';
-            }
-        }
-
-        if (isset($data->type) && $data->type === 'object') {
-            if (!isset($data->properties) && !isset($data->additionalProperties)) {
-                $data->properties = new \stdClass();
-            }
-        }
-
-        return $data;
     }
 
     public static function fromFile($file, ImportResolver $resolver = null): SchemaInterface
