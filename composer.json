@@ -14,7 +14,7 @@
   "require": {
     "php": ">=8.0",
     "nikic/php-parser": "^4.0",
-    "psr/cache": "^2.0|^3.0",
+    "psr/cache": "^1.0|^2.0|^3.0",
     "psx/datetime": "^2.0",
     "psx/http": "^3.0",
     "psx/json": "^2.0",
