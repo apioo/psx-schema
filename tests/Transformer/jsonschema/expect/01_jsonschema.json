@@ -1,0 +1,16 @@
+{
+  "definitions": {
+    "Inline987e9293": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$ref": "Inline987e9293"
+}
