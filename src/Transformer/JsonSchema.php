@@ -56,6 +56,16 @@ class JsonSchema implements TransformerInterface
 
         $root = null;
         if (!empty($keywords)) {
+            // in case we have an array at the top level we transform it to an object
+            if (isset($keywords['type']) && $keywords['type'] === 'array') {
+                $keywords = [
+                    'type' => 'object',
+                    'properties' => (object) [
+                        'entries' => (object) $keywords,
+                    ]
+                ];
+            }
+
             $result = $this->convertSchema((object) $keywords, $defs);
             if (!isset($result->{'$ref'})) {
                 throw new TransformerException('The root schema must be an object');
