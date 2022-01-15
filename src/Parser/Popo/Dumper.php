@@ -43,8 +43,7 @@ use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
- * The dumper extracts all data from POPOs containing annotations so that the
- * data can be serialized as json
+ * The dumper extracts all data from POPOs
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -71,6 +70,8 @@ class Dumper
             return DateTime::fromDateTime($data)->toString();
         } elseif ($data instanceof \DateInterval) {
             return Duration::fromDateInterval($data)->toString();
+        } elseif ($data instanceof \JsonSerializable) {
+            return $data;
         } elseif (is_object($data)) {
             return $this->dumpObject($data, get_class($data));
         } elseif (is_resource($data)) {
