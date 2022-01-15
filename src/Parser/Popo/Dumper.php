@@ -71,7 +71,7 @@ class Dumper
         } elseif ($data instanceof \DateInterval) {
             return Duration::fromDateInterval($data)->toString();
         } elseif ($data instanceof \JsonSerializable) {
-            return $data;
+            return Record::from($data->jsonSerialize());
         } elseif (is_object($data)) {
             return $this->dumpObject($data, get_class($data));
         } elseif (is_resource($data)) {
