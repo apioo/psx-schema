@@ -2,6 +2,7 @@
 
 namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
+use PSX\Record\Record;
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Discriminator;
 use PSX\Schema\Attribute\Enum;
@@ -19,6 +20,11 @@ use PSX\Schema\Attribute\Required;
 class News
 {
     protected ?Meta $config = null;
+
+    /**
+     * @var Record<string>|null
+     */
+    protected ?Record $inlineConfig = null;
 
     /**
      * @var array<string>

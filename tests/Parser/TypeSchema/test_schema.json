@@ -82,6 +82,12 @@
         "config": {
           "$ref": "Meta"
         },
+        "inlineConfig": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "tags": {
           "type": "array",
           "items": {
