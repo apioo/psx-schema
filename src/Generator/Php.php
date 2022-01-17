@@ -125,7 +125,11 @@ class Php extends CodeGeneratorAbstract
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
                         $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
+                    } elseif ($type === '\\' . Record::class) {
+                        // in case we have an inline map we need to provide the inner type
+                        $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
                     }
+
                     if ($type !== 'mixed') {
                         $prop->setType(new Node\NullableType($type));
                     } else {
