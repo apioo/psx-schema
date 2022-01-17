@@ -24,6 +24,7 @@ use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\Time;
+use PSX\Record\Record;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\TypeAbstract;
@@ -96,8 +97,10 @@ class Native implements ResolverInterface
         } elseif ($name === 'bool') {
             return TypeFactory::getBoolean();
         } elseif ($name === 'array') {
-            // in this case we have no way to determine the type inside the
-            // array in the future this is maybe possible
+            // in this case we have no way to determine the type inside the array in the future this is maybe possible
+            return null;
+        } elseif ($name === Record::class) {
+            // in case we have a record we need to get the type from the doc
             return null;
         } elseif ($name === 'void') {
             return null;
