@@ -74,6 +74,7 @@ class TestSchema extends SchemaAbstract
         $news = $this->newStruct('News');
         $news->setDescription('An general news entry');
         $news->addReference('config', 'Meta');
+        $news->add('inlineConfig', TypeFactory::getMap(TypeFactory::getString()));
         $news->addArray('tags', TypeFactory::getString())
             ->setMinItems(1)
             ->setMaxItems(6);
