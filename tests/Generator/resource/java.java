@@ -88,12 +88,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 /**
  * An general news entry
  */
 public class News {
     private Meta config;
+    private HashMap<String, String> inlineConfig;
     private String[] tags;
     private Author[] receiver;
     private Object[] resources;
@@ -119,6 +121,12 @@ public class News {
     }
     public Meta getConfig() {
         return this.config;
+    }
+    public void setInlineConfig(HashMap<String, String> inlineConfig) {
+        this.inlineConfig = inlineConfig;
+    }
+    public HashMap<String, String> getInlineConfig() {
+        return this.inlineConfig;
     }
     public void setTags(String[] tags) {
         this.tags = tags;

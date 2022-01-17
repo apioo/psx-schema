@@ -1,198 +1,204 @@
 {
-  "definitions": {
-    "Author": {
-      "description": "An simple author element with some description",
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "pattern": "[A-z]{3,16}"
-        },
-        "email": {
-          "description": "We will send no spam to this address",
-          "nullable": true,
-          "type": "string"
-        },
-        "categories": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "maxItems": 8
-        },
-        "locations": {
-          "description": "Array of locations",
-          "type": "array",
-          "items": {
-            "$ref": "Location"
-          }
-        },
-        "origin": {
-          "$ref": "Location"
-        }
-      },
-      "required": [
-        "title"
-      ]
-    },
-    "Location": {
-      "description": "Location of the person",
-      "type": "object",
-      "properties": {
-        "lat": {
-          "type": "number"
-        },
-        "long": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "lat",
-        "long"
-      ]
-    },
-    "Meta": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "minProperties": 1,
-      "maxProperties": 6
-    },
-    "News": {
-      "description": "An general news entry",
-      "type": "object",
-      "properties": {
-        "config": {
-          "$ref": "Meta"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1,
-          "maxItems": 6
-        },
-        "receiver": {
-          "type": "array",
-          "items": {
-            "$ref": "Author"
-          },
-          "minItems": 1
-        },
-        "resources": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "$ref": "Location"
-              },
-              {
-                "$ref": "Web"
-              }
-            ]
-          }
-        },
-        "profileImage": {
-          "format": "base64",
-          "type": "string"
-        },
-        "read": {
-          "type": "boolean"
-        },
-        "source": {
-          "oneOf": [
-            {
-              "$ref": "Author"
+    "definitions": {
+        "Author": {
+            "description": "An simple author element with some description",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "pattern": "[A-z]{3,16}"
+                },
+                "email": {
+                    "description": "We will send no spam to this address",
+                    "nullable": true,
+                    "type": "string"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "maxItems": 8
+                },
+                "locations": {
+                    "description": "Array of locations",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Location"
+                    }
+                },
+                "origin": {
+                    "$ref": "Location"
+                }
             },
-            {
-              "$ref": "Web"
-            }
-          ]
+            "required": [
+                "title"
+            ]
         },
-        "author": {
-          "$ref": "Author"
+        "Location": {
+            "description": "Location of the person",
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "type": "number"
+                },
+                "long": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "lat",
+                "long"
+            ]
         },
-        "meta": {
-          "$ref": "Meta"
+        "Meta": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            },
+            "minProperties": 1,
+            "maxProperties": 6
         },
-        "sendDate": {
-          "format": "date",
-          "type": "string"
+        "News": {
+            "description": "An general news entry",
+            "type": "object",
+            "properties": {
+                "config": {
+                    "$ref": "Meta"
+                },
+                "inlineConfig": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 6
+                },
+                "receiver": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "Author"
+                    },
+                    "minItems": 1
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "$ref": "Location"
+                            },
+                            {
+                                "$ref": "Web"
+                            }
+                        ]
+                    }
+                },
+                "profileImage": {
+                    "format": "base64",
+                    "type": "string"
+                },
+                "read": {
+                    "type": "boolean"
+                },
+                "source": {
+                    "oneOf": [
+                        {
+                            "$ref": "Author"
+                        },
+                        {
+                            "$ref": "Web"
+                        }
+                    ]
+                },
+                "author": {
+                    "$ref": "Author"
+                },
+                "meta": {
+                    "$ref": "Meta"
+                },
+                "sendDate": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "readDate": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "expires": {
+                    "format": "duration",
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 100
+                },
+                "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                },
+                "content": {
+                    "description": "Contains the main content of the news entry",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 512
+                },
+                "question": {
+                    "enum": [
+                        "foo",
+                        "bar"
+                    ],
+                    "type": "string"
+                },
+                "version": {
+                    "const": "http:\/\/foo.bar",
+                    "type": "string"
+                },
+                "coffeeTime": {
+                    "format": "time",
+                    "type": "string"
+                },
+                "profileUri": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "g-recaptcha-response": {
+                    "type": "string"
+                },
+                "payload": {
+                    "type": "any"
+                }
+            },
+            "required": [
+                "receiver",
+                "price",
+                "content"
+            ]
         },
-        "readDate": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "expires": {
-          "format": "duration",
-          "type": "string"
-        },
-        "price": {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 100
-        },
-        "rating": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5
-        },
-        "content": {
-          "description": "Contains the main content of the news entry",
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 512
-        },
-        "question": {
-          "enum": [
-            "foo",
-            "bar"
-          ],
-          "type": "string"
-        },
-        "version": {
-          "const": "http:\/\/foo.bar",
-          "type": "string"
-        },
-        "coffeeTime": {
-          "format": "time",
-          "type": "string"
-        },
-        "profileUri": {
-          "format": "uri",
-          "type": "string"
-        },
-        "g-recaptcha-response": {
-          "type": "string"
-        },
-        "payload": {
-          "type": "any"
+        "Web": {
+            "description": "An application",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "url"
+            ]
         }
-      },
-      "required": [
-        "receiver",
-        "price",
-        "content"
-      ]
     },
-    "Web": {
-      "description": "An application",
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "url"
-      ]
-    }
-  },
-  "$ref": "News"
+    "$ref": "News"
 }

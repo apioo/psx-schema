@@ -18,24 +18,25 @@ message Author {
 
 message News {
     map<string, string> config = 1;
-    repeated string tags = 2;
-    repeated Author receiver = 3;
-    repeated Struct resources = 4;
-    bytes profileImage = 5;
-    bool read = 6;
-    Struct source = 7;
-    Author author = 8;
-    map<string, string> meta = 9;
-    Timestamp sendDate = 10;
-    Timestamp readDate = 11;
-    string expires = 12;
-    float price = 13;
-    int64 rating = 14;
-    string content = 15;
-    string question = 16;
-    string version = 17;
-    string coffeeTime = 18;
-    string profileUri = 19;
-    string captcha = 20;
-    Any payload = 21;
+    map<string, string> inlineConfig = 2;
+    repeated string tags = 3;
+    repeated Author receiver = 4;
+    repeated Struct resources = 5;
+    bytes profileImage = 6;
+    bool read = 7;
+    Struct source = 8;
+    Author author = 9;
+    map<string, string> meta = 10;
+    Timestamp sendDate = 11;
+    Timestamp readDate = 12;
+    string expires = 13;
+    float price = 14;
+    int64 rating = 15;
+    string content = 16;
+    string question = 17;
+    string version = 18;
+    string coffeeTime = 19;
+    string profileUri = 20;
+    string captcha = 21;
+    Any payload = 22;
 }

@@ -26,6 +26,7 @@ import "time"
 // An general news entry
 type News struct {
     Config Meta `json:"config"`
+    InlineConfig map[string]string `json:"inlineConfig"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []interface{} `json:"resources"`

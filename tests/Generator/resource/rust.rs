@@ -25,6 +25,7 @@ type Meta = HashMap<String, String>() {
 // An general news entry
 struct News {
     config: Meta,
+    inlineConfig: HashMap<String, String>,
     tags: Vec<String>,
     receiver: Vec<Author>,
     resources: Vec<Object>,

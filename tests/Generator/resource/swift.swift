@@ -24,6 +24,7 @@ typealias Meta = Dictionary<String, String>;
 // An general news entry
 class News: Codable {
     var config: Meta
+    var inlineConfig: Dictionary<String, String>
     var tags: Array<String>
     var receiver: Array<Author>
     var resources: Array<Location | Web>

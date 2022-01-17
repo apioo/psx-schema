@@ -33,12 +33,15 @@ public class Meta : Dictionary<string, string>
 {
 }
 
+using System.Collections.Generic;
+
 /// <summary>
 /// An general news entry
 /// </summary>
 public class News
 {
     public Meta Config { get; set; }
+    public Dictionary<string, string> InlineConfig { get; set; }
     public string[] Tags { get; set; }
     public Author[] Receiver { get; set; }
     public object[] Resources { get; set; }

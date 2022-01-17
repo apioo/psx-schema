@@ -32,12 +32,14 @@ class Meta(Dict[str, str]):
 
 from typing import Any
 from typing import List
+from typing import Dict
 from typing import Union
 
 # An general news entry
 class News:
-    def __init__(self, config: Meta, tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str, payload: Any):
+    def __init__(self, config: Meta, inlineConfig: Dict[str, str], tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str, payload: Any):
         self.config = config
+        self.inlineConfig = inlineConfig
         self.tags = tags
         self.receiver = receiver
         self.resources = resources

@@ -34,12 +34,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 /**
  * An general news entry
  */
 open class News {
     var config: Meta? = null
+    var inlineConfig: HashMap<String, String>? = null
     var tags: Array<String>? = null
     var receiver: Array<Author>? = null
     var resources: Array<Any>? = null

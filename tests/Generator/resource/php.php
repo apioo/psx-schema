@@ -172,6 +172,10 @@ class News implements \JsonSerializable
 {
     protected ?Meta $config = null;
     /**
+     * @var \PSX\Record\Record<string>|null
+     */
+    protected ?\PSX\Record\Record $inlineConfig = null;
+    /**
      * @var array<string>|null
      */
     #[MinItems(1)]
@@ -222,6 +226,14 @@ class News implements \JsonSerializable
     public function getConfig() : ?Meta
     {
         return $this->config;
+    }
+    public function setInlineConfig(?\PSX\Record\Record $inlineConfig) : void
+    {
+        $this->inlineConfig = $inlineConfig;
+    }
+    public function getInlineConfig() : ?\PSX\Record\Record
+    {
+        return $this->inlineConfig;
     }
     /**
      * @param array<string>|null $tags
@@ -394,7 +406,7 @@ class News implements \JsonSerializable
     }
     public function jsonSerialize() : \stdClass
     {
-        return (object) array_filter(array('config' => $this->config, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha, 'payload' => $this->payload), static function ($value) : bool {
+        return (object) array_filter(array('config' => $this->config, 'inlineConfig' => $this->inlineConfig, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha, 'payload' => $this->payload), static function ($value) : bool {
             return $value !== null;
         });
     }
