@@ -274,9 +274,9 @@ class ChangelogGenerator
         [$ns, $name] = TypeUtil::split($typeName);
 
         if ($propertyName === null) {
-            return 'Property "' . $name . '.' . $propertyName . '" (' . $type . ') ' . $description . ' has changed from "' . $from . '" to "' . $to . '"';
-        } else {
             return 'Type "' . $name . '" (' . $type . ') ' . $description . ' has changed from "' . $from . '" to "' . $to . '"';
+        } else {
+            return 'Property "' . $name . '.' . $propertyName . '" (' . $type . ') ' . $description . ' has changed from "' . $from . '" to "' . $to . '"';
         }
     }
 }
