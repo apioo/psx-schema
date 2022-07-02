@@ -29,9 +29,9 @@ namespace PSX\Schema\Document;
  */
 class Import implements \JsonSerializable
 {
-    private $alias;
-    private $document;
-    private $version;
+    private ?string $alias;
+    private ?string $document;
+    private ?string $version;
 
     /**
      * @param array $import
@@ -43,17 +43,17 @@ class Import implements \JsonSerializable
         $this->version = $import['version'] ?? null;
     }
 
-    public function getAlias()
+    public function getAlias(): ?string
     {
         return $this->alias;
     }
 
-    public function getDocument()
+    public function getDocument(): ?string
     {
         return $this->document;
     }
 
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
