@@ -32,16 +32,16 @@ class Document implements \JsonSerializable
     /**
      * @var Type[]
      */
-    private $types;
+    private array $types;
 
     /**
      * @var Import[]
      */
-    private $imports;
+    private array $imports;
 
-    private $root;
+    private ?int $root;
 
-    public function __construct(array $types, ?array $imports = null, ?string $root = null)
+    public function __construct(array $types, ?array $imports = null, ?int $root = null)
     {
         $this->types = $this->convertTypes($types);
         $this->imports = $imports !== null ? $this->convertImports($imports) : [];
@@ -88,7 +88,7 @@ class Document implements \JsonSerializable
         return null;
     }
 
-    public function getRoot(): ?string
+    public function getRoot(): ?int
     {
         return $this->root;
     }

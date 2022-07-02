@@ -44,13 +44,14 @@ class Generator
         }
 
         $definitions = new \stdClass();
-        foreach ($document->getTypes() as $type) {
+        $types = $document->getTypes();
+        foreach ($types as $type) {
             $definitions->{$type->getName()} = $this->generateType($type);
         }
         $schema->definitions = $definitions;
 
-        if ($document->getRoot() !== null) {
-            $schema->{'$ref'} = $document->getRoot();
+        if ($document->getRoot() !== null && isset($types[$document->getRoot()])) {
+            $schema->{'$ref'} = $types[$document->getRoot()]->getName();
         }
 
         return \json_encode($schema, \JSON_PRETTY_PRINT);
