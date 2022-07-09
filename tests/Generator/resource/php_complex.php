@@ -65,7 +65,7 @@ class CommonProperties implements \JsonSerializable
     {
         return $this->readonly;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'nullable' => $this->nullable, 'deprecated' => $this->deprecated, 'readonly' => $this->readonly), static function ($value) : bool {
             return $value !== null;
@@ -107,7 +107,7 @@ class ScalarProperties implements \JsonSerializable
     {
         return $this->default;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('format' => $this->format, 'enum' => $this->enum, 'default' => $this->default), static function ($value) : bool {
             return $value !== null;
@@ -142,7 +142,7 @@ class ContainerProperties implements \JsonSerializable
     {
         return $this->type;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
             return $value !== null;
@@ -184,7 +184,7 @@ class StructProperties implements \JsonSerializable
     {
         return $this->required;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
             return $value !== null;
@@ -232,7 +232,7 @@ class MapProperties implements \JsonSerializable
     {
         return $this->minProperties;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('additionalProperties' => $this->additionalProperties, 'maxProperties' => $this->maxProperties, 'minProperties' => $this->minProperties), static function ($value) : bool {
             return $value !== null;
@@ -300,7 +300,7 @@ class ArrayProperties implements \JsonSerializable
     {
         return $this->uniqueItems;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('type' => $this->type, 'items' => $this->items, 'maxItems' => $this->maxItems, 'minItems' => $this->minItems, 'uniqueItems' => $this->uniqueItems), static function ($value) : bool {
             return $value !== null;
@@ -326,7 +326,7 @@ class BooleanProperties implements \JsonSerializable
     {
         return $this->type;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
             return $value !== null;
@@ -399,7 +399,7 @@ class NumberProperties implements \JsonSerializable
     {
         return $this->exclusiveMinimum;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('type' => $this->type, 'multipleOf' => $this->multipleOf, 'maximum' => $this->maximum, 'exclusiveMaximum' => $this->exclusiveMaximum, 'minimum' => $this->minimum, 'exclusiveMinimum' => $this->exclusiveMinimum), static function ($value) : bool {
             return $value !== null;
@@ -457,7 +457,7 @@ class StringProperties implements \JsonSerializable
     {
         return $this->pattern;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('type' => $this->type, 'maxLength' => $this->maxLength, 'minLength' => $this->minLength, 'pattern' => $this->pattern), static function ($value) : bool {
             return $value !== null;
@@ -500,7 +500,7 @@ class Discriminator implements \JsonSerializable
     {
         return $this->mapping;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('propertyName' => $this->propertyName, 'mapping' => $this->mapping), static function ($value) : bool {
             return $value !== null;
@@ -540,7 +540,7 @@ class AllOfProperties implements \JsonSerializable
     {
         return $this->allOf;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('description' => $this->description, 'allOf' => $this->allOf), static function ($value) : bool {
             return $value !== null;
@@ -589,7 +589,7 @@ class OneOfProperties implements \JsonSerializable
     {
         return $this->oneOf;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('description' => $this->description, 'discriminator' => $this->discriminator, 'oneOf' => $this->oneOf), static function ($value) : bool {
             return $value !== null;
@@ -634,7 +634,7 @@ class ReferenceType implements \JsonSerializable
     {
         return $this->template;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('$ref' => $this->ref, '$template' => $this->template), static function ($value) : bool {
             return $value !== null;
@@ -660,7 +660,7 @@ class GenericType implements \JsonSerializable
     {
         return $this->generic;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('$generic' => $this->generic), static function ($value) : bool {
             return $value !== null;
@@ -771,7 +771,7 @@ class TypeSchema implements \JsonSerializable
     {
         return $this->required;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('$import' => $this->import, 'title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'definitions' => $this->definitions, 'properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
             return $value !== null;

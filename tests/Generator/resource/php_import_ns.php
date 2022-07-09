@@ -21,7 +21,7 @@ class Import implements \JsonSerializable
     {
         return $this->student;
     }
-    public function jsonSerialize() : \stdClass
+    public function jsonSerialize() : object
     {
         return (object) array_filter(array('students' => $this->students, 'student' => $this->student), static function ($value) : bool {
             return $value !== null;
