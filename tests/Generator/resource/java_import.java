@@ -13,7 +13,17 @@ public class Import {
     public Student getStudent() {
         return this.student;
     }
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("students", this.students);
+        map.put("student", this.student);
+        return map;
+    }
 }
 
 public class MyMap extends Student {
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        return map;
+    }
 }

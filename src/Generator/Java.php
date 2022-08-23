@@ -142,7 +142,6 @@ class Java extends CodeGeneratorAbstract
             $code.= $this->indent . '}' . "\n";
         }
 
-        $code.= "\n";
         $code.= $this->indent . 'public Map<String, Object> toMap() {' . "\n";
         $code.= $this->indent . $this->indent . 'Map<String, Object> map = new HashMap<>();' . "\n";
         foreach ($properties as $name => $property) {

@@ -3,18 +3,24 @@
  */
 public class Location {
     private float lat;
-    private float long;
+    private float _long;
     public void setLat(float lat) {
         this.lat = lat;
     }
     public float getLat() {
         return this.lat;
     }
-    public void setLong(float long) {
-        this.long = long;
+    public void setLong(float _long) {
+        this._long = _long;
     }
     public float getLong() {
-        return this.long;
+        return this._long;
+    }
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("lat", this.lat);
+        map.put("long", this._long);
+        return map;
     }
 }
 
@@ -35,6 +41,12 @@ public class Web {
     }
     public String getUrl() {
         return this.url;
+    }
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", this.name);
+        map.put("url", this.url);
+        return map;
     }
 }
 
@@ -76,6 +88,15 @@ public class Author {
     }
     public Location getOrigin() {
         return this.origin;
+    }
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", this.title);
+        map.put("email", this.email);
+        map.put("categories", this.categories);
+        map.put("locations", this.locations);
+        map.put("origin", this.origin);
+        return map;
     }
 }
 
@@ -247,5 +268,31 @@ public class News {
     }
     public Object getPayload() {
         return this.payload;
+    }
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("config", this.config);
+        map.put("inlineConfig", this.inlineConfig);
+        map.put("tags", this.tags);
+        map.put("receiver", this.receiver);
+        map.put("resources", this.resources);
+        map.put("profileImage", this.profileImage);
+        map.put("read", this.read);
+        map.put("source", this.source);
+        map.put("author", this.author);
+        map.put("meta", this.meta);
+        map.put("sendDate", this.sendDate);
+        map.put("readDate", this.readDate);
+        map.put("expires", this.expires);
+        map.put("price", this.price);
+        map.put("rating", this.rating);
+        map.put("content", this.content);
+        map.put("question", this.question);
+        map.put("version", this.version);
+        map.put("coffeeTime", this.coffeeTime);
+        map.put("profileUri", this.profileUri);
+        map.put("g-recaptcha-response", this.captcha);
+        map.put("payload", this.payload);
+        return map;
     }
 }
