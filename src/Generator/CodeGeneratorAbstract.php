@@ -45,41 +45,13 @@ use PSX\Schema\TypeUtil;
  */
 abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface, FileAwareInterface
 {
-    /**
-     * @var TypeGeneratorInterface
-     */
-    protected $generator;
+    protected TypeGeneratorInterface $generator;
+    protected ?string $namespace;
+    protected string $indent;
+    protected array $mapping;
+    protected DefinitionsInterface $definitions;
+    private Code\Chunks $chunks;
 
-    /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * @var string
-     */
-    protected $indent;
-
-    /**
-     * @var array
-     */
-    protected $mapping;
-
-    /**
-     * @var DefinitionsInterface
-     */
-    protected $definitions;
-
-    /**
-     * @var Code\Chunks
-     */
-    private $chunks;
-
-    /**
-     * @param string|null $namespace
-     * @param array $mapping
-     * @param int $indent
-     */
     public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
         $this->generator = $this->newTypeGenerator($mapping);
@@ -198,7 +170,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                 $generics[] = $generic->getGeneric();
             }
 
-            $key = isset($mapping[$name]) ? $mapping[$name] : $name;
+            $key = $mapping[$name] ?? $name;
             $key = $this->normalizePropertyName($key);
 
             $props[$key] = new Code\Property(
@@ -257,7 +229,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
-    private function supportsWrite(string $name, TypeInterface $type)
+    private function supportsWrite(string $name, TypeInterface $type): bool
     {
         if ($type instanceof StructType) {
             return true;
@@ -301,38 +273,52 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         ]))) . "\n";
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
     protected function normalizePropertyName(string $name): string
     {
-        return lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
+        $name = lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
+
+        if (in_array($name, $this->getReservedNames())) {
+            $name = $this->makeReservedNameUsable($name);
+        }
+
+        return $name;
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
+    protected function normalizeMethodName(string $name): string
+    {
+        if (str_starts_with($name, '_')) {
+            $name = substr($name, 1);
+        }
+
+        $name = ucfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
+
+        return $name;
+    }
+
     protected function normalizeClassName(string $name): string
     {
-        return str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name)));
+        $name = str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name)));
+
+        if (in_array($name, $this->getReservedNames())) {
+            $name = $this->makeReservedNameUsable($name);
+        }
+
+        return $name;
     }
 
-    /**
-     * @param array $mapping
-     * @return \PSX\Schema\Generator\Type\GeneratorInterface
-     */
+    protected function makeReservedNameUsable(string $name): string
+    {
+        return '_' . $name;
+    }
+
     abstract protected function newTypeGenerator(array $mapping): TypeGeneratorInterface;
 
-    /**
-     * @param string $name
-     * @param array $properties
-     * @param string|null $extends
-     * @param array|null $generics
-     * @return string
-     */
     abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string;
+
+    protected function getReservedNames(): array
+    {
+        return [];
+    }
 
     protected function writeMap(string $name, string $type, MapType $origin): string
     {
