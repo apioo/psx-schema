@@ -37,6 +37,62 @@ use PSX\Schema\TypeUtil;
  */
 class Java extends CodeGeneratorAbstract
 {
+    private const RESERVED_NAMES = [
+        'abstract',
+        'assert',
+        'boolean',
+        'break',
+        'byte',
+        'case',
+        'catch',
+        'char',
+        'class',
+        'const',
+        'continue',
+        'default',
+        'double',
+        'do',
+        'else',
+        'enum',
+        'extends',
+        'false',
+        'final',
+        'finally',
+        'float',
+        'for',
+        'goto',
+        'if',
+        'implements',
+        'import',
+        'instanceof',
+        'int',
+        'interface',
+        'long',
+        'native',
+        'new',
+        'null',
+        'package',
+        'private',
+        'protected',
+        'public',
+        'return',
+        'short',
+        'static',
+        'strictfp',
+        'super',
+        'switch',
+        'synchronized',
+        'this',
+        'throw',
+        'throws',
+        'transient',
+        'true',
+        'try',
+        'void',
+        'volatile',
+        'while',
+    ];
+
     /**
      * @inheritDoc
      */
@@ -77,14 +133,23 @@ class Java extends CodeGeneratorAbstract
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'public void set' . ucfirst($name) . '(' . $property->getType() . ' ' . $name . ') {' . "\n";
+            $code.= $this->indent . 'public void set' . $this->normalizeMethodName($name) . '(' . $property->getType() . ' ' . $name . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
 
-            $code.= $this->indent . 'public ' . $property->getType() . ' get' . ucfirst($name) . '() {' . "\n";
+            $code.= $this->indent . 'public ' . $property->getType() . ' get' . $this->normalizeMethodName($name) . '() {' . "\n";
             $code.= $this->indent . $this->indent . 'return this.' . $name . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
         }
+
+        $code.= "\n";
+        $code.= $this->indent . 'public Map<String, Object> toMap() {' . "\n";
+        $code.= $this->indent . $this->indent . 'Map<String, Object> map = new HashMap<>();' . "\n";
+        foreach ($properties as $name => $property) {
+            $code.= $this->indent . $this->indent . 'map.put("' . $property->getName() . '", this.' . $name . ');' . "\n";
+        }
+        $code.= $this->indent . $this->indent . 'return map;' . "\n";
+        $code.= $this->indent . '}' . "\n";
 
         $code.= '}' . "\n";
 
@@ -134,6 +199,11 @@ class Java extends CodeGeneratorAbstract
         }
 
         return $code;
+    }
+
+    protected function getReservedNames(): array
+    {
+        return self::RESERVED_NAMES;
     }
 
     private function getImports(TypeAbstract $origin): array
