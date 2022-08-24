@@ -1,4 +1,5 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Location of the person
@@ -6,19 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Location {
     private float lat;
     private float _long;
-    @JsonProperty("lat")
+    @JsonSetter("lat")
     public void setLat(float lat) {
         this.lat = lat;
     }
-    @JsonProperty("lat")
+    @JsonGetter("lat")
     public float getLat() {
         return this.lat;
     }
-    @JsonProperty("long")
+    @JsonSetter("long")
     public void setLong(float _long) {
         this._long = _long;
     }
-    @JsonProperty("long")
+    @JsonGetter("long")
     public float getLong() {
         return this._long;
     }
@@ -30,7 +31,8 @@ public class Location {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * An application
@@ -38,19 +40,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Web {
     private String name;
     private String url;
-    @JsonProperty("name")
+    @JsonSetter("name")
     public void setName(String name) {
         this.name = name;
     }
-    @JsonProperty("name")
+    @JsonGetter("name")
     public String getName() {
         return this.name;
     }
-    @JsonProperty("url")
+    @JsonSetter("url")
     public void setUrl(String url) {
         this.url = url;
     }
-    @JsonProperty("url")
+    @JsonGetter("url")
     public String getUrl() {
         return this.url;
     }
@@ -62,7 +64,8 @@ public class Web {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * An simple author element with some description
@@ -73,43 +76,43 @@ public class Author {
     private String[] categories;
     private Location[] locations;
     private Location origin;
-    @JsonProperty("title")
+    @JsonSetter("title")
     public void setTitle(String title) {
         this.title = title;
     }
-    @JsonProperty("title")
+    @JsonGetter("title")
     public String getTitle() {
         return this.title;
     }
-    @JsonProperty("email")
+    @JsonSetter("email")
     public void setEmail(String email) {
         this.email = email;
     }
-    @JsonProperty("email")
+    @JsonGetter("email")
     public String getEmail() {
         return this.email;
     }
-    @JsonProperty("categories")
+    @JsonSetter("categories")
     public void setCategories(String[] categories) {
         this.categories = categories;
     }
-    @JsonProperty("categories")
+    @JsonGetter("categories")
     public String[] getCategories() {
         return this.categories;
     }
-    @JsonProperty("locations")
+    @JsonSetter("locations")
     public void setLocations(Location[] locations) {
         this.locations = locations;
     }
-    @JsonProperty("locations")
+    @JsonGetter("locations")
     public Location[] getLocations() {
         return this.locations;
     }
-    @JsonProperty("origin")
+    @JsonSetter("origin")
     public void setOrigin(Location origin) {
         this.origin = origin;
     }
-    @JsonProperty("origin")
+    @JsonGetter("origin")
     public Location getOrigin() {
         return this.origin;
     }
@@ -124,12 +127,14 @@ public class Author {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 public class Meta extends HashMap<String, String> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -163,179 +168,179 @@ public class News {
     private URI profileUri;
     private String captcha;
     private Object payload;
-    @JsonProperty("config")
+    @JsonSetter("config")
     public void setConfig(Meta config) {
         this.config = config;
     }
-    @JsonProperty("config")
+    @JsonGetter("config")
     public Meta getConfig() {
         return this.config;
     }
-    @JsonProperty("inlineConfig")
+    @JsonSetter("inlineConfig")
     public void setInlineConfig(HashMap<String, String> inlineConfig) {
         this.inlineConfig = inlineConfig;
     }
-    @JsonProperty("inlineConfig")
+    @JsonGetter("inlineConfig")
     public HashMap<String, String> getInlineConfig() {
         return this.inlineConfig;
     }
-    @JsonProperty("tags")
+    @JsonSetter("tags")
     public void setTags(String[] tags) {
         this.tags = tags;
     }
-    @JsonProperty("tags")
+    @JsonGetter("tags")
     public String[] getTags() {
         return this.tags;
     }
-    @JsonProperty("receiver")
+    @JsonSetter("receiver")
     public void setReceiver(Author[] receiver) {
         this.receiver = receiver;
     }
-    @JsonProperty("receiver")
+    @JsonGetter("receiver")
     public Author[] getReceiver() {
         return this.receiver;
     }
-    @JsonProperty("resources")
+    @JsonSetter("resources")
     public void setResources(Object[] resources) {
         this.resources = resources;
     }
-    @JsonProperty("resources")
+    @JsonGetter("resources")
     public Object[] getResources() {
         return this.resources;
     }
-    @JsonProperty("profileImage")
+    @JsonSetter("profileImage")
     public void setProfileImage(byte[] profileImage) {
         this.profileImage = profileImage;
     }
-    @JsonProperty("profileImage")
+    @JsonGetter("profileImage")
     public byte[] getProfileImage() {
         return this.profileImage;
     }
-    @JsonProperty("read")
+    @JsonSetter("read")
     public void setRead(boolean read) {
         this.read = read;
     }
-    @JsonProperty("read")
+    @JsonGetter("read")
     public boolean getRead() {
         return this.read;
     }
-    @JsonProperty("source")
+    @JsonSetter("source")
     public void setSource(Object source) {
         this.source = source;
     }
-    @JsonProperty("source")
+    @JsonGetter("source")
     public Object getSource() {
         return this.source;
     }
-    @JsonProperty("author")
+    @JsonSetter("author")
     public void setAuthor(Author author) {
         this.author = author;
     }
-    @JsonProperty("author")
+    @JsonGetter("author")
     public Author getAuthor() {
         return this.author;
     }
-    @JsonProperty("meta")
+    @JsonSetter("meta")
     public void setMeta(Meta meta) {
         this.meta = meta;
     }
-    @JsonProperty("meta")
+    @JsonGetter("meta")
     public Meta getMeta() {
         return this.meta;
     }
-    @JsonProperty("sendDate")
+    @JsonSetter("sendDate")
     public void setSendDate(LocalDate sendDate) {
         this.sendDate = sendDate;
     }
-    @JsonProperty("sendDate")
+    @JsonGetter("sendDate")
     public LocalDate getSendDate() {
         return this.sendDate;
     }
-    @JsonProperty("readDate")
+    @JsonSetter("readDate")
     public void setReadDate(LocalDateTime readDate) {
         this.readDate = readDate;
     }
-    @JsonProperty("readDate")
+    @JsonGetter("readDate")
     public LocalDateTime getReadDate() {
         return this.readDate;
     }
-    @JsonProperty("expires")
+    @JsonSetter("expires")
     public void setExpires(Duration expires) {
         this.expires = expires;
     }
-    @JsonProperty("expires")
+    @JsonGetter("expires")
     public Duration getExpires() {
         return this.expires;
     }
-    @JsonProperty("price")
+    @JsonSetter("price")
     public void setPrice(float price) {
         this.price = price;
     }
-    @JsonProperty("price")
+    @JsonGetter("price")
     public float getPrice() {
         return this.price;
     }
-    @JsonProperty("rating")
+    @JsonSetter("rating")
     public void setRating(int rating) {
         this.rating = rating;
     }
-    @JsonProperty("rating")
+    @JsonGetter("rating")
     public int getRating() {
         return this.rating;
     }
-    @JsonProperty("content")
+    @JsonSetter("content")
     public void setContent(String content) {
         this.content = content;
     }
-    @JsonProperty("content")
+    @JsonGetter("content")
     public String getContent() {
         return this.content;
     }
-    @JsonProperty("question")
+    @JsonSetter("question")
     public void setQuestion(String question) {
         this.question = question;
     }
-    @JsonProperty("question")
+    @JsonGetter("question")
     public String getQuestion() {
         return this.question;
     }
-    @JsonProperty("version")
+    @JsonSetter("version")
     public void setVersion(String version) {
         this.version = version;
     }
-    @JsonProperty("version")
+    @JsonGetter("version")
     public String getVersion() {
         return this.version;
     }
-    @JsonProperty("coffeeTime")
+    @JsonSetter("coffeeTime")
     public void setCoffeeTime(LocalTime coffeeTime) {
         this.coffeeTime = coffeeTime;
     }
-    @JsonProperty("coffeeTime")
+    @JsonGetter("coffeeTime")
     public LocalTime getCoffeeTime() {
         return this.coffeeTime;
     }
-    @JsonProperty("profileUri")
+    @JsonSetter("profileUri")
     public void setProfileUri(URI profileUri) {
         this.profileUri = profileUri;
     }
-    @JsonProperty("profileUri")
+    @JsonGetter("profileUri")
     public URI getProfileUri() {
         return this.profileUri;
     }
-    @JsonProperty("g-recaptcha-response")
+    @JsonSetter("g-recaptcha-response")
     public void setCaptcha(String captcha) {
         this.captcha = captcha;
     }
-    @JsonProperty("g-recaptcha-response")
+    @JsonGetter("g-recaptcha-response")
     public String getCaptcha() {
         return this.captcha;
     }
-    @JsonProperty("payload")
+    @JsonSetter("payload")
     public void setPayload(Object payload) {
         this.payload = payload;
     }
-    @JsonProperty("payload")
+    @JsonGetter("payload")
     public Object getPayload() {
         return this.payload;
     }

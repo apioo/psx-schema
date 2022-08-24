@@ -1,11 +1,12 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Creature {
     private String kind;
-    @JsonProperty("kind")
+    @JsonSetter("kind")
     public void setKind(String kind) {
         this.kind = kind;
     }
-    @JsonProperty("kind")
+    @JsonGetter("kind")
     public String getKind() {
         return this.kind;
     }
@@ -16,14 +17,15 @@ public class Creature {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Human extends Creature {
     private String firstName;
-    @JsonProperty("firstName")
+    @JsonSetter("firstName")
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    @JsonProperty("firstName")
+    @JsonGetter("firstName")
     public String getFirstName() {
         return this.firstName;
     }
@@ -34,14 +36,15 @@ public class Human extends Creature {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Animal extends Creature {
     private String nickname;
-    @JsonProperty("nickname")
+    @JsonSetter("nickname")
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-    @JsonProperty("nickname")
+    @JsonGetter("nickname")
     public String getNickname() {
         return this.nickname;
     }
@@ -52,32 +55,33 @@ public class Animal extends Creature {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Union {
     private Object union;
     private Object intersection;
     private Object discriminator;
-    @JsonProperty("union")
+    @JsonSetter("union")
     public void setUnion(Object union) {
         this.union = union;
     }
-    @JsonProperty("union")
+    @JsonGetter("union")
     public Object getUnion() {
         return this.union;
     }
-    @JsonProperty("intersection")
+    @JsonSetter("intersection")
     public void setIntersection(Object intersection) {
         this.intersection = intersection;
     }
-    @JsonProperty("intersection")
+    @JsonGetter("intersection")
     public Object getIntersection() {
         return this.intersection;
     }
-    @JsonProperty("discriminator")
+    @JsonSetter("discriminator")
     public void setDiscriminator(Object discriminator) {
         this.discriminator = discriminator;
     }
-    @JsonProperty("discriminator")
+    @JsonGetter("discriminator")
     public Object getDiscriminator() {
         return this.discriminator;
     }

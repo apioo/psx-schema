@@ -1,4 +1,5 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Common properties which can be used at any schema
@@ -10,51 +11,51 @@ public class CommonProperties {
     private boolean nullable;
     private boolean deprecated;
     private boolean readonly;
-    @JsonProperty("title")
+    @JsonSetter("title")
     public void setTitle(String title) {
         this.title = title;
     }
-    @JsonProperty("title")
+    @JsonGetter("title")
     public String getTitle() {
         return this.title;
     }
-    @JsonProperty("description")
+    @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
     }
-    @JsonProperty("description")
+    @JsonGetter("description")
     public String getDescription() {
         return this.description;
     }
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
-    @JsonProperty("nullable")
+    @JsonSetter("nullable")
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
     }
-    @JsonProperty("nullable")
+    @JsonGetter("nullable")
     public boolean getNullable() {
         return this.nullable;
     }
-    @JsonProperty("deprecated")
+    @JsonSetter("deprecated")
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
     }
-    @JsonProperty("deprecated")
+    @JsonGetter("deprecated")
     public boolean getDeprecated() {
         return this.deprecated;
     }
-    @JsonProperty("readonly")
+    @JsonSetter("readonly")
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
     }
-    @JsonProperty("readonly")
+    @JsonGetter("readonly")
     public boolean getReadonly() {
         return this.readonly;
     }
@@ -70,32 +71,33 @@ public class CommonProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class ScalarProperties {
     private String format;
     private Object _enum;
     private Object _default;
-    @JsonProperty("format")
+    @JsonSetter("format")
     public void setFormat(String format) {
         this.format = format;
     }
-    @JsonProperty("format")
+    @JsonGetter("format")
     public String getFormat() {
         return this.format;
     }
-    @JsonProperty("enum")
+    @JsonSetter("enum")
     public void setEnum(Object _enum) {
         this._enum = _enum;
     }
-    @JsonProperty("enum")
+    @JsonGetter("enum")
     public Object getEnum() {
         return this._enum;
     }
-    @JsonProperty("default")
+    @JsonSetter("default")
     public void setDefault(Object _default) {
         this._default = _default;
     }
-    @JsonProperty("default")
+    @JsonGetter("default")
     public Object getDefault() {
         return this._default;
     }
@@ -108,7 +110,8 @@ public class ScalarProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
@@ -117,18 +120,19 @@ import java.util.HashMap;
 public class Properties extends HashMap<String, PropertyValue> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Properties specific for a container
  */
 public class ContainerProperties {
     private String type;
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
@@ -139,7 +143,8 @@ public class ContainerProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Struct specific properties
@@ -147,19 +152,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class StructProperties {
     private Properties properties;
     private String[] required;
-    @JsonProperty("properties")
+    @JsonSetter("properties")
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
-    @JsonProperty("properties")
+    @JsonGetter("properties")
     public Properties getProperties() {
         return this.properties;
     }
-    @JsonProperty("required")
+    @JsonSetter("required")
     public void setRequired(String[] required) {
         this.required = required;
     }
-    @JsonProperty("required")
+    @JsonGetter("required")
     public String[] getRequired() {
         return this.required;
     }
@@ -171,7 +176,8 @@ public class StructProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Map specific properties
@@ -180,27 +186,27 @@ public class MapProperties {
     private Object additionalProperties;
     private int maxProperties;
     private int minProperties;
-    @JsonProperty("additionalProperties")
+    @JsonSetter("additionalProperties")
     public void setAdditionalProperties(Object additionalProperties) {
         this.additionalProperties = additionalProperties;
     }
-    @JsonProperty("additionalProperties")
+    @JsonGetter("additionalProperties")
     public Object getAdditionalProperties() {
         return this.additionalProperties;
     }
-    @JsonProperty("maxProperties")
+    @JsonSetter("maxProperties")
     public void setMaxProperties(int maxProperties) {
         this.maxProperties = maxProperties;
     }
-    @JsonProperty("maxProperties")
+    @JsonGetter("maxProperties")
     public int getMaxProperties() {
         return this.maxProperties;
     }
-    @JsonProperty("minProperties")
+    @JsonSetter("minProperties")
     public void setMinProperties(int minProperties) {
         this.minProperties = minProperties;
     }
-    @JsonProperty("minProperties")
+    @JsonGetter("minProperties")
     public int getMinProperties() {
         return this.minProperties;
     }
@@ -213,7 +219,8 @@ public class MapProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Array properties
@@ -224,43 +231,43 @@ public class ArrayProperties {
     private int maxItems;
     private int minItems;
     private boolean uniqueItems;
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
-    @JsonProperty("items")
+    @JsonSetter("items")
     public void setItems(Object items) {
         this.items = items;
     }
-    @JsonProperty("items")
+    @JsonGetter("items")
     public Object getItems() {
         return this.items;
     }
-    @JsonProperty("maxItems")
+    @JsonSetter("maxItems")
     public void setMaxItems(int maxItems) {
         this.maxItems = maxItems;
     }
-    @JsonProperty("maxItems")
+    @JsonGetter("maxItems")
     public int getMaxItems() {
         return this.maxItems;
     }
-    @JsonProperty("minItems")
+    @JsonSetter("minItems")
     public void setMinItems(int minItems) {
         this.minItems = minItems;
     }
-    @JsonProperty("minItems")
+    @JsonGetter("minItems")
     public int getMinItems() {
         return this.minItems;
     }
-    @JsonProperty("uniqueItems")
+    @JsonSetter("uniqueItems")
     public void setUniqueItems(boolean uniqueItems) {
         this.uniqueItems = uniqueItems;
     }
-    @JsonProperty("uniqueItems")
+    @JsonGetter("uniqueItems")
     public boolean getUniqueItems() {
         return this.uniqueItems;
     }
@@ -275,18 +282,19 @@ public class ArrayProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Boolean properties
  */
 public class BooleanProperties {
     private String type;
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
@@ -297,7 +305,8 @@ public class BooleanProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Number properties
@@ -309,51 +318,51 @@ public class NumberProperties {
     private boolean exclusiveMaximum;
     private float minimum;
     private boolean exclusiveMinimum;
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
-    @JsonProperty("multipleOf")
+    @JsonSetter("multipleOf")
     public void setMultipleOf(float multipleOf) {
         this.multipleOf = multipleOf;
     }
-    @JsonProperty("multipleOf")
+    @JsonGetter("multipleOf")
     public float getMultipleOf() {
         return this.multipleOf;
     }
-    @JsonProperty("maximum")
+    @JsonSetter("maximum")
     public void setMaximum(float maximum) {
         this.maximum = maximum;
     }
-    @JsonProperty("maximum")
+    @JsonGetter("maximum")
     public float getMaximum() {
         return this.maximum;
     }
-    @JsonProperty("exclusiveMaximum")
+    @JsonSetter("exclusiveMaximum")
     public void setExclusiveMaximum(boolean exclusiveMaximum) {
         this.exclusiveMaximum = exclusiveMaximum;
     }
-    @JsonProperty("exclusiveMaximum")
+    @JsonGetter("exclusiveMaximum")
     public boolean getExclusiveMaximum() {
         return this.exclusiveMaximum;
     }
-    @JsonProperty("minimum")
+    @JsonSetter("minimum")
     public void setMinimum(float minimum) {
         this.minimum = minimum;
     }
-    @JsonProperty("minimum")
+    @JsonGetter("minimum")
     public float getMinimum() {
         return this.minimum;
     }
-    @JsonProperty("exclusiveMinimum")
+    @JsonSetter("exclusiveMinimum")
     public void setExclusiveMinimum(boolean exclusiveMinimum) {
         this.exclusiveMinimum = exclusiveMinimum;
     }
-    @JsonProperty("exclusiveMinimum")
+    @JsonGetter("exclusiveMinimum")
     public boolean getExclusiveMinimum() {
         return this.exclusiveMinimum;
     }
@@ -369,7 +378,8 @@ public class NumberProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * String properties
@@ -379,35 +389,35 @@ public class StringProperties {
     private int maxLength;
     private int minLength;
     private String pattern;
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
-    @JsonProperty("maxLength")
+    @JsonSetter("maxLength")
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;
     }
-    @JsonProperty("maxLength")
+    @JsonGetter("maxLength")
     public int getMaxLength() {
         return this.maxLength;
     }
-    @JsonProperty("minLength")
+    @JsonSetter("minLength")
     public void setMinLength(int minLength) {
         this.minLength = minLength;
     }
-    @JsonProperty("minLength")
+    @JsonGetter("minLength")
     public int getMinLength() {
         return this.minLength;
     }
-    @JsonProperty("pattern")
+    @JsonSetter("pattern")
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
-    @JsonProperty("pattern")
+    @JsonGetter("pattern")
     public String getPattern() {
         return this.pattern;
     }
@@ -421,7 +431,8 @@ public class StringProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
@@ -430,7 +441,8 @@ import java.util.HashMap;
 public class DiscriminatorMapping extends HashMap<String, String> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -438,19 +450,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Discriminator {
     private String propertyName;
     private DiscriminatorMapping mapping;
-    @JsonProperty("propertyName")
+    @JsonSetter("propertyName")
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
-    @JsonProperty("propertyName")
+    @JsonGetter("propertyName")
     public String getPropertyName() {
         return this.propertyName;
     }
-    @JsonProperty("mapping")
+    @JsonSetter("mapping")
     public void setMapping(DiscriminatorMapping mapping) {
         this.mapping = mapping;
     }
-    @JsonProperty("mapping")
+    @JsonGetter("mapping")
     public DiscriminatorMapping getMapping() {
         return this.mapping;
     }
@@ -462,7 +474,8 @@ public class Discriminator {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * An intersection type combines multiple schemas into one
@@ -470,19 +483,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AllOfProperties {
     private String description;
     private OfValue[] allOf;
-    @JsonProperty("description")
+    @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
     }
-    @JsonProperty("description")
+    @JsonGetter("description")
     public String getDescription() {
         return this.description;
     }
-    @JsonProperty("allOf")
+    @JsonSetter("allOf")
     public void setAllOf(OfValue[] allOf) {
         this.allOf = allOf;
     }
-    @JsonProperty("allOf")
+    @JsonGetter("allOf")
     public OfValue[] getAllOf() {
         return this.allOf;
     }
@@ -494,7 +507,8 @@ public class AllOfProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * An union type can contain one of the provided schemas
@@ -503,27 +517,27 @@ public class OneOfProperties {
     private String description;
     private Discriminator discriminator;
     private OfValue[] oneOf;
-    @JsonProperty("description")
+    @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
     }
-    @JsonProperty("description")
+    @JsonGetter("description")
     public String getDescription() {
         return this.description;
     }
-    @JsonProperty("discriminator")
+    @JsonSetter("discriminator")
     public void setDiscriminator(Discriminator discriminator) {
         this.discriminator = discriminator;
     }
-    @JsonProperty("discriminator")
+    @JsonGetter("discriminator")
     public Discriminator getDiscriminator() {
         return this.discriminator;
     }
-    @JsonProperty("oneOf")
+    @JsonSetter("oneOf")
     public void setOneOf(OfValue[] oneOf) {
         this.oneOf = oneOf;
     }
-    @JsonProperty("oneOf")
+    @JsonGetter("oneOf")
     public OfValue[] getOneOf() {
         return this.oneOf;
     }
@@ -536,12 +550,14 @@ public class OneOfProperties {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 public class TemplateProperties extends HashMap<String, ReferenceType> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Represents a reference to another schema
@@ -549,19 +565,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ReferenceType {
     private String ref;
     private TemplateProperties template;
-    @JsonProperty("$ref")
+    @JsonSetter("$ref")
     public void setRef(String ref) {
         this.ref = ref;
     }
-    @JsonProperty("$ref")
+    @JsonGetter("$ref")
     public String getRef() {
         return this.ref;
     }
-    @JsonProperty("$template")
+    @JsonSetter("$template")
     public void setTemplate(TemplateProperties template) {
         this.template = template;
     }
-    @JsonProperty("$template")
+    @JsonGetter("$template")
     public TemplateProperties getTemplate() {
         return this.template;
     }
@@ -573,18 +589,19 @@ public class ReferenceType {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Represents a generic type
  */
 public class GenericType {
     private String generic;
-    @JsonProperty("$generic")
+    @JsonSetter("$generic")
     public void setGeneric(String generic) {
         this.generic = generic;
     }
-    @JsonProperty("$generic")
+    @JsonGetter("$generic")
     public String getGeneric() {
         return this.generic;
     }
@@ -595,7 +612,8 @@ public class GenericType {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
@@ -604,7 +622,8 @@ import java.util.HashMap;
 public class Definitions extends HashMap<String, DefinitionValue> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
@@ -613,7 +632,8 @@ import java.util.HashMap;
 public class Import extends HashMap<String, String> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * TypeSchema meta schema which describes a TypeSchema
@@ -626,59 +646,59 @@ public class TypeSchema {
     private Definitions definitions;
     private Properties properties;
     private String[] required;
-    @JsonProperty("$import")
+    @JsonSetter("$import")
     public void setImport(Import _import) {
         this._import = _import;
     }
-    @JsonProperty("$import")
+    @JsonGetter("$import")
     public Import getImport() {
         return this._import;
     }
-    @JsonProperty("title")
+    @JsonSetter("title")
     public void setTitle(String title) {
         this.title = title;
     }
-    @JsonProperty("title")
+    @JsonGetter("title")
     public String getTitle() {
         return this.title;
     }
-    @JsonProperty("description")
+    @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
     }
-    @JsonProperty("description")
+    @JsonGetter("description")
     public String getDescription() {
         return this.description;
     }
-    @JsonProperty("type")
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
-    @JsonProperty("type")
+    @JsonGetter("type")
     public String getType() {
         return this.type;
     }
-    @JsonProperty("definitions")
+    @JsonSetter("definitions")
     public void setDefinitions(Definitions definitions) {
         this.definitions = definitions;
     }
-    @JsonProperty("definitions")
+    @JsonGetter("definitions")
     public Definitions getDefinitions() {
         return this.definitions;
     }
-    @JsonProperty("properties")
+    @JsonSetter("properties")
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
-    @JsonProperty("properties")
+    @JsonGetter("properties")
     public Properties getProperties() {
         return this.properties;
     }
-    @JsonProperty("required")
+    @JsonSetter("required")
     public void setRequired(String[] required) {
         this.required = required;
     }
-    @JsonProperty("required")
+    @JsonGetter("required")
     public String[] getRequired() {
         return this.required;
     }

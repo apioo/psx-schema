@@ -133,12 +133,12 @@ class Java extends CodeGeneratorAbstract
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . '@JsonProperty("' . $property->getName() . '")' . "\n";
+            $code.= $this->indent . '@JsonSetter("' . $property->getName() . '")' . "\n";
             $code.= $this->indent . 'public void set' . $this->normalizeMethodName($name) . '(' . $property->getType() . ' ' . $name . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
 
-            $code.= $this->indent . '@JsonProperty("' . $property->getName() . '")' . "\n";
+            $code.= $this->indent . '@JsonGetter("' . $property->getName() . '")' . "\n";
             $code.= $this->indent . 'public ' . $property->getType() . ' get' . $this->normalizeMethodName($name) . '() {' . "\n";
             $code.= $this->indent . $this->indent . 'return this.' . $name . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
@@ -210,7 +210,8 @@ class Java extends CodeGeneratorAbstract
     private function getImports(TypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'import com.fasterxml.jackson.annotation.JsonProperty;';
+        $imports[] = 'import com.fasterxml.jackson.annotation.JsonGetter;';
+        $imports[] = 'import com.fasterxml.jackson.annotation.JsonSetter;';
 
         if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_URI)) {
             $imports[] = 'import java.net.URI;';

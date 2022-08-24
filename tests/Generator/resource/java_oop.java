@@ -1,11 +1,12 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Human {
     private String firstName;
-    @JsonProperty("firstName")
+    @JsonSetter("firstName")
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    @JsonProperty("firstName")
+    @JsonGetter("firstName")
     public String getFirstName() {
         return this.firstName;
     }
@@ -16,14 +17,15 @@ public class Human {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Student extends Human {
     private String matricleNumber;
-    @JsonProperty("matricleNumber")
+    @JsonSetter("matricleNumber")
     public void setMatricleNumber(String matricleNumber) {
         this.matricleNumber = matricleNumber;
     }
-    @JsonProperty("matricleNumber")
+    @JsonGetter("matricleNumber")
     public String getMatricleNumber() {
         return this.matricleNumber;
     }
@@ -34,27 +36,29 @@ public class Student extends Human {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class StudentMap extends Map<Student> {
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Map<T> {
     private int totalResults;
     private T[] entries;
-    @JsonProperty("totalResults")
+    @JsonSetter("totalResults")
     public void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
     }
-    @JsonProperty("totalResults")
+    @JsonGetter("totalResults")
     public int getTotalResults() {
         return this.totalResults;
     }
-    @JsonProperty("entries")
+    @JsonSetter("entries")
     public void setEntries(T[] entries) {
         this.entries = entries;
     }
-    @JsonProperty("entries")
+    @JsonGetter("entries")
     public T[] getEntries() {
         return this.entries;
     }
@@ -66,14 +70,15 @@ public class Map<T> {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class RootSchema {
     private StudentMap students;
-    @JsonProperty("students")
+    @JsonSetter("students")
     public void setStudents(StudentMap students) {
         this.students = students;
     }
-    @JsonProperty("students")
+    @JsonGetter("students")
     public StudentMap getStudents() {
         return this.students;
     }

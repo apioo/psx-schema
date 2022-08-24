@@ -1,20 +1,21 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class Import {
     private StudentMap students;
     private Student student;
-    @JsonProperty("students")
+    @JsonSetter("students")
     public void setStudents(StudentMap students) {
         this.students = students;
     }
-    @JsonProperty("students")
+    @JsonGetter("students")
     public StudentMap getStudents() {
         return this.students;
     }
-    @JsonProperty("student")
+    @JsonSetter("student")
     public void setStudent(Student student) {
         this.student = student;
     }
-    @JsonProperty("student")
+    @JsonGetter("student")
     public Student getStudent() {
         return this.student;
     }
@@ -26,7 +27,8 @@ public class Import {
     }
 }
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class MyMap extends Student {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
