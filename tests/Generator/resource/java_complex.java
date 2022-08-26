@@ -59,16 +59,6 @@ public class CommonProperties {
     public boolean getReadonly() {
         return this.readonly;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("title", this.title);
-        map.put("description", this.description);
-        map.put("type", this.type);
-        map.put("nullable", this.nullable);
-        map.put("deprecated", this.deprecated);
-        map.put("readonly", this.readonly);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -101,13 +91,6 @@ public class ScalarProperties {
     public Object getDefault() {
         return this._default;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("format", this.format);
-        map.put("enum", this._enum);
-        map.put("default", this._default);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -136,11 +119,6 @@ public class ContainerProperties {
     public String getType() {
         return this.type;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("type", this.type);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -167,12 +145,6 @@ public class StructProperties {
     @JsonGetter("required")
     public String[] getRequired() {
         return this.required;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("properties", this.properties);
-        map.put("required", this.required);
-        return map;
     }
 }
 
@@ -209,13 +181,6 @@ public class MapProperties {
     @JsonGetter("minProperties")
     public int getMinProperties() {
         return this.minProperties;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("additionalProperties", this.additionalProperties);
-        map.put("maxProperties", this.maxProperties);
-        map.put("minProperties", this.minProperties);
-        return map;
     }
 }
 
@@ -271,15 +236,6 @@ public class ArrayProperties {
     public boolean getUniqueItems() {
         return this.uniqueItems;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("type", this.type);
-        map.put("items", this.items);
-        map.put("maxItems", this.maxItems);
-        map.put("minItems", this.minItems);
-        map.put("uniqueItems", this.uniqueItems);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -297,11 +253,6 @@ public class BooleanProperties {
     @JsonGetter("type")
     public String getType() {
         return this.type;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("type", this.type);
-        return map;
     }
 }
 
@@ -366,16 +317,6 @@ public class NumberProperties {
     public boolean getExclusiveMinimum() {
         return this.exclusiveMinimum;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("type", this.type);
-        map.put("multipleOf", this.multipleOf);
-        map.put("maximum", this.maximum);
-        map.put("exclusiveMaximum", this.exclusiveMaximum);
-        map.put("minimum", this.minimum);
-        map.put("exclusiveMinimum", this.exclusiveMinimum);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -421,14 +362,6 @@ public class StringProperties {
     public String getPattern() {
         return this.pattern;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("type", this.type);
-        map.put("maxLength", this.maxLength);
-        map.put("minLength", this.minLength);
-        map.put("pattern", this.pattern);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -466,12 +399,6 @@ public class Discriminator {
     public DiscriminatorMapping getMapping() {
         return this.mapping;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("propertyName", this.propertyName);
-        map.put("mapping", this.mapping);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -498,12 +425,6 @@ public class AllOfProperties {
     @JsonGetter("allOf")
     public OfValue[] getAllOf() {
         return this.allOf;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("description", this.description);
-        map.put("allOf", this.allOf);
-        return map;
     }
 }
 
@@ -541,13 +462,6 @@ public class OneOfProperties {
     public OfValue[] getOneOf() {
         return this.oneOf;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("description", this.description);
-        map.put("discriminator", this.discriminator);
-        map.put("oneOf", this.oneOf);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -581,12 +495,6 @@ public class ReferenceType {
     public TemplateProperties getTemplate() {
         return this.template;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("$ref", this.ref);
-        map.put("$template", this.template);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -604,11 +512,6 @@ public class GenericType {
     @JsonGetter("$generic")
     public String getGeneric() {
         return this.generic;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("$generic", this.generic);
-        return map;
     }
 }
 
@@ -701,16 +604,5 @@ public class TypeSchema {
     @JsonGetter("required")
     public String[] getRequired() {
         return this.required;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("$import", this._import);
-        map.put("title", this.title);
-        map.put("description", this.description);
-        map.put("type", this.type);
-        map.put("definitions", this.definitions);
-        map.put("properties", this.properties);
-        map.put("required", this.required);
-        return map;
     }
 }

@@ -144,14 +144,6 @@ class Java extends CodeGeneratorAbstract
             $code.= $this->indent . '}' . "\n";
         }
 
-        $code.= $this->indent . 'public Map<String, Object> toMap() {' . "\n";
-        $code.= $this->indent . $this->indent . 'Map<String, Object> map = new HashMap<>();' . "\n";
-        foreach ($properties as $name => $property) {
-            $code.= $this->indent . $this->indent . 'map.put("' . $property->getName() . '", this.' . $name . ');' . "\n";
-        }
-        $code.= $this->indent . $this->indent . 'return map;' . "\n";
-        $code.= $this->indent . '}' . "\n";
-
         $code.= '}' . "\n";
 
         return $code;
@@ -200,6 +192,21 @@ class Java extends CodeGeneratorAbstract
         }
 
         return $code;
+    }
+
+    protected function normalizeMethodName(string $name): string
+    {
+        if (str_starts_with($name, '_')) {
+            $name = substr($name, 1);
+        }
+
+        $name = parent::normalizeMethodName($name);
+        if ($name === 'Class') {
+            // getClass is the only reserved getter at the Object
+            $name = '_Class';
+        }
+
+        return $name;
     }
 
     protected function getReservedNames(): array

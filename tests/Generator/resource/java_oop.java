@@ -10,11 +10,6 @@ public class Human {
     public String getFirstName() {
         return this.firstName;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("firstName", this.firstName);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -28,11 +23,6 @@ public class Student extends Human {
     @JsonGetter("matricleNumber")
     public String getMatricleNumber() {
         return this.matricleNumber;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("matricleNumber", this.matricleNumber);
-        return map;
     }
 }
 
@@ -62,12 +52,6 @@ public class Map<T> {
     public T[] getEntries() {
         return this.entries;
     }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalResults", this.totalResults);
-        map.put("entries", this.entries);
-        return map;
-    }
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -81,10 +65,5 @@ public class RootSchema {
     @JsonGetter("students")
     public StudentMap getStudents() {
         return this.students;
-    }
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("students", this.students);
-        return map;
     }
 }
