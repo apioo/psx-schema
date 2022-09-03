@@ -34,6 +34,11 @@ class TypeScript extends NormalizerAbstract
         return false;
     }
 
+    protected function hasMethodReserved(): bool
+    {
+        return false;
+    }
+
     protected function getKeywords(): array
     {
         return [
