@@ -125,9 +125,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         if (!empty($extends)) {
             [$ns, $name] = TypeUtil::split($extends);
             if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $parent = $this->definitions->getType($name);
+                $parent  = $this->definitions->getType($name);
+                $extends = $this->normalizer->class($extends);
                 if ($parent instanceof StructType) {
-                    $this->generateStruct($name, $parent);
+                    $this->generateStruct($extends, $parent);
                 } else {
                     throw new GeneratorException('Extends must be of type struct');
                 }
