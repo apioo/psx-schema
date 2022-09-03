@@ -38,6 +38,6 @@ class HashTest extends SchemaTestCase
 
         $value = (new Hash())->generate($schema);
 
-        $this->assertEquals('dece91b3a9245f6d069dcce286e3c30dc7a32807a6e38423722c2e9ab9b731ea', $value, $value);
+        $this->assertEquals('7f30d51e70578cce4138b638a3d7a64494b16e83540e12f8905d3d6daa9beafc', $value, $value);
     }
 }
