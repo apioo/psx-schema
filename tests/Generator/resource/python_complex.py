@@ -42,21 +42,21 @@ from typing import Any
 
 # Map specific properties
 class MapProperties:
-    def __init__(self, additionalProperties: Union[BooleanType, NumberType, StringType, ArrayType, CombinationType, ReferenceType, GenericType], maxProperties: int, minProperties: int):
-        self.additionalProperties = additionalProperties
-        self.maxProperties = maxProperties
-        self.minProperties = minProperties
+    def __init__(self, additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, CombinationType, ReferenceType, GenericType], max_properties: int, min_properties: int):
+        self.additional_properties = additional_properties
+        self.max_properties = max_properties
+        self.min_properties = min_properties
 
 from typing import Any
 
 # Array properties
 class ArrayProperties:
-    def __init__(self, type: str, items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType], maxItems: int, minItems: int, uniqueItems: bool):
+    def __init__(self, type: str, items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType], max_items: int, min_items: int, unique_items: bool):
         self.type = type
         self.items = items
-        self.maxItems = maxItems
-        self.minItems = minItems
-        self.uniqueItems = uniqueItems
+        self.max_items = max_items
+        self.min_items = min_items
+        self.unique_items = unique_items
 
 from typing import Any
 
@@ -69,22 +69,22 @@ from typing import Any
 
 # Number properties
 class NumberProperties:
-    def __init__(self, type: str, multipleOf: float, maximum: float, exclusiveMaximum: bool, minimum: float, exclusiveMinimum: bool):
+    def __init__(self, type: str, multiple_of: float, maximum: float, exclusive_maximum: bool, minimum: float, exclusive_minimum: bool):
         self.type = type
-        self.multipleOf = multipleOf
+        self.multiple_of = multiple_of
         self.maximum = maximum
-        self.exclusiveMaximum = exclusiveMaximum
+        self.exclusive_maximum = exclusive_maximum
         self.minimum = minimum
-        self.exclusiveMinimum = exclusiveMinimum
+        self.exclusive_minimum = exclusive_minimum
 
 from typing import Any
 
 # String properties
 class StringProperties:
-    def __init__(self, type: str, maxLength: int, minLength: int, pattern: str):
+    def __init__(self, type: str, max_length: int, min_length: int, pattern: str):
         self.type = type
-        self.maxLength = maxLength
-        self.minLength = minLength
+        self.max_length = max_length
+        self.min_length = min_length
         self.pattern = pattern
 
 from typing import Any
@@ -97,8 +97,8 @@ from typing import Any
 
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 class Discriminator:
-    def __init__(self, propertyName: str, mapping: DiscriminatorMapping):
-        self.propertyName = propertyName
+    def __init__(self, property_name: str, mapping: DiscriminatorMapping):
+        self.property_name = property_name
         self.mapping = mapping
 
 from typing import Any
@@ -106,19 +106,19 @@ from typing import List
 
 # An intersection type combines multiple schemas into one
 class AllOfProperties:
-    def __init__(self, description: str, allOf: List[OfValue]):
+    def __init__(self, description: str, all_of: List[OfValue]):
         self.description = description
-        self.allOf = allOf
+        self.all_of = all_of
 
 from typing import Any
 from typing import List
 
 # An union type can contain one of the provided schemas
 class OneOfProperties:
-    def __init__(self, description: str, discriminator: Discriminator, oneOf: List[OfValue]):
+    def __init__(self, description: str, discriminator: Discriminator, one_of: List[OfValue]):
         self.description = description
         self.discriminator = discriminator
-        self.oneOf = oneOf
+        self.one_of = one_of
 
 from typing import Any
 from typing import Dict
@@ -128,16 +128,16 @@ from typing import Any
 
 # Represents a reference to another schema
 class ReferenceType:
-    def __init__(self, ref: str, template: TemplateProperties):
-        self.ref = ref
-        self.template = template
+    def __init__(self, _ref: str, _template: TemplateProperties):
+        self._ref = _ref
+        self._template = _template
 
 from typing import Any
 
 # Represents a generic type
 class GenericType:
-    def __init__(self, generic: str):
-        self.generic = generic
+    def __init__(self, _generic: str):
+        self._generic = _generic
 
 from typing import Any
 from typing import Dict
@@ -155,8 +155,8 @@ from typing import Any
 
 # TypeSchema meta schema which describes a TypeSchema
 class TypeSchema:
-    def __init__(self, import: Import, title: str, description: str, type: str, definitions: Definitions, properties: Properties, required: List[str]):
-        self.import = import
+    def __init__(self, _import: Import, title: str, description: str, type: str, definitions: Definitions, properties: Properties, required: List[str]):
+        self._import = _import
         self.title = title
         self.description = description
         self.type = type

@@ -2,7 +2,7 @@
 struct CommonProperties {
     title: String,
     description: String,
-    type: String,
+    _type: String,
     nullable: bool,
     deprecated: bool,
     readonly: bool,
@@ -10,7 +10,7 @@ struct CommonProperties {
 
 struct ScalarProperties {
     format: String,
-    enum: Object,
+    _enum: Object,
     default: Object,
 }
 
@@ -20,7 +20,7 @@ type Properties = HashMap<String, PropertyValue>() {
 
 // Properties specific for a container
 struct ContainerProperties {
-    type: String,
+    _type: String,
 }
 
 // Struct specific properties
@@ -38,7 +38,7 @@ struct MapProperties {
 
 // Array properties
 struct ArrayProperties {
-    type: String,
+    _type: String,
     items: Object,
     maxItems: u64,
     minItems: u64,
@@ -47,12 +47,12 @@ struct ArrayProperties {
 
 // Boolean properties
 struct BooleanProperties {
-    type: String,
+    _type: String,
 }
 
 // Number properties
 struct NumberProperties {
-    type: String,
+    _type: String,
     multipleOf: float64,
     maximum: float64,
     exclusiveMaximum: bool,
@@ -62,7 +62,7 @@ struct NumberProperties {
 
 // String properties
 struct StringProperties {
-    type: String,
+    _type: String,
     maxLength: u64,
     minLength: u64,
     pattern: String,
@@ -96,7 +96,7 @@ type TemplateProperties = HashMap<String, ReferenceType>() {
 
 // Represents a reference to another schema
 struct ReferenceType {
-    ref: String,
+    _ref: String,
     template: TemplateProperties,
 }
 
@@ -118,7 +118,7 @@ struct TypeSchema {
     import: Import,
     title: String,
     description: String,
-    type: String,
+    _type: String,
     definitions: Definitions,
     properties: Properties,
     required: Vec<String>,

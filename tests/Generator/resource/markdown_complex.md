@@ -142,8 +142,8 @@ Represents a reference to another schema
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-$ref | String | **REQUIRED**. Reference to the schema under the definitions key | 
-$template | TemplateProperties | Optional concrete schema definitions which replace generic template types |
+ref | String | **REQUIRED**. Reference to the schema under the definitions key | 
+template | TemplateProperties | Optional concrete schema definitions which replace generic template types |
 
 # GenericType
 
@@ -151,7 +151,7 @@ Represents a generic type
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-$generic | String | **REQUIRED**.  |
+generic | String | **REQUIRED**.  |
 
 # Definitions
 
@@ -171,7 +171,7 @@ TypeSchema meta schema which describes a TypeSchema
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-$import | Import |  | 
+import | Import |  | 
 title | String | **REQUIRED**.  | 
 description | String |  | 
 type | String | **REQUIRED**.  | 

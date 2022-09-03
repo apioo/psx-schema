@@ -1,17 +1,17 @@
 class Human
-    attr_accessor :firstName
+    attr_accessor :first_name
 
-    def initialize(firstName)
-        @firstName = firstName
+    def initialize(first_name)
+        @first_name = first_name
     end
 end
 
 class Student
     extend Human
-    attr_accessor :matricleNumber
+    attr_accessor :matricle_number
 
-    def initialize(matricleNumber)
-        @matricleNumber = matricleNumber
+    def initialize(matricle_number)
+        @matricle_number = matricle_number
     end
 end
 
@@ -20,10 +20,10 @@ class StudentMap
 end
 
 class Map
-    attr_accessor :totalResults, :entries
+    attr_accessor :total_results, :entries
 
-    def initialize(totalResults, entries)
-        @totalResults = totalResults
+    def initialize(total_results, entries)
+        @total_results = total_results
         @entries = entries
     end
 end

@@ -43,25 +43,25 @@ end
 
 # Map specific properties
 class MapProperties
-    attr_accessor :additionalProperties, :maxProperties, :minProperties
+    attr_accessor :additional_properties, :max_properties, :min_properties
 
-    def initialize(additionalProperties, maxProperties, minProperties)
-        @additionalProperties = additionalProperties
-        @maxProperties = maxProperties
-        @minProperties = minProperties
+    def initialize(additional_properties, max_properties, min_properties)
+        @additional_properties = additional_properties
+        @max_properties = max_properties
+        @min_properties = min_properties
     end
 end
 
 # Array properties
 class ArrayProperties
-    attr_accessor :type, :items, :maxItems, :minItems, :uniqueItems
+    attr_accessor :type, :items, :max_items, :min_items, :unique_items
 
-    def initialize(type, items, maxItems, minItems, uniqueItems)
+    def initialize(type, items, max_items, min_items, unique_items)
         @type = type
         @items = items
-        @maxItems = maxItems
-        @minItems = minItems
-        @uniqueItems = uniqueItems
+        @max_items = max_items
+        @min_items = min_items
+        @unique_items = unique_items
     end
 end
 
@@ -76,86 +76,86 @@ end
 
 # Number properties
 class NumberProperties
-    attr_accessor :type, :multipleOf, :maximum, :exclusiveMaximum, :minimum, :exclusiveMinimum
+    attr_accessor :type, :multiple_of, :maximum, :exclusive_maximum, :minimum, :exclusive_minimum
 
-    def initialize(type, multipleOf, maximum, exclusiveMaximum, minimum, exclusiveMinimum)
+    def initialize(type, multiple_of, maximum, exclusive_maximum, minimum, exclusive_minimum)
         @type = type
-        @multipleOf = multipleOf
+        @multiple_of = multiple_of
         @maximum = maximum
-        @exclusiveMaximum = exclusiveMaximum
+        @exclusive_maximum = exclusive_maximum
         @minimum = minimum
-        @exclusiveMinimum = exclusiveMinimum
+        @exclusive_minimum = exclusive_minimum
     end
 end
 
 # String properties
 class StringProperties
-    attr_accessor :type, :maxLength, :minLength, :pattern
+    attr_accessor :type, :max_length, :min_length, :pattern
 
-    def initialize(type, maxLength, minLength, pattern)
+    def initialize(type, max_length, min_length, pattern)
         @type = type
-        @maxLength = maxLength
-        @minLength = minLength
+        @max_length = max_length
+        @min_length = min_length
         @pattern = pattern
     end
 end
 
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 class Discriminator
-    attr_accessor :propertyName, :mapping
+    attr_accessor :property_name, :mapping
 
-    def initialize(propertyName, mapping)
-        @propertyName = propertyName
+    def initialize(property_name, mapping)
+        @property_name = property_name
         @mapping = mapping
     end
 end
 
 # An intersection type combines multiple schemas into one
 class AllOfProperties
-    attr_accessor :description, :allOf
+    attr_accessor :description, :all_of
 
-    def initialize(description, allOf)
+    def initialize(description, all_of)
         @description = description
-        @allOf = allOf
+        @all_of = all_of
     end
 end
 
 # An union type can contain one of the provided schemas
 class OneOfProperties
-    attr_accessor :description, :discriminator, :oneOf
+    attr_accessor :description, :discriminator, :one_of
 
-    def initialize(description, discriminator, oneOf)
+    def initialize(description, discriminator, one_of)
         @description = description
         @discriminator = discriminator
-        @oneOf = oneOf
+        @one_of = one_of
     end
 end
 
 # Represents a reference to another schema
 class ReferenceType
-    attr_accessor :ref, :template
+    attr_accessor :_ref, :_template
 
-    def initialize(ref, template)
-        @ref = ref
-        @template = template
+    def initialize(_ref, _template)
+        @_ref = _ref
+        @_template = _template
     end
 end
 
 # Represents a generic type
 class GenericType
-    attr_accessor :generic
+    attr_accessor :_generic
 
-    def initialize(generic)
-        @generic = generic
+    def initialize(_generic)
+        @_generic = _generic
     end
 end
 
 # TypeSchema meta schema which describes a TypeSchema
 class TypeSchema
-    attr_accessor :import, :title, :description, :type, :definitions, :properties, :required
+    attr_accessor :_import, :title, :description, :type, :definitions, :properties, :required
 
-    def initialize(import, title, description, type, definitions, properties, required)
-        @import = import
+    def initialize(_import, title, description, type, definitions, properties, required)
+        @_import = _import
         @title = title
         @description = description
         @type = type

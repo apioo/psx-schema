@@ -37,26 +37,26 @@ from typing import Union
 
 # An general news entry
 class News:
-    def __init__(self, config: Meta, inlineConfig: Dict[str, str], tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profileImage: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, sendDate: str, readDate: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffeeTime: str, profileUri: str, captcha: str, payload: Any):
+    def __init__(self, config: Meta, inline_config: Dict[str, str], tags: List[str], receiver: List[Author], resources: List[Union[Location, Web]], profile_image: str, read: bool, source: Union[Author, Web], author: Author, meta: Meta, send_date: str, read_date: str, expires: str, price: float, rating: int, content: str, question: str, version: str, coffee_time: str, profile_uri: str, captcha: str, payload: Any):
         self.config = config
-        self.inlineConfig = inlineConfig
+        self.inline_config = inline_config
         self.tags = tags
         self.receiver = receiver
         self.resources = resources
-        self.profileImage = profileImage
+        self.profile_image = profile_image
         self.read = read
         self.source = source
         self.author = author
         self.meta = meta
-        self.sendDate = sendDate
-        self.readDate = readDate
+        self.send_date = send_date
+        self.read_date = read_date
         self.expires = expires
         self.price = price
         self.rating = rating
         self.content = content
         self.question = question
         self.version = version
-        self.coffeeTime = coffeeTime
-        self.profileUri = profileUri
+        self.coffee_time = coffee_time
+        self.profile_uri = profile_uri
         self.captcha = captcha
         self.payload = payload

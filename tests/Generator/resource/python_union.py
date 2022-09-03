@@ -5,8 +5,8 @@ class Creature:
 
 from typing import Any
 class Human(Creature):
-    def __init__(self, firstName: str):
-        self.firstName = firstName
+    def __init__(self, first_name: str):
+        self.first_name = first_name
 
 from typing import Any
 class Animal(Creature):

@@ -33,29 +33,29 @@ end
 
 # An general news entry
 class News
-    attr_accessor :config, :inlineConfig, :tags, :receiver, :resources, :profileImage, :read, :source, :author, :meta, :sendDate, :readDate, :expires, :price, :rating, :content, :question, :version, :coffeeTime, :profileUri, :captcha, :payload
+    attr_accessor :config, :inline_config, :tags, :receiver, :resources, :profile_image, :read, :source, :author, :meta, :send_date, :read_date, :expires, :price, :rating, :content, :question, :version, :coffee_time, :profile_uri, :captcha, :payload
 
-    def initialize(config, inlineConfig, tags, receiver, resources, profileImage, read, source, author, meta, sendDate, readDate, expires, price, rating, content, question, version, coffeeTime, profileUri, captcha, payload)
+    def initialize(config, inline_config, tags, receiver, resources, profile_image, read, source, author, meta, send_date, read_date, expires, price, rating, content, question, version, coffee_time, profile_uri, captcha, payload)
         @config = config
-        @inlineConfig = inlineConfig
+        @inline_config = inline_config
         @tags = tags
         @receiver = receiver
         @resources = resources
-        @profileImage = profileImage
+        @profile_image = profile_image
         @read = read
         @source = source
         @author = author
         @meta = meta
-        @sendDate = sendDate
-        @readDate = readDate
+        @send_date = send_date
+        @read_date = read_date
         @expires = expires
         @price = price
         @rating = rating
         @content = content
         @question = question
         @version = version
-        @coffeeTime = coffeeTime
-        @profileUri = profileUri
+        @coffee_time = coffee_time
+        @profile_uri = profile_uri
         @captcha = captcha
         @payload = payload
     end

@@ -8,10 +8,10 @@ end
 
 class Human
     extend Creature
-    attr_accessor :firstName
+    attr_accessor :first_name
 
-    def initialize(firstName)
-        @firstName = firstName
+    def initialize(first_name)
+        @first_name = first_name
     end
 end
 

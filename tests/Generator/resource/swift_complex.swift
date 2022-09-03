@@ -2,7 +2,7 @@
 class CommonProperties: Codable {
     var title: String
     var description: String
-    var type: String
+    var _type: String
     var nullable: Bool
     var deprecated: Bool
     var readonly: Bool
@@ -10,8 +10,8 @@ class CommonProperties: Codable {
 
 class ScalarProperties: Codable {
     var format: String
-    var enum: EnumValue
-    var default: ScalarValue
+    var _enum: EnumValue
+    var _default: ScalarValue
 }
 
 // Allowed values of an object property
@@ -22,13 +22,13 @@ typealias Properties = Dictionary<String, PropertyValue>;
 
 // Properties specific for a container
 class ContainerProperties: Codable {
-    var type: String
+    var _type: String
 }
 
 // Struct specific properties
 class StructProperties: Codable {
     var properties: Properties
-    var required: StringArray
+    var _required: StringArray
 }
 
 // A struct contains a fix set of defined properties
@@ -52,7 +52,7 @@ typealias ArrayValue = BooleanType | NumberType | StringType | ReferenceType | G
 
 // Array properties
 class ArrayProperties: Codable {
-    var type: String
+    var _type: String
     var items: ArrayValue
     var maxItems: Int
     var minItems: Int
@@ -64,7 +64,7 @@ typealias ArrayType = CommonProperties & ArrayProperties;
 
 // Boolean properties
 class BooleanProperties: Codable {
-    var type: String
+    var _type: String
 }
 
 // Represents a boolean value
@@ -72,7 +72,7 @@ typealias BooleanType = CommonProperties & ScalarProperties & BooleanProperties;
 
 // Number properties
 class NumberProperties: Codable {
-    var type: String
+    var _type: String
     var multipleOf: Float
     var maximum: Float
     var exclusiveMaximum: Bool
@@ -85,7 +85,7 @@ typealias NumberType = CommonProperties & ScalarProperties & NumberProperties;
 
 // String properties
 class StringProperties: Codable {
-    var type: String
+    var _type: String
     var maxLength: Int
     var minLength: Int
     var pattern: String
@@ -158,11 +158,11 @@ typealias NumberArray = Array<Float>;
 
 // TypeSchema meta schema which describes a TypeSchema
 class TypeSchema: Codable {
-    var import: Import
+    var _import: Import
     var title: String
     var description: String
-    var type: String
+    var _type: String
     var definitions: Definitions
     var properties: Properties
-    var required: StringArray
+    var _required: StringArray
 }
