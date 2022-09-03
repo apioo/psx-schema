@@ -18,27 +18,55 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator\Type;
-
-use PSX\Schema\TypeInterface;
+namespace PSX\Schema\Generator\Normalizer;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * Go
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface GeneratorInterface
+class Go extends NormalizerAbstract
 {
-    /**
-     * Returns a type string
-     */
-    public function getType(TypeInterface $type): string;
+    protected function getPropertyStyle(): int
+    {
+        return self::PASCAL_CASE;
+    }
 
-    /**
-     * Returns a doc type string
-     */
-    public function getDocType(TypeInterface $type): string;
+    protected function hasPropertyReserved(): bool
+    {
+        return false;
+    }
+
+    protected function getKeywords(): array
+    {
+        return [
+            'break',
+            'case',
+            'chan',
+            'const',
+            'continue',
+            'default',
+            'defer',
+            'else',
+            'fallthrough',
+            'for',
+            'func',
+            'go',
+            'goto',
+            'if',
+            'import',
+            'interface',
+            'map',
+            'package',
+            'range',
+            'return',
+            'select',
+            'struct',
+            'switch',
+            'type',
+            'var',
+        ];
+    }
 }

@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
@@ -34,28 +35,24 @@ use PSX\Schema\Type\TypeAbstract;
  */
 class Ruby extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.rb';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Ruby($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'class ' . $name . "\n";
+        return new Normalizer\Ruby();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'class ' . $name->getClass() . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . 'extend ' . $extends . "\n";
@@ -63,10 +60,10 @@ class Ruby extends CodeGeneratorAbstract
 
         $attr = [];
         $items = [];
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $attr[] = ':' . $name;
-            $items[] = $name;
+            $attr[] = ':' . $property->getName()->getProperty();
+            $items[] = $property->getName()->getProperty();
         }
 
         if (!empty($attr)) {
@@ -86,9 +83,9 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        $code = 'class ' . $name . "\n";
+        $code = 'class ' . $name->getClass() . "\n";
         $code.= $this->indent . 'extend ' . $type . "\n";
         $code.= 'end' . "\n";
 

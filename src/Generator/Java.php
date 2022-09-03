@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -37,84 +38,24 @@ use PSX\Schema\TypeUtil;
  */
 class Java extends CodeGeneratorAbstract
 {
-    private const RESERVED_NAMES = [
-        'abstract',
-        'assert',
-        'boolean',
-        'break',
-        'byte',
-        'case',
-        'catch',
-        'char',
-        'class',
-        'const',
-        'continue',
-        'default',
-        'double',
-        'do',
-        'else',
-        'enum',
-        'extends',
-        'false',
-        'final',
-        'finally',
-        'float',
-        'for',
-        'goto',
-        'if',
-        'implements',
-        'import',
-        'instanceof',
-        'int',
-        'interface',
-        'long',
-        'native',
-        'new',
-        'null',
-        'package',
-        'private',
-        'protected',
-        'public',
-        'return',
-        'short',
-        'static',
-        'strictfp',
-        'super',
-        'switch',
-        'synchronized',
-        'this',
-        'throw',
-        'throws',
-        'transient',
-        'true',
-        'try',
-        'void',
-        'volatile',
-        'while',
-    ];
-
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.java';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Java($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'public class ' . $name;
+        return new Normalizer\Java();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'public class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -126,21 +67,21 @@ class Java extends CodeGeneratorAbstract
 
         $code.= ' {' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'private ' . $property->getType() . ' ' . $name . ';' . "\n";
+            $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . ';' . "\n";
         }
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . '@JsonSetter("' . $property->getName() . '")' . "\n";
-            $code.= $this->indent . 'public void set' . $this->normalizeMethodName($name) . '(' . $property->getType() . ' ' . $name . ') {' . "\n";
-            $code.= $this->indent . $this->indent . 'this.' . $name . ' = ' . $name . ';' . "\n";
+            $code.= $this->indent . '@JsonSetter("' . $property->getName()->getRaw() . '")' . "\n";
+            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(NormalizerInterface::METHOD_SETTER) . '(' . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
+            $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
 
-            $code.= $this->indent . '@JsonGetter("' . $property->getName() . '")' . "\n";
-            $code.= $this->indent . 'public ' . $property->getType() . ' get' . $this->normalizeMethodName($name) . '() {' . "\n";
-            $code.= $this->indent . $this->indent . 'return this.' . $name . ';' . "\n";
+            $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
+            $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getMethod(NormalizerInterface::METHOD_GETTER) . '() {' . "\n";
+            $code.= $this->indent . $this->indent . 'return this.' . $property->getName()->getProperty() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
         }
 
@@ -149,19 +90,19 @@ class Java extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'public class ' . $name . ' extends HashMap<String, ' . $subType . '> {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends HashMap<String, ' . $subType . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        $code = 'public class ' . $name . ' extends ' . $type . ' {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends ' . $type . ' {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -192,26 +133,6 @@ class Java extends CodeGeneratorAbstract
         }
 
         return $code;
-    }
-
-    protected function normalizeMethodName(string $name): string
-    {
-        if (str_starts_with($name, '_')) {
-            $name = substr($name, 1);
-        }
-
-        $name = parent::normalizeMethodName($name);
-        if ($name === 'Class') {
-            // getClass is the only reserved getter at the Object
-            $name = '_Class';
-        }
-
-        return $name;
-    }
-
-    protected function getReservedNames(): array
-    {
-        return self::RESERVED_NAMES;
     }
 
     private function getImports(TypeAbstract $origin): array

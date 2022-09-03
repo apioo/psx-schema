@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\IntersectionType;
@@ -38,28 +39,24 @@ use PSX\Schema\Type\UnionType;
  */
 class Swift extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.swift';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Swift($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'class ' . $name . ': ';
+        return new Normalizer\Swift();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'class ' . $name->getClass() . ': ';
 
         if (!empty($extends)) {
             $code.= $extends . ' ';
@@ -69,9 +66,9 @@ class Swift extends CodeGeneratorAbstract
 
         $code.= '{' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'var ' . $name . ': ' . $property->getType() . "\n";
+            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 
         $code.= '}' . "\n";
@@ -79,29 +76,29 @@ class Swift extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
-        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(string $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
     {
-        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeUnion(string $name, string $type, UnionType $origin): string
+    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
     {
-        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
+    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
     {
-        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        return 'typealias ' . $name . ' = ' . $type . ';' . "\n";
+        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeHeader(TypeAbstract $origin): string

@@ -32,33 +32,24 @@ use PSX\Schema\Type\StructType;
  */
 class Protobuf extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.proto';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Protobuf($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'message ' . $name . ' {' . "\n";
+        $code = 'message ' . $name->getClass() . ' {' . "\n";
 
         $index = 1;
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getType() . ' ' . $name . ' = ' . $index . ';' . "\n";
+            $code.= $this->indent . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $index . ';' . "\n";
 
             $index++;
         }

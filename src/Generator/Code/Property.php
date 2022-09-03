@@ -32,32 +32,13 @@ use PSX\Schema\TypeInterface;
  */
 class Property
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private Name $name;
+    private string $type;
+    private string $docType;
+    private bool $required;
+    private TypeInterface $origin;
 
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var string
-     */
-    private $docType;
-
-    /**
-     * @var bool
-     */
-    private $required;
-
-    /**
-     * @var TypeInterface
-     */
-    private $origin;
-
-    public function __construct(string $name, string $type, string $docType, bool $required, TypeInterface $origin)
+    public function __construct(Name $name, string $type, string $docType, bool $required, TypeInterface $origin)
     {
         $this->name = $name;
         $this->type = $type;
@@ -66,73 +47,46 @@ class Property
         $this->origin = $origin;
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
+    public function getName(): Name
     {
         return $this->name;
     }
-    
-    /**
-     * @return string
-     */
+
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
     public function getDocType(): string
     {
         return $this->docType;
     }
 
-    /**
-     * @return bool
-     */
     public function isRequired(): bool
     {
         return $this->required;
     }
 
-    /**
-     * @return string
-     */
     public function getComment(): ?string
     {
         return $this->origin instanceof TypeAbstract ? $this->origin->getDescription() : null;
     }
 
-    /**
-     * @return bool
-     */
     public function isNullable(): ?bool
     {
         return $this->origin instanceof TypeAbstract ? $this->origin->isNullable() : null;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeprecated(): ?bool
     {
         return $this->origin instanceof TypeAbstract ? $this->origin->isDeprecated() : null;
     }
 
-    /**
-     * @return bool
-     */
     public function isReadonly(): ?bool
     {
         return $this->origin instanceof TypeAbstract ? $this->origin->isReadonly() : null;
     }
 
-    /**
-     * @return TypeInterface
-     */
     public function getOrigin(): TypeInterface
     {
         return $this->origin;

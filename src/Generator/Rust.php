@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -35,36 +36,32 @@ use PSX\Schema\Type\TypeAbstract;
  */
 class Rust extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.rs';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Rust($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'struct ' . $name . ' {' . "\n";
+        return new Normalizer\Rust();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'struct ' . $name->getClass() . ' {' . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . '*' . $extends . "\n";
         }
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $name . ': ' . $property->getType() . ',' . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ',' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -72,19 +69,19 @@ class Rust extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'type ' . $name . ' = HashMap<String, ' . $subType . '>() {' . "\n";
+        $code = 'type ' . $name->getClass() . ' = HashMap<String, ' . $subType . '>() {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . "\n";
+        return 'type ' . $name->getClass() . ' = ' . $type . "\n";
     }
 
     protected function writeHeader(TypeAbstract $origin): string

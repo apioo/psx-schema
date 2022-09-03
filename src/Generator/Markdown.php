@@ -33,28 +33,19 @@ use PSX\Schema\Type\StructType;
  */
 class Markdown extends MarkupAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.md';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Markdown($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
+        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name->getClass()) . "\n";
         $return.= '' . "\n";
 
         $comment = $origin->getDescription();
@@ -66,12 +57,12 @@ class Markdown extends MarkupAbstract
         $return.= 'Field | Type | Description | Constraints' . "\n";
         $return.= '----- | ---- | ----------- | -----------' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
             $constraints = $this->getConstraints($property->getOrigin());
 
             $row = [
-                $name,
+                $property->getName()->getProperty(),
                 $property->getType(),
                 ($property->isRequired() ? '**REQUIRED**. ' : '') . $property->getComment(),
                 !empty($constraints) ? $this->writeConstraints($constraints) : '',
@@ -84,12 +75,9 @@ class Markdown extends MarkupAbstract
         return $return;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
-        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name) . "\n";
+        $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name->getClass()) . "\n";
         $return.= '' . "\n";
 
         $return.= 'Field | Type | Description | Constraints' . "\n";

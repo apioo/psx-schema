@@ -37,28 +37,19 @@ use PSX\Schema\Type\UnionType;
  */
 class Html extends MarkupAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.html';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Html($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $title = '<a class="psx-type-link" data-name="' . $name . '">' . htmlspecialchars($name) . '</a>';
+        $title = '<a class="psx-type-link" data-name="' . $name->getClass() . '">' . htmlspecialchars($name->getClass()) . '</a>';
         if (!empty($generics)) {
             $title.= '&lt;' . implode(', ', $generics) . '&gt;';
         }
@@ -67,7 +58,7 @@ class Html extends MarkupAbstract
             $title.= ' extends <a class="psx-type-link" data-name="' . $extends . '">' . htmlspecialchars($extends) . '</a>';
         }
 
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-struct">';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-struct">';
         $return.= '<h' . $this->heading . '>' . $title . '</h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
@@ -76,10 +67,10 @@ class Html extends MarkupAbstract
         }
 
         $rows = [];
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
             $rows[] = [
-                $name,
+                $property->getName()->getRaw(),
                 $property,
                 $this->getConstraints($property->getOrigin()),
             ];
@@ -92,13 +83,10 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-map">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-map">';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
@@ -111,10 +99,10 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeArray(string $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
     {
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-array">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-array">';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
@@ -127,10 +115,10 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeUnion(string $name, string $type, UnionType $origin): string
+    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
     {
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-union">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-union">';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
@@ -143,10 +131,10 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
+    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
     {
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-intersection">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-intersection">';
+        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
@@ -159,7 +147,7 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
         $generics = '';
         $template = $origin->getTemplate();
@@ -172,8 +160,8 @@ class Html extends MarkupAbstract
             }
         }
 
-        $return = '<div id="' . htmlspecialchars($name) . '" class="psx-object psx-reference">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name . '">' . $name . '</a></h' . $this->heading . '>';
+        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-reference">';
+        $return.= '<h' . $this->heading . '><a href="#' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {

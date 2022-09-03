@@ -35,20 +35,9 @@ use PSX\Schema\TypeInterface;
  */
 abstract class MarkupAbstract extends CodeGeneratorAbstract
 {
-    /**
-     * @var integer
-     */
-    protected $heading;
+    protected int $heading;
+    protected string $prefix;
 
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * @param integer $heading
-     * @param string $prefix
-     */
     public function __construct(int $heading = 1, string $prefix = 'psx_model_')
     {
         parent::__construct();
@@ -57,21 +46,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
         $this->prefix  = $prefix;
     }
 
-    protected function normalizeClassName(string $name): string
-    {
-        return $name;
-    }
-
-    protected function normalizePropertyName(string $name): string
-    {
-        return $name;
-    }
-
-    /**
-     * @param \PSX\Schema\TypeInterface $type
-     * @return array
-     */
-    protected function getConstraints(TypeInterface $type)
+    protected function getConstraints(TypeInterface $type): array
     {
         $constraints = [];
 

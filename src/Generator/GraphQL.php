@@ -32,32 +32,23 @@ use PSX\Schema\Type\StructType;
  */
 class GraphQL extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.graphql';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\GraphQL($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'type ' . $name . ' {' . "\n";
+        $code = 'type ' . $name->getClass() . ' {' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $name . ': ' . $property->getType() . ($property->isRequired() ? '!' : '') . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ($property->isRequired() ? '!' : '') . "\n";
         }
 
         $code.= '}' . "\n";

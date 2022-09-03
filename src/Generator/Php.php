@@ -25,6 +25,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
 use PSX\Record\Record;
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
@@ -50,9 +51,6 @@ class Php extends CodeGeneratorAbstract
     private BuilderFactory $factory;
     private PrettyPrinter\Standard $printer;
 
-    /**
-     * @inheritDoc
-     */
     public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
         parent::__construct($namespace, $mapping, $indent);
@@ -61,17 +59,11 @@ class Php extends CodeGeneratorAbstract
         $this->printer = new PrettyPrinter\Standard();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.php';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFileContent(string $code): string
     {
         return '<?php' . "\n\n" . 'declare(strict_types = 1);' . "\n\n" . $code . "\n";
@@ -82,7 +74,12 @@ class Php extends CodeGeneratorAbstract
         return new Type\Php($mapping);
     }
 
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
+    {
+        return new Normalizer\Php();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $tags = [];
         if ($generics !== null) {
@@ -91,7 +88,7 @@ class Php extends CodeGeneratorAbstract
 
         $uses = [];
 
-        $class = $this->factory->class($name);
+        $class = $this->factory->class($name->getClass());
         $class->implement('\\JsonSerializable');
         $class->setDocComment($this->buildComment($tags));
 
@@ -106,20 +103,20 @@ class Php extends CodeGeneratorAbstract
 
         $serialize = [];
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
             $realKey = null;
-            if ($property->getName() !== $name) {
-                $realKey = $property->getName();
+            if ($property->getName()->getRaw() !== $property->getName()->getProperty()) {
+                $realKey = $property->getName()->getRaw();
             }
 
-            $serialize[$name] = $realKey ?? $name;
+            $serialize[$property->getName()->getProperty()] = $property->getName()->getRaw();
 
-            $prop = $this->factory->property($name);
+            $prop = $this->factory->property($property->getName()->getProperty());
             $prop->makeProtected();
             $type = $property->getType();
             if (!empty($type)) {
-                if (strpos($type, '|') !== false) {
+                if (str_contains($type, '|')) {
                     $prop->setType($type . '|null');
                 } else {
                     if ($type === 'array') {
@@ -149,17 +146,17 @@ class Php extends CodeGeneratorAbstract
 
             $class->addStmt($prop);
 
-            $setter = $this->factory->method('set' . ucfirst($name));
+            $setter = $this->factory->method($property->getName()->getMethod(NormalizerInterface::METHOD_SETTER));
 
-            $param = $this->factory->param($name);
+            $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
             if (!empty($type)) {
-                if (strpos($type, '|') !== false) {
+                if (str_contains($type, '|')) {
                     $param->setType($type . '|null');
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
-                        $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $name]));
+                        $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $property->getName()->getArgument()]));
                     }
                     if ($type !== 'mixed') {
                         $param->setType(new Node\NullableType($type));
@@ -173,14 +170,14 @@ class Php extends CodeGeneratorAbstract
             $setter->makePublic();
             $setter->addParam($param);
             $setter->addStmt(new Node\Expr\Assign(
-                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name),
-                new Node\Expr\Variable($name)
+                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $property->getName()->getProperty()),
+                new Node\Expr\Variable($property->getName()->getArgument())
             ));
             $class->addStmt($setter);
 
-            $getter = $this->factory->method('get' . ucfirst($name));
+            $getter = $this->factory->method($property->getName()->getMethod(NormalizerInterface::METHOD_GETTER));
             if (!empty($type)) {
-                if (strpos($type, '|') !== false) {
+                if (str_contains($type, '|')) {
                     $getter->setReturnType($type . '|null');
                 } else {
                     if ($type !== 'mixed') {
@@ -194,7 +191,7 @@ class Php extends CodeGeneratorAbstract
             }
             $getter->makePublic();
             $getter->addStmt(new Node\Stmt\Return_(
-                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)
+                new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $property->getName()->getProperty())
             ));
             $class->addStmt($getter);
         }
@@ -204,13 +201,13 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         $subType = $this->generator->getDocType($origin->getAdditionalProperties());
 
         $uses = [];
 
-        $class = $this->factory->class($name);
+        $class = $this->factory->class($name->getClass());
         $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\Record<' . $subType . '>']));
         $class->extend('\\' . Record::class);
 
@@ -222,7 +219,7 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
         $tags = [];
         $template = $origin->getTemplate();
@@ -237,7 +234,7 @@ class Php extends CodeGeneratorAbstract
 
         $uses = [];
 
-        $class = $this->factory->class($name);
+        $class = $this->factory->class($name->getClass());
         $class->setDocComment($this->buildComment($tags));
         $class->extend($type);
 
@@ -247,17 +244,6 @@ class Php extends CodeGeneratorAbstract
         }
 
         return $this->prettyPrint($class, $uses);
-    }
-
-    protected function normalizeName(string $name)
-    {
-        if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            return $name;
-        }
-
-        $name = preg_replace('/[^a-zA-Z_\x7f-\xff]/', '_', $name);
-
-        return $name;
     }
 
     private function buildComment(array $tags, ?string $comment = null): string

@@ -45,16 +45,13 @@ use PSX\Schema\TypeUtil;
  */
 abstract class GeneratorAbstract implements GeneratorInterface
 {
-    private $mapping;
+    private array $mapping;
 
     public function __construct(array $mapping)
     {
         $this->mapping = $mapping;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getType(TypeInterface $type): string
     {
         if ($type instanceof StringType) {
@@ -93,132 +90,69 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $this->getAny();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDocType(TypeInterface $type): string
     {
         return $this->getType($type);
     }
 
-    /**
-     * @return string
-     */
     protected function getDate(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     protected function getDateTime(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     protected function getTime(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     protected function getDuration(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     protected function getUri(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     protected function getBinary(): string
     {
         return $this->getString();
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getString(): string;
 
-    /**
-     * @return string
-     */
     protected function getInteger32(): string
     {
         return $this->getInteger();
     }
 
-    /**
-     * @return string
-     */
     protected function getInteger64(): string
     {
         return $this->getInteger();
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getInteger(): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getNumber(): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getBoolean(): string;
 
-    /**
-     * @param string $type
-     * @return string
-     */
     abstract protected function getArray(string $type): string;
 
-    /**
-     * @param string $type
-     * @return string
-     */
     abstract protected function getMap(string $type): string;
 
-    /**
-     * @param array $types
-     * @return string
-     */
     abstract protected function getUnion(array $types): string;
 
-    /**
-     * @param array $types
-     * @return string
-     */
     abstract protected function getIntersection(array $types): string;
 
-    /**
-     * @param string $type
-     * @return string
-     */
     abstract protected function getGroup(string $type): string;
 
-    /**
-     * @param string $ref
-     * @return string
-     */
     protected function getReference(string $ref): string
     {
         [$ns, $name] = TypeUtil::split($ref);
@@ -230,26 +164,12 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $name;
     }
 
-    /**
-     * @param array $types
-     * @return string
-     */
     abstract protected function getGeneric(array $types): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getAny(): string;
 
-    /**
-     * @return string
-     */
     abstract protected function getNamespaced(string $namespace, string $name): string;
 
-    /**
-     * @param StringType $type
-     * @return string
-     */
     private function getStringType(StringType $type): string
     {
         $format = $type->getFormat();
@@ -270,10 +190,6 @@ abstract class GeneratorAbstract implements GeneratorInterface
         }
     }
 
-    /**
-     * @param IntegerType $type
-     * @return string
-     */
     private function getIntegerType(IntegerType $type): string
     {
         $format = $type->getFormat();
@@ -286,10 +202,6 @@ abstract class GeneratorAbstract implements GeneratorInterface
         }
     }
 
-    /**
-     * @param array $properties
-     * @return array
-     */
     private function getCombinationType(array $properties): array
     {
         $types = [];

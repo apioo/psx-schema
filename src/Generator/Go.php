@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -37,36 +38,32 @@ use PSX\Schema\TypeUtil;
  */
 class Go extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.go';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\Go($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'type ' . $name . ' struct {' . "\n";
+        return new Normalizer\Go();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'type ' . $name->getClass() . ' struct {' . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . '*' . $extends . "\n";
         }
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . ucfirst($name) . ' ' . $property->getType() . ' `json:"' . $property->getName() . '"`' . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ' ' . $property->getType() . ' `json:"' . $property->getName()->getRaw() . '"`' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -74,16 +71,16 @@ class Go extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        return 'type ' . $name . ' = map[string]' . $subType . "\n";
+        return 'type ' . $name->getClass() . ' = map[string]' . $subType . "\n";
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        return 'type ' . $name . ' = ' . $type . "\n";
+        return 'type ' . $name->getClass() . ' = ' . $type . "\n";
     }
 
     protected function writeHeader(TypeAbstract $origin): string

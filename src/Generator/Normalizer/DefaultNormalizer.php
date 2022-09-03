@@ -18,27 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Generator\Type;
-
-use PSX\Schema\TypeInterface;
+namespace PSX\Schema\Generator\Normalizer;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * DefaultNormalizer
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface GeneratorInterface
+class DefaultNormalizer extends NormalizerAbstract
 {
-    /**
-     * Returns a type string
-     */
-    public function getType(TypeInterface $type): string;
-
-    /**
-     * Returns a doc type string
-     */
-    public function getDocType(TypeInterface $type): string;
 }

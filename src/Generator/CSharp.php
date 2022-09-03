@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -36,28 +37,24 @@ use PSX\Schema\TypeUtil;
  */
 class CSharp extends CodeGeneratorAbstract
 {
-    /**
-     * @inheritDoc
-     */
     public function getFileName(string $file): string
     {
         return $file . '.cs';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\CSharp($mapping);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function newNormalizer(): NormalizerInterface
     {
-        $code = 'public class ' . $name;
+        return new Normalizer\CSharp();
+    }
+
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    {
+        $code = 'public class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -70,9 +67,9 @@ class CSharp extends CodeGeneratorAbstract
         $code.= "\n";
         $code.= '{' . "\n";
 
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'public ' . $property->getType() . ' ' . ucfirst($name) . ' { get; set; }' . "\n";
+            $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getProperty() . ' { get; set; }' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -80,20 +77,20 @@ class CSharp extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'public class ' . $name . ' : Dictionary<string, ' . $subType . '>' . "\n";
+        $code = 'public class ' . $name->getClass() . ' : Dictionary<string, ' . $subType . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        $code = 'public class ' . $name . ' : ' . $type . "\n";
+        $code = 'public class ' . $name->getClass() . ' : ' . $type . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 

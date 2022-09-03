@@ -22,6 +22,8 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Generator\Normalizer\DefaultNormalizer;
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
@@ -46,6 +48,7 @@ use PSX\Schema\TypeUtil;
 abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface, FileAwareInterface
 {
     protected TypeGeneratorInterface $generator;
+    protected NormalizerInterface $normalizer;
     protected ?string $namespace;
     protected string $indent;
     protected array $mapping;
@@ -54,15 +57,13 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
-        $this->generator = $this->newTypeGenerator($mapping);
-        $this->namespace = $namespace;
-        $this->mapping   = $mapping;
-        $this->indent    = str_repeat(' ', $indent);
+        $this->generator  = $this->newTypeGenerator($mapping);
+        $this->normalizer = $this->newNormalizer();
+        $this->namespace  = $namespace;
+        $this->mapping    = $mapping;
+        $this->indent     = str_repeat(' ', $indent);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function generate(SchemaInterface $schema)
     {
         $this->chunks      = new Code\Chunks($this->namespace);
@@ -78,25 +79,16 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->chunks;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getType(TypeInterface $type): string
     {
         return $this->generator->getType($type);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDocType(TypeInterface $type): string
     {
         return $this->generator->getDocType($type);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFileContent(string $code): string
     {
         return $code;
@@ -133,10 +125,9 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         if (!empty($extends)) {
             [$ns, $name] = TypeUtil::split($extends);
             if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $parent  = $this->definitions->getType($name);
-                $extends = $this->normalizeClassName($name);
+                $parent = $this->definitions->getType($name);
                 if ($parent instanceof StructType) {
-                    $this->generateStruct($extends, $parent);
+                    $this->generateStruct($name, $parent);
                 } else {
                     throw new GeneratorException('Extends must be of type struct');
                 }
@@ -146,14 +137,17 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             }
         }
 
-        $className  = $this->normalizeClassName($className);
+        $className  = new Code\Name($className, $className, $this->normalizer);
         $properties = $type->getProperties() ?? [];
         $generics   = [];
         $required   = $type->getRequired() ?: [];
         $mapping    = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
 
         $props = [];
-        foreach ($properties as $name => $property) {
+        foreach ($properties as $raw => $property) {
+            $mapped = $mapping[$raw] ?? $raw;
+            $name = new Code\Name($raw, $mapped, $this->normalizer);
+
             /** @var TypeInterface $property */
             if ($property instanceof ReferenceType) {
                 $resolved = $this->definitions->getType($property->getRef());
@@ -170,14 +164,11 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                 $generics[] = $generic->getGeneric();
             }
 
-            $key = $mapping[$name] ?? $name;
-            $key = $this->normalizePropertyName($key);
-
-            $props[$key] = new Code\Property(
+            $props[] = new Code\Property(
                 $name,
                 $this->generator->getType($property),
                 $this->generator->getDocType($property),
-                in_array($name, $required),
+                in_array($name->getRaw(), $required),
                 $property
             );
         }
@@ -185,51 +176,61 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $code = $this->writeStruct($className, $props, $extends, $generics, $type);
 
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
     private function generateMap(string $className, MapType $type)
     {
+        $className = new Code\Name($className, $className, $this->normalizer);
+
         $code = $this->writeMap($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
     private function generateArray(string $className, ArrayType $type)
     {
+        $className = new Code\Name($className, $className, $this->normalizer);
+
         $code = $this->writeArray($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
     private function generateUnion(string $className, UnionType $type)
     {
+        $className = new Code\Name($className, $className, $this->normalizer);
+
         $code = $this->writeUnion($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
     private function generateIntersection(string $className, IntersectionType $type)
     {
+        $className = new Code\Name($className, $className, $this->normalizer);
+
         $code = $this->writeIntersection($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
     private function generateReference(string $className, ReferenceType $type)
     {
+        $className = new Code\Name($className, $className, $this->normalizer);
+
         $code = $this->writeReference($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className, $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
         }
     }
 
-    private function supportsWrite(string $name, TypeInterface $type): bool
+    private function supportsWrite(Code\Name $name, TypeInterface $type): bool
     {
         if ($type instanceof StructType) {
             return true;
@@ -273,74 +274,36 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         ]))) . "\n";
     }
 
-    protected function normalizePropertyName(string $name): string
-    {
-        $name = lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
-
-        if (in_array($name, $this->getReservedNames())) {
-            $name = $this->makeReservedNameUsable($name);
-        }
-
-        return $name;
-    }
-
-    protected function normalizeMethodName(string $name): string
-    {
-        if (str_starts_with($name, '_')) {
-            $name = substr($name, 1);
-        }
-
-        $name = ucfirst(str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name))));
-
-        return $name;
-    }
-
-    protected function normalizeClassName(string $name): string
-    {
-        $name = str_replace(' ', '', ucwords(preg_replace('/[^A-Za-z0-9_]/', ' ', $name)));
-
-        if (in_array($name, $this->getReservedNames())) {
-            $name = $this->makeReservedNameUsable($name);
-        }
-
-        return $name;
-    }
-
-    protected function makeReservedNameUsable(string $name): string
-    {
-        return '_' . $name;
-    }
-
     abstract protected function newTypeGenerator(array $mapping): TypeGeneratorInterface;
 
-    abstract protected function writeStruct(string $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string;
-
-    protected function getReservedNames(): array
+    protected function newNormalizer(): NormalizerInterface
     {
-        return [];
+        return new DefaultNormalizer();
     }
 
-    protected function writeMap(string $name, string $type, MapType $origin): string
-    {
-        return '';
-    }
+    abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string;
 
-    protected function writeArray(string $name, string $type, ArrayType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
     {
         return '';
     }
 
-    protected function writeUnion(string $name, string $type, UnionType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
     {
         return '';
     }
 
-    protected function writeIntersection(string $name, string $type, IntersectionType $origin): string
+    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
     {
         return '';
     }
 
-    protected function writeReference(string $name, string $type, ReferenceType $origin): string
+    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
+    {
+        return '';
+    }
+
+    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
         return '';
     }
