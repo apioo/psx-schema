@@ -39,6 +39,11 @@ class Go extends NormalizerAbstract
         return false;
     }
 
+    protected function getFileStyle(): int
+    {
+        return self::SNAKE_CASE;
+    }
+
     protected function getKeywords(): array
     {
         return [
