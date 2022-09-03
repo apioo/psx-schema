@@ -45,7 +45,7 @@ use PSX\Schema\TypeUtil;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface, FileAwareInterface
+abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInterface, FileAwareInterface, NormalizerAwareInterface
 {
     protected TypeGeneratorInterface $generator;
     protected NormalizerInterface $normalizer;
@@ -92,6 +92,11 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     public function getFileContent(string $code): string
     {
         return $code;
+    }
+
+    public function getNormalizer(): NormalizerInterface
+    {
+        return $this->normalizer;
     }
 
     private function generateRoot(TypeInterface $type)
