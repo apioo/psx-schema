@@ -74,66 +74,62 @@ abstract class NormalizerAbstract implements NormalizerInterface
         return self::PASCAL_CASE;
     }
 
-    public function argument(string $name): string
+    public function argument(string... $name): string
     {
+        $name = implode('_', $name);
         $name = $this->sanitizeName($name);
         $name = $this->case($name, $this->getArgumentStyle());
 
-        if ($this->hasArgumentReserved() && $this->isReservedKeyword($name, self::TYPE_ARGUMENT)) {
+        if ($this->hasArgumentReserved() && $this->isReservedKeyword($name)) {
             $name = $this->makeReservedNameUsable($name);
         }
 
         return $name;
     }
 
-    public function property(string $name): string
+    public function property(string... $name): string
     {
+        $name = implode('_', $name);
         $name = $this->sanitizeName($name);
         $name = $this->case($name, $this->getPropertyStyle());
 
-        if ($this->hasPropertyReserved() && $this->isReservedKeyword($name, self::TYPE_PROPERTY)) {
+        if ($this->hasPropertyReserved() && $this->isReservedKeyword($name)) {
             $name = $this->makeReservedNameUsable($name);
         }
 
         return $name;
     }
 
-    public function method(string $name, int $style): string
+    public function method(string... $name): string
     {
+        $name = implode('_', $name);
         $name = $this->sanitizeName($name);
-        $name = $this->pascalCase($name);
-
-        if ($style === self::METHOD_GETTER) {
-            $name = 'get' . $name;
-        } elseif ($style === self::METHOD_SETTER) {
-            $name = 'set' . $name;
-        } else {
-            throw new \InvalidArgumentException('Provided an invalid style');
-        }
-
         $name = $this->case($name, $this->getMethodStyle());
 
-        if ($this->hasMethodReserved() && $this->isReservedKeyword($name, self::TYPE_METHOD)) {
+        if ($this->hasMethodReserved() && $this->isReservedKeyword($name)) {
             $name = $this->makeReservedNameUsable($name);
         }
 
         return $name;
     }
 
-    public function class(string $name): string
+    public function class(string... $name): string
     {
+        $name = implode('_', $name);
         $name = $this->sanitizeName($name);
         $name = $this->case($name, $this->getClassStyle());
 
-        if ($this->hasClassReserved() && $this->isReservedKeyword($name, self::TYPE_CLASS)) {
+        if ($this->hasClassReserved() && $this->isReservedKeyword($name)) {
             $name = $this->makeReservedNameUsable($name);
         }
 
         return $name;
     }
 
-    public function file(string $name): string
+    public function file(string... $name): string
     {
+        $name = implode('_', $name);
+
         return $this->case($name, $this->getFileStyle());
     }
 
@@ -145,7 +141,7 @@ abstract class NormalizerAbstract implements NormalizerInterface
         return '_' . $name;
     }
 
-    protected function isReservedKeyword(string $keyword, int $type): bool
+    protected function isReservedKeyword(string $keyword): bool
     {
         return in_array($keyword, $this->getKeywords(), true);
     }
@@ -163,7 +159,7 @@ abstract class NormalizerAbstract implements NormalizerInterface
      */
     protected function sanitizeName(string $name): string
     {
-        if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+        if (preg_match('/^[a-zA-Z_]*$/', $name)) {
             return $name;
         }
 

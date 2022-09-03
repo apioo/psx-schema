@@ -75,12 +75,12 @@ class Java extends CodeGeneratorAbstract
         foreach ($properties as $property) {
             /** @var Code\Property $property */
             $code.= $this->indent . '@JsonSetter("' . $property->getName()->getRaw() . '")' . "\n";
-            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(NormalizerInterface::METHOD_SETTER) . '(' . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
+            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
 
             $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
-            $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getMethod(NormalizerInterface::METHOD_GETTER) . '() {' . "\n";
+            $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getMethod(prefix: ['get']) . '() {' . "\n";
             $code.= $this->indent . $this->indent . 'return this.' . $property->getName()->getProperty() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
         }

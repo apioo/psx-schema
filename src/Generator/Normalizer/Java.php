@@ -29,9 +29,9 @@ namespace PSX\Schema\Generator\Normalizer;
  */
 class Java extends NormalizerAbstract
 {
-    public function method(string $name, int $style): string
+    public function method(string... $name): string
     {
-        $name = parent::method($name, $style);
+        $name = parent::method(...$name);
         if ($name === 'getClass') {
             // getClass is the only reserved getter at the Object
             $name = 'get_Class';

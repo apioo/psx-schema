@@ -47,28 +47,28 @@ class Name
         return $this->raw;
     }
 
-    public function getArgument(): string
+    public function getArgument(array $prefix = [], array $suffix = []): string
     {
-        return $this->normalizer->argument($this->mapped);
+        return $this->normalizer->argument(...array_merge($prefix, [$this->mapped], $suffix));
     }
 
-    public function getProperty(): string
+    public function getProperty(array $prefix = [], array $suffix = []): string
     {
-        return $this->normalizer->property($this->mapped);
+        return $this->normalizer->property(...array_merge($prefix, [$this->mapped], $suffix));
     }
 
-    public function getMethod(int $style): string
+    public function getMethod(array $prefix = [], array $suffix = []): string
     {
-        return $this->normalizer->method($this->mapped, $style);
+        return $this->normalizer->method(...array_merge($prefix, [$this->mapped], $suffix));
     }
 
-    public function getClass(): string
+    public function getClass(array $prefix = [], array $suffix = []): string
     {
-        return $this->normalizer->class($this->mapped);
+        return $this->normalizer->class(...array_merge($prefix, [$this->mapped], $suffix));
     }
 
-    public function getFile(): string
+    public function getFile(array $prefix = [], array $suffix = []): string
     {
-        return $this->normalizer->file($this->mapped);
+        return $this->normalizer->file(...array_merge($prefix, [$this->mapped], $suffix));
     }
 }

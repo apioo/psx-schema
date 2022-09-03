@@ -23,8 +23,7 @@ namespace PSX\Schema\Generator\Type;
 use PSX\Schema\TypeInterface;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * A generator can implement this interface if it has the ability to resolve a type from a schema instance
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

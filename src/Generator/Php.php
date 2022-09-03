@@ -146,7 +146,7 @@ class Php extends CodeGeneratorAbstract
 
             $class->addStmt($prop);
 
-            $setter = $this->factory->method($property->getName()->getMethod(NormalizerInterface::METHOD_SETTER));
+            $setter = $this->factory->method($property->getName()->getMethod(prefix: ['set']));
 
             $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
@@ -175,7 +175,7 @@ class Php extends CodeGeneratorAbstract
             ));
             $class->addStmt($setter);
 
-            $getter = $this->factory->method($property->getName()->getMethod(NormalizerInterface::METHOD_GETTER));
+            $getter = $this->factory->method($property->getName()->getMethod(prefix: ['get']));
             if (!empty($type)) {
                 if (str_contains($type, '|')) {
                     $getter->setReturnType($type . '|null');

@@ -21,8 +21,8 @@
 namespace PSX\Schema\Generator\Normalizer;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a
- * type from a schema instance
+ * A generator can implement this interface if it has the ability to normalize names this is mostly useful for
+ * generators which produce a specific programming language
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -30,21 +30,13 @@ namespace PSX\Schema\Generator\Normalizer;
  */
 interface NormalizerInterface
 {
-    public const TYPE_ARGUMENT = 1;
-    public const TYPE_PROPERTY = 2;
-    public const TYPE_METHOD = 3;
-    public const TYPE_CLASS = 4;
-
     public const CAMEL_CASE = 1;
     public const PASCAL_CASE = 2;
     public const SNAKE_CASE = 3;
 
-    public const METHOD_GETTER = 1;
-    public const METHOD_SETTER = 2;
-
-    public function argument(string $name): string;
-    public function property(string $name): string;
-    public function method(string $name, int $style): string;
-    public function class(string $name): string;
-    public function file(string $name): string;
+    public function argument(string... $name): string;
+    public function property(string... $name): string;
+    public function method(string... $name): string;
+    public function class(string... $name): string;
+    public function file(string... $name): string;
 }
