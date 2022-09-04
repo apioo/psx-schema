@@ -60,7 +60,16 @@ class Go extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'type ' . $name->getClass() . ' struct {' . "\n";
+        $generic = '';
+        if (!empty($generics)) {
+            $types = [];
+            foreach ($generics as $type) {
+                $types[] = $type . ' any';
+            }
+            $generic = '[' . implode(', ', $types) . ']';
+        }
+
+        $code = 'type ' . $name->getClass() . $generic . ' struct {' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
