@@ -44,7 +44,7 @@ class Kotlin extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Kotlin($mapping);
+        return new Type\Kotlin($mapping, $this->normalizer);
     }
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string

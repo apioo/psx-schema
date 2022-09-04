@@ -45,7 +45,7 @@ class Java extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Java($mapping);
+        return new Type\Java($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

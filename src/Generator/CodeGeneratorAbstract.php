@@ -57,8 +57,8 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
     {
-        $this->generator  = $this->newTypeGenerator($mapping);
         $this->normalizer = $this->newNormalizer();
+        $this->generator  = $this->newTypeGenerator($mapping);
         $this->namespace  = $namespace;
         $this->mapping    = $mapping;
         $this->indent     = str_repeat(' ', $indent);
@@ -79,14 +79,9 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->chunks;
     }
 
-    public function getType(TypeInterface $type): string
+    public function getTypeGenerator(): Type\GeneratorInterface
     {
-        return $this->generator->getType($type);
-    }
-
-    public function getDocType(TypeInterface $type): string
-    {
-        return $this->generator->getDocType($type);
+        return $this->generator;
     }
 
     public function getFileContent(string $code): string

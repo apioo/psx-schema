@@ -45,7 +45,7 @@ class Go extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Go($mapping);
+        return new Type\Go($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

@@ -71,7 +71,7 @@ class Php extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Php($mapping);
+        return new Type\Php($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

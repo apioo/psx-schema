@@ -43,7 +43,7 @@ class Rust extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Rust($mapping);
+        return new Type\Rust($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

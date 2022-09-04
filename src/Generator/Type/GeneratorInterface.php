@@ -23,7 +23,10 @@ namespace PSX\Schema\Generator\Type;
 use PSX\Schema\TypeInterface;
 
 /**
- * A generator can implement this interface if it has the ability to resolve a type from a schema instance
+ * A generator can implement this interface if it has the ability to resolve a type from a schema instance. It returns
+ * then the fitting type for the target programming language i.e. for Java we use a HashMap as map data structure and
+ * for TypeScript we use Record. It provides also a second method which allows you to return a different type for
+ * documentation which is then used in the doc-block
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

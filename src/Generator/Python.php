@@ -46,7 +46,7 @@ class Python extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Python($mapping);
+        return new Type\Python($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

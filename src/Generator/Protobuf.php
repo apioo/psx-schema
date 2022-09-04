@@ -39,7 +39,7 @@ class Protobuf extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Protobuf($mapping);
+        return new Type\Protobuf($mapping, $this->normalizer);
     }
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string

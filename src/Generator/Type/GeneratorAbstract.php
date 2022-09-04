@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\GenericType;
@@ -46,10 +47,12 @@ use PSX\Schema\TypeUtil;
 abstract class GeneratorAbstract implements GeneratorInterface
 {
     private array $mapping;
+    private NormalizerInterface $normalizer;
 
-    public function __construct(array $mapping)
+    public function __construct(array $mapping, NormalizerInterface $normalizer)
     {
         $this->mapping = $mapping;
+        $this->normalizer = $normalizer;
     }
 
     public function getType(TypeInterface $type): string
@@ -158,7 +161,9 @@ abstract class GeneratorAbstract implements GeneratorInterface
         [$ns, $name] = TypeUtil::split($ref);
 
         if (!empty($ns) && isset($this->mapping[$ns])) {
-            $name = $this->getNamespaced($this->mapping[$ns], $name);
+            $name = $this->getNamespaced($this->mapping[$ns], $this->normalizer->class($name));
+        } else {
+            $name = $this->normalizer->class($name);
         }
 
         return $name;

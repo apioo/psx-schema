@@ -42,7 +42,7 @@ class Ruby extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Ruby($mapping);
+        return new Type\Ruby($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

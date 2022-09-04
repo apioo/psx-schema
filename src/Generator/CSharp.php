@@ -44,7 +44,7 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\CSharp($mapping);
+        return new Type\CSharp($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

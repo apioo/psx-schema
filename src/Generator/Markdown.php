@@ -40,7 +40,7 @@ class Markdown extends MarkupAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Markdown($mapping);
+        return new Type\Markdown($mapping, $this->normalizer);
     }
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string

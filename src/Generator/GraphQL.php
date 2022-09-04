@@ -39,7 +39,7 @@ class GraphQL extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\GraphQL($mapping);
+        return new Type\GraphQL($mapping, $this->normalizer);
     }
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string

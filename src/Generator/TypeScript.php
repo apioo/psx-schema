@@ -48,7 +48,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\TypeScript($mapping);
+        return new Type\TypeScript($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface
@@ -147,7 +147,7 @@ class TypeScript extends CodeGeneratorAbstract
         $imports = [];
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
-            $imports[] = 'import {' . $name . '} from "./' . $name . '";';
+            $imports[] = 'import {' . $this->normalizer->class($name) . '} from "./' . $this->normalizer->file($name) . '";';
         }
 
         return $imports;

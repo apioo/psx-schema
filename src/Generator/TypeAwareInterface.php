@@ -27,6 +27,7 @@ namespace PSX\Schema\Generator;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface TypeAwareInterface extends Type\GeneratorInterface
+interface TypeAwareInterface
 {
+    public function getTypeGenerator(): Type\GeneratorInterface;
 }

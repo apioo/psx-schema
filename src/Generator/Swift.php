@@ -46,7 +46,7 @@ class Swift extends CodeGeneratorAbstract
 
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
-        return new Type\Swift($mapping);
+        return new Type\Swift($mapping, $this->normalizer);
     }
 
     protected function newNormalizer(): NormalizerInterface

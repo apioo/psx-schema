@@ -21,8 +21,10 @@
 namespace PSX\Schema\Generator\Normalizer;
 
 /**
- * A generator can implement this interface if it has the ability to normalize names this is mostly useful for
- * generators which produce a specific programming language
+ * A generator can implement this interface if it has the ability to normalize names, this is mostly useful for
+ * generators which produce a specific programming language. I.e. most programming languages have a convention whether
+ * the class names are i.e. CamelCase or the method names are snake_case, all those conversions are done by this
+ * normalizer
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
