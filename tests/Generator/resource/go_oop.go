@@ -7,7 +7,7 @@ type Student struct {
     MatricleNumber string `json:"matricleNumber"`
 }
 
-type StudentMap = Map
+type StudentMap = Map[Student]
 
 type Map[T any] struct {
     TotalResults int `json:"totalResults"`
