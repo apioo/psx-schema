@@ -3,12 +3,12 @@ type Creature struct {
 }
 
 type Human struct {
-    *Creature
+    Kind string `json:"kind"`
     FirstName string `json:"firstName"`
 }
 
 type Animal struct {
-    *Creature
+    Kind string `json:"kind"`
     Nickname string `json:"nickname"`
 }
 

@@ -3,7 +3,7 @@ type Human struct {
 }
 
 type Student struct {
-    *Human
+    FirstName string `json:"firstName"`
     MatricleNumber string `json:"matricleNumber"`
 }
 

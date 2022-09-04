@@ -6,5 +6,6 @@ type Import struct {
 
 package Foo.Bar
 type MyMap struct {
-    *My.Import.Student
+    MatricleNumber string `json:"matricleNumber"`
+    FirstName string `json:"firstName"`
 }

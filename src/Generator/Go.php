@@ -53,13 +53,14 @@ class Go extends CodeGeneratorAbstract
         return new Normalizer\Go();
     }
 
+    protected function supportsExtends(): bool
+    {
+        return false;
+    }
+
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = 'type ' . $name->getClass() . ' struct {' . "\n";
-
-        if (!empty($extends)) {
-            $code.= $this->indent . '*' . $extends . "\n";
-        }
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */

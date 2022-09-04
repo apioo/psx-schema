@@ -4,5 +4,6 @@ type Import struct {
 }
 
 type MyMap struct {
-    *Student
+    MatricleNumber string `json:"matricleNumber"`
+    FirstName string `json:"firstName"`
 }

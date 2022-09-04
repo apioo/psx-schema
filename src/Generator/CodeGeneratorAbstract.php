@@ -121,25 +121,37 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     private function generateStruct(string $className, StructType $type)
     {
+        $properties = [];
+
         $extends = $type->getExtends();
         if (!empty($extends)) {
-            [$ns, $name] = TypeUtil::split($extends);
-            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $parent  = $this->definitions->getType($name);
-                $extends = $this->normalizer->class($extends);
-                if ($parent instanceof StructType) {
-                    $this->generateStruct($extends, $parent);
+            if ($this->supportsExtends()) {
+                [$ns, $name] = TypeUtil::split($extends);
+                if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                    $parent  = $this->definitions->getType($name);
+                    $extends = $this->normalizer->class($extends);
+                    if ($parent instanceof StructType) {
+                        $this->generateStruct($extends, $parent);
+                    } else {
+                        throw new GeneratorException('Extends must be of type struct');
+                    }
                 } else {
-                    throw new GeneratorException('Extends must be of type struct');
+                    // in case we have an extern namespace we dont need to generate the type
+                    $extends = $this->generator->getType((new ReferenceType())->setRef($extends));
                 }
             } else {
-                // in case we have an extern namespace we dont need to generate the type
-                $extends = $this->generator->getType((new ReferenceType())->setRef($extends));
+                do {
+                    $parent = $this->definitions->getType($extends);
+                    if (!$parent instanceof StructType) {
+                        throw new GeneratorException('Extends must be of type struct');
+                    }
+                    $properties = array_merge($properties, $parent->getProperties());
+                } while($extends = $parent->getExtends());
             }
         }
 
         $className  = new Code\Name($className, $className, $this->normalizer);
-        $properties = $type->getProperties() ?? [];
+        $properties = array_merge($properties, $type->getProperties() ?? []);
         $generics   = [];
         $required   = $type->getRequired() ?: [];
         $mapping    = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
@@ -280,6 +292,16 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected function newNormalizer(): NormalizerInterface
     {
         return new DefaultNormalizer();
+    }
+
+    /**
+     * Some programming languages might not be able to create classes which extend other classes, in this case you
+     * could deactivate the extends feature through this method, then the "writeStruct" method receives all properties
+     * merged from all parents
+     */
+    protected function supportsExtends(): bool
+    {
+        return true;
     }
 
     abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string;
