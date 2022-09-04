@@ -39,6 +39,11 @@ class Go extends NormalizerAbstract
         return false;
     }
 
+    protected function getMethodStyle(): int
+    {
+        return self::PASCAL_CASE;
+    }
+
     protected function getFileStyle(): int
     {
         return self::SNAKE_CASE;
