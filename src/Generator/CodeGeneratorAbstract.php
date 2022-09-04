@@ -186,6 +186,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             );
         }
 
+        if (!$this->supportsExtends()) {
+            $type->setProperties($properties);
+        }
+
         $code = $this->writeStruct($className, $props, $extends, $generics, $type);
 
         if (!empty($code)) {
