@@ -46,13 +46,8 @@ use PSX\Schema\TypeUtil;
  */
 class ChangelogGenerator
 {
-    public function generate(DefinitionsInterface $left, ?DefinitionsInterface $right = null): \Generator
+    public function generate(DefinitionsInterface $left, DefinitionsInterface $right): \Generator
     {
-        if (empty($right)) {
-            yield SemVer::PATCH => 'Initial release';
-            return;
-        }
-
         foreach ($left->getAllTypes() as $leftName => $leftType) {
             if ($right->hasType($leftName)) {
                 yield from $this->generateType($leftType, $right->getType($leftName), $leftName);
