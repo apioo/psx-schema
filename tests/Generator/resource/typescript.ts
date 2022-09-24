@@ -58,6 +58,6 @@ export interface News {
     version?: string
     coffeeTime?: string
     profileUri?: string
-    captcha?: string
+    "g-recaptcha-response"?: string
     payload?: any
 }

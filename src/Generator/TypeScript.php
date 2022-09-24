@@ -72,7 +72,14 @@ class TypeScript extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ($property->isRequired() ? '' : '?') . ': ' . $property->getType() . "\n";
+            // we must use the raw property name since in typescript we dont have a JsonGetter annotation like in Java
+            // where we can describe a different JSON key so we must use the original name
+            $propertyName = $property->getName()->getRaw();
+            if ($this->needsQuoting($propertyName)) {
+                $propertyName = '"' . $propertyName . '"';
+            }
+
+            $code.= $this->indent . $propertyName . ($property->isRequired() ? '' : '?') . ': ' . $property->getType() . "\n";
         }
 
         $code.= '}' . "\n";
@@ -151,5 +158,10 @@ class TypeScript extends CodeGeneratorAbstract
         }
 
         return $imports;
+    }
+
+    private function needsQuoting(string $propertyName): bool
+    {
+        return !preg_match('/^[a-zA-Z0-9$_]+$/', $propertyName);
     }
 }

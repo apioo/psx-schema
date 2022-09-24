@@ -249,15 +249,15 @@ import {TemplateProperties} from "./TemplateProperties";
  * Represents a reference to another schema
  */
 export interface ReferenceType {
-    ref: string
-    template?: TemplateProperties
+    $ref: string
+    $template?: TemplateProperties
 }
 
 /**
  * Represents a generic type
  */
 export interface GenericType {
-    generic: string
+    $generic: string
 }
 
 import {ObjectType} from "./ObjectType";
@@ -316,7 +316,7 @@ import {StringArray} from "./StringArray";
  * TypeSchema meta schema which describes a TypeSchema
  */
 export interface TypeSchema {
-    import?: Import
+    $import?: Import
     title: string
     description?: string
     type: string
