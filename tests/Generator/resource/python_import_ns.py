@@ -1,9 +1,11 @@
 from typing import Any
+from dataclasses import dataclass
+@dataclass
 class Import:
-    def __init__(self, students: My.Import.StudentMap, student: My.Import.Student):
-        self.students = students
-        self.student = student
+    students: My.Import.StudentMap
+    student: My.Import.Student
 
 from typing import Any
+from dataclasses import dataclass
+@dataclass
 class MyMap(My.Import.Student):
-    def __init__(self, ):

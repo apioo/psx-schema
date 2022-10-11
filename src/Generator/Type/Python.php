@@ -66,7 +66,7 @@ class Python extends GeneratorAbstract
 
     protected function getIntersection(array $types): string
     {
-        return '';
+        return 'Any';
     }
 
     protected function getGroup(string $type): string

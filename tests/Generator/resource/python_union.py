@@ -1,22 +1,26 @@
 from typing import Any
+from dataclasses import dataclass
+@dataclass
 class Creature:
-    def __init__(self, kind: str):
-        self.kind = kind
+    kind: str
 
 from typing import Any
+from dataclasses import dataclass
+@dataclass
 class Human(Creature):
-    def __init__(self, first_name: str):
-        self.first_name = first_name
+    first_name: str
 
 from typing import Any
+from dataclasses import dataclass
+@dataclass
 class Animal(Creature):
-    def __init__(self, nickname: str):
-        self.nickname = nickname
+    nickname: str
 
 from typing import Any
+from dataclasses import dataclass
 from typing import Union
+@dataclass
 class Union:
-    def __init__(self, union: Union[Human, Animal], intersection: , discriminator: Union[Human, Animal]):
-        self.union = union
-        self.intersection = intersection
-        self.discriminator = discriminator
+    union: Union[Human, Animal]
+    intersection: Any
+    discriminator: Union[Human, Animal]

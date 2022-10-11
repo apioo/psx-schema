@@ -56,7 +56,8 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'class ' . $name->getClass();
+        $code = '@dataclass' . "\n";
+        $code.= 'class ' . $name->getClass();
 
         if (!empty($extends)) {
             $code.= '(' . $extends . ')';
@@ -64,17 +65,9 @@ class Python extends CodeGeneratorAbstract
 
         $code.= ':' . "\n";
 
-        $items = [];
-        $args = [];
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $args[] = $property->getName()->getProperty() . ': ' . $property->getType();
-            $items[] = $property->getName()->getProperty();
-        }
-
-        $code.= $this->indent . 'def __init__(self, ' . implode(', ', $args) . '):' . "\n";
-        foreach ($items as $item) {
-            $code.= $this->indent . $this->indent . 'self.' . $item . ' = ' . $item . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 
         return $code;
@@ -121,6 +114,7 @@ class Python extends CodeGeneratorAbstract
     {
         $imports = [];
         $imports[] = 'from typing import Any';
+        $imports[] = 'from dataclasses import dataclass';
 
         if (TypeUtil::contains($origin, ArrayType::class)) {
             $imports[] = 'from typing import List';
