@@ -95,6 +95,22 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertEquals(['acme.com'], $transaction['request']->getHeader('Host'));
     }
 
+    public function testParseTypeHubResource()
+    {
+        $client = new Client\Client();
+        $parser = new TypeSchema(TypeSchema\ImportResolver::createDefault($client));
+        $schema = $parser->parse(file_get_contents(__DIR__ . '/TypeSchema/test_schema_typehub.json'));
+
+        /** @var StructType $type */
+        $type = $schema->getType();
+        $this->assertInstanceOf(StructType::class, $type);
+        $reference = $type->getProperty('software');
+        $this->assertInstanceOf(ReferenceType::class, $reference);
+
+        $type = $schema->getDefinitions()->getType($reference->getRef());
+        $this->assertInstanceOf(StructType::class, $type);
+    }
+
     public function testParseInvalidFile()
     {
         $this->expectException(\RuntimeException::class);

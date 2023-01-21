@@ -1,0 +1,11 @@
+{
+  "$import": {
+    "th": "typehub://apioo:software@0.1.2"
+  },
+  "type": "object",
+  "properties": {
+    "software": {
+      "$ref": "th:Software"
+    }
+  }
+}

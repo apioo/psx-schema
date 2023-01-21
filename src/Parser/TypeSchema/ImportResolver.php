@@ -70,6 +70,9 @@ class ImportResolver
 
             $resolver->addResolver('http', $httpResolver);
             $resolver->addResolver('https', $httpResolver);
+
+            $typeHub = new Resolver\TypeHub($httpClient);
+            $resolver->addResolver('typehub', $typeHub);
         }
 
         return $resolver;
