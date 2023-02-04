@@ -198,7 +198,7 @@ class Popo implements ParserInterface
                 $type->setNullable($annotation->nullable);
             } elseif ($annotation instanceof Attribute\Deprecated) {
                 $type->setDeprecated($annotation->deprecated);
-            } elseif ($annotation instanceof Attribute\Readonly) {
+            } elseif ($annotation instanceof Attribute\Immutable) {
                 $type->setReadonly($annotation->readonly);
             }
         }

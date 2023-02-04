@@ -23,14 +23,14 @@ namespace PSX\Schema\Attribute;
 use Attribute;
 
 /**
- * Readonly
+ * Immutable
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY)]
-class Readonly
+class Immutable
 {
     public function __construct(public bool $readonly)
     {
