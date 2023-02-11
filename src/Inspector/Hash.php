@@ -51,6 +51,13 @@ class Hash
         return hash('sha256', implode('', $values));
     }
 
+    public function generateByType(TypeInterface $type): string
+    {
+        $values = iterator_to_array($this->getValuesByType($type), false);
+
+        return hash('sha256', implode('', $values));
+    }
+
     private function getValues(DefinitionsInterface $definition): \Generator
     {
         $types = $definition->getTypes(DefinitionsInterface::SELF_NAMESPACE);

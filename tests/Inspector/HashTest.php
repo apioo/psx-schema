@@ -40,4 +40,13 @@ class HashTest extends SchemaTestCase
 
         $this->assertEquals('7f30d51e70578cce4138b638a3d7a64494b16e83540e12f8905d3d6daa9beafc', $value, $value);
     }
+
+    public function testGenerateByType()
+    {
+        $schema = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
+
+        $value = (new Hash())->generateByType($schema->getType('LocationA'));
+
+        $this->assertEquals('c82f263dc455ec2af3b7acf6df0c483a873079d4d7357345a41220ef58528446', $value, $value);
+    }
 }
