@@ -63,7 +63,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateType(TypeInterface $leftType, TypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
+    public function generateType(TypeInterface $leftType, TypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if (get_class($leftType) !== get_class($rightType)) {
             yield SemVer::MAJOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'type', TypeUtil::getTypeName($leftType), TypeUtil::getTypeName($rightType));
