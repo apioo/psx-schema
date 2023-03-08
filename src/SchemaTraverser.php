@@ -91,46 +91,74 @@ class SchemaTraverser
                 $this->assertStructConstraints($data, $type);
             }
 
-            $result = $this->traverseStruct($data, $type, $definitions, $visitor, $context);
+            if ($data instanceof \stdClass) {
+                $result = $this->traverseStruct($data, $type, $definitions, $visitor, $context);
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof MapType) {
             if ($this->assertConstraints) {
                 $this->assertMapConstraints($data, $type);
             }
 
-            $result = $this->traverseMap($data, $type, $definitions, $visitor, $context);
+            if ($data instanceof \stdClass) {
+                $result = $this->traverseMap($data, $type, $definitions, $visitor, $context);
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof ArrayType) {
             if ($this->assertConstraints) {
                 $this->assertArrayConstraints($data, $type);
             }
 
-            $result = $this->traverseArray($data, $type, $definitions, $visitor, $context);
+            if (is_array($data)) {
+                $result = $this->traverseArray($data, $type, $definitions, $visitor, $context);
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof StringType) {
             if ($this->assertConstraints) {
                 $this->assertStringConstraints($data, $type);
                 $this->assertScalarConstraints($data, $type);
             }
 
-            $result = $this->traverseString($data, $type, $visitor);
+            if (is_string($data)) {
+                $result = $this->traverseString($data, $type, $visitor);
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof IntegerType) {
             if ($this->assertConstraints) {
                 $this->assertNumberConstraints($data, $type);
                 $this->assertScalarConstraints($data, $type);
             }
 
-            $result = $visitor->visitInteger($data, $type, $this->getCurrentPath());
+            if (is_int($data)) {
+                $result = $visitor->visitInteger($data, $type, $this->getCurrentPath());
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof NumberType) {
             if ($this->assertConstraints) {
                 $this->assertNumberConstraints($data, $type);
                 $this->assertScalarConstraints($data, $type);
             }
 
-            $result = $visitor->visitNumber($data, $type, $this->getCurrentPath());
+            if (is_int($data) || is_float($data)) {
+                $result = $visitor->visitNumber($data, $type, $this->getCurrentPath());
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof BooleanType) {
             if ($this->assertConstraints) {
                 $this->assertBooleanConstraints($data, $type);
             }
 
-            $result = $visitor->visitBoolean($data, $type, $this->getCurrentPath());
+            if (is_bool($data)) {
+                $result = $visitor->visitBoolean($data, $type, $this->getCurrentPath());
+            } else {
+                $result = null;
+            }
         } elseif ($type instanceof IntersectionType) {
             $result = $this->traverseIntersection($data, $type, $definitions, $visitor, $context);
         } elseif ($type instanceof UnionType) {
@@ -380,7 +408,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertScalarConstraints($data, ScalarType $type)
+    protected function assertScalarConstraints($data, ScalarType $type): void
     {
         if (!is_scalar($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type scalar', 'type', $this->pathStack);
@@ -441,7 +469,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertStructConstraints($data, StructType $type)
+    protected function assertStructConstraints($data, StructType $type): void
     {
         if (!$data instanceof \stdClass) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type object', 'type', $this->pathStack);
@@ -461,7 +489,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertMapConstraints($data, MapType $type)
+    protected function assertMapConstraints($data, MapType $type): void
     {
         if (!$data instanceof \stdClass) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type object', 'type', $this->pathStack);
@@ -487,7 +515,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertArrayConstraints($data, ArrayType $type)
+    protected function assertArrayConstraints($data, ArrayType $type): void
     {
         if (!is_array($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type array', 'type', $this->pathStack);
@@ -511,7 +539,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertNumberConstraints($data, NumberType $property)
+    protected function assertNumberConstraints($data, NumberType $property): void
     {
         if ($property instanceof IntegerType) {
             if (!is_int($data)) {
@@ -564,7 +592,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertBooleanConstraints($data, BooleanType $type)
+    protected function assertBooleanConstraints($data, BooleanType $type): void
     {
         if (!is_bool($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type boolean', 'type', $this->pathStack);
@@ -574,7 +602,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertStringConstraints($data, StringType $property)
+    protected function assertStringConstraints($data, StringType $property): void
     {
         if (!is_string($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type string', 'type', $this->pathStack);
@@ -603,7 +631,7 @@ class SchemaTraverser
         }
     }
 
-    private function getCurrentPath()
+    private function getCurrentPath(): string
     {
         return '/' . implode('/', $this->pathStack);
     }
