@@ -71,7 +71,7 @@ class Java extends GeneratorAbstract
 
     protected function getNumber(): string
     {
-        return 'float';
+        return 'double';
     }
 
     protected function getBoolean(): string
