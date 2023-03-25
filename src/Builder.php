@@ -47,10 +47,6 @@ class Builder
         $this->type = TypeFactory::getStruct();
     }
 
-    /**
-     * @param string $description
-     * @return Builder
-     */
     public function setDescription(string $description): Builder
     {
         $this->type->setDescription($description);
@@ -58,10 +54,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param array $required
-     * @return Builder
-     */
     public function setRequired(array $required): Builder
     {
         $this->type->setRequired($required);
@@ -69,10 +61,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param string $ref
-     * @return Builder
-     */
     public function setExtends(string $ref): Builder
     {
         $this->type->setExtends($ref);
@@ -80,10 +68,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param string $class
-     * @return Builder
-     */
     public function setClass(string $class): Builder
     {
         $this->type->setAttribute(TypeAbstract::ATTR_CLASS, $class);
@@ -91,12 +75,7 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @return Builder
-     */
-    public function setAttribute(string $key, $value): Builder
+    public function setAttribute(string $key, mixed $value): Builder
     {
         $this->type->setAttribute($key, $value);
 
@@ -118,9 +97,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @param TypeInterface $items
-     * @return ArrayType
      * @throws Exception\InvalidSchemaException
      */
     public function addArray(string $name, TypeInterface $items): ArrayType
@@ -129,8 +105,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return BooleanType
      * @throws Exception\InvalidSchemaException
      */
     public function addBoolean(string $name): BooleanType
@@ -139,8 +113,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return IntegerType
      * @throws Exception\InvalidSchemaException
      */
     public function addInteger(string $name): IntegerType
@@ -149,9 +121,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @param array $types
-     * @return IntersectionType
      * @throws Exception\InvalidSchemaException
      */
     public function addIntersection(string $name, array $types): IntersectionType
@@ -160,8 +129,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return NumberType
      * @throws Exception\InvalidSchemaException
      */
     public function addNumber(string $name): NumberType
@@ -170,9 +137,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @param string $ref
-     * @return ReferenceType
      * @throws Exception\InvalidSchemaException
      */
     public function addReference(string $name, string $ref): ReferenceType
@@ -181,8 +145,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addString(string $name): StringType
@@ -191,9 +153,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @param array $types
-     * @return UnionType
      * @throws Exception\InvalidSchemaException
      */
     public function addUnion(string $name, array $types): UnionType
@@ -202,8 +161,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addBinary(string $name): StringType
@@ -212,8 +169,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addDateTime(string $name): StringType
@@ -222,8 +177,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addDate(string $name): StringType
@@ -232,8 +185,14 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
+     * @throws Exception\InvalidSchemaException
+     */
+    public function addPeriod(string $name): StringType
+    {
+        return $this->add($name, TypeFactory::getPeriod());
+    }
+
+    /**
      * @throws Exception\InvalidSchemaException
      */
     public function addDuration(string $name): StringType
@@ -242,8 +201,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addTime(string $name): StringType
@@ -252,8 +209,6 @@ class Builder
     }
 
     /**
-     * @param string $name
-     * @return StringType
      * @throws Exception\InvalidSchemaException
      */
     public function addUri(string $name): StringType
@@ -261,9 +216,6 @@ class Builder
         return $this->add($name, TypeFactory::getUri());
     }
 
-    /**
-     * @return StructType
-     */
     public function getType(): StructType
     {
         return $this->type;

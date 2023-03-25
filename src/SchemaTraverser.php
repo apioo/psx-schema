@@ -23,6 +23,10 @@ namespace PSX\Schema;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\TypeNotFoundException;
@@ -421,19 +425,23 @@ class SchemaTraverser
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
                 }
             } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
-                if (!preg_match('/^' . DateTime::getPattern() . '$/', $data)) {
+                if (!preg_match('/^' . LocalDateTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
                 }
             } elseif ($format === TypeAbstract::FORMAT_DATE) {
-                if (!preg_match('/^' . Date::getPattern() . '$/', $data)) {
+                if (!preg_match('/^' . LocalDate::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
+                }
+            } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+                if (!preg_match('/^' . Period::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid period format [ISO8601]', 'format', $this->pathStack);
                 }
             } elseif ($format === TypeAbstract::FORMAT_DURATION) {
                 if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
                 }
             } elseif ($format === TypeAbstract::FORMAT_TIME) {
-                if (!preg_match('/^' . Time::getPattern() . '$/', $data)) {
+                if (!preg_match('/^' . LocalTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
                 }
             } elseif ($format === 'email') {

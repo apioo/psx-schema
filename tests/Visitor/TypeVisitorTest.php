@@ -24,6 +24,10 @@ use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ValidationException;
@@ -208,8 +212,8 @@ class TypeVisitorTest extends TestCase
     {
         $type = TypeFactory::getDateTime();
 
-        $this->assertInstanceOf('DateTime', (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00Z', $type, ''));
-        $this->assertInstanceOf('DateTime', (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00+01:00', $type, ''));
+        $this->assertInstanceOf(LocalDateTime::class, (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00Z', $type, ''));
+        $this->assertInstanceOf(LocalDateTime::class, (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00+01:00', $type, ''));
     }
 
     public function testVisitDateTimeInvalidFormat()
@@ -227,8 +231,8 @@ class TypeVisitorTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $validator = new Validator([
-            new Field('/foo/bar', [function (DateTime $data) {
-                return $data->format('d') == 8;
+            new Field('/foo/bar', [function (LocalDateTime $data) {
+                return $data->getDayOfMonth() == 8;
             }])
         ]);
 
@@ -241,8 +245,8 @@ class TypeVisitorTest extends TestCase
     {
         $type = TypeFactory::getDate();
 
-        $this->assertInstanceOf(Date::class, (new TypeVisitor())->visitDate('2000-01-01', $type, ''));
-        $this->assertInstanceOf(Date::class, (new TypeVisitor())->visitDate('2000-01-01+13:00', $type, ''));
+        $this->assertInstanceOf(LocalDate::class, (new TypeVisitor())->visitDate('2000-01-01', $type, ''));
+        $this->assertInstanceOf(LocalDate::class, (new TypeVisitor())->visitDate('2000-01-01+13:00', $type, ''));
     }
 
     public function testVisitDateInvalidFormat()
@@ -260,8 +264,8 @@ class TypeVisitorTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $validator = new Validator([
-            new Field('/foo/bar', [function (Date $data) {
-                return $data->format('d') == 8;
+            new Field('/foo/bar', [function (LocalDate $data) {
+                return $data->getDayOfMonth() == 8;
             }])
         ]);
 
@@ -281,11 +285,26 @@ class TypeVisitorTest extends TestCase
     public function testVisitDurationInvalidFormat()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Must be duration forma');
+        $this->expectExceptionMessage('Must be valid interval format');
 
         $type = TypeFactory::getDuration();
 
         (new TypeVisitor())->visitDuration('foo', $type, '');
+    }
+
+    public function testVisitPeriodValidate()
+    {
+        $this->expectException(ValidationException::class);
+
+        $validator = new Validator([
+            new Field('/foo/bar', [function (Period $data) {
+                return $data->getDays() == 2;
+            }])
+        ]);
+
+        $type = TypeFactory::getDuration();
+
+        (new TypeVisitor($validator))->visitPeriod('P1D', $type, '/foo/bar');
     }
 
     public function testVisitDurationValidate()
@@ -294,13 +313,13 @@ class TypeVisitorTest extends TestCase
 
         $validator = new Validator([
             new Field('/foo/bar', [function (Duration $data) {
-                return $data->d == 2;
+                return $data->getHours() == 2;
             }])
         ]);
 
         $type = TypeFactory::getDuration();
 
-        (new TypeVisitor($validator))->visitDuration('P1D', $type, '/foo/bar');
+        (new TypeVisitor($validator))->visitDuration('PT1H', $type, '/foo/bar');
     }
 
     public function testVisitNumber()
@@ -372,8 +391,8 @@ class TypeVisitorTest extends TestCase
     {
         $type = TypeFactory::getTime();
 
-        $this->assertInstanceOf(Time::class, (new TypeVisitor())->visitTime('10:00:00', $type, ''));
-        $this->assertInstanceOf(Time::class, (new TypeVisitor())->visitTime('10:00:00+02:00', $type, ''));
+        $this->assertInstanceOf(LocalTime::class, (new TypeVisitor())->visitTime('10:00:00', $type, ''));
+        $this->assertInstanceOf(LocalTime::class, (new TypeVisitor())->visitTime('10:00:00+02:00', $type, ''));
     }
 
     public function testVisitTimeInvalidFormat()
@@ -391,8 +410,8 @@ class TypeVisitorTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $validator = new Validator([
-            new Field('/foo/bar', [function (Time $data) {
-                return $data->format('H') == 11;
+            new Field('/foo/bar', [function (LocalTime $data) {
+                return $data->getHour() == 11;
             }])
         ]);
 

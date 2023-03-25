@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * Location of the person
  */
 public class Location {
-    private float lat;
-    private float _long;
+    private double lat;
+    private double _long;
     @JsonSetter("lat")
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
     @JsonGetter("lat")
-    public float getLat() {
+    public double getLat() {
         return this.lat;
     }
     @JsonSetter("long")
-    public void setLong(float _long) {
+    public void setLong(double _long) {
         this._long = _long;
     }
     @JsonGetter("long")
-    public float getLong() {
+    public double getLong() {
         return this._long;
     }
 }
@@ -115,7 +115,6 @@ public class Meta extends HashMap<String, String> {
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.net.URI;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
@@ -137,8 +136,8 @@ public class News {
     private Meta meta;
     private LocalDate sendDate;
     private LocalDateTime readDate;
-    private Duration expires;
-    private float price;
+    private Period expires;
+    private double price;
     private int rating;
     private String content;
     private String question;
@@ -244,19 +243,19 @@ public class News {
         return this.readDate;
     }
     @JsonSetter("expires")
-    public void setExpires(Duration expires) {
+    public void setExpires(Period expires) {
         this.expires = expires;
     }
     @JsonGetter("expires")
-    public Duration getExpires() {
+    public Period getExpires() {
         return this.expires;
     }
     @JsonSetter("price")
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
     @JsonGetter("price")
-    public float getPrice() {
+    public double getPrice() {
         return this.price;
     }
     @JsonSetter("rating")

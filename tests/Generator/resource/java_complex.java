@@ -264,10 +264,10 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  */
 public class NumberProperties {
     private String type;
-    private float multipleOf;
-    private float maximum;
+    private double multipleOf;
+    private double maximum;
     private boolean exclusiveMaximum;
-    private float minimum;
+    private double minimum;
     private boolean exclusiveMinimum;
     @JsonSetter("type")
     public void setType(String type) {
@@ -278,19 +278,19 @@ public class NumberProperties {
         return this.type;
     }
     @JsonSetter("multipleOf")
-    public void setMultipleOf(float multipleOf) {
+    public void setMultipleOf(double multipleOf) {
         this.multipleOf = multipleOf;
     }
     @JsonGetter("multipleOf")
-    public float getMultipleOf() {
+    public double getMultipleOf() {
         return this.multipleOf;
     }
     @JsonSetter("maximum")
-    public void setMaximum(float maximum) {
+    public void setMaximum(double maximum) {
         this.maximum = maximum;
     }
     @JsonGetter("maximum")
-    public float getMaximum() {
+    public double getMaximum() {
         return this.maximum;
     }
     @JsonSetter("exclusiveMaximum")
@@ -302,11 +302,11 @@ public class NumberProperties {
         return this.exclusiveMaximum;
     }
     @JsonSetter("minimum")
-    public void setMinimum(float minimum) {
+    public void setMinimum(double minimum) {
         this.minimum = minimum;
     }
     @JsonGetter("minimum")
-    public float getMinimum() {
+    public double getMinimum() {
         return this.minimum;
     }
     @JsonSetter("exclusiveMinimum")

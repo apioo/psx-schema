@@ -53,7 +53,7 @@ class TypeHub implements ResolverInterface
         $document = $uri->getPassword();
         $version = $uri->getHost();
 
-        $url      = new Url(sprintf(self::API_URL, $user, $document, $version));
+        $url      = Url::parse(sprintf(self::API_URL, $user, $document, $version));
         $request  = new GetRequest($url, ['Accept' => 'application/json', 'User-Agent' => Http::USER_AGENT]);
         $response = $this->httpClient->request($request);
 

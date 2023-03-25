@@ -37,7 +37,7 @@ type News struct {
     Meta Meta `json:"meta"`
     SendDate time.Time `json:"sendDate"`
     ReadDate time.Time `json:"readDate"`
-    Expires time.Duration `json:"expires"`
+    Expires string `json:"expires"`
     Price float64 `json:"price"`
     Rating int `json:"rating"`
     Content string `json:"content"`

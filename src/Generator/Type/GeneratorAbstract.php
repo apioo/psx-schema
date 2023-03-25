@@ -113,6 +113,11 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $this->getString();
     }
 
+    protected function getPeriod(): string
+    {
+        return $this->getString();
+    }
+
     protected function getDuration(): string
     {
         return $this->getString();
@@ -184,6 +189,8 @@ abstract class GeneratorAbstract implements GeneratorInterface
             return  $this->getDateTime();
         } elseif ($format === TypeAbstract::FORMAT_TIME) {
             return  $this->getTime();
+        } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+            return  $this->getPeriod();
         } elseif ($format === TypeAbstract::FORMAT_DURATION) {
             return  $this->getDuration();
         } elseif ($format === TypeAbstract::FORMAT_URI) {

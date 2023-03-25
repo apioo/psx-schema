@@ -30,7 +30,6 @@ open class Meta : HashMap<String, String>() {
 }
 
 import java.net.URI;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
@@ -52,7 +51,7 @@ open class News {
     var meta: Meta? = null
     var sendDate: LocalDate? = null
     var readDate: LocalDateTime? = null
-    var expires: Duration? = null
+    var expires: Period? = null
     var price: Float? = null
     var rating: Int? = null
     var content: String? = null

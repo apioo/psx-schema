@@ -148,7 +148,7 @@
           "type": "string"
         },
         "expires": {
-          "format": "duration",
+          "format": "period",
           "type": "string"
         },
         "price": {

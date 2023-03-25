@@ -50,16 +50,12 @@ class News
     protected $profileImage;
 
     protected ?bool $read;
-    /**
-     * @var Author|Web
-     */
-    protected $source;
-
+    protected Author|Web $source;
     protected ?Author $author;
     protected ?Meta $meta;
-    protected ?\PSX\DateTime\Date $sendDate;
-    protected ?\DateTime $readDate;
-    protected ?\DateInterval $expires;
+    protected ?\PSX\DateTime\LocalDate $sendDate;
+    protected ?\PSX\DateTime\LocalDateTime $readDate;
+    protected ?\PSX\DateTime\Period $expires;
 
     #[Minimum(1)]
     #[Maximum(100)]
@@ -78,7 +74,7 @@ class News
     protected ?string $question = null;
 
     protected ?string $version = 'http://foo.bar';
-    protected ?\PSX\DateTime\Time $coffeeTime = null;
+    protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     protected ?\PSX\Uri\Uri $profileUri = null;
 
     #[Key('g-recaptcha-response')]
@@ -87,7 +83,6 @@ class News
 
     public function setConfig(?Meta $config)
     {
-        $foo = true;
         $this->config = $config;
     }
 
@@ -176,32 +171,32 @@ class News
         return $this->meta;
     }
 
-    public function setSendDate(?\PSX\DateTime\Date $sendDate)
+    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate)
     {
         $this->sendDate = $sendDate;
     }
 
-    public function getSendDate() : ?\PSX\DateTime\Date
+    public function getSendDate() : ?\PSX\DateTime\LocalDate
     {
         return $this->sendDate;
     }
 
-    public function setReadDate(?\DateTime $readDate)
+    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate)
     {
         $this->readDate = $readDate;
     }
 
-    public function getReadDate() : ?\DateTime
+    public function getReadDate() : ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
     }
 
-    public function setExpires(?\DateInterval $expires)
+    public function setExpires(?\PSX\DateTime\Period $expires)
     {
         $this->expires = $expires;
     }
 
-    public function getExpires() : ?\DateInterval
+    public function getExpires() : ?\PSX\DateTime\Period
     {
         return $this->expires;
     }
@@ -256,12 +251,12 @@ class News
         return $this->version;
     }
 
-    public function setCoffeeTime(?\PSX\DateTime\Time $coffeeTime)
+    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime)
     {
         $this->coffeeTime = $coffeeTime;
     }
 
-    public function getCoffeeTime() : ?\PSX\DateTime\Time
+    public function getCoffeeTime() : ?\PSX\DateTime\LocalTime
     {
         return $this->coffeeTime;
     }

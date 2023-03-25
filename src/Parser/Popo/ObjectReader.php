@@ -48,18 +48,18 @@ class ObjectReader
                 continue;
             }
 
-            $annotations = [];
+            $attributes = [];
             foreach ($property->getAttributes() as $attribute) {
-                $annotations[] = $attribute->newInstance();
+                $attributes[] = $attribute->newInstance();
             }
 
             // check whether we have an exclude annotation
-            if (self::hasExcludeAnnotation($annotations)) {
+            if (self::hasExcludeAttribute($attributes)) {
                 continue;
             }
 
             // get the property name
-            $key  = self::getAnnotationKey($annotations);
+            $key  = self::getAttributeKey($attributes);
             $name = null;
 
             if ($key !== null) {
@@ -76,10 +76,10 @@ class ObjectReader
         return $result;
     }
 
-    private static function hasExcludeAnnotation(array $annotations): bool
+    private static function hasExcludeAttribute(array $attributes): bool
     {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Exclude) {
+        foreach ($attributes as $attribute) {
+            if ($attribute instanceof Attribute\Exclude) {
                 return true;
             }
         }
@@ -87,11 +87,11 @@ class ObjectReader
         return false;
     }
 
-    private static function getAnnotationKey(array $annotations): ?string
+    private static function getAttributeKey(array $attributes): ?string
     {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Key) {
-                return $annotation->key;
+        foreach ($attributes as $attribute) {
+            if ($attribute instanceof Attribute\Key) {
+                return $attribute->key;
             }
         }
 

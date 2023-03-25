@@ -52,7 +52,7 @@ author | Author |  |
 meta | Meta |  | 
 sendDate | Date |  | 
 readDate | DateTime |  | 
-expires | Duration |  | 
+expires | String |  | 
 price | Number | **REQUIRED**.  | Minimum: `1`, Maximum: `100`
 rating | Integer |  | Minimum: `1`, Maximum: `5`
 content | String | **REQUIRED**. Contains the main content of the news entry | MinLength: `3`, MaxLength: `512`

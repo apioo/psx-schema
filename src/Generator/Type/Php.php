@@ -20,8 +20,11 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\DateTime\Date;
-use PSX\DateTime\Time;
+use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
@@ -76,22 +79,27 @@ class Php extends GeneratorAbstract
 
     protected function getDate(): string
     {
-        return '\\' . Date::class;
+        return '\\' . LocalDate::class;
     }
 
     protected function getDateTime(): string
     {
-        return '\\' . \DateTime::class;
+        return '\\' . LocalDateTime::class;
     }
 
     protected function getTime(): string
     {
-        return '\\' . Time::class;
+        return '\\' . LocalTime::class;
+    }
+
+    protected function getPeriod(): string
+    {
+        return '\\' . Period::class;
     }
 
     protected function getDuration(): string
     {
-        return '\\' . \DateInterval::class;
+        return '\\' . Duration::class;
     }
 
     protected function getUri(): string

@@ -157,6 +157,12 @@ class TypeFactory
             ->setFormat(TypeAbstract::FORMAT_DATE);
     }
 
+    public static function getPeriod(): StringType
+    {
+        return self::getString()
+            ->setFormat(TypeAbstract::FORMAT_PERIOD);
+    }
+
     public static function getDuration(): StringType
     {
         return self::getString()

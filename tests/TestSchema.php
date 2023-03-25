@@ -94,7 +94,7 @@ class TestSchema extends SchemaAbstract
         $news->addReference('meta', 'Meta');
         $news->addDate('sendDate');
         $news->addDateTime('readDate');
-        $news->addDuration('expires');
+        $news->addPeriod('expires');
         $news->addNumber('price')
             ->setMinimum(1)
             ->setMaximum(100);

@@ -129,7 +129,7 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($import as $namespace => $uri) {
-            $uri = new Uri($uri);
+            $uri = Uri::parse($uri);
             $path = $basePath . $uri->getPath();
             $basePath = pathinfo($path, PATHINFO_DIRNAME);
 

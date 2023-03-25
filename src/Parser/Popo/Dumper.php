@@ -23,6 +23,9 @@ namespace PSX\Schema\Parser\Popo;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
@@ -58,20 +61,18 @@ class Dumper
         $this->resolver = Popo::createDefaultResolver();
     }
 
-    /**
-     * @param object $object
-     * @return mixed
-     */
-    public function dump($data)
+    public function dump(mixed $data): mixed
     {
         if (is_iterable($data)) {
             return $this->dumpIterable($data);
-        } elseif ($data instanceof \DateTime) {
-            return DateTime::fromDateTime($data)->toString();
+        } elseif ($data instanceof \DateTimeInterface) {
+            return LocalDateTime::from($data)->toString();
         } elseif ($data instanceof \DateInterval) {
-            return Duration::fromDateInterval($data)->toString();
+            return Period::from($data)->toString();
         } elseif ($data instanceof \JsonSerializable) {
             return Record::from($data->jsonSerialize());
+        } elseif ($data instanceof \Stringable) {
+            return (string) $data;
         } elseif (is_object($data)) {
             return $this->dumpObject($data, get_class($data));
         } elseif (is_resource($data)) {
@@ -81,7 +82,7 @@ class Dumper
         }
     }
 
-    private function dumpObject($data, string $class)
+    private function dumpObject(mixed $data, string $class): mixed
     {
         $type = $this->resolver->resolveClass(new \ReflectionClass($class));
         if ($type instanceof StructType) {

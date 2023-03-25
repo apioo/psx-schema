@@ -198,9 +198,9 @@ class News implements \JsonSerializable
     protected Author|Web|null $source = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
-    protected ?\PSX\DateTime\Date $sendDate = null;
-    protected ?\DateTime $readDate = null;
-    protected ?\DateInterval $expires = null;
+    protected ?\PSX\DateTime\LocalDate $sendDate = null;
+    protected ?\PSX\DateTime\LocalDateTime $readDate = null;
+    protected ?\PSX\DateTime\Period $expires = null;
     #[Minimum(1)]
     #[Maximum(100)]
     protected ?float $price = null;
@@ -214,7 +214,7 @@ class News implements \JsonSerializable
     #[Enum(array('foo', 'bar'))]
     protected ?string $question = null;
     protected ?string $version = 'http://foo.bar';
-    protected ?\PSX\DateTime\Time $coffeeTime = null;
+    protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     protected ?\PSX\Uri\Uri $profileUri = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
@@ -308,27 +308,27 @@ class News implements \JsonSerializable
     {
         return $this->meta;
     }
-    public function setSendDate(?\PSX\DateTime\Date $sendDate) : void
+    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate) : void
     {
         $this->sendDate = $sendDate;
     }
-    public function getSendDate() : ?\PSX\DateTime\Date
+    public function getSendDate() : ?\PSX\DateTime\LocalDate
     {
         return $this->sendDate;
     }
-    public function setReadDate(?\DateTime $readDate) : void
+    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate) : void
     {
         $this->readDate = $readDate;
     }
-    public function getReadDate() : ?\DateTime
+    public function getReadDate() : ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
     }
-    public function setExpires(?\DateInterval $expires) : void
+    public function setExpires(?\PSX\DateTime\Period $expires) : void
     {
         $this->expires = $expires;
     }
-    public function getExpires() : ?\DateInterval
+    public function getExpires() : ?\PSX\DateTime\Period
     {
         return $this->expires;
     }
@@ -372,11 +372,11 @@ class News implements \JsonSerializable
     {
         return $this->version;
     }
-    public function setCoffeeTime(?\PSX\DateTime\Time $coffeeTime) : void
+    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime) : void
     {
         $this->coffeeTime = $coffeeTime;
     }
-    public function getCoffeeTime() : ?\PSX\DateTime\Time
+    public function getCoffeeTime() : ?\PSX\DateTime\LocalTime
     {
         return $this->coffeeTime;
     }

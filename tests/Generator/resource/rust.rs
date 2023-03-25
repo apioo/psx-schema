@@ -36,7 +36,7 @@ struct News {
     meta: Meta,
     sendDate: time.Time,
     readDate: time.Time,
-    expires: time.Duration,
+    expires: String,
     price: float64,
     rating: u64,
     content: String,

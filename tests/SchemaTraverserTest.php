@@ -67,6 +67,9 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser = new SchemaTraverser(false);
         $result    = $traverser->traverse($data, $this->getSchema());
 
+        // we expect that the value from test gets converted to null since array is invalid and only strings are allows
+        $data->config->test = null;
+
         $actual = json_encode($result, JSON_PRETTY_PRINT);
         $expect = json_encode($data);
 

@@ -23,6 +23,10 @@ namespace PSX\Schema\Parser\Popo\Resolver;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Schema\Parser\Popo\ResolverInterface;
@@ -109,13 +113,15 @@ class Native implements ResolverInterface
         } elseif ($name === 'self') {
             $class = $property->getDeclaringClass()->getName();
             return TypeFactory::getReference($class);
-        } elseif ($name === Date::class) {
+        } elseif ($name === LocalDate::class) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
-        } elseif ($name === DateTime::class || $name === \DateTime::class) {
+        } elseif ($name === LocalDateTime::class || $name === \DateTime::class) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
-        } elseif ($name === Time::class) {
+        } elseif ($name === LocalTime::class) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
-        } elseif ($name === Duration::class || $name === \DateInterval::class) {
+        } elseif ($name === Period::class || $name === \DateInterval::class) {
+            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_PERIOD);
+        } elseif ($name === Duration::class) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
         } elseif ($name === Uri::class) {
             return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);

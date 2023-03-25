@@ -20,10 +20,11 @@
 
 namespace PSX\Schema\Visitor;
 
-use PSX\DateTime\Date;
-use PSX\DateTime\DateTime;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\Duration;
-use PSX\DateTime\Time;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
@@ -142,7 +143,7 @@ class TypeVisitor implements VisitorInterface
 
     public function visitDateTime($data, StringType $type, string $path)
     {
-        $result = new DateTime($data);
+        $result = LocalDateTime::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);
@@ -153,7 +154,18 @@ class TypeVisitor implements VisitorInterface
 
     public function visitDate($data, StringType $type, string $path)
     {
-        $result = new Date($data);
+        $result = LocalDate::parse($data);
+
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $result);
+        }
+
+        return $result;
+    }
+
+    public function visitPeriod($data, StringType $type, string $path)
+    {
+        $result = Period::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);
@@ -164,7 +176,7 @@ class TypeVisitor implements VisitorInterface
 
     public function visitDuration($data, StringType $type, string $path)
     {
-        $result = new Duration($data);
+        $result = Duration::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);
@@ -202,7 +214,7 @@ class TypeVisitor implements VisitorInterface
 
     public function visitTime($data, StringType $type, string $path)
     {
-        $result = new Time($data);
+        $result = LocalTime::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);
@@ -213,7 +225,7 @@ class TypeVisitor implements VisitorInterface
 
     public function visitUri($data, StringType $type, string $path)
     {
-        $result = new Uri($data);
+        $result = Uri::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);

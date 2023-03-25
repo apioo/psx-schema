@@ -44,6 +44,11 @@ class Java extends GeneratorAbstract
         return 'LocalTime';
     }
 
+    protected function getPeriod(): string
+    {
+        return 'Period';
+    }
+
     protected function getDuration(): string
     {
         return 'Duration';
