@@ -26,14 +26,12 @@ use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\Record;
-use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Uri\Uri;
 

@@ -23,7 +23,6 @@ namespace PSX\Schema\Console;
 use PSX\Schema\Generator\Code\Chunks;
 use PSX\Schema\Generator\FileAwareInterface;
 use PSX\Schema\GeneratorFactory;
-use PSX\Schema\SchemaManager;
 use PSX\Schema\SchemaManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -20,14 +20,11 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use PSX\DateTime\Date;
-use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
-use PSX\DateTime\Time;
 use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;

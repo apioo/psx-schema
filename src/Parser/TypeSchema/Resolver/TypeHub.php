@@ -22,7 +22,6 @@ namespace PSX\Schema\Parser\TypeSchema\Resolver;
 
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
-use PSX\Http\Client\PostRequest;
 use PSX\Json\Parser;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\TypeSchema\ResolverInterface;

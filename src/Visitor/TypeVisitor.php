@@ -20,9 +20,9 @@
 
 namespace PSX\Schema\Visitor;
 
+use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\Record;
