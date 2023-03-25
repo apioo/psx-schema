@@ -27,6 +27,10 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\Date;
 use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
@@ -122,13 +126,15 @@ class Documentor implements ResolverInterface
     {
         if ($type instanceof Types\Object_) {
             $fqsen = (string) $type->getFqsen();
-            if ($fqsen === '\\' . Date::class) {
+            if ($fqsen === '\\' . LocalDate::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
-            } elseif ($fqsen === '\\' . DateTime::class || $fqsen === '\\' . \DateTime::class) {
+            } elseif ($fqsen === '\\' . LocalDateTime::class || $fqsen === '\\' . \DateTime::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
-            } elseif ($fqsen === '\\' . Time::class) {
+            } elseif ($fqsen === '\\' . LocalTime::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
-            } elseif ($fqsen === '\\' . Duration::class || $fqsen === '\\' . \DateInterval::class) {
+            } elseif ($fqsen === '\\' . Period::class || $fqsen === '\\' . \DateInterval::class) {
+                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
+            } elseif ($fqsen === '\\' . Duration::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
             } elseif ($fqsen === '\\' . Uri::class) {
                 return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);

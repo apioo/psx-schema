@@ -25,6 +25,7 @@ use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\DateTime\Time;
 use PSX\Record\Record;
@@ -180,14 +181,36 @@ class Dumper
             $format = $type->getFormat();
             if ($format === TypeAbstract::FORMAT_BINARY && is_resource($value)) {
                 return base64_encode(stream_get_contents($value, -1, 0));
-            } elseif ($format === TypeAbstract::FORMAT_DATETIME && $value instanceof \DateTime) {
-                return DateTime::fromDateTime($value)->toString();
-            } elseif ($format === TypeAbstract::FORMAT_DATE && $value instanceof \DateTime) {
-                return Date::fromDateTime($value)->toString();
-            } elseif ($format === TypeAbstract::FORMAT_TIME && $value instanceof \DateTime) {
-                return Time::fromDateTime($value)->toString();
-            } elseif ($format === TypeAbstract::FORMAT_DURATION && $value instanceof \DateInterval) {
-                return Duration::fromDateInterval($value)->toString();
+            } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
+                if ($value instanceof LocalDateTime) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateTimeInterface) {
+                    return LocalDateTime::from($value)->toString();
+                }
+            } elseif ($format === TypeAbstract::FORMAT_DATE) {
+                if ($value instanceof LocalDate) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateTimeInterface) {
+                    return LocalDate::from($value)->toString();
+                }
+            } elseif ($format === TypeAbstract::FORMAT_TIME) {
+                if ($value instanceof LocalTime) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateTimeInterface) {
+                    return LocalTime::from($value)->toString();
+                }
+            } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+                if ($value instanceof Period) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateInterval) {
+                    return Period::from($value)->toString();
+                }
+            } elseif ($format === TypeAbstract::FORMAT_DURATION) {
+                if ($value instanceof Duration) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateInterval) {
+                    return Duration::from($value)->toString();
+                }
             } else {
                 return (string) $value;
             }
