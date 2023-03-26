@@ -78,6 +78,11 @@ class NullVisitor implements VisitorInterface
         return $data;
     }
 
+    public function visitPeriod($data, StringType $type, string $path)
+    {
+        return $data;
+    }
+
     public function visitNumber($data, NumberType $type, string $path)
     {
         return $data;
