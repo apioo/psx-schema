@@ -44,8 +44,8 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
     const FORMAT_BINARY = 'base64';
     const FORMAT_DATETIME = 'date-time';
     const FORMAT_DATE = 'date';
-    const FORMAT_PERIOD = 'period';
     const FORMAT_DURATION = 'duration';
+    const FORMAT_PERIOD = 'period';
     const FORMAT_TIME = 'time';
     const FORMAT_URI = 'uri';
 

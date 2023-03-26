@@ -78,6 +78,11 @@ interface VisitorInterface
     public function visitDuration($data, StringType $type, string $path);
 
     /**
+     * Visits a period value
+     */
+    public function visitPeriod($data, StringType $type, string $path);
+
+    /**
      * Visits a float value
      */
     public function visitNumber($data, NumberType $type, string $path);

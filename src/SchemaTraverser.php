@@ -275,6 +275,8 @@ class SchemaTraverser
             return $visitor->visitDate($data, $type, $this->getCurrentPath());
         } elseif ($format === TypeAbstract::FORMAT_DURATION) {
             return $visitor->visitDuration($data, $type, $this->getCurrentPath());
+        } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+            return $visitor->visitPeriod($data, $type, $this->getCurrentPath());
         } elseif ($format === TypeAbstract::FORMAT_TIME) {
             return $visitor->visitTime($data, $type, $this->getCurrentPath());
         } elseif ($format === TypeAbstract::FORMAT_URI) {
