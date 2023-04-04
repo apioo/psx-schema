@@ -44,7 +44,7 @@ class TypeSchema implements GeneratorInterface
             $schema->getDefinitions()
         );
 
-        return Parser::encode($data, JSON_PRETTY_PRINT);
+        return Parser::encode($data);
     }
 
     /**
