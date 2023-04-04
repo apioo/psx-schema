@@ -33,37 +33,17 @@ use PSX\Schema\TypeInterface;
  */
 class ArrayType extends TypeAbstract
 {
-    /**
-     * @var TypeInterface
-     */
-    protected $items;
+    protected ?TypeInterface $items = null;
+    protected ?int $minItems = null;
+    protected ?int $maxItems = null;
+    protected ?bool $uniqueItems = null;
 
-    /**
-     * @var integer
-     */
-    protected $minItems;
-
-    /**
-     * @var integer
-     */
-    protected $maxItems;
-
-    /**
-     * @var boolean
-     */
-    protected $uniqueItems;
-
-    /**
-     * @return TypeInterface
-     */
     public function getItems(): ?TypeInterface
     {
         return $this->items;
     }
 
     /**
-     * @param TypeInterface $items
-     * @return self
      * @throws InvalidSchemaException
      */
     public function setItems(TypeInterface $items): self
@@ -75,18 +55,11 @@ class ArrayType extends TypeAbstract
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMinItems(): ?int
     {
         return $this->minItems;
     }
 
-    /**
-     * @param int $minItems
-     * @return self
-     */
     public function setMinItems(int $minItems): self
     {
         $this->minItems = $minItems;
@@ -94,18 +67,11 @@ class ArrayType extends TypeAbstract
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxItems(): ?int
     {
         return $this->maxItems;
     }
 
-    /**
-     * @param int $maxItems
-     * @return self
-     */
     public function setMaxItems(int $maxItems): self
     {
         $this->maxItems = $maxItems;
@@ -113,18 +79,11 @@ class ArrayType extends TypeAbstract
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isUniqueItems(): ?bool
     {
         return $this->uniqueItems;
     }
 
-    /**
-     * @param bool $uniqueItems
-     * @return self
-     */
     public function setUniqueItems(bool $uniqueItems): self
     {
         $this->uniqueItems = $uniqueItems;

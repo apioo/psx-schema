@@ -26,11 +26,13 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\UnknownTypeException;
+use PSX\Schema\Format;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntegerType;
@@ -213,8 +215,11 @@ class TypeSchema implements ParserInterface
 
     protected function parseScalar(ScalarType $property, \stdClass $data)
     {
-        if (isset($data->format)) {
-            $property->setFormat($data->format);
+        if (isset($data->format) && is_string($data->format)) {
+            $format = Format::tryFrom($data->format);
+            if ($format !== null) {
+                $property->setFormat($format);
+            }
         }
 
         if (isset($data->enum)) {
@@ -434,24 +439,24 @@ class TypeSchema implements ParserInterface
 
     private function newPropertyType(\stdClass $data): TypeInterface
     {
-        $type = $data->type ?? null;
-        if ($type === TypeAbstract::TYPE_OBJECT) {
+        $type = isset($data->type) && is_string($data->type) ? Type::tryFrom($data->type) : null;
+        if ($type === Type::OBJECT) {
             if (isset($data->properties)) {
                 return TypeFactory::getStruct();
             } elseif (isset($data->additionalProperties)) {
                 return TypeFactory::getMap();
             }
-        } elseif ($type === TypeAbstract::TYPE_ARRAY) {
+        } elseif ($type === Type::ARRAY) {
             return TypeFactory::getArray();
-        } elseif ($type === TypeAbstract::TYPE_STRING) {
+        } elseif ($type === Type::STRING) {
             return TypeFactory::getString();
-        } elseif ($type === TypeAbstract::TYPE_INTEGER) {
+        } elseif ($type === Type::INTEGER) {
             return TypeFactory::getInteger();
-        } elseif ($type === TypeAbstract::TYPE_NUMBER) {
+        } elseif ($type === Type::NUMBER) {
             return TypeFactory::getNumber();
-        } elseif ($type === TypeAbstract::TYPE_BOOLEAN) {
+        } elseif ($type === Type::BOOLEAN) {
             return TypeFactory::getBoolean();
-        } elseif ($type === TypeAbstract::TYPE_ANY) {
+        } elseif ($type === Type::ANY) {
             return TypeFactory::getAny();
         } elseif (isset($data->allOf)) {
             return TypeFactory::getIntersection();

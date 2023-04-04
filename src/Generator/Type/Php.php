@@ -26,6 +26,7 @@ use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\Record;
+use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
@@ -60,7 +61,7 @@ class Php extends GeneratorAbstract
             } else {
                 return '\\' . Record::class;
             }
-        } elseif ($type instanceof StringType && $type->getFormat() === TypeAbstract::FORMAT_BINARY) {
+        } elseif ($type instanceof StringType && $type->getFormat() === Format::BINARY) {
             return 'resource';
         } elseif ($type instanceof IntersectionType) {
             $parts = [];

@@ -142,42 +142,42 @@ class TypeFactory
     public static function getBinary(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_BINARY);
+            ->setFormat(Format::BINARY);
     }
 
     public static function getDateTime(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_DATETIME);
+            ->setFormat(Format::DATETIME);
     }
 
     public static function getDate(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_DATE);
+            ->setFormat(Format::DATE);
     }
 
     public static function getPeriod(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_PERIOD);
+            ->setFormat(Format::PERIOD);
     }
 
     public static function getDuration(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_DURATION);
+            ->setFormat(Format::DURATION);
     }
 
     public static function getTime(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_TIME);
+            ->setFormat(Format::TIME);
     }
 
     public static function getUri(): StringType
     {
         return self::getString()
-            ->setFormat(TypeAbstract::FORMAT_URI);
+            ->setFormat(Format::URI);
     }
 }

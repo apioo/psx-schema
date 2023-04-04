@@ -29,23 +29,13 @@ namespace PSX\Schema\Type;
  */
 class GenericType extends TypeAbstract
 {
-    /**
-     * @var string
-     */
-    protected $generic;
+    protected ?string $generic = null;
 
-    /**
-     * @return string
-     */
     public function getGeneric(): ?string
     {
         return $this->generic;
     }
 
-    /**
-     * @param string $generic
-     * @return $this
-     */
     public function setGeneric(string $generic): self
     {
         $this->generic = $generic;

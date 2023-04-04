@@ -29,28 +29,14 @@ namespace PSX\Schema\Type;
  */
 class ReferenceType extends TypeAbstract
 {
-    /**
-     * @var string
-     */
-    protected $ref;
+    protected ?string $ref = null;
+    protected ?array $template = null;
 
-    /**
-     * @var array
-     */
-    protected $template;
-
-    /**
-     * @return string
-     */
     public function getRef(): ?string
     {
         return $this->ref;
     }
 
-    /**
-     * @param string $ref
-     * @return self
-     */
     public function setRef(string $ref): self
     {
         $this->ref = $ref;
@@ -58,29 +44,18 @@ class ReferenceType extends TypeAbstract
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getTemplate(): ?array
     {
         return $this->template;
     }
 
-    /**
-     * @param array $template
-     */
     public function setTemplate(array $template): void
     {
         $this->template = $template;
     }
 
     /**
-     * The type which is used in case the resolved reference contains a
-     * $generic keyword
-     * 
-     * @param string $type
-     * @param string $template
-     * @return self
+     * The type which is used in case the resolved reference contains a $generic keyword
      */
     public function addTemplate(string $type, string $template): self
     {

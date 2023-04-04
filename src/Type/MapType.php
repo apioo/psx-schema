@@ -33,40 +33,20 @@ use PSX\Schema\TypeInterface;
  */
 class MapType extends ObjectType
 {
-    /**
-     * @var TypeInterface
-     */
-    protected $additionalProperties;
+    protected TypeInterface|bool|null $additionalProperties = null;
+    protected ?int $minProperties = null;
+    protected ?int $maxProperties = null;
 
-    /**
-     * @var int
-     */
-    protected $minProperties;
-
-    /**
-     * @var int
-     */
-    protected $maxProperties;
-
-    /**
-     * @return bool|TypeInterface
-     */
-    public function getAdditionalProperties()
+    public function getAdditionalProperties(): TypeInterface|bool|null
     {
         return $this->additionalProperties;
     }
 
     /**
-     * @param bool|TypeInterface $additionalProperties
-     * @return self
      * @throws InvalidSchemaException
      */
-    public function setAdditionalProperties($additionalProperties): self
+    public function setAdditionalProperties(TypeInterface|bool $additionalProperties): self
     {
-        if (!is_bool($additionalProperties) && !$additionalProperties instanceof TypeInterface) {
-            throw new InvalidSchemaException('Additional properties must be either a boolean or TypeInterface');
-        }
-
         if ($additionalProperties === false) {
             throw new InvalidSchemaException('Map additional properties must not be false only true is allowed as boolean value');
         } elseif ($additionalProperties instanceof TypeInterface) {
@@ -78,18 +58,11 @@ class MapType extends ObjectType
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMinProperties(): ?int
     {
         return $this->minProperties;
     }
 
-    /**
-     * @param int $minProperties
-     * @return self
-     */
     public function setMinProperties(int $minProperties): self
     {
         $this->minProperties = $minProperties;
@@ -97,18 +70,11 @@ class MapType extends ObjectType
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxProperties(): ?int
     {
         return $this->maxProperties;
     }
 
-    /**
-     * @param int $maxProperties
-     * @return self
-     */
     public function setMaxProperties(int $maxProperties): self
     {
         $this->maxProperties = $maxProperties;

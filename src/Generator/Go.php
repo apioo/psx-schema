@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
@@ -122,13 +123,13 @@ class Go extends CodeGeneratorAbstract
     {
         $imports = [];
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DURATION)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
             $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATE)) {
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
             $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_TIME)) {
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
             $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATETIME)) {
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
             $imports[] = 'import "time"';
         }
 

@@ -31,6 +31,7 @@ use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Format;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
 use PSX\Schema\Type\TypeAbstract;
@@ -124,17 +125,17 @@ class Documentor implements ResolverInterface
         if ($type instanceof Types\Object_) {
             $fqsen = (string) $type->getFqsen();
             if ($fqsen === '\\' . LocalDate::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATE);
+                return TypeFactory::getString()->setFormat(Format::DATE);
             } elseif ($fqsen === '\\' . LocalDateTime::class || $fqsen === '\\' . \DateTime::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DATETIME);
+                return TypeFactory::getString()->setFormat(Format::DATETIME);
             } elseif ($fqsen === '\\' . LocalTime::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_TIME);
+                return TypeFactory::getString()->setFormat(Format::TIME);
             } elseif ($fqsen === '\\' . Period::class || $fqsen === '\\' . \DateInterval::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
+                return TypeFactory::getString()->setFormat(Format::DURATION);
             } elseif ($fqsen === '\\' . Duration::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_DURATION);
+                return TypeFactory::getString()->setFormat(Format::DURATION);
             } elseif ($fqsen === '\\' . Uri::class) {
-                return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_URI);
+                return TypeFactory::getString()->setFormat(Format::URI);
             } elseif (!empty($fqsen)) {
                 if (class_exists($fqsen)) {
                     return TypeFactory::getReference($fqsen);
@@ -169,7 +170,7 @@ class Documentor implements ResolverInterface
         } elseif ($type instanceof Types\Mixed_) {
             return TypeFactory::getAny();
         } elseif ($type instanceof Types\Resource_) {
-            return TypeFactory::getString()->setFormat(TypeAbstract::FORMAT_BINARY);
+            return TypeFactory::getString()->setFormat(Format::BINARY);
         } elseif ($type instanceof Types\Nullable) {
             return $this->buildType($type->getActualType());
         } elseif ($type instanceof Types\Compound) {

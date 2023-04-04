@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
@@ -48,7 +49,7 @@ class TypeFactoryTest extends TestCase
     public function testBinaryType()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getBinary());
-        $this->assertEquals(TypeAbstract::FORMAT_BINARY, TypeFactory::getBinary()->getFormat());
+        $this->assertEquals(Format::BINARY, TypeFactory::getBinary()->getFormat());
     }
     
     public function testBoolean()
@@ -59,19 +60,19 @@ class TypeFactoryTest extends TestCase
     public function testDateTime()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getDateTime());
-        $this->assertEquals(TypeAbstract::FORMAT_DATETIME, TypeFactory::getDateTime()->getFormat());
+        $this->assertEquals(Format::DATETIME, TypeFactory::getDateTime()->getFormat());
     }
 
     public function testDate()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getDate());
-        $this->assertEquals(TypeAbstract::FORMAT_DATE, TypeFactory::getDate()->getFormat());
+        $this->assertEquals(Format::DATE, TypeFactory::getDate()->getFormat());
     }
 
     public function testDuration()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getDuration());
-        $this->assertEquals(TypeAbstract::FORMAT_DURATION, TypeFactory::getDuration()->getFormat());
+        $this->assertEquals(Format::DURATION, TypeFactory::getDuration()->getFormat());
     }
 
     public function testIntegerType()
@@ -102,12 +103,12 @@ class TypeFactoryTest extends TestCase
     public function testTime()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getTime());
-        $this->assertEquals(TypeAbstract::FORMAT_TIME, TypeFactory::getTime()->getFormat());
+        $this->assertEquals(Format::TIME, TypeFactory::getTime()->getFormat());
     }
 
     public function testUri()
     {
         $this->assertInstanceOf(StringType::class, TypeFactory::getUri());
-        $this->assertEquals(TypeAbstract::FORMAT_URI, TypeFactory::getUri()->getFormat());
+        $this->assertEquals(Format::URI, TypeFactory::getUri()->getFormat());
     }
 }

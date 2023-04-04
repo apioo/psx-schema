@@ -90,12 +90,8 @@ class TypeUtil
 
     /**
      * Checks whether the type contains a specific type
-     *
-     * @param TypeInterface $type
-     * @param string $class
-     * @return bool
      */
-    public static function contains(TypeInterface $type, string $class, string $format = null): bool
+    public static function contains(TypeInterface $type, string $class, ?Format $format = null): bool
     {
         $found = false;
         self::walk($type, function(TypeInterface $type) use ($class, $format, &$found) {

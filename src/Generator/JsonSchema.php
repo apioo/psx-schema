@@ -26,6 +26,7 @@ use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -43,10 +44,7 @@ use PSX\Schema\TypeUtil;
  */
 class JsonSchema implements GeneratorInterface
 {
-    /**
-     * @var string
-     */
-    private $refBase;
+    private string $refBase;
 
     public function __construct(string $refBase = '#/definitions/')
     {
@@ -63,26 +61,18 @@ class JsonSchema implements GeneratorInterface
         return Parser::encode($data);
     }
 
-
-    /**
-     * @param \PSX\Schema\TypeInterface $type
-     * @param \PSX\Schema\DefinitionsInterface $definitions
-     * @return array
-     */
-    public function toArray(TypeInterface $type, DefinitionsInterface $definitions)
+    public function toArray(TypeInterface $type, DefinitionsInterface $definitions): array
     {
-        $object = $this->generateType($type);
+        $object = $this->generateType($type, $definitions);
 
         $result = [
             'definitions' => $this->generateDefinitions($definitions),
         ];
 
-        $result = array_merge($result, $object);
-
-        return $result;
+        return array_merge($result, $object);
     }
 
-    protected function generateDefinitions(DefinitionsInterface $definitions)
+    protected function generateDefinitions(DefinitionsInterface $definitions): array
     {
         $result = [];
         $types  = $definitions->getAllTypes();
@@ -92,13 +82,13 @@ class JsonSchema implements GeneratorInterface
         foreach ($types as $ref => $type) {
             [$ns, $name] = TypeUtil::split($ref);
 
-            $result[$name] = $this->generateType($type);
+            $result[$name] = $this->generateType($type, $definitions);
         }
 
         return $result;
     }
 
-    protected function generateType(TypeInterface $type)
+    protected function generateType(TypeInterface $type, DefinitionsInterface $definitions, ?array $template = null)
     {
         TypeUtil::normalize($type);
 
@@ -106,8 +96,8 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
 
             if (isset($data['properties'])) {
-                $data['properties'] = array_map(function ($property) {
-                    return $this->generateType($property);
+                $data['properties'] = array_map(function ($property) use ($definitions, $template) {
+                    return $this->generateType($property, $definitions, $template);
                 }, $data['properties']);
             }
 
@@ -130,7 +120,7 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
 
             if (isset($data['additionalProperties']) && $data['additionalProperties'] instanceof TypeInterface) {
-                $data['additionalProperties'] = $this->generateType($data['additionalProperties']);
+                $data['additionalProperties'] = $this->generateType($data['additionalProperties'], $definitions, $template);
             }
 
             return $data;
@@ -138,7 +128,7 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
 
             if (isset($data['items']) && $data['items'] instanceof TypeInterface) {
-                $data['items'] = $this->generateType($data['items']);
+                $data['items'] = $this->generateType($data['items'], $definitions, $template);
             }
 
             return $data;
@@ -146,8 +136,8 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
 
             if (isset($data['oneOf'])) {
-                $data['oneOf'] = array_map(function($type){
-                    return $this->generateType($type);
+                $data['oneOf'] = array_map(function($type) use ($definitions, $template) {
+                    return $this->generateType($type, $definitions, $template);
                 }, $data['oneOf']);
             }
 
@@ -156,8 +146,8 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
 
             if (isset($data['allOf'])) {
-                $data['allOf'] = array_map(function($type){
-                    return $this->generateType($type);
+                $data['allOf'] = array_map(function($type) use ($definitions, $template) {
+                    return $this->generateType($type, $definitions, $template);
                 }, $data['allOf']);
             }
 
@@ -165,11 +155,29 @@ class JsonSchema implements GeneratorInterface
         } elseif ($type instanceof ReferenceType) {
             [$ns, $name] = TypeUtil::split($type->getRef());
 
-            return [
-                '$ref' => $this->refBase . $name
-            ];
+            $template = $type->getTemplate();
+            if (!empty($template)) {
+                // in case a reference contains a template we need to replace the generic inside the referenced schema
+                // since JsonSchema has not such a feature we copy the complete reference
+                $type = $definitions->getType($type->getRef());
+
+                return $this->generateType($type, $definitions, $template);
+            } else {
+                return [
+                    '$ref' => $this->refBase . $name
+                ];
+            }
         } elseif ($type instanceof AnyType) {
             return [];
+        } elseif ($type instanceof GenericType) {
+            if (!isset($template[$type->getGeneric()])) {
+                // could not resolve generic
+                return [];
+            }
+
+            $type = $definitions->getType($template[$type->getGeneric()]);
+
+            return $this->generateType($type, $definitions, $template);
         } else {
             return $type->toArray();
         }

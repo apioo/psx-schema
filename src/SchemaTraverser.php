@@ -267,19 +267,19 @@ class SchemaTraverser
     protected function traverseString($data, StringType $type, VisitorInterface $visitor)
     {
         $format = $type->getFormat();
-        if ($format === TypeAbstract::FORMAT_BINARY) {
+        if ($format === Format::BINARY) {
             return $visitor->visitBinary($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
+        } elseif ($format === Format::DATETIME) {
             return $visitor->visitDateTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_DATE) {
+        } elseif ($format === Format::DATE) {
             return $visitor->visitDate($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_DURATION) {
+        } elseif ($format === Format::DURATION) {
             return $visitor->visitDuration($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+        } elseif ($format === Format::PERIOD) {
             return $visitor->visitPeriod($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_TIME) {
+        } elseif ($format === Format::TIME) {
             return $visitor->visitTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === TypeAbstract::FORMAT_URI) {
+        } elseif ($format === Format::URI) {
             return $visitor->visitUri($data, $type, $this->getCurrentPath());
         } else {
             return $visitor->visitString($data, $type, $this->getCurrentPath());
@@ -418,43 +418,11 @@ class SchemaTraverser
         }
 
         $format = $type->getFormat();
-        if ($format !== null && is_string($data)) {
-            if ($format === TypeAbstract::FORMAT_BINARY) {
-                if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
-                }
-            } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
-                if (!preg_match('/^' . LocalDateTime::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
-                }
-            } elseif ($format === TypeAbstract::FORMAT_DATE) {
-                if (!preg_match('/^' . LocalDate::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
-                }
-            } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
-                if (!preg_match('/^' . Period::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid period format [ISO8601]', 'format', $this->pathStack);
-                }
-            } elseif ($format === TypeAbstract::FORMAT_DURATION) {
-                if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
-                }
-            } elseif ($format === TypeAbstract::FORMAT_TIME) {
-                if (!preg_match('/^' . LocalTime::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
-                }
-            } elseif ($format === 'email') {
-                if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address', 'format', $this->pathStack);
-                }
-            } elseif ($format === 'ipv4') {
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address', 'format', $this->pathStack);
-                }
-            } elseif ($format === 'ipv6') {
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address', 'format', $this->pathStack);
-                }
+        if ($format !== null) {
+            if ($type instanceof StringType && is_string($data)) {
+                $this->validateFormatString($format, $data);
+            } elseif ($type instanceof NumberType && (is_int($data) || is_float($data))) {
+                $this->validateFormatNumber($format, $data);
             }
         }
 
@@ -641,5 +609,84 @@ class SchemaTraverser
     private function getCurrentPath(): string
     {
         return '/' . implode('/', $this->pathStack);
+    }
+
+    private function validateFormatString(Format $format, string $data): void
+    {
+        switch ($format) {
+            case Format::BINARY:
+                if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::DATE:
+                if (!preg_match('/^' . LocalDate::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::DATETIME:
+                if (!preg_match('/^' . LocalDateTime::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::DOMAIN:
+                if (!filter_var($data, FILTER_VALIDATE_DOMAIN)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid domain', 'format', $this->pathStack);
+                }
+                break;
+            case Format::DURATION:
+                if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::EMAIL:
+                if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address', 'format', $this->pathStack);
+                }
+                break;
+            case Format::IPV4:
+                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address', 'format', $this->pathStack);
+                }
+                break;
+            case Format::IPV6:
+                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address', 'format', $this->pathStack);
+                }
+                break;
+            case Format::PERIOD:
+                if (!preg_match('/^' . Period::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid period format [ISO8601]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::TIME:
+                if (!preg_match('/^' . LocalTime::getPattern() . '$/', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
+                }
+                break;
+            case Format::URI:
+                // no validation needed
+                break;
+            case Format::UUID:
+                if (!preg_match('~^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$~', $data)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must be a valid UUID string [RFC4122]', 'format', $this->pathStack);
+                }
+        }
+    }
+
+    private function validateFormatNumber(Format $format, int|float $data): void
+    {
+        switch ($format) {
+            case Format::INT32:
+                if (!filter_var($data, FILTER_VALIDATE_INT, ['min_range' => 0x80000000, 'max_range' => 0x7FFFFFFF])) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid 32bit integer', 'format', $this->pathStack);
+                }
+                break;
+            case Format::INT64:
+                if (!filter_var($data, FILTER_VALIDATE_INT)) {
+                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid 64bit integer', 'format', $this->pathStack);
+                }
+                break;
+        }
     }
 }

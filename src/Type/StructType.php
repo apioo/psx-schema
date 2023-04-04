@@ -33,48 +33,26 @@ use PSX\Schema\TypeInterface;
  */
 class StructType extends ObjectType
 {
-    /**
-     * @var string
-     */
-    protected $extends;
+    protected ?string $extends = null;
+    protected ?array $properties = null;
+    protected ?array $required = null;
 
-    /**
-     * @var array
-     */
-    protected $properties;
-
-    /**
-     * @var array
-     */
-    protected $required;
-
-    /**
-     * @return string
-     */
     public function getExtends(): ?string
     {
         return $this->extends;
     }
 
-    /**
-     * @param string $extends
-     */
     public function setExtends(string $extends): void
     {
         $this->extends = $extends;
     }
 
-    /**
-     * @return array
-     */
     public function getProperties(): ?array
     {
         return $this->properties;
     }
 
     /**
-     * @param array $properties
-     * @return self
      * @throws InvalidSchemaException
      */
     public function setProperties(array $properties): self
@@ -88,9 +66,6 @@ class StructType extends ObjectType
     }
 
     /**
-     * @param string $name
-     * @param \PSX\Schema\TypeInterface $property
-     * @return self
      * @throws InvalidSchemaException
      */
     public function addProperty(string $name, TypeInterface $property): self
@@ -102,28 +77,16 @@ class StructType extends ObjectType
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @return \PSX\Schema\TypeInterface
-     */
     public function getProperty(string $name): ?TypeInterface
     {
         return $this->properties[$name] ?? null;
     }
 
-    /**
-     * @param string $name
-     * @return boolean
-     */
     public function hasProperty(string $name): bool
     {
         return isset($this->properties[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return self
-     */
     public function removeProperty(string $name): self
     {
         if (isset($this->properties[$name])) {
@@ -133,18 +96,11 @@ class StructType extends ObjectType
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getRequired(): ?array
     {
         return $this->required;
     }
 
-    /**
-     * @param array $required
-     * @return self
-     */
     public function setRequired(array $required): self
     {
         $this->required = $required;

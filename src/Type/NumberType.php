@@ -31,91 +31,44 @@ use PSX\Schema\Exception\InvalidSchemaException;
  */
 class NumberType extends ScalarType
 {
-    /**
-     * @var integer|float
-     */
-    protected $minimum;
+    protected int|float|null $minimum = null;
+    protected int|float|null $maximum = null;
+    protected ?bool $exclusiveMinimum = null;
+    protected ?bool $exclusiveMaximum = null;
+    protected int|float|null $multipleOf = null;
 
-    /**
-     * @var integer|float
-     */
-    protected $maximum;
-
-    /**
-     * @var boolean
-     */
-    protected $exclusiveMinimum;
-
-    /**
-     * @var boolean
-     */
-    protected $exclusiveMaximum;
-
-    /**
-     * @var integer|float
-     */
-    protected $multipleOf;
-
-    /**
-     * @return int|float
-     */
-    public function getMinimum()
+    public function getMinimum(): float|int|null
     {
         return $this->minimum;
     }
 
     /**
-     * @param int|float $minimum
-     * @return self
      * @throws InvalidSchemaException
      */
-    public function setMinimum($minimum): self
+    public function setMinimum(int|float $minimum): self
     {
-        if ($minimum !== null && !is_int($minimum) && !is_float($minimum)) {
-            throw new InvalidSchemaException('Minimum must be either an integer or float');
-        }
-
         $this->minimum = $minimum;
 
         return $this;
     }
 
-    /**
-     * @return int|float
-     */
-    public function getMaximum()
+    public function getMaximum(): float|int|null
     {
         return $this->maximum;
     }
 
-    /**
-     * @param int|float $maximum
-     * @return self
-     * @throws InvalidSchemaException
-     */
-    public function setMaximum($maximum): self
+    public function setMaximum(int|float $maximum): self
     {
-        if ($maximum !== null && !is_int($maximum) && !is_float($maximum)) {
-            throw new InvalidSchemaException('Maximum must be either an integer or float');
-        }
-
         $this->maximum = $maximum;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function getExclusiveMinimum(): ?bool
     {
         return $this->exclusiveMinimum;
     }
 
-    /**
-     * @param boolean $exclusiveMinimum
-     * @return self
-     */
     public function setExclusiveMinimum(bool $exclusiveMinimum): self
     {
         $this->exclusiveMinimum = $exclusiveMinimum;
@@ -123,18 +76,11 @@ class NumberType extends ScalarType
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function getExclusiveMaximum(): ?bool
     {
         return $this->exclusiveMaximum;
     }
 
-    /**
-     * @param boolean $exclusiveMaximum
-     * @return self
-     */
     public function setExclusiveMaximum(bool $exclusiveMaximum): self
     {
         $this->exclusiveMaximum = $exclusiveMaximum;
@@ -142,19 +88,12 @@ class NumberType extends ScalarType
         return $this;
     }
 
-    /**
-     * @return int|float
-     */
-    public function getMultipleOf()
+    public function getMultipleOf(): float|int|null
     {
         return $this->multipleOf;
     }
 
-    /**
-     * @param int|float $multipleOf
-     * @return self
-     */
-    public function setMultipleOf($multipleOf): self
+    public function setMultipleOf(int|float $multipleOf): self
     {
         $this->multipleOf = $multipleOf;
 
@@ -170,7 +109,7 @@ class NumberType extends ScalarType
             'exclusiveMinimum' => $this->exclusiveMinimum,
             'exclusiveMaximum' => $this->exclusiveMaximum,
             'multipleOf' => $this->multipleOf,
-        ], function($value){
+        ], function ($value) {
             return $value !== null;
         }));
     }

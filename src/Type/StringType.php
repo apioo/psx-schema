@@ -29,33 +29,15 @@ namespace PSX\Schema\Type;
  */
 class StringType extends ScalarType
 {
-    /**
-     * @var string
-     */
-    protected $pattern;
+    protected ?string $pattern = null;
+    protected ?int $minLength = null;
+    protected ?int $maxLength = null;
 
-    /**
-     * @var integer
-     */
-    protected $minLength;
-
-    /**
-     * @var integer
-     */
-    protected $maxLength;
-
-    /**
-     * @return string
-     */
     public function getPattern(): ?string
     {
         return $this->pattern;
     }
 
-    /**
-     * @param string $pattern
-     * @return self
-     */
     public function setPattern(string $pattern): self
     {
         $this->pattern = $pattern;
@@ -63,18 +45,11 @@ class StringType extends ScalarType
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMinLength(): ?int
     {
         return $this->minLength;
     }
 
-    /**
-     * @param int $minLength
-     * @return self
-     */
     public function setMinLength(int $minLength): self
     {
         $this->minLength = $minLength;
@@ -82,18 +57,11 @@ class StringType extends ScalarType
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxLength(): ?int
     {
         return $this->maxLength;
     }
 
-    /**
-     * @param int $maxLength
-     * @return self
-     */
     public function setMaxLength(int $maxLength): self
     {
         $this->maxLength = $maxLength;

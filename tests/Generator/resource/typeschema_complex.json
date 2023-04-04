@@ -1,196 +1,22 @@
 {
   "definitions": {
-    "CommonProperties": {
-      "description": "Common properties which can be used at any schema",
+    "AllOfProperties": {
+      "description": "An intersection type combines multiple schemas into one",
       "type": "object",
       "properties": {
-        "title": {
-          "description": "Distinct word which represents this schema",
-          "type": "string"
-        },
         "description": {
-          "description": "General description of this schema, should not contain any new lines.",
           "type": "string"
         },
-        "type": {
-          "description": "JSON type of the property",
-          "enum": [
-            "object",
-            "array",
-            "boolean",
-            "integer",
-            "number",
-            "string"
-          ],
-          "type": "string"
-        },
-        "nullable": {
-          "description": "Indicates whether it is possible to use a null value",
-          "type": "boolean"
-        },
-        "deprecated": {
-          "description": "Indicates whether this schema is deprecated",
-          "type": "boolean"
-        },
-        "readonly": {
-          "description": "Indicates whether this schema is readonly",
-          "type": "boolean"
-        }
-      }
-    },
-    "ScalarProperties": {
-      "type": "object",
-      "properties": {
-        "format": {
-          "description": "Describes the specific format of this type i.e. date-time or int64",
-          "type": "string"
-        },
-        "enum": {
-          "$ref": "EnumValue"
-        },
-        "default": {
-          "$ref": "ScalarValue"
-        }
-      }
-    },
-    "PropertyValue": {
-      "description": "Allowed values of an object property",
-      "oneOf": [
-        {
-          "$ref": "BooleanType"
-        },
-        {
-          "$ref": "NumberType"
-        },
-        {
-          "$ref": "StringType"
-        },
-        {
-          "$ref": "ArrayType"
-        },
-        {
-          "$ref": "CombinationType"
-        },
-        {
-          "$ref": "ReferenceType"
-        },
-        {
-          "$ref": "GenericType"
-        }
-      ]
-    },
-    "Properties": {
-      "description": "Properties of a schema",
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "PropertyValue"
-      }
-    },
-    "ContainerProperties": {
-      "description": "Properties specific for a container",
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "object"
-          ],
-          "type": "string"
+        "allOf": {
+          "description": "Combination values",
+          "type": "array",
+          "items": {
+            "$ref": "OfValue"
+          }
         }
       },
       "required": [
-        "type"
-      ]
-    },
-    "StructProperties": {
-      "description": "Struct specific properties",
-      "type": "object",
-      "properties": {
-        "properties": {
-          "$ref": "Properties"
-        },
-        "required": {
-          "$ref": "StringArray"
-        }
-      },
-      "required": [
-        "properties"
-      ]
-    },
-    "StructType": {
-      "description": "A struct contains a fix set of defined properties",
-      "allOf": [
-        {
-          "$ref": "CommonProperties"
-        },
-        {
-          "$ref": "ContainerProperties"
-        },
-        {
-          "$ref": "StructProperties"
-        }
-      ]
-    },
-    "MapProperties": {
-      "description": "Map specific properties",
-      "type": "object",
-      "properties": {
-        "additionalProperties": {
-          "$ref": "PropertyValue"
-        },
-        "maxProperties": {
-          "$ref": "PositiveInteger"
-        },
-        "minProperties": {
-          "$ref": "PositiveInteger"
-        }
-      },
-      "required": [
-        "additionalProperties"
-      ]
-    },
-    "MapType": {
-      "description": "A map contains variable key value entries of a specific type",
-      "allOf": [
-        {
-          "$ref": "CommonProperties"
-        },
-        {
-          "$ref": "ContainerProperties"
-        },
-        {
-          "$ref": "MapProperties"
-        }
-      ]
-    },
-    "ObjectType": {
-      "description": "An object represents either a struct or map type",
-      "oneOf": [
-        {
-          "$ref": "StructType"
-        },
-        {
-          "$ref": "MapType"
-        }
-      ]
-    },
-    "ArrayValue": {
-      "description": "Allowed values of an array item",
-      "oneOf": [
-        {
-          "$ref": "BooleanType"
-        },
-        {
-          "$ref": "NumberType"
-        },
-        {
-          "$ref": "StringType"
-        },
-        {
-          "$ref": "ReferenceType"
-        },
-        {
-          "$ref": "GenericType"
-        }
+        "allOf"
       ]
     },
     "ArrayProperties": {
@@ -232,6 +58,26 @@
         }
       ]
     },
+    "ArrayValue": {
+      "description": "Allowed values of an array item",
+      "oneOf": [
+        {
+          "$ref": "BooleanType"
+        },
+        {
+          "$ref": "NumberType"
+        },
+        {
+          "$ref": "StringType"
+        },
+        {
+          "$ref": "ReferenceType"
+        },
+        {
+          "$ref": "GenericType"
+        }
+      ]
+    },
     "BooleanProperties": {
       "description": "Boolean properties",
       "type": "object",
@@ -260,6 +106,193 @@
           "$ref": "BooleanProperties"
         }
       ]
+    },
+    "CombinationType": {
+      "description": "A combination type is either a intersection or union type",
+      "oneOf": [
+        {
+          "$ref": "AllOfProperties"
+        },
+        {
+          "$ref": "OneOfProperties"
+        }
+      ]
+    },
+    "CommonProperties": {
+      "description": "Common properties which can be used at any schema",
+      "type": "object",
+      "properties": {
+        "title": {
+          "description": "Distinct word which represents this schema",
+          "type": "string"
+        },
+        "description": {
+          "description": "General description of this schema, should not contain any new lines.",
+          "type": "string"
+        },
+        "type": {
+          "description": "JSON type of the property",
+          "enum": [
+            "object",
+            "array",
+            "boolean",
+            "integer",
+            "number",
+            "string"
+          ],
+          "type": "string"
+        },
+        "nullable": {
+          "description": "Indicates whether it is possible to use a null value",
+          "type": "boolean"
+        },
+        "deprecated": {
+          "description": "Indicates whether this schema is deprecated",
+          "type": "boolean"
+        },
+        "readonly": {
+          "description": "Indicates whether this schema is readonly",
+          "type": "boolean"
+        }
+      }
+    },
+    "ContainerProperties": {
+      "description": "Properties specific for a container",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "object"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "DefinitionValue": {
+      "description": "Represents a concrete type definition",
+      "oneOf": [
+        {
+          "$ref": "ObjectType"
+        },
+        {
+          "$ref": "ArrayType"
+        },
+        {
+          "$ref": "BooleanType"
+        },
+        {
+          "$ref": "NumberType"
+        },
+        {
+          "$ref": "StringType"
+        },
+        {
+          "$ref": "CombinationType"
+        }
+      ]
+    },
+    "Definitions": {
+      "description": "Schema definitions which can be reused",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "DefinitionValue"
+      }
+    },
+    "Discriminator": {
+      "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
+      "type": "object",
+      "properties": {
+        "propertyName": {
+          "description": "The name of the property in the payload that will hold the discriminator value",
+          "type": "string"
+        },
+        "mapping": {
+          "$ref": "DiscriminatorMapping"
+        }
+      },
+      "required": [
+        "propertyName"
+      ]
+    },
+    "DiscriminatorMapping": {
+      "description": "An object to hold mappings between payload values and schema names or references",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "EnumValue": {
+      "description": "A list of possible enumeration values",
+      "oneOf": [
+        {
+          "$ref": "StringArray"
+        },
+        {
+          "$ref": "NumberArray"
+        }
+      ]
+    },
+    "GenericType": {
+      "description": "Represents a generic type",
+      "type": "object",
+      "properties": {
+        "$generic": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$generic"
+      ]
+    },
+    "Import": {
+      "description": "Contains external definitions which are imported. The imported schemas can be used via the namespace",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "MapProperties": {
+      "description": "Map specific properties",
+      "type": "object",
+      "properties": {
+        "additionalProperties": {
+          "$ref": "PropertyValue"
+        },
+        "maxProperties": {
+          "$ref": "PositiveInteger"
+        },
+        "minProperties": {
+          "$ref": "PositiveInteger"
+        }
+      },
+      "required": [
+        "additionalProperties"
+      ]
+    },
+    "MapType": {
+      "description": "A map contains variable key value entries of a specific type",
+      "allOf": [
+        {
+          "$ref": "CommonProperties"
+        },
+        {
+          "$ref": "ContainerProperties"
+        },
+        {
+          "$ref": "MapProperties"
+        }
+      ]
+    },
+    "NumberArray": {
+      "description": "Array number values",
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 1
     },
     "NumberProperties": {
       "description": "Number properties",
@@ -308,42 +341,14 @@
         }
       ]
     },
-    "StringProperties": {
-      "description": "String properties",
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "string"
-          ],
-          "type": "string"
-        },
-        "maxLength": {
-          "$ref": "PositiveInteger"
-        },
-        "minLength": {
-          "$ref": "PositiveInteger"
-        },
-        "pattern": {
-          "format": "regex",
-          "type": "string"
-        }
-      },
-      "required": [
-        "type"
-      ]
-    },
-    "StringType": {
-      "description": "Represents a string value",
-      "allOf": [
+    "ObjectType": {
+      "description": "An object represents either a struct or map type",
+      "oneOf": [
         {
-          "$ref": "CommonProperties"
+          "$ref": "StructType"
         },
         {
-          "$ref": "ScalarProperties"
-        },
-        {
-          "$ref": "StringProperties"
+          "$ref": "MapType"
         }
       ]
     },
@@ -362,48 +367,6 @@
         {
           "$ref": "ReferenceType"
         }
-      ]
-    },
-    "DiscriminatorMapping": {
-      "description": "An object to hold mappings between payload values and schema names or references",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "Discriminator": {
-      "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
-      "type": "object",
-      "properties": {
-        "propertyName": {
-          "description": "The name of the property in the payload that will hold the discriminator value",
-          "type": "string"
-        },
-        "mapping": {
-          "$ref": "DiscriminatorMapping"
-        }
-      },
-      "required": [
-        "propertyName"
-      ]
-    },
-    "AllOfProperties": {
-      "description": "An intersection type combines multiple schemas into one",
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "allOf": {
-          "description": "Combination values",
-          "type": "array",
-          "items": {
-            "$ref": "OfValue"
-          }
-        }
-      },
-      "required": [
-        "allOf"
       ]
     },
     "OneOfProperties": {
@@ -428,22 +391,43 @@
         "oneOf"
       ]
     },
-    "CombinationType": {
-      "description": "A combination type is either a intersection or union type",
-      "oneOf": [
-        {
-          "$ref": "AllOfProperties"
-        },
-        {
-          "$ref": "OneOfProperties"
-        }
-      ]
+    "PositiveInteger": {
+      "description": "Positive integer value",
+      "type": "integer",
+      "minimum": 0
     },
-    "TemplateProperties": {
+    "Properties": {
+      "description": "Properties of a schema",
       "type": "object",
       "additionalProperties": {
-        "$ref": "ReferenceType"
+        "$ref": "PropertyValue"
       }
+    },
+    "PropertyValue": {
+      "description": "Allowed values of an object property",
+      "oneOf": [
+        {
+          "$ref": "BooleanType"
+        },
+        {
+          "$ref": "NumberType"
+        },
+        {
+          "$ref": "StringType"
+        },
+        {
+          "$ref": "ArrayType"
+        },
+        {
+          "$ref": "CombinationType"
+        },
+        {
+          "$ref": "ReferenceType"
+        },
+        {
+          "$ref": "GenericType"
+        }
+      ]
     },
     "ReferenceType": {
       "description": "Represents a reference to another schema",
@@ -462,65 +446,20 @@
         "$ref"
       ]
     },
-    "GenericType": {
-      "description": "Represents a generic type",
+    "ScalarProperties": {
       "type": "object",
       "properties": {
-        "$generic": {
+        "format": {
+          "description": "Describes the specific format of this type i.e. date-time or int64",
           "type": "string"
+        },
+        "enum": {
+          "$ref": "EnumValue"
+        },
+        "default": {
+          "$ref": "ScalarValue"
         }
-      },
-      "required": [
-        "$generic"
-      ]
-    },
-    "DefinitionValue": {
-      "description": "Represents a concrete type definition",
-      "oneOf": [
-        {
-          "$ref": "ObjectType"
-        },
-        {
-          "$ref": "ArrayType"
-        },
-        {
-          "$ref": "BooleanType"
-        },
-        {
-          "$ref": "NumberType"
-        },
-        {
-          "$ref": "StringType"
-        },
-        {
-          "$ref": "CombinationType"
-        }
-      ]
-    },
-    "Definitions": {
-      "description": "Schema definitions which can be reused",
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "DefinitionValue"
       }
-    },
-    "Import": {
-      "description": "Contains external definitions which are imported. The imported schemas can be used via the namespace",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "EnumValue": {
-      "description": "A list of possible enumeration values",
-      "oneOf": [
-        {
-          "$ref": "StringArray"
-        },
-        {
-          "$ref": "NumberArray"
-        }
-      ]
     },
     "ScalarValue": {
       "description": "Represents a scalar value",
@@ -536,11 +475,6 @@
         }
       ]
     },
-    "PositiveInteger": {
-      "description": "Positive integer value",
-      "type": "integer",
-      "minimum": 0
-    },
     "StringArray": {
       "description": "Array string values",
       "type": "array",
@@ -549,13 +483,78 @@
       },
       "minItems": 1
     },
-    "NumberArray": {
-      "description": "Array number values",
-      "type": "array",
-      "items": {
-        "type": "number"
+    "StringProperties": {
+      "description": "String properties",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "string"
+          ],
+          "type": "string"
+        },
+        "maxLength": {
+          "$ref": "PositiveInteger"
+        },
+        "minLength": {
+          "$ref": "PositiveInteger"
+        },
+        "pattern": {
+          "type": "string"
+        }
       },
-      "minItems": 1
+      "required": [
+        "type"
+      ]
+    },
+    "StringType": {
+      "description": "Represents a string value",
+      "allOf": [
+        {
+          "$ref": "CommonProperties"
+        },
+        {
+          "$ref": "ScalarProperties"
+        },
+        {
+          "$ref": "StringProperties"
+        }
+      ]
+    },
+    "StructProperties": {
+      "description": "Struct specific properties",
+      "type": "object",
+      "properties": {
+        "properties": {
+          "$ref": "Properties"
+        },
+        "required": {
+          "$ref": "StringArray"
+        }
+      },
+      "required": [
+        "properties"
+      ]
+    },
+    "StructType": {
+      "description": "A struct contains a fix set of defined properties",
+      "allOf": [
+        {
+          "$ref": "CommonProperties"
+        },
+        {
+          "$ref": "ContainerProperties"
+        },
+        {
+          "$ref": "StructProperties"
+        }
+      ]
+    },
+    "TemplateProperties": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "ReferenceType"
+      }
     }
   },
   "title": "TypeSchema",

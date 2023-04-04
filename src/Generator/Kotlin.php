@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -117,23 +118,23 @@ class Kotlin extends CodeGeneratorAbstract
     {
         $imports = [];
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_URI)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::URI)) {
             $imports[] = 'import java.net.URI;';
         }
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DURATION)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
             $imports[] = 'import java.time.Duration;';
         }
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATE)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
             $imports[] = 'import java.time.LocalDate;';
         }
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_TIME)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
             $imports[] = 'import java.time.LocalTime;';
         }
 
-        if (TypeUtil::contains($origin, StringType::class, TypeAbstract::FORMAT_DATETIME)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
             $imports[] = 'import java.time.LocalDateTime;';
         }
 

@@ -16,9 +16,7 @@
         },
         "entries": {
           "type": "array",
-          "items": {
-            "$generic": "T"
-          }
+          "items": []
         }
       }
     },
@@ -46,7 +44,30 @@
       ]
     },
     "StudentMap": {
-      "$ref": "#\/definitions\/Map"
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#\/definitions\/Human"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "matricleNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
     }
   },
   "$ref": "#\/definitions\/RootSchema"

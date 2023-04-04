@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Format;
+
 /**
  * ScalarType
  *
@@ -29,57 +31,28 @@ namespace PSX\Schema\Type;
  */
 class ScalarType extends TypeAbstract
 {
-    /**
-     * @var string
-     */
-    protected $format;
+    protected ?Format $format = null;
+    protected ?array $enum = null;
+    protected mixed $const = null;
+    protected mixed $default = null;
 
-    /**
-     * @var array
-     */
-    protected $enum;
-
-    /**
-     * @var mixed
-     */
-    protected $const;
-
-    /**
-     * @var string
-     */
-    protected $default;
-
-    /**
-     * @return string
-     */
-    public function getFormat(): ?string
+    public function getFormat(): ?Format
     {
         return $this->format;
     }
 
-    /**
-     * @param string $format
-     * @return self
-     */
-    public function setFormat(string $format): self
+    public function setFormat(Format $format): self
     {
         $this->format = $format;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getEnum(): ?array
     {
         return $this->enum;
     }
 
-    /**
-     * @param array $enum
-     * @return self
-     */
     public function setEnum(array $enum): self
     {
         $this->enum = $enum;
@@ -87,38 +60,24 @@ class ScalarType extends TypeAbstract
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getConst()
+    public function getConst(): mixed
     {
         return $this->const;
     }
 
-    /**
-     * @param mixed $const
-     * @return self
-     */
-    public function setConst($const): self
+    public function setConst(mixed $const): self
     {
         $this->const = $const;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDefault()
+    public function getDefault(): mixed
     {
         return $this->default;
     }
 
-    /**
-     * @param mixed $default
-     * @return self
-     */
-    public function setDefault($default): self
+    public function setDefault(mixed $default): self
     {
         $this->default = $default;
 

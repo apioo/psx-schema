@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
@@ -183,19 +184,19 @@ abstract class GeneratorAbstract implements GeneratorInterface
     private function getStringType(StringType $type): string
     {
         $format = $type->getFormat();
-        if ($format === TypeAbstract::FORMAT_DATE) {
+        if ($format === Format::DATE) {
             return $this->getDate();
-        } elseif ($format === TypeAbstract::FORMAT_DATETIME) {
+        } elseif ($format === Format::DATETIME) {
             return  $this->getDateTime();
-        } elseif ($format === TypeAbstract::FORMAT_TIME) {
+        } elseif ($format === Format::TIME) {
             return  $this->getTime();
-        } elseif ($format === TypeAbstract::FORMAT_PERIOD) {
+        } elseif ($format === Format::PERIOD) {
             return  $this->getPeriod();
-        } elseif ($format === TypeAbstract::FORMAT_DURATION) {
+        } elseif ($format === Format::DURATION) {
             return  $this->getDuration();
-        } elseif ($format === TypeAbstract::FORMAT_URI) {
+        } elseif ($format === Format::URI) {
             return  $this->getUri();
-        } elseif ($format === TypeAbstract::FORMAT_BINARY) {
+        } elseif ($format === Format::BINARY) {
             return  $this->getBinary();
         } else {
             return $this->getString();
@@ -205,9 +206,9 @@ abstract class GeneratorAbstract implements GeneratorInterface
     private function getIntegerType(IntegerType $type): string
     {
         $format = $type->getFormat();
-        if ($format === TypeAbstract::FORMAT_INT32) {
+        if ($format === Format::INT32) {
             return $this->getInteger32();
-        } elseif ($format === TypeAbstract::FORMAT_INT64) {
+        } elseif ($format === Format::INT64) {
             return $this->getInteger64();
         } else {
             return $this->getInteger();

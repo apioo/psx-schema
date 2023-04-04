@@ -23,7 +23,7 @@ namespace PSX\Schema\Type;
 use PSX\Schema\TypeInterface;
 
 /**
- * PropertyType
+ * TypeAbstract
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -31,69 +31,21 @@ use PSX\Schema\TypeInterface;
  */
 abstract class TypeAbstract implements TypeInterface, \JsonSerializable
 {
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_OBJECT = 'object';
-    const TYPE_ARRAY = 'array';
-    const TYPE_NUMBER = 'number';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_STRING = 'string';
-    const TYPE_ANY = 'any';
+    public const ATTR_CLASS = 'class';
+    public const ATTR_MAPPING = 'mapping';
 
-    const FORMAT_INT32 = 'int32';
-    const FORMAT_INT64 = 'int64';
-    const FORMAT_BINARY = 'base64';
-    const FORMAT_DATETIME = 'date-time';
-    const FORMAT_DATE = 'date';
-    const FORMAT_DURATION = 'duration';
-    const FORMAT_PERIOD = 'period';
-    const FORMAT_TIME = 'time';
-    const FORMAT_URI = 'uri';
+    protected ?string $title = null;
+    protected ?string $description = null;
+    protected ?bool $nullable = null;
+    protected ?bool $deprecated = null;
+    protected ?bool $readonly = null;
+    protected array $attributes = [];
 
-    const ATTR_CLASS = 'class';
-    const ATTR_MAPPING = 'mapping';
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * @var boolean
-     */
-    protected $nullable;
-
-    /**
-     * @var boolean
-     */
-    protected $deprecated;
-
-    /**
-     * @var boolean
-     */
-    protected $readonly;
-
-    /**
-     * @var array
-     */
-    protected $attributes = [];
-
-    /**
-     * @return string
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     * @return self
-     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -101,18 +53,11 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     * @return self
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -120,18 +65,11 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isNullable(): ?bool
     {
         return $this->nullable;
     }
 
-    /**
-     * @param bool $nullable
-     * @return self
-     */
     public function setNullable(bool $nullable): self
     {
         $this->nullable = $nullable;
@@ -139,18 +77,11 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeprecated(): ?bool
     {
         return $this->deprecated;
     }
 
-    /**
-     * @param bool $deprecated
-     * @return self
-     */
     public function setDeprecated(bool $deprecated): self
     {
         $this->deprecated = $deprecated;
@@ -158,50 +89,31 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isReadonly(): ?bool
     {
         return $this->readonly;
     }
 
-    /**
-     * @param bool $readonly
-     * @return self
-     */
     public function setReadonly(bool $readonly): self
     {
         $this->readonly = $readonly;
 
         return $this;
     }
-    
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @return self
-     */
-    public function setAttribute(string $key, $value): self
+
+    public function setAttribute(string $key, mixed $value): self
     {
         $this->attributes[$key] = $value;
 
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @return mixed|null
-     */
-    public function getAttribute(string $key)
+    public function getAttribute(string $key): mixed
     {
         return $this->attributes[$key] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }

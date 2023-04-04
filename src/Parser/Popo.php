@@ -24,6 +24,7 @@ use PSX\Schema\Attribute;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Format;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
@@ -208,7 +209,10 @@ class Popo implements ParserInterface
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Format) {
-                $type->setFormat($annotation->format);
+                $format = Format::tryFrom($annotation->format);
+                if ($format !== null) {
+                    $type->setFormat($format);
+                }
             } elseif ($annotation instanceof Attribute\Enum) {
                 $type->setEnum($annotation->enum);
             }
@@ -258,7 +262,10 @@ class Popo implements ParserInterface
             } elseif ($annotation instanceof Attribute\Pattern) {
                 $type->setPattern($annotation->pattern);
             } elseif ($annotation instanceof Attribute\Format) {
-                $type->setFormat($annotation->format);
+                $format = Format::tryFrom($annotation->format);
+                if ($format !== null) {
+                    $type->setFormat($format);
+                }
             }
         }
     }

@@ -499,7 +499,6 @@
           "$ref": "#\/definitions\/PositiveInteger"
         },
         "pattern": {
-          "format": "regex",
           "type": "string"
         }
       },
