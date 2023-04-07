@@ -24,22 +24,13 @@ use PhpParser\Builder\Class_;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\PrettyPrinter;
-use PSX\DateTime\Duration;
-use PSX\DateTime\LocalDate;
-use PSX\DateTime\LocalDateTime;
-use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
-use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
@@ -210,7 +201,6 @@ class Php extends CodeGeneratorAbstract
         if (!empty($serialize)) {
             $this->buildToRecord($class, $serialize, !empty($extends));
             $this->buildJsonSerialize($class);
-            $this->buildFrom($class, $serialize, !empty($extends));
         }
 
         return $this->prettyPrint($class, $uses);
@@ -414,7 +404,7 @@ class Php extends CodeGeneratorAbstract
         return $type->getConst();
     }
 
-    private function prettyPrint($class, array $uses)
+    private function prettyPrint($class, array $uses): string
     {
         $uses = array_unique($uses);
         sort($uses);
@@ -470,7 +460,7 @@ class Php extends CodeGeneratorAbstract
         $class->addStmt($toRecord);
     }
 
-    private function buildJsonSerialize(Class_ $class)
+    private function buildJsonSerialize(Class_ $class): void
     {
         $toRecord = new Node\Expr\MethodCall(
             new Node\Expr\MethodCall(
