@@ -22,12 +22,24 @@ namespace PSX\Schema\Generator;
 
 use PhpParser\Builder\Class_;
 use PhpParser\BuilderFactory;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\PrettyPrinter;
+use PSX\DateTime\Duration;
+use PSX\DateTime\LocalDate;
+use PSX\DateTime\LocalDateTime;
+use PSX\DateTime\LocalTime;
+use PSX\DateTime\Period;
 use PSX\Record\Record;
+use PSX\Record\RecordableInterface;
+use PSX\Record\RecordInterface;
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
@@ -88,7 +100,7 @@ class Php extends CodeGeneratorAbstract
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->implement('\\JsonSerializable');
+        $class->implement('\\' . \JsonSerializable::class, '\\' . RecordableInterface::class);
         $class->setDocComment($this->buildComment($tags));
 
         $attributes = $this->getAttributesForType($origin, $uses);
@@ -109,7 +121,7 @@ class Php extends CodeGeneratorAbstract
                 $realKey = $property->getName()->getRaw();
             }
 
-            $serialize[$property->getName()->getProperty()] = $property->getName()->getRaw();
+            $serialize[$property->getName()->getProperty()] = $property;
 
             $prop = $this->factory->property($property->getName()->getProperty());
             $prop->makeProtected();
@@ -195,7 +207,11 @@ class Php extends CodeGeneratorAbstract
             $class->addStmt($getter);
         }
 
-        $this->buildJsonSerialize($class, $serialize, !empty($extends));
+        if (!empty($serialize)) {
+            $this->buildToRecord($class, $serialize, !empty($extends));
+            $this->buildJsonSerialize($class);
+            $this->buildFrom($class, $serialize, !empty($extends));
+        }
 
         return $this->prettyPrint($class, $uses);
     }
@@ -421,44 +437,53 @@ class Php extends CodeGeneratorAbstract
         }
     }
 
-    private function buildJsonSerialize(Class_ $class, array $properties, bool $hasParent)
+    private function buildToRecord(\PhpParser\Builder\Class_ $class, array $properties, bool $hasParent): void
     {
-        if (empty($properties)) {
-            return;
-        }
-
-        $items = [];
-        foreach ($properties as $name => $key) {
-            $items[] = new Node\Expr\ArrayItem(new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name), new Node\Scalar\String_($key));
-        }
-
-        $closure = new Node\Expr\Closure([
-            'static' => true,
-            'params' => [new Node\Expr\Variable('value')],
-            'returnType' => 'bool',
-            'stmts' => [
-                new Node\Stmt\Return_(new Node\Expr\BinaryOp\NotIdentical(new Node\Expr\Variable('value'), new Node\Expr\ConstFetch(new Node\Name('null'))))
-            ],
-        ]);
-
-        $filter = new Node\Expr\FuncCall(new Node\Name('array_filter'), [
-            new Node\Arg(new Node\Expr\Array_($items)),
-            new Node\Arg($closure)
-        ]);
-
+        $stmts = [];
         if ($hasParent) {
-            $merge = new Node\Expr\FuncCall(new Node\Name('array_merge'), [
-                new Node\Arg(new Node\Expr\Cast\Array_(new Node\Expr\StaticCall(new Node\Name('parent'), 'jsonSerialize'))),
-                new Node\Arg($filter)
-            ]);
+            $stmts[] = new Node\Stmt\Expression(
+                new Node\Expr\Assign(new Node\Expr\Variable('record'), new Node\Expr\StaticCall(new Node\Name('parent'), 'toRecord')),
+                ['comments' => [new Doc('/** @var \PSX\Record\Record<mixed> $record */')]]
+            );
         } else {
-            $merge = $filter;
+            $stmts[] = new Node\Stmt\Expression(
+                new Node\Expr\Assign(new Node\Expr\Variable('record'), new Node\Expr\New_(new Node\Name\FullyQualified(Record::class))),
+                ['comments' => [new Doc('/** @var \PSX\Record\Record<mixed> $record */')]]
+            );
         }
+
+        foreach ($properties as $name => $property) {
+            /** @var Code\Property $property */
+            $stmts[] = new Node\Expr\MethodCall(new Node\Expr\Variable('record'), new Node\Identifier('put'), [
+                new Node\Arg(new Node\Scalar\String_($property->getName()->getRaw())),
+                new Node\Arg(new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)),
+            ]);
+        }
+
+        $stmts[] = new Node\Stmt\Return_(new Node\Expr\Variable('record'));
+
+        $toRecord = $this->factory->method('toRecord');
+        $toRecord->makePublic();
+        $toRecord->setReturnType('\\' . RecordInterface::class);
+        $toRecord->addStmts($stmts);
+
+        $class->addStmt($toRecord);
+    }
+
+    private function buildJsonSerialize(Class_ $class)
+    {
+        $toRecord = new Node\Expr\MethodCall(
+            new Node\Expr\MethodCall(
+                new Node\Expr\Variable('this'),
+                new Node\Identifier('toRecord')
+            ),
+            new Node\Identifier('getAll')
+        );
 
         $serialize = $this->factory->method('jsonSerialize');
         $serialize->makePublic();
         $serialize->setReturnType('object');
-        $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($merge)));
+        $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($toRecord)));
 
         $class->addStmt($serialize);
     }
