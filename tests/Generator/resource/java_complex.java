@@ -2,23 +2,14 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Common properties which can be used at any schema
+ * Represents a base type. Every type extends from this common type and shares the defined properties
  */
-public class CommonProperties {
-    private String title;
+public class CommonType {
     private String description;
     private String type;
     private boolean nullable;
     private boolean deprecated;
     private boolean readonly;
-    @JsonSetter("title")
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    @JsonGetter("title")
-    public String getTitle() {
-        return this.title;
-    }
     @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
@@ -63,54 +54,32 @@ public class CommonProperties {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class ScalarProperties {
-    private String format;
-    private Object _enum;
-    private Object _default;
-    @JsonSetter("format")
-    public void setFormat(String format) {
-        this.format = format;
-    }
-    @JsonGetter("format")
-    public String getFormat() {
-        return this.format;
-    }
-    @JsonSetter("enum")
-    public void setEnum(Object _enum) {
-        this._enum = _enum;
-    }
-    @JsonGetter("enum")
-    public Object getEnum() {
-        return this._enum;
-    }
-    @JsonSetter("default")
-    public void setDefault(Object _default) {
-        this._default = _default;
-    }
-    @JsonGetter("default")
-    public Object getDefault() {
-        return this._default;
-    }
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.HashMap;
 
 /**
- * Properties of a schema
+ * Represents a struct type. A struct type contains a fix set of defined properties
  */
-public class Properties extends HashMap<String, PropertyValue> {
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-/**
- * Properties specific for a container
- */
-public class ContainerProperties {
+public class StructType extends CommonType {
+    private boolean _final;
+    private String _extends;
     private String type;
+    private Properties properties;
+    private String[] required;
+    @JsonSetter("$final")
+    public void setFinal(boolean _final) {
+        this._final = _final;
+    }
+    @JsonGetter("$final")
+    public boolean getFinal() {
+        return this._final;
+    }
+    @JsonSetter("$extends")
+    public void setExtends(String _extends) {
+        this._extends = _extends;
+    }
+    @JsonGetter("$extends")
+    public String getExtends() {
+        return this._extends;
+    }
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -119,17 +88,6 @@ public class ContainerProperties {
     public String getType() {
         return this.type;
     }
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-/**
- * Struct specific properties
- */
-public class StructProperties {
-    private Properties properties;
-    private String[] required;
     @JsonSetter("properties")
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -150,14 +108,33 @@ public class StructProperties {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.HashMap;
 
 /**
- * Map specific properties
+ * Properties of a struct
  */
-public class MapProperties {
+public class Properties extends HashMap<String, Object> {
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+/**
+ * Represents a map type. A map type contains variable key value entries of a specific type
+ */
+public class MapType extends CommonType {
+    private String type;
     private Object additionalProperties;
     private int maxProperties;
     private int minProperties;
+    @JsonSetter("type")
+    public void setType(String type) {
+        this.type = type;
+    }
+    @JsonGetter("type")
+    public String getType() {
+        return this.type;
+    }
     @JsonSetter("additionalProperties")
     public void setAdditionalProperties(Object additionalProperties) {
         this.additionalProperties = additionalProperties;
@@ -188,14 +165,13 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Array properties
+ * Represents an array type. An array type contains an ordered list of a specific type
  */
-public class ArrayProperties {
+public class ArrayType extends CommonType {
     private String type;
     private Object items;
     private int maxItems;
     private int minItems;
-    private boolean uniqueItems;
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -228,13 +204,41 @@ public class ArrayProperties {
     public int getMinItems() {
         return this.minItems;
     }
-    @JsonSetter("uniqueItems")
-    public void setUniqueItems(boolean uniqueItems) {
-        this.uniqueItems = uniqueItems;
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+/**
+ * Represents a scalar type
+ */
+public class ScalarType extends CommonType {
+    private String format;
+    private Object[] _enum;
+    private Object _default;
+    @JsonSetter("format")
+    public void setFormat(String format) {
+        this.format = format;
     }
-    @JsonGetter("uniqueItems")
-    public boolean getUniqueItems() {
-        return this.uniqueItems;
+    @JsonGetter("format")
+    public String getFormat() {
+        return this.format;
+    }
+    @JsonSetter("enum")
+    public void setEnum(Object[] _enum) {
+        this._enum = _enum;
+    }
+    @JsonGetter("enum")
+    public Object[] getEnum() {
+        return this._enum;
+    }
+    @JsonSetter("default")
+    public void setDefault(Object _default) {
+        this._default = _default;
+    }
+    @JsonGetter("default")
+    public Object getDefault() {
+        return this._default;
     }
 }
 
@@ -242,9 +246,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Boolean properties
+ * Represents a boolean type
  */
-public class BooleanProperties {
+public class BooleanType extends ScalarType {
     private String type;
     @JsonSetter("type")
     public void setType(String type) {
@@ -260,9 +264,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Number properties
+ * Represents a number type (contains also integer)
  */
-public class NumberProperties {
+public class NumberType extends ScalarType {
     private String type;
     private double multipleOf;
     private double maximum;
@@ -323,9 +327,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * String properties
+ * Represents a string type
  */
-public class StringProperties {
+public class StringType extends ScalarType {
     private String type;
     private int maxLength;
     private int minLength;
@@ -361,6 +365,87 @@ public class StringProperties {
     @JsonGetter("pattern")
     public String getPattern() {
         return this.pattern;
+    }
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+/**
+ * Represents an any type
+ */
+public class AnyType extends CommonType {
+    private String type;
+    @JsonSetter("type")
+    public void setType(String type) {
+        this.type = type;
+    }
+    @JsonGetter("type")
+    public String getType() {
+        return this.type;
+    }
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+/**
+ * Represents an intersection type
+ */
+public class IntersectionType {
+    private String description;
+    private ReferenceType[] allOf;
+    @JsonSetter("description")
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    @JsonGetter("description")
+    public String getDescription() {
+        return this.description;
+    }
+    @JsonSetter("allOf")
+    public void setAllOf(ReferenceType[] allOf) {
+        this.allOf = allOf;
+    }
+    @JsonGetter("allOf")
+    public ReferenceType[] getAllOf() {
+        return this.allOf;
+    }
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+/**
+ * Represents an union type. An union type can contain one of the provided types
+ */
+public class UnionType {
+    private String description;
+    private Discriminator discriminator;
+    private Object[] oneOf;
+    @JsonSetter("description")
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    @JsonGetter("description")
+    public String getDescription() {
+        return this.description;
+    }
+    @JsonSetter("discriminator")
+    public void setDiscriminator(Discriminator discriminator) {
+        this.discriminator = discriminator;
+    }
+    @JsonGetter("discriminator")
+    public Discriminator getDiscriminator() {
+        return this.discriminator;
+    }
+    @JsonSetter("oneOf")
+    public void setOneOf(Object[] oneOf) {
+        this.oneOf = oneOf;
+    }
+    @JsonGetter("oneOf")
+    public Object[] getOneOf() {
+        return this.oneOf;
     }
 }
 
@@ -405,76 +490,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * An intersection type combines multiple schemas into one
- */
-public class AllOfProperties {
-    private String description;
-    private OfValue[] allOf;
-    @JsonSetter("description")
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    @JsonGetter("description")
-    public String getDescription() {
-        return this.description;
-    }
-    @JsonSetter("allOf")
-    public void setAllOf(OfValue[] allOf) {
-        this.allOf = allOf;
-    }
-    @JsonGetter("allOf")
-    public OfValue[] getAllOf() {
-        return this.allOf;
-    }
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-/**
- * An union type can contain one of the provided schemas
- */
-public class OneOfProperties {
-    private String description;
-    private Discriminator discriminator;
-    private OfValue[] oneOf;
-    @JsonSetter("description")
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    @JsonGetter("description")
-    public String getDescription() {
-        return this.description;
-    }
-    @JsonSetter("discriminator")
-    public void setDiscriminator(Discriminator discriminator) {
-        this.discriminator = discriminator;
-    }
-    @JsonGetter("discriminator")
-    public Discriminator getDiscriminator() {
-        return this.discriminator;
-    }
-    @JsonSetter("oneOf")
-    public void setOneOf(OfValue[] oneOf) {
-        this.oneOf = oneOf;
-    }
-    @JsonGetter("oneOf")
-    public OfValue[] getOneOf() {
-        return this.oneOf;
-    }
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.HashMap;
-public class TemplateProperties extends HashMap<String, ReferenceType> {
-}
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-/**
- * Represents a reference to another schema
+ * Represents a reference type. A reference type points to a specific type at the definitions map
  */
 public class ReferenceType {
     private String ref;
@@ -499,9 +515,15 @@ public class ReferenceType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.HashMap;
+public class TemplateProperties extends HashMap<String, String> {
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Represents a generic type
+ * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
  */
 public class GenericType {
     private String generic;
@@ -520,9 +542,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
- * Schema definitions which can be reused
+ * The definitions map which contains all types
  */
-public class Definitions extends HashMap<String, DefinitionValue> {
+public class Definitions extends HashMap<String, Object> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -530,7 +552,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashMap;
 
 /**
- * Contains external definitions which are imported. The imported schemas can be used via the namespace
+ * Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
  */
 public class Import extends HashMap<String, String> {
 }
@@ -539,16 +561,12 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * TypeSchema meta schema which describes a TypeSchema
+ * The root TypeSchema
  */
 public class TypeSchema {
     private Import _import;
-    private String title;
-    private String description;
-    private String type;
     private Definitions definitions;
-    private Properties properties;
-    private String[] required;
+    private String ref;
     @JsonSetter("$import")
     public void setImport(Import _import) {
         this._import = _import;
@@ -556,30 +574,6 @@ public class TypeSchema {
     @JsonGetter("$import")
     public Import getImport() {
         return this._import;
-    }
-    @JsonSetter("title")
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    @JsonGetter("title")
-    public String getTitle() {
-        return this.title;
-    }
-    @JsonSetter("description")
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    @JsonGetter("description")
-    public String getDescription() {
-        return this.description;
-    }
-    @JsonSetter("type")
-    public void setType(String type) {
-        this.type = type;
-    }
-    @JsonGetter("type")
-    public String getType() {
-        return this.type;
     }
     @JsonSetter("definitions")
     public void setDefinitions(Definitions definitions) {
@@ -589,20 +583,12 @@ public class TypeSchema {
     public Definitions getDefinitions() {
         return this.definitions;
     }
-    @JsonSetter("properties")
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    @JsonSetter("$ref")
+    public void setRef(String ref) {
+        this.ref = ref;
     }
-    @JsonGetter("properties")
-    public Properties getProperties() {
-        return this.properties;
-    }
-    @JsonSetter("required")
-    public void setRequired(String[] required) {
-        this.required = required;
-    }
-    @JsonGetter("required")
-    public String[] getRequired() {
-        return this.required;
+    @JsonGetter("$ref")
+    public String getRef() {
+        return this.ref;
     }
 }

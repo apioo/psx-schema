@@ -1,4 +1,4 @@
-class Import implements \JsonSerializable
+class Import implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?StudentMap $students = null;
     protected ?Student $student = null;
@@ -18,14 +18,20 @@ class Import implements \JsonSerializable
     {
         return $this->student;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('students', $this->students);
+        $record->put('student', $this->student);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('students' => $this->students, 'student' => $this->student), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
-class MyMap extends Student implements \JsonSerializable
+class MyMap extends Student implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
 }

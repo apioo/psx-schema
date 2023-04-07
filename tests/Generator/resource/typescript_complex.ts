@@ -1,8 +1,7 @@
 /**
- * Common properties which can be used at any schema
+ * Represents a base type. Every type extends from this common type and shares the defined properties
  */
-export interface CommonProperties {
-    title?: string
+export interface CommonType {
     description?: string
     type?: string
     nullable?: boolean
@@ -10,143 +9,100 @@ export interface CommonProperties {
     readonly?: boolean
 }
 
-import {EnumValue} from "./EnumValue";
-import {ScalarValue} from "./ScalarValue";
-export interface ScalarProperties {
-    format?: string
-    enum?: EnumValue
-    default?: ScalarValue
+import {CommonType} from "./CommonType";
+import {Properties} from "./Properties";
+
+/**
+ * Represents a struct type. A struct type contains a fix set of defined properties
+ */
+export interface StructType extends CommonType {
+    $final?: boolean
+    $extends?: string
+    type: string
+    properties: Properties
+    required?: Array<string>
 }
 
 import {BooleanType} from "./BooleanType";
 import {NumberType} from "./NumberType";
 import {StringType} from "./StringType";
 import {ArrayType} from "./ArrayType";
-import {CombinationType} from "./CombinationType";
+import {UnionType} from "./UnionType";
+import {IntersectionType} from "./IntersectionType";
 import {ReferenceType} from "./ReferenceType";
 import {GenericType} from "./GenericType";
+import {AnyType} from "./AnyType";
 
 /**
- * Allowed values of an object property
+ * Properties of a struct
  */
-export type PropertyValue = BooleanType | NumberType | StringType | ArrayType | CombinationType | ReferenceType | GenericType;
+export type Properties = Record<string, BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType>;
 
-import {PropertyValue} from "./PropertyValue";
+import {CommonType} from "./CommonType";
+import {BooleanType} from "./BooleanType";
+import {NumberType} from "./NumberType";
+import {StringType} from "./StringType";
+import {ArrayType} from "./ArrayType";
+import {UnionType} from "./UnionType";
+import {IntersectionType} from "./IntersectionType";
+import {ReferenceType} from "./ReferenceType";
+import {GenericType} from "./GenericType";
+import {AnyType} from "./AnyType";
 
 /**
- * Properties of a schema
+ * Represents a map type. A map type contains variable key value entries of a specific type
  */
-export type Properties = Record<string, PropertyValue>;
-
-/**
- * Properties specific for a container
- */
-export interface ContainerProperties {
+export interface MapType extends CommonType {
     type: string
-}
-
-import {Properties} from "./Properties";
-import {StringArray} from "./StringArray";
-
-/**
- * Struct specific properties
- */
-export interface StructProperties {
-    properties: Properties
-    required?: StringArray
-}
-
-import {CommonProperties} from "./CommonProperties";
-import {ContainerProperties} from "./ContainerProperties";
-import {StructProperties} from "./StructProperties";
-
-/**
- * A struct contains a fix set of defined properties
- */
-export type StructType = CommonProperties & ContainerProperties & StructProperties;
-
-import {PropertyValue} from "./PropertyValue";
-import {PositiveInteger} from "./PositiveInteger";
-
-/**
- * Map specific properties
- */
-export interface MapProperties {
-    additionalProperties: PropertyValue
+    additionalProperties: BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType
     maxProperties?: number
     minProperties?: number
 }
 
-import {CommonProperties} from "./CommonProperties";
-import {ContainerProperties} from "./ContainerProperties";
-import {MapProperties} from "./MapProperties";
-
-/**
- * A map contains variable key value entries of a specific type
- */
-export type MapType = CommonProperties & ContainerProperties & MapProperties;
-
-import {StructType} from "./StructType";
-import {MapType} from "./MapType";
-
-/**
- * An object represents either a struct or map type
- */
-export type ObjectType = StructType | MapType;
-
+import {CommonType} from "./CommonType";
 import {BooleanType} from "./BooleanType";
 import {NumberType} from "./NumberType";
 import {StringType} from "./StringType";
 import {ReferenceType} from "./ReferenceType";
 import {GenericType} from "./GenericType";
+import {AnyType} from "./AnyType";
 
 /**
- * Allowed values of an array item
+ * Represents an array type. An array type contains an ordered list of a specific type
  */
-export type ArrayValue = BooleanType | NumberType | StringType | ReferenceType | GenericType;
-
-import {ArrayValue} from "./ArrayValue";
-import {PositiveInteger} from "./PositiveInteger";
-
-/**
- * Array properties
- */
-export interface ArrayProperties {
+export interface ArrayType extends CommonType {
     type: string
-    items: ArrayValue
+    items: BooleanType | NumberType | StringType | ReferenceType | GenericType | AnyType
     maxItems?: number
     minItems?: number
-    uniqueItems?: boolean
 }
 
-import {CommonProperties} from "./CommonProperties";
-import {ArrayProperties} from "./ArrayProperties";
+import {CommonType} from "./CommonType";
 
 /**
- * An array contains an ordered list of a specific type
+ * Represents a scalar type
  */
-export type ArrayType = CommonProperties & ArrayProperties;
+export interface ScalarType extends CommonType {
+    format?: string
+    enum?: Array<string | number>
+    default?: string | number | boolean
+}
+
+import {ScalarType} from "./ScalarType";
 
 /**
- * Boolean properties
+ * Represents a boolean type
  */
-export interface BooleanProperties {
+export interface BooleanType extends ScalarType {
     type: string
 }
 
-import {CommonProperties} from "./CommonProperties";
-import {ScalarProperties} from "./ScalarProperties";
-import {BooleanProperties} from "./BooleanProperties";
+import {ScalarType} from "./ScalarType";
 
 /**
- * Represents a boolean value
+ * Represents a number type (contains also integer)
  */
-export type BooleanType = CommonProperties & ScalarProperties & BooleanProperties;
-
-/**
- * Number properties
- */
-export interface NumberProperties {
+export interface NumberType extends ScalarType {
     type: string
     multipleOf?: number
     maximum?: number
@@ -155,45 +111,51 @@ export interface NumberProperties {
     exclusiveMinimum?: boolean
 }
 
-import {CommonProperties} from "./CommonProperties";
-import {ScalarProperties} from "./ScalarProperties";
-import {NumberProperties} from "./NumberProperties";
+import {ScalarType} from "./ScalarType";
 
 /**
- * Represents a number value (contains also integer)
+ * Represents a string type
  */
-export type NumberType = CommonProperties & ScalarProperties & NumberProperties;
-
-import {PositiveInteger} from "./PositiveInteger";
-
-/**
- * String properties
- */
-export interface StringProperties {
+export interface StringType extends ScalarType {
     type: string
     maxLength?: number
     minLength?: number
     pattern?: string
 }
 
-import {CommonProperties} from "./CommonProperties";
-import {ScalarProperties} from "./ScalarProperties";
-import {StringProperties} from "./StringProperties";
+import {CommonType} from "./CommonType";
 
 /**
- * Represents a string value
+ * Represents an any type
  */
-export type StringType = CommonProperties & ScalarProperties & StringProperties;
+export interface AnyType extends CommonType {
+    type: string
+}
 
+import {ReferenceType} from "./ReferenceType";
+
+/**
+ * Represents an intersection type
+ */
+export interface IntersectionType {
+    description?: string
+    allOf: Array<ReferenceType>
+}
+
+import {Discriminator} from "./Discriminator";
 import {NumberType} from "./NumberType";
 import {StringType} from "./StringType";
 import {BooleanType} from "./BooleanType";
 import {ReferenceType} from "./ReferenceType";
 
 /**
- * Allowed values in a combination schema
+ * Represents an union type. An union type can contain one of the provided types
  */
-export type OfValue = NumberType | StringType | BooleanType | ReferenceType;
+export interface UnionType {
+    description?: string
+    discriminator?: Discriminator
+    oneOf: Array<NumberType | StringType | BooleanType | ReferenceType>
+}
 
 /**
  * An object to hold mappings between payload values and schema names or references
@@ -210,117 +172,47 @@ export interface Discriminator {
     mapping?: DiscriminatorMapping
 }
 
-import {OfValue} from "./OfValue";
-
-/**
- * An intersection type combines multiple schemas into one
- */
-export interface AllOfProperties {
-    description?: string
-    allOf: Array<OfValue>
-}
-
-import {Discriminator} from "./Discriminator";
-import {OfValue} from "./OfValue";
-
-/**
- * An union type can contain one of the provided schemas
- */
-export interface OneOfProperties {
-    description?: string
-    discriminator?: Discriminator
-    oneOf: Array<OfValue>
-}
-
-import {AllOfProperties} from "./AllOfProperties";
-import {OneOfProperties} from "./OneOfProperties";
-
-/**
- * A combination type is either a intersection or union type
- */
-export type CombinationType = AllOfProperties | OneOfProperties;
-
-import {ReferenceType} from "./ReferenceType";
-export type TemplateProperties = Record<string, ReferenceType>;
-
 import {TemplateProperties} from "./TemplateProperties";
 
 /**
- * Represents a reference to another schema
+ * Represents a reference type. A reference type points to a specific type at the definitions map
  */
 export interface ReferenceType {
     $ref: string
     $template?: TemplateProperties
 }
 
+export type TemplateProperties = Record<string, string>;
+
 /**
- * Represents a generic type
+ * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
  */
 export interface GenericType {
     $generic: string
 }
 
-import {ObjectType} from "./ObjectType";
-import {ArrayType} from "./ArrayType";
-import {BooleanType} from "./BooleanType";
-import {NumberType} from "./NumberType";
-import {StringType} from "./StringType";
-import {CombinationType} from "./CombinationType";
+import {StructType} from "./StructType";
+import {MapType} from "./MapType";
+import {ReferenceType} from "./ReferenceType";
 
 /**
- * Represents a concrete type definition
+ * The definitions map which contains all types
  */
-export type DefinitionValue = ObjectType | ArrayType | BooleanType | NumberType | StringType | CombinationType;
-
-import {DefinitionValue} from "./DefinitionValue";
+export type Definitions = Record<string, StructType | MapType | ReferenceType>;
 
 /**
- * Schema definitions which can be reused
- */
-export type Definitions = Record<string, DefinitionValue>;
-
-/**
- * Contains external definitions which are imported. The imported schemas can be used via the namespace
+ * Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
  */
 export type Import = Record<string, string>;
 
-import {StringArray} from "./StringArray";
-import {NumberArray} from "./NumberArray";
-
-/**
- * A list of possible enumeration values
- */
-export type EnumValue = StringArray | NumberArray;
-
-/**
- * Represents a scalar value
- */
-export type ScalarValue = string | number | boolean;
-
-/**
- * Array string values
- */
-export type StringArray = Array<string>;
-
-/**
- * Array number values
- */
-export type NumberArray = Array<number>;
-
 import {Import} from "./Import";
 import {Definitions} from "./Definitions";
-import {Properties} from "./Properties";
-import {StringArray} from "./StringArray";
 
 /**
- * TypeSchema meta schema which describes a TypeSchema
+ * The root TypeSchema
  */
 export interface TypeSchema {
     $import?: Import
-    title: string
-    description?: string
-    type: string
-    definitions?: Definitions
-    properties: Properties
-    required?: StringArray
+    definitions: Definitions
+    $ref?: string
 }

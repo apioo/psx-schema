@@ -1,9 +1,8 @@
 /// <summary>
-/// Common properties which can be used at any schema
+/// Represents a base type. Every type extends from this common type and shares the defined properties
 /// </summary>
-public class CommonProperties
+public class CommonType
 {
-    public string Title { get; set; }
     public string Description { get; set; }
     public string Type { get; set; }
     public bool Nullable { get; set; }
@@ -11,73 +10,71 @@ public class CommonProperties
     public bool Readonly { get; set; }
 }
 
-public class ScalarProperties
+/// <summary>
+/// Represents a struct type. A struct type contains a fix set of defined properties
+/// </summary>
+public class StructType extends CommonType
 {
-    public string Format { get; set; }
-    public object Enum { get; set; }
-    public object Default { get; set; }
+    public bool Final { get; set; }
+    public string Extends { get; set; }
+    public string Type { get; set; }
+    public Properties Properties { get; set; }
+    public string[] Required { get; set; }
 }
 
 using System.Collections.Generic;
 
 /// <summary>
-/// Properties of a schema
+/// Properties of a struct
 /// </summary>
-public class Properties : Dictionary<string, PropertyValue>
+public class Properties : Dictionary<string, object>
 {
 }
 
 /// <summary>
-/// Properties specific for a container
+/// Represents a map type. A map type contains variable key value entries of a specific type
 /// </summary>
-public class ContainerProperties
+public class MapType extends CommonType
 {
     public string Type { get; set; }
-}
-
-/// <summary>
-/// Struct specific properties
-/// </summary>
-public class StructProperties
-{
-    public Properties Properties { get; set; }
-    public string[] Required { get; set; }
-}
-
-/// <summary>
-/// Map specific properties
-/// </summary>
-public class MapProperties
-{
     public object AdditionalProperties { get; set; }
     public int MaxProperties { get; set; }
     public int MinProperties { get; set; }
 }
 
 /// <summary>
-/// Array properties
+/// Represents an array type. An array type contains an ordered list of a specific type
 /// </summary>
-public class ArrayProperties
+public class ArrayType extends CommonType
 {
     public string Type { get; set; }
     public object Items { get; set; }
     public int MaxItems { get; set; }
     public int MinItems { get; set; }
-    public bool UniqueItems { get; set; }
 }
 
 /// <summary>
-/// Boolean properties
+/// Represents a scalar type
 /// </summary>
-public class BooleanProperties
+public class ScalarType extends CommonType
+{
+    public string Format { get; set; }
+    public object[] Enum { get; set; }
+    public object Default { get; set; }
+}
+
+/// <summary>
+/// Represents a boolean type
+/// </summary>
+public class BooleanType extends ScalarType
 {
     public string Type { get; set; }
 }
 
 /// <summary>
-/// Number properties
+/// Represents a number type (contains also integer)
 /// </summary>
-public class NumberProperties
+public class NumberType extends ScalarType
 {
     public string Type { get; set; }
     public float MultipleOf { get; set; }
@@ -88,14 +85,41 @@ public class NumberProperties
 }
 
 /// <summary>
-/// String properties
+/// Represents a string type
 /// </summary>
-public class StringProperties
+public class StringType extends ScalarType
 {
     public string Type { get; set; }
     public int MaxLength { get; set; }
     public int MinLength { get; set; }
     public string Pattern { get; set; }
+}
+
+/// <summary>
+/// Represents an any type
+/// </summary>
+public class AnyType extends CommonType
+{
+    public string Type { get; set; }
+}
+
+/// <summary>
+/// Represents an intersection type
+/// </summary>
+public class IntersectionType
+{
+    public string Description { get; set; }
+    public ReferenceType[] AllOf { get; set; }
+}
+
+/// <summary>
+/// Represents an union type. An union type can contain one of the provided types
+/// </summary>
+public class UnionType
+{
+    public string Description { get; set; }
+    public Discriminator Discriminator { get; set; }
+    public object[] OneOf { get; set; }
 }
 
 using System.Collections.Generic;
@@ -117,31 +141,7 @@ public class Discriminator
 }
 
 /// <summary>
-/// An intersection type combines multiple schemas into one
-/// </summary>
-public class AllOfProperties
-{
-    public string Description { get; set; }
-    public OfValue[] AllOf { get; set; }
-}
-
-/// <summary>
-/// An union type can contain one of the provided schemas
-/// </summary>
-public class OneOfProperties
-{
-    public string Description { get; set; }
-    public Discriminator Discriminator { get; set; }
-    public OfValue[] OneOf { get; set; }
-}
-
-using System.Collections.Generic;
-public class TemplateProperties : Dictionary<string, ReferenceType>
-{
-}
-
-/// <summary>
-/// Represents a reference to another schema
+/// Represents a reference type. A reference type points to a specific type at the definitions map
 /// </summary>
 public class ReferenceType
 {
@@ -149,8 +149,13 @@ public class ReferenceType
     public TemplateProperties Template { get; set; }
 }
 
+using System.Collections.Generic;
+public class TemplateProperties : Dictionary<string, string>
+{
+}
+
 /// <summary>
-/// Represents a generic type
+/// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 /// </summary>
 public class GenericType
 {
@@ -160,31 +165,27 @@ public class GenericType
 using System.Collections.Generic;
 
 /// <summary>
-/// Schema definitions which can be reused
+/// The definitions map which contains all types
 /// </summary>
-public class Definitions : Dictionary<string, DefinitionValue>
+public class Definitions : Dictionary<string, object>
 {
 }
 
 using System.Collections.Generic;
 
 /// <summary>
-/// Contains external definitions which are imported. The imported schemas can be used via the namespace
+/// Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
 /// </summary>
 public class Import : Dictionary<string, string>
 {
 }
 
 /// <summary>
-/// TypeSchema meta schema which describes a TypeSchema
+/// The root TypeSchema
 /// </summary>
 public class TypeSchema
 {
     public Import Import { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Type { get; set; }
     public Definitions Definitions { get; set; }
-    public Properties Properties { get; set; }
-    public string[] Required { get; set; }
+    public string Ref { get; set; }
 }

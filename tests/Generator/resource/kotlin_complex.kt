@@ -1,8 +1,7 @@
 /**
- * Common properties which can be used at any schema
+ * Represents a base type. Every type extends from this common type and shares the defined properties
  */
-open class CommonProperties {
-    var title: String? = null
+open class CommonType {
     var description: String? = null
     var type: String? = null
     var nullable: Boolean? = null
@@ -10,66 +9,65 @@ open class CommonProperties {
     var readonly: Boolean? = null
 }
 
-open class ScalarProperties {
-    var format: String? = null
-    var enum: Any? = null
-    var default: Any? = null
+/**
+ * Represents a struct type. A struct type contains a fix set of defined properties
+ */
+open class StructType : CommonType {
+    var final: Boolean? = null
+    var extends: String? = null
+    var type: String? = null
+    var properties: Properties? = null
+    var required: Array<String>? = null
 }
 
 import java.util.HashMap;
 
 /**
- * Properties of a schema
+ * Properties of a struct
  */
-open class Properties : HashMap<String, PropertyValue>() {
+open class Properties : HashMap<String, Any>() {
 }
 
 /**
- * Properties specific for a container
+ * Represents a map type. A map type contains variable key value entries of a specific type
  */
-open class ContainerProperties {
+open class MapType : CommonType {
     var type: String? = null
-}
-
-/**
- * Struct specific properties
- */
-open class StructProperties {
-    var properties: Properties? = null
-    var required: Array<String>? = null
-}
-
-/**
- * Map specific properties
- */
-open class MapProperties {
     var additionalProperties: Any? = null
     var maxProperties: Int? = null
     var minProperties: Int? = null
 }
 
 /**
- * Array properties
+ * Represents an array type. An array type contains an ordered list of a specific type
  */
-open class ArrayProperties {
+open class ArrayType : CommonType {
     var type: String? = null
     var items: Any? = null
     var maxItems: Int? = null
     var minItems: Int? = null
-    var uniqueItems: Boolean? = null
 }
 
 /**
- * Boolean properties
+ * Represents a scalar type
  */
-open class BooleanProperties {
+open class ScalarType : CommonType {
+    var format: String? = null
+    var enum: Array<Any>? = null
+    var default: Any? = null
+}
+
+/**
+ * Represents a boolean type
+ */
+open class BooleanType : ScalarType {
     var type: String? = null
 }
 
 /**
- * Number properties
+ * Represents a number type (contains also integer)
  */
-open class NumberProperties {
+open class NumberType : ScalarType {
     var type: String? = null
     var multipleOf: Float? = null
     var maximum: Float? = null
@@ -79,13 +77,37 @@ open class NumberProperties {
 }
 
 /**
- * String properties
+ * Represents a string type
  */
-open class StringProperties {
+open class StringType : ScalarType {
     var type: String? = null
     var maxLength: Int? = null
     var minLength: Int? = null
     var pattern: String? = null
+}
+
+/**
+ * Represents an any type
+ */
+open class AnyType : CommonType {
+    var type: String? = null
+}
+
+/**
+ * Represents an intersection type
+ */
+open class IntersectionType {
+    var description: String? = null
+    var allOf: Array<ReferenceType>? = null
+}
+
+/**
+ * Represents an union type. An union type can contain one of the provided types
+ */
+open class UnionType {
+    var description: String? = null
+    var discriminator: Discriminator? = null
+    var oneOf: Array<Any>? = null
 }
 
 import java.util.HashMap;
@@ -105,36 +127,19 @@ open class Discriminator {
 }
 
 /**
- * An intersection type combines multiple schemas into one
- */
-open class AllOfProperties {
-    var description: String? = null
-    var allOf: Array<OfValue>? = null
-}
-
-/**
- * An union type can contain one of the provided schemas
- */
-open class OneOfProperties {
-    var description: String? = null
-    var discriminator: Discriminator? = null
-    var oneOf: Array<OfValue>? = null
-}
-
-import java.util.HashMap;
-open class TemplateProperties : HashMap<String, ReferenceType>() {
-}
-
-/**
- * Represents a reference to another schema
+ * Represents a reference type. A reference type points to a specific type at the definitions map
  */
 open class ReferenceType {
     var ref: String? = null
     var template: TemplateProperties? = null
 }
 
+import java.util.HashMap;
+open class TemplateProperties : HashMap<String, String>() {
+}
+
 /**
- * Represents a generic type
+ * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
  */
 open class GenericType {
     var generic: String? = null
@@ -143,28 +148,24 @@ open class GenericType {
 import java.util.HashMap;
 
 /**
- * Schema definitions which can be reused
+ * The definitions map which contains all types
  */
-open class Definitions : HashMap<String, DefinitionValue>() {
+open class Definitions : HashMap<String, Any>() {
 }
 
 import java.util.HashMap;
 
 /**
- * Contains external definitions which are imported. The imported schemas can be used via the namespace
+ * Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
  */
 open class Import : HashMap<String, String>() {
 }
 
 /**
- * TypeSchema meta schema which describes a TypeSchema
+ * The root TypeSchema
  */
 open class TypeSchema {
     var import: Import? = null
-    var title: String? = null
-    var description: String? = null
-    var type: String? = null
     var definitions: Definitions? = null
-    var properties: Properties? = null
-    var required: Array<String>? = null
+    var ref: String? = null
 }

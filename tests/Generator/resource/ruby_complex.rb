@@ -1,9 +1,8 @@
-# Common properties which can be used at any schema
-class CommonProperties
-    attr_accessor :title, :description, :type, :nullable, :deprecated, :readonly
+# Represents a base type. Every type extends from this common type and shares the defined properties
+class CommonType
+    attr_accessor :description, :type, :nullable, :deprecated, :readonly
 
-    def initialize(title, description, type, nullable, deprecated, readonly)
-        @title = title
+    def initialize(description, type, nullable, deprecated, readonly)
         @description = description
         @type = type
         @nullable = nullable
@@ -12,7 +11,49 @@ class CommonProperties
     end
 end
 
-class ScalarProperties
+# Represents a struct type. A struct type contains a fix set of defined properties
+class StructType
+    extend CommonType
+    attr_accessor :_final, :_extends, :type, :properties, :required
+
+    def initialize(_final, _extends, type, properties, required)
+        @_final = _final
+        @_extends = _extends
+        @type = type
+        @properties = properties
+        @required = required
+    end
+end
+
+# Represents a map type. A map type contains variable key value entries of a specific type
+class MapType
+    extend CommonType
+    attr_accessor :type, :additional_properties, :max_properties, :min_properties
+
+    def initialize(type, additional_properties, max_properties, min_properties)
+        @type = type
+        @additional_properties = additional_properties
+        @max_properties = max_properties
+        @min_properties = min_properties
+    end
+end
+
+# Represents an array type. An array type contains an ordered list of a specific type
+class ArrayType
+    extend CommonType
+    attr_accessor :type, :items, :max_items, :min_items
+
+    def initialize(type, items, max_items, min_items)
+        @type = type
+        @items = items
+        @max_items = max_items
+        @min_items = min_items
+    end
+end
+
+# Represents a scalar type
+class ScalarType
+    extend CommonType
     attr_accessor :format, :enum, :default
 
     def initialize(format, enum, default)
@@ -22,8 +63,9 @@ class ScalarProperties
     end
 end
 
-# Properties specific for a container
-class ContainerProperties
+# Represents a boolean type
+class BooleanType
+    extend ScalarType
     attr_accessor :type
 
     def initialize(type)
@@ -31,51 +73,9 @@ class ContainerProperties
     end
 end
 
-# Struct specific properties
-class StructProperties
-    attr_accessor :properties, :required
-
-    def initialize(properties, required)
-        @properties = properties
-        @required = required
-    end
-end
-
-# Map specific properties
-class MapProperties
-    attr_accessor :additional_properties, :max_properties, :min_properties
-
-    def initialize(additional_properties, max_properties, min_properties)
-        @additional_properties = additional_properties
-        @max_properties = max_properties
-        @min_properties = min_properties
-    end
-end
-
-# Array properties
-class ArrayProperties
-    attr_accessor :type, :items, :max_items, :min_items, :unique_items
-
-    def initialize(type, items, max_items, min_items, unique_items)
-        @type = type
-        @items = items
-        @max_items = max_items
-        @min_items = min_items
-        @unique_items = unique_items
-    end
-end
-
-# Boolean properties
-class BooleanProperties
-    attr_accessor :type
-
-    def initialize(type)
-        @type = type
-    end
-end
-
-# Number properties
-class NumberProperties
+# Represents a number type (contains also integer)
+class NumberType
+    extend ScalarType
     attr_accessor :type, :multiple_of, :maximum, :exclusive_maximum, :minimum, :exclusive_minimum
 
     def initialize(type, multiple_of, maximum, exclusive_maximum, minimum, exclusive_minimum)
@@ -88,8 +88,9 @@ class NumberProperties
     end
 end
 
-# String properties
-class StringProperties
+# Represents a string type
+class StringType
+    extend ScalarType
     attr_accessor :type, :max_length, :min_length, :pattern
 
     def initialize(type, max_length, min_length, pattern)
@@ -97,6 +98,37 @@ class StringProperties
         @max_length = max_length
         @min_length = min_length
         @pattern = pattern
+    end
+end
+
+# Represents an any type
+class AnyType
+    extend CommonType
+    attr_accessor :type
+
+    def initialize(type)
+        @type = type
+    end
+end
+
+# Represents an intersection type
+class IntersectionType
+    attr_accessor :description, :all_of
+
+    def initialize(description, all_of)
+        @description = description
+        @all_of = all_of
+    end
+end
+
+# Represents an union type. An union type can contain one of the provided types
+class UnionType
+    attr_accessor :description, :discriminator, :one_of
+
+    def initialize(description, discriminator, one_of)
+        @description = description
+        @discriminator = discriminator
+        @one_of = one_of
     end
 end
 
@@ -110,28 +142,7 @@ class Discriminator
     end
 end
 
-# An intersection type combines multiple schemas into one
-class AllOfProperties
-    attr_accessor :description, :all_of
-
-    def initialize(description, all_of)
-        @description = description
-        @all_of = all_of
-    end
-end
-
-# An union type can contain one of the provided schemas
-class OneOfProperties
-    attr_accessor :description, :discriminator, :one_of
-
-    def initialize(description, discriminator, one_of)
-        @description = description
-        @discriminator = discriminator
-        @one_of = one_of
-    end
-end
-
-# Represents a reference to another schema
+# Represents a reference type. A reference type points to a specific type at the definitions map
 class ReferenceType
     attr_accessor :_ref, :_template
 
@@ -141,7 +152,7 @@ class ReferenceType
     end
 end
 
-# Represents a generic type
+# Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 class GenericType
     attr_accessor :_generic
 
@@ -150,17 +161,13 @@ class GenericType
     end
 end
 
-# TypeSchema meta schema which describes a TypeSchema
+# The root TypeSchema
 class TypeSchema
-    attr_accessor :_import, :title, :description, :type, :definitions, :properties, :required
+    attr_accessor :_import, :definitions, :_ref
 
-    def initialize(_import, title, description, type, definitions, properties, required)
+    def initialize(_import, definitions, _ref)
         @_import = _import
-        @title = title
-        @description = description
-        @type = type
         @definitions = definitions
-        @properties = properties
-        @required = required
+        @_ref = _ref
     end
 end

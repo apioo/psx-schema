@@ -1,30 +1,20 @@
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Enum;
 
-#[Description('Common properties which can be used at any schema')]
-class CommonProperties implements \JsonSerializable
+#[Description('Represents a base type. Every type extends from this common type and shares the defined properties')]
+class CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('Distinct word which represents this schema')]
-    protected ?string $title = null;
-    #[Description('General description of this schema, should not contain any new lines.')]
+    #[Description('General description of this type, should not contain any new lines.')]
     protected ?string $description = null;
-    #[Description('JSON type of the property')]
-    #[Enum(array('object', 'array', 'boolean', 'integer', 'number', 'string'))]
+    #[Description('Type of the property')]
+    #[Enum(array('object', 'array', 'boolean', 'integer', 'number', 'string', 'any'))]
     protected ?string $type = null;
     #[Description('Indicates whether it is possible to use a null value')]
     protected ?bool $nullable = null;
-    #[Description('Indicates whether this schema is deprecated')]
+    #[Description('Indicates whether this type is deprecated')]
     protected ?bool $deprecated = null;
-    #[Description('Indicates whether this schema is readonly')]
+    #[Description('Indicates whether this type is readonly')]
     protected ?bool $readonly = null;
-    public function setTitle(?string $title) : void
-    {
-        $this->title = $title;
-    }
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
@@ -65,75 +55,61 @@ class CommonProperties implements \JsonSerializable
     {
         return $this->readonly;
     }
-    public function jsonSerialize() : object
+    public function toRecord() : \PSX\Record\RecordInterface
     {
-        return (object) array_filter(array('title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'nullable' => $this->nullable, 'deprecated' => $this->deprecated, 'readonly' => $this->readonly), static function ($value) : bool {
-            return $value !== null;
-        });
-    }
-}
-
-use PSX\Schema\Attribute\Description;
-
-class ScalarProperties implements \JsonSerializable
-{
-    #[Description('Describes the specific format of this type i.e. date-time or int64')]
-    protected ?string $format = null;
-    #[Description('A list of possible enumeration values')]
-    protected StringArray|NumberArray|null $enum = null;
-    #[Description('Represents a scalar value')]
-    protected string|float|bool|null $default = null;
-    public function setFormat(?string $format) : void
-    {
-        $this->format = $format;
-    }
-    public function getFormat() : ?string
-    {
-        return $this->format;
-    }
-    public function setEnum(StringArray|NumberArray|null $enum) : void
-    {
-        $this->enum = $enum;
-    }
-    public function getEnum() : StringArray|NumberArray|null
-    {
-        return $this->enum;
-    }
-    public function setDefault(string|float|bool|null $default) : void
-    {
-        $this->default = $default;
-    }
-    public function getDefault() : string|float|bool|null
-    {
-        return $this->default;
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('description', $this->description);
+        $record->put('type', $this->type);
+        $record->put('nullable', $this->nullable);
+        $record->put('deprecated', $this->deprecated);
+        $record->put('readonly', $this->readonly);
+        return $record;
     }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('format' => $this->format, 'enum' => $this->enum, 'default' => $this->default), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
-}
-
-use PSX\Schema\Attribute\Description;
-/**
- * @extends \PSX\Record\Record<PropertyValue>
- */
-#[Description('Properties of a schema')]
-class Properties extends \PSX\Record\Record
-{
 }
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Properties specific for a container')]
-#[Required(array('type'))]
-class ContainerProperties implements \JsonSerializable
+#[Description('Represents a struct type. A struct type contains a fix set of defined properties')]
+#[Required(array('type', 'properties'))]
+class StructType extends CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
+    #[Key('$final')]
+    #[Description('Indicates that a struct is final, this means it is not possible to extend this struct')]
+    protected ?bool $final = null;
+    #[Key('$extends')]
+    #[Description('Extends an existing type with the referenced type')]
+    protected ?string $extends = null;
     #[Enum(array('object'))]
     protected ?string $type = null;
+    protected ?Properties $properties = null;
+    /**
+     * @var array<string>|null
+     */
+    protected ?array $required = null;
+    public function setFinal(?bool $final) : void
+    {
+        $this->final = $final;
+    }
+    public function getFinal() : ?bool
+    {
+        return $this->final;
+    }
+    public function setExtends(?string $extends) : void
+    {
+        $this->extends = $extends;
+    }
+    public function getExtends() : ?string
+    {
+        return $this->extends;
+    }
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -142,29 +118,6 @@ class ContainerProperties implements \JsonSerializable
     {
         return $this->type;
     }
-    public function jsonSerialize() : object
-    {
-        return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
-            return $value !== null;
-        });
-    }
-}
-
-use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\MinItems;
-use PSX\Schema\Attribute\Required;
-
-#[Description('Struct specific properties')]
-#[Required(array('properties'))]
-class StructProperties implements \JsonSerializable
-{
-    protected ?Properties $properties = null;
-    /**
-     * @var array<string>|null
-     */
-    #[Description('Array string values')]
-    #[MinItems(1)]
-    protected ?array $required = null;
     public function setProperties(?Properties $properties) : void
     {
         $this->properties = $properties;
@@ -184,35 +137,60 @@ class StructProperties implements \JsonSerializable
     {
         return $this->required;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('$final', $this->final);
+        $record->put('$extends', $this->extends);
+        $record->put('type', $this->type);
+        $record->put('properties', $this->properties);
+        $record->put('required', $this->required);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Minimum;
+/**
+ * @extends \PSX\Record\Record<BooleanType|NumberType|StringType|ArrayType|UnionType|IntersectionType|ReferenceType|GenericType|AnyType>
+ */
+#[Description('Properties of a struct')]
+class Properties extends \PSX\Record\Record
+{
+}
+
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Map specific properties')]
-#[Required(array('additionalProperties'))]
-class MapProperties implements \JsonSerializable
+#[Description('Represents a map type. A map type contains variable key value entries of a specific type')]
+#[Required(array('type', 'additionalProperties'))]
+class MapType extends CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('Allowed values of an object property')]
-    protected BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties = null;
+    #[Enum(array('object'))]
+    protected ?string $type = null;
+    protected BooleanType|NumberType|StringType|ArrayType|UnionType|IntersectionType|ReferenceType|GenericType|AnyType|null $additionalProperties = null;
     #[Description('Positive integer value')]
-    #[Minimum(0)]
     protected ?int $maxProperties = null;
     #[Description('Positive integer value')]
-    #[Minimum(0)]
     protected ?int $minProperties = null;
-    public function setAdditionalProperties(BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null $additionalProperties) : void
+    public function setType(?string $type) : void
+    {
+        $this->type = $type;
+    }
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
+    public function setAdditionalProperties(BooleanType|NumberType|StringType|ArrayType|UnionType|IntersectionType|ReferenceType|GenericType|AnyType|null $additionalProperties) : void
     {
         $this->additionalProperties = $additionalProperties;
     }
-    public function getAdditionalProperties() : BooleanType|NumberType|StringType|ArrayType|CombinationType|ReferenceType|GenericType|null
+    public function getAdditionalProperties() : BooleanType|NumberType|StringType|ArrayType|UnionType|IntersectionType|ReferenceType|GenericType|AnyType|null
     {
         return $this->additionalProperties;
     }
@@ -232,34 +210,37 @@ class MapProperties implements \JsonSerializable
     {
         return $this->minProperties;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        $record->put('additionalProperties', $this->additionalProperties);
+        $record->put('maxProperties', $this->maxProperties);
+        $record->put('minProperties', $this->minProperties);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('additionalProperties' => $this->additionalProperties, 'maxProperties' => $this->maxProperties, 'minProperties' => $this->minProperties), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Enum;
-use PSX\Schema\Attribute\Minimum;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Array properties')]
+#[Description('Represents an array type. An array type contains an ordered list of a specific type')]
 #[Required(array('type', 'items'))]
-class ArrayProperties implements \JsonSerializable
+class ArrayType extends CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Enum(array('array'))]
     protected ?string $type = null;
-    #[Description('Allowed values of an array item')]
-    protected BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items = null;
+    protected BooleanType|NumberType|StringType|ReferenceType|GenericType|AnyType|null $items = null;
     #[Description('Positive integer value')]
-    #[Minimum(0)]
     protected ?int $maxItems = null;
     #[Description('Positive integer value')]
-    #[Minimum(0)]
     protected ?int $minItems = null;
-    protected ?bool $uniqueItems = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -268,11 +249,11 @@ class ArrayProperties implements \JsonSerializable
     {
         return $this->type;
     }
-    public function setItems(BooleanType|NumberType|StringType|ReferenceType|GenericType|null $items) : void
+    public function setItems(BooleanType|NumberType|StringType|ReferenceType|GenericType|AnyType|null $items) : void
     {
         $this->items = $items;
     }
-    public function getItems() : BooleanType|NumberType|StringType|ReferenceType|GenericType|null
+    public function getItems() : BooleanType|NumberType|StringType|ReferenceType|GenericType|AnyType|null
     {
         return $this->items;
     }
@@ -292,19 +273,73 @@ class ArrayProperties implements \JsonSerializable
     {
         return $this->minItems;
     }
-    public function setUniqueItems(?bool $uniqueItems) : void
+    public function toRecord() : \PSX\Record\RecordInterface
     {
-        $this->uniqueItems = $uniqueItems;
-    }
-    public function getUniqueItems() : ?bool
-    {
-        return $this->uniqueItems;
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        $record->put('items', $this->items);
+        $record->put('maxItems', $this->maxItems);
+        $record->put('minItems', $this->minItems);
+        return $record;
     }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('type' => $this->type, 'items' => $this->items, 'maxItems' => $this->maxItems, 'minItems' => $this->minItems, 'uniqueItems' => $this->uniqueItems), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
+    }
+}
+
+use PSX\Schema\Attribute\Description;
+
+#[Description('Represents a scalar type')]
+class ScalarType extends CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
+{
+    #[Description('Describes the specific format of this type i.e. date-time or int64')]
+    protected ?string $format = null;
+    /**
+     * @var array<string|float>|null
+     */
+    protected ?array $enum = null;
+    protected string|float|bool|null $default = null;
+    public function setFormat(?string $format) : void
+    {
+        $this->format = $format;
+    }
+    public function getFormat() : ?string
+    {
+        return $this->format;
+    }
+    /**
+     * @param array<string|float>|null $enum
+     */
+    public function setEnum(?array $enum) : void
+    {
+        $this->enum = $enum;
+    }
+    public function getEnum() : ?array
+    {
+        return $this->enum;
+    }
+    public function setDefault(string|float|bool|null $default) : void
+    {
+        $this->default = $default;
+    }
+    public function getDefault() : string|float|bool|null
+    {
+        return $this->default;
+    }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('format', $this->format);
+        $record->put('enum', $this->enum);
+        $record->put('default', $this->default);
+        return $record;
+    }
+    public function jsonSerialize() : object
+    {
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -312,9 +347,9 @@ use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Boolean properties')]
+#[Description('Represents a boolean type')]
 #[Required(array('type'))]
-class BooleanProperties implements \JsonSerializable
+class BooleanType extends ScalarType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Enum(array('boolean'))]
     protected ?string $type = null;
@@ -326,11 +361,16 @@ class BooleanProperties implements \JsonSerializable
     {
         return $this->type;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('type' => $this->type), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -339,9 +379,9 @@ use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Minimum;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Number properties')]
+#[Description('Represents a number type (contains also integer)')]
 #[Required(array('type'))]
-class NumberProperties implements \JsonSerializable
+class NumberType extends ScalarType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Enum(array('number', 'integer'))]
     protected ?string $type = null;
@@ -399,11 +439,21 @@ class NumberProperties implements \JsonSerializable
     {
         return $this->exclusiveMinimum;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        $record->put('multipleOf', $this->multipleOf);
+        $record->put('maximum', $this->maximum);
+        $record->put('exclusiveMaximum', $this->exclusiveMaximum);
+        $record->put('minimum', $this->minimum);
+        $record->put('exclusiveMinimum', $this->exclusiveMinimum);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('type' => $this->type, 'multipleOf' => $this->multipleOf, 'maximum' => $this->maximum, 'exclusiveMaximum' => $this->exclusiveMaximum, 'minimum' => $this->minimum, 'exclusiveMinimum' => $this->exclusiveMinimum), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -412,9 +462,9 @@ use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Minimum;
 use PSX\Schema\Attribute\Required;
 
-#[Description('String properties')]
+#[Description('Represents a string type')]
 #[Required(array('type'))]
-class StringProperties implements \JsonSerializable
+class StringType extends ScalarType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Enum(array('string'))]
     protected ?string $type = null;
@@ -457,11 +507,152 @@ class StringProperties implements \JsonSerializable
     {
         return $this->pattern;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        $record->put('maxLength', $this->maxLength);
+        $record->put('minLength', $this->minLength);
+        $record->put('pattern', $this->pattern);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('type' => $this->type, 'maxLength' => $this->maxLength, 'minLength' => $this->minLength, 'pattern' => $this->pattern), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
+    }
+}
+
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Represents an any type')]
+#[Required(array('type'))]
+class AnyType extends CommonType implements \JsonSerializable, \PSX\Record\RecordableInterface
+{
+    #[Enum(array('any'))]
+    protected ?string $type = null;
+    public function setType(?string $type) : void
+    {
+        $this->type = $type;
+    }
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('type', $this->type);
+        return $record;
+    }
+    public function jsonSerialize() : object
+    {
+        return (object) $this->toRecord()->getAll();
+    }
+}
+
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Represents an intersection type')]
+#[Required(array('allOf'))]
+class IntersectionType implements \JsonSerializable, \PSX\Record\RecordableInterface
+{
+    protected ?string $description = null;
+    /**
+     * @var array<ReferenceType>|null
+     */
+    #[Description('Contains an array of references. The reference must only point to a struct type')]
+    protected ?array $allOf = null;
+    public function setDescription(?string $description) : void
+    {
+        $this->description = $description;
+    }
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+    /**
+     * @param array<ReferenceType>|null $allOf
+     */
+    public function setAllOf(?array $allOf) : void
+    {
+        $this->allOf = $allOf;
+    }
+    public function getAllOf() : ?array
+    {
+        return $this->allOf;
+    }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('description', $this->description);
+        $record->put('allOf', $this->allOf);
+        return $record;
+    }
+    public function jsonSerialize() : object
+    {
+        return (object) $this->toRecord()->getAll();
+    }
+}
+
+use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Required;
+
+#[Description('Represents an union type. An union type can contain one of the provided types')]
+#[Required(array('oneOf'))]
+class UnionType implements \JsonSerializable, \PSX\Record\RecordableInterface
+{
+    protected ?string $description = null;
+    protected ?Discriminator $discriminator = null;
+    /**
+     * @var array<NumberType|StringType|BooleanType|ReferenceType>|null
+     */
+    #[Description('Contains an array of references. The reference must only point to a struct type')]
+    protected ?array $oneOf = null;
+    public function setDescription(?string $description) : void
+    {
+        $this->description = $description;
+    }
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+    public function setDiscriminator(?Discriminator $discriminator) : void
+    {
+        $this->discriminator = $discriminator;
+    }
+    public function getDiscriminator() : ?Discriminator
+    {
+        return $this->discriminator;
+    }
+    /**
+     * @param array<NumberType|StringType|BooleanType|ReferenceType>|null $oneOf
+     */
+    public function setOneOf(?array $oneOf) : void
+    {
+        $this->oneOf = $oneOf;
+    }
+    public function getOneOf() : ?array
+    {
+        return $this->oneOf;
+    }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('description', $this->description);
+        $record->put('discriminator', $this->discriminator);
+        $record->put('oneOf', $this->oneOf);
+        return $record;
+    }
+    public function jsonSerialize() : object
+    {
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -479,7 +670,7 @@ use PSX\Schema\Attribute\Required;
 
 #[Description('Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description')]
 #[Required(array('propertyName'))]
-class Discriminator implements \JsonSerializable
+class Discriminator implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('The name of the property in the payload that will hold the discriminator value')]
     protected ?string $propertyName = null;
@@ -500,123 +691,33 @@ class Discriminator implements \JsonSerializable
     {
         return $this->mapping;
     }
-    public function jsonSerialize() : object
+    public function toRecord() : \PSX\Record\RecordInterface
     {
-        return (object) array_filter(array('propertyName' => $this->propertyName, 'mapping' => $this->mapping), static function ($value) : bool {
-            return $value !== null;
-        });
-    }
-}
-
-use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
-
-#[Description('An intersection type combines multiple schemas into one')]
-#[Required(array('allOf'))]
-class AllOfProperties implements \JsonSerializable
-{
-    protected ?string $description = null;
-    /**
-     * @var array<OfValue>|null
-     */
-    #[Description('Combination values')]
-    protected ?array $allOf = null;
-    public function setDescription(?string $description) : void
-    {
-        $this->description = $description;
-    }
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    /**
-     * @param array<OfValue>|null $allOf
-     */
-    public function setAllOf(?array $allOf) : void
-    {
-        $this->allOf = $allOf;
-    }
-    public function getAllOf() : ?array
-    {
-        return $this->allOf;
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('propertyName', $this->propertyName);
+        $record->put('mapping', $this->mapping);
+        return $record;
     }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('description' => $this->description, 'allOf' => $this->allOf), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
-}
-
-use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
-
-#[Description('An union type can contain one of the provided schemas')]
-#[Required(array('oneOf'))]
-class OneOfProperties implements \JsonSerializable
-{
-    protected ?string $description = null;
-    protected ?Discriminator $discriminator = null;
-    /**
-     * @var array<OfValue>|null
-     */
-    #[Description('Combination values')]
-    protected ?array $oneOf = null;
-    public function setDescription(?string $description) : void
-    {
-        $this->description = $description;
-    }
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    public function setDiscriminator(?Discriminator $discriminator) : void
-    {
-        $this->discriminator = $discriminator;
-    }
-    public function getDiscriminator() : ?Discriminator
-    {
-        return $this->discriminator;
-    }
-    /**
-     * @param array<OfValue>|null $oneOf
-     */
-    public function setOneOf(?array $oneOf) : void
-    {
-        $this->oneOf = $oneOf;
-    }
-    public function getOneOf() : ?array
-    {
-        return $this->oneOf;
-    }
-    public function jsonSerialize() : object
-    {
-        return (object) array_filter(array('description' => $this->description, 'discriminator' => $this->discriminator, 'oneOf' => $this->oneOf), static function ($value) : bool {
-            return $value !== null;
-        });
-    }
-}
-
-/**
- * @extends \PSX\Record\Record<ReferenceType>
- */
-class TemplateProperties extends \PSX\Record\Record
-{
 }
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Represents a reference to another schema')]
+#[Description('Represents a reference type. A reference type points to a specific type at the definitions map')]
 #[Required(array('$ref'))]
-class ReferenceType implements \JsonSerializable
+class ReferenceType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Key('$ref')]
-    #[Description('Reference to the schema under the definitions key')]
+    #[Description('Reference to a type under the definitions map')]
     protected ?string $ref = null;
     #[Key('$template')]
-    #[Description('Optional concrete schema definitions which replace generic template types')]
+    #[Description('Optional concrete type definitions which replace generic template types')]
     protected ?TemplateProperties $template = null;
     public function setRef(?string $ref) : void
     {
@@ -634,21 +735,34 @@ class ReferenceType implements \JsonSerializable
     {
         return $this->template;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('$ref', $this->ref);
+        $record->put('$template', $this->template);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('$ref' => $this->ref, '$template' => $this->template), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
+}
+
+/**
+ * @extends \PSX\Record\Record<string>
+ */
+class TemplateProperties extends \PSX\Record\Record
+{
 }
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Required;
 
-#[Description('Represents a generic type')]
+#[Description('Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword')]
 #[Required(array('$generic'))]
-class GenericType implements \JsonSerializable
+class GenericType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Key('$generic')]
     protected ?string $generic = null;
@@ -660,19 +774,24 @@ class GenericType implements \JsonSerializable
     {
         return $this->generic;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('$generic', $this->generic);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('$generic' => $this->generic), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
 use PSX\Schema\Attribute\Description;
 /**
- * @extends \PSX\Record\Record<DefinitionValue>
+ * @extends \PSX\Record\Record<StructType|MapType|ReferenceType>
  */
-#[Description('Schema definitions which can be reused')]
+#[Description('The definitions map which contains all types')]
 class Definitions extends \PSX\Record\Record
 {
 }
@@ -681,37 +800,25 @@ use PSX\Schema\Attribute\Description;
 /**
  * @extends \PSX\Record\Record<string>
  */
-#[Description('Contains external definitions which are imported. The imported schemas can be used via the namespace')]
+#[Description('Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. \'my_namespace:my_type\'')]
 class Import extends \PSX\Record\Record
 {
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Key;
-use PSX\Schema\Attribute\MinItems;
 use PSX\Schema\Attribute\Required;
-use PSX\Schema\Attribute\Title;
 
-#[Title('TypeSchema')]
-#[Description('TypeSchema meta schema which describes a TypeSchema')]
-#[Required(array('title', 'type', 'properties'))]
-class TypeSchema implements \JsonSerializable
+#[Description('The root TypeSchema')]
+#[Required(array('definitions'))]
+class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Key('$import')]
     protected ?Import $import = null;
-    protected ?string $title = null;
-    protected ?string $description = null;
-    #[Enum(array('object'))]
-    protected ?string $type = null;
     protected ?Definitions $definitions = null;
-    protected ?Properties $properties = null;
-    /**
-     * @var array<string>|null
-     */
-    #[Description('Array string values')]
-    #[MinItems(1)]
-    protected ?array $required = null;
+    #[Key('$ref')]
+    #[Description('Reference to a root schema under the definitions key')]
+    protected ?string $ref = null;
     public function setImport(?Import $import) : void
     {
         $this->import = $import;
@@ -719,30 +826,6 @@ class TypeSchema implements \JsonSerializable
     public function getImport() : ?Import
     {
         return $this->import;
-    }
-    public function setTitle(?string $title) : void
-    {
-        $this->title = $title;
-    }
-    public function getTitle() : ?string
-    {
-        return $this->title;
-    }
-    public function setDescription(?string $description) : void
-    {
-        $this->description = $description;
-    }
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    public function setType(?string $type) : void
-    {
-        $this->type = $type;
-    }
-    public function getType() : ?string
-    {
-        return $this->type;
     }
     public function setDefinitions(?Definitions $definitions) : void
     {
@@ -752,29 +835,25 @@ class TypeSchema implements \JsonSerializable
     {
         return $this->definitions;
     }
-    public function setProperties(?Properties $properties) : void
+    public function setRef(?string $ref) : void
     {
-        $this->properties = $properties;
+        $this->ref = $ref;
     }
-    public function getProperties() : ?Properties
+    public function getRef() : ?string
     {
-        return $this->properties;
+        return $this->ref;
     }
-    /**
-     * @param array<string>|null $required
-     */
-    public function setRequired(?array $required) : void
+    public function toRecord() : \PSX\Record\RecordInterface
     {
-        $this->required = $required;
-    }
-    public function getRequired() : ?array
-    {
-        return $this->required;
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('$import', $this->import);
+        $record->put('definitions', $this->definitions);
+        $record->put('$ref', $this->ref);
+        return $record;
     }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('$import' => $this->import, 'title' => $this->title, 'description' => $this->description, 'type' => $this->type, 'definitions' => $this->definitions, 'properties' => $this->properties, 'required' => $this->required), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }

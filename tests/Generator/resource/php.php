@@ -3,7 +3,7 @@ use PSX\Schema\Attribute\Required;
 
 #[Description('Location of the person')]
 #[Required(array('lat', 'long'))]
-class Location implements \JsonSerializable
+class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?float $lat = null;
     protected ?float $long = null;
@@ -23,11 +23,17 @@ class Location implements \JsonSerializable
     {
         return $this->long;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('lat', $this->lat);
+        $record->put('long', $this->long);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('lat' => $this->lat, 'long' => $this->long), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -36,7 +42,7 @@ use PSX\Schema\Attribute\Required;
 
 #[Description('An application')]
 #[Required(array('name', 'url'))]
-class Web implements \JsonSerializable
+class Web implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $name = null;
     protected ?string $url = null;
@@ -56,11 +62,17 @@ class Web implements \JsonSerializable
     {
         return $this->url;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('name', $this->name);
+        $record->put('url', $this->url);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('name' => $this->name, 'url' => $this->url), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -72,7 +84,7 @@ use PSX\Schema\Attribute\Required;
 
 #[Description('An simple author element with some description')]
 #[Required(array('title'))]
-class Author implements \JsonSerializable
+class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Pattern('[A-z]{3,16}')]
     protected ?string $title = null;
@@ -136,11 +148,20 @@ class Author implements \JsonSerializable
     {
         return $this->origin;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('title', $this->title);
+        $record->put('email', $this->email);
+        $record->put('categories', $this->categories);
+        $record->put('locations', $this->locations);
+        $record->put('origin', $this->origin);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('title' => $this->title, 'email' => $this->email, 'categories' => $this->categories, 'locations' => $this->locations, 'origin' => $this->origin), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -168,7 +189,7 @@ use PSX\Schema\Attribute\Required;
 
 #[Description('An general news entry')]
 #[Required(array('receiver', 'price', 'content'))]
-class News implements \JsonSerializable
+class News implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?Meta $config = null;
     /**
@@ -404,10 +425,36 @@ class News implements \JsonSerializable
     {
         return $this->payload;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('config', $this->config);
+        $record->put('inlineConfig', $this->inlineConfig);
+        $record->put('tags', $this->tags);
+        $record->put('receiver', $this->receiver);
+        $record->put('resources', $this->resources);
+        $record->put('profileImage', $this->profileImage);
+        $record->put('read', $this->read);
+        $record->put('source', $this->source);
+        $record->put('author', $this->author);
+        $record->put('meta', $this->meta);
+        $record->put('sendDate', $this->sendDate);
+        $record->put('readDate', $this->readDate);
+        $record->put('expires', $this->expires);
+        $record->put('price', $this->price);
+        $record->put('rating', $this->rating);
+        $record->put('content', $this->content);
+        $record->put('question', $this->question);
+        $record->put('version', $this->version);
+        $record->put('coffeeTime', $this->coffeeTime);
+        $record->put('profileUri', $this->profileUri);
+        $record->put('g-recaptcha-response', $this->captcha);
+        $record->put('payload', $this->payload);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('config' => $this->config, 'inlineConfig' => $this->inlineConfig, 'tags' => $this->tags, 'receiver' => $this->receiver, 'resources' => $this->resources, 'profileImage' => $this->profileImage, 'read' => $this->read, 'source' => $this->source, 'author' => $this->author, 'meta' => $this->meta, 'sendDate' => $this->sendDate, 'readDate' => $this->readDate, 'expires' => $this->expires, 'price' => $this->price, 'rating' => $this->rating, 'content' => $this->content, 'question' => $this->question, 'version' => $this->version, 'coffeeTime' => $this->coffeeTime, 'profileUri' => $this->profileUri, 'g-recaptcha-response' => $this->captcha, 'payload' => $this->payload), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }

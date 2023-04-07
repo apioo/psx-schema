@@ -1,10 +1,9 @@
 from typing import Any
 from dataclasses import dataclass
 
-# Common properties which can be used at any schema
+# Represents a base type. Every type extends from this common type and shares the defined properties
 @dataclass
-class CommonProperties:
-    title: str
+class CommonType:
     description: str
     type: str
     nullable: bool
@@ -13,72 +12,75 @@ class CommonProperties:
 
 from typing import Any
 from dataclasses import dataclass
+from typing import List
+
+# Represents a struct type. A struct type contains a fix set of defined properties
 @dataclass
-class ScalarProperties:
-    format: str
-    enum: Union[StringArray, NumberArray]
-    default: Union[str, float, bool]
-
-from typing import Any
-from dataclasses import dataclass
-from typing import Dict
-
-# Properties of a schema
-class Properties(Dict[str, PropertyValue]):
-
-from typing import Any
-from dataclasses import dataclass
-
-# Properties specific for a container
-@dataclass
-class ContainerProperties:
+class StructType(CommonType):
+    _final: bool
+    _extends: str
     type: str
-
-from typing import Any
-from dataclasses import dataclass
-
-# Struct specific properties
-@dataclass
-class StructProperties:
     properties: Properties
     required: List[str]
 
 from typing import Any
 from dataclasses import dataclass
+from typing import Dict
+from typing import Union
 
-# Map specific properties
+# Properties of a struct
+class Properties(Dict[str, Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType]]):
+
+from typing import Any
+from dataclasses import dataclass
+from typing import Union
+
+# Represents a map type. A map type contains variable key value entries of a specific type
 @dataclass
-class MapProperties:
-    additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, CombinationType, ReferenceType, GenericType]
+class MapType(CommonType):
+    type: str
+    additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType]
     max_properties: int
     min_properties: int
 
 from typing import Any
 from dataclasses import dataclass
+from typing import Union
 
-# Array properties
+# Represents an array type. An array type contains an ordered list of a specific type
 @dataclass
-class ArrayProperties:
+class ArrayType(CommonType):
     type: str
-    items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType]
+    items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType, AnyType]
     max_items: int
     min_items: int
-    unique_items: bool
+
+from typing import Any
+from dataclasses import dataclass
+from typing import List
+from typing import Union
+
+# Represents a scalar type
+@dataclass
+class ScalarType(CommonType):
+    format: str
+    enum: List[Union[str, float]]
+    default: Union[str, float, bool]
 
 from typing import Any
 from dataclasses import dataclass
 
-# Boolean properties
+# Represents a boolean type
 @dataclass
-class BooleanProperties:
+class BooleanType(ScalarType):
     type: str
 
 from typing import Any
 from dataclasses import dataclass
 
-# Number properties
+# Represents a number type (contains also integer)
 @dataclass
-class NumberProperties:
+class NumberType(ScalarType):
     type: str
     multiple_of: float
     maximum: float
@@ -89,13 +91,43 @@ class NumberProperties:
 from typing import Any
 from dataclasses import dataclass
 
-# String properties
+# Represents a string type
 @dataclass
-class StringProperties:
+class StringType(ScalarType):
     type: str
     max_length: int
     min_length: int
     pattern: str
+
+from typing import Any
+from dataclasses import dataclass
+
+# Represents an any type
+@dataclass
+class AnyType(CommonType):
+    type: str
+
+from typing import Any
+from dataclasses import dataclass
+from typing import List
+
+# Represents an intersection type
+@dataclass
+class IntersectionType:
+    description: str
+    all_of: List[ReferenceType]
+
+from typing import Any
+from dataclasses import dataclass
+from typing import List
+from typing import Union
+
+# Represents an union type. An union type can contain one of the provided types
+@dataclass
+class UnionType:
+    description: str
+    discriminator: Discriminator
+    one_of: List[Union[NumberType, StringType, BooleanType, ReferenceType]]
 
 from typing import Any
 from dataclasses import dataclass
@@ -115,34 +147,8 @@ class Discriminator:
 
 from typing import Any
 from dataclasses import dataclass
-from typing import List
 
-# An intersection type combines multiple schemas into one
-@dataclass
-class AllOfProperties:
-    description: str
-    all_of: List[OfValue]
-
-from typing import Any
-from dataclasses import dataclass
-from typing import List
-
-# An union type can contain one of the provided schemas
-@dataclass
-class OneOfProperties:
-    description: str
-    discriminator: Discriminator
-    one_of: List[OfValue]
-
-from typing import Any
-from dataclasses import dataclass
-from typing import Dict
-class TemplateProperties(Dict[str, ReferenceType]):
-
-from typing import Any
-from dataclasses import dataclass
-
-# Represents a reference to another schema
+# Represents a reference type. A reference type points to a specific type at the definitions map
 @dataclass
 class ReferenceType:
     _ref: str
@@ -150,8 +156,13 @@ class ReferenceType:
 
 from typing import Any
 from dataclasses import dataclass
+from typing import Dict
+class TemplateProperties(Dict[str, str]):
 
-# Represents a generic type
+from typing import Any
+from dataclasses import dataclass
+
+# Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 @dataclass
 class GenericType:
     _generic: str
@@ -159,27 +170,24 @@ class GenericType:
 from typing import Any
 from dataclasses import dataclass
 from typing import Dict
+from typing import Union
 
-# Schema definitions which can be reused
-class Definitions(Dict[str, DefinitionValue]):
+# The definitions map which contains all types
+class Definitions(Dict[str, Union[StructType, MapType, ReferenceType]]):
 
 from typing import Any
 from dataclasses import dataclass
 from typing import Dict
 
-# Contains external definitions which are imported. The imported schemas can be used via the namespace
+# Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
 class Import(Dict[str, str]):
 
 from typing import Any
 from dataclasses import dataclass
 
-# TypeSchema meta schema which describes a TypeSchema
+# The root TypeSchema
 @dataclass
 class TypeSchema:
     _import: Import
-    title: str
-    description: str
-    type: str
     definitions: Definitions
-    properties: Properties
-    required: List[str]
+    _ref: str

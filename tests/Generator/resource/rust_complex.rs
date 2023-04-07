@@ -1,6 +1,5 @@
-// Common properties which can be used at any schema
-struct CommonProperties {
-    title: String,
+// Represents a base type. Every type extends from this common type and shares the defined properties
+struct CommonType {
     description: String,
     _type: String,
     nullable: bool,
@@ -8,50 +7,55 @@ struct CommonProperties {
     readonly: bool,
 }
 
-struct ScalarProperties {
-    format: String,
-    _enum: Object,
-    default: Object,
-}
-
-// Properties of a schema
-type Properties = HashMap<String, PropertyValue>() {
-}
-
-// Properties specific for a container
-struct ContainerProperties {
+// Represents a struct type. A struct type contains a fix set of defined properties
+struct StructType {
+    *CommonType
+    _final: bool,
+    extends: String,
     _type: String,
-}
-
-// Struct specific properties
-struct StructProperties {
     properties: Properties,
     required: Vec<String>,
 }
 
-// Map specific properties
-struct MapProperties {
+// Properties of a struct
+type Properties = HashMap<String, Object>() {
+}
+
+// Represents a map type. A map type contains variable key value entries of a specific type
+struct MapType {
+    *CommonType
+    _type: String,
     additionalProperties: Object,
     maxProperties: u64,
     minProperties: u64,
 }
 
-// Array properties
-struct ArrayProperties {
+// Represents an array type. An array type contains an ordered list of a specific type
+struct ArrayType {
+    *CommonType
     _type: String,
     items: Object,
     maxItems: u64,
     minItems: u64,
-    uniqueItems: bool,
 }
 
-// Boolean properties
-struct BooleanProperties {
+// Represents a scalar type
+struct ScalarType {
+    *CommonType
+    format: String,
+    _enum: Vec<Object>,
+    default: Object,
+}
+
+// Represents a boolean type
+struct BooleanType {
+    *ScalarType
     _type: String,
 }
 
-// Number properties
-struct NumberProperties {
+// Represents a number type (contains also integer)
+struct NumberType {
+    *ScalarType
     _type: String,
     multipleOf: float64,
     maximum: float64,
@@ -60,12 +64,32 @@ struct NumberProperties {
     exclusiveMinimum: bool,
 }
 
-// String properties
-struct StringProperties {
+// Represents a string type
+struct StringType {
+    *ScalarType
     _type: String,
     maxLength: u64,
     minLength: u64,
     pattern: String,
+}
+
+// Represents an any type
+struct AnyType {
+    *CommonType
+    _type: String,
+}
+
+// Represents an intersection type
+struct IntersectionType {
+    description: String,
+    allOf: Vec<ReferenceType>,
+}
+
+// Represents an union type. An union type can contain one of the provided types
+struct UnionType {
+    description: String,
+    discriminator: Discriminator,
+    oneOf: Vec<Object>,
 }
 
 // An object to hold mappings between payload values and schema names or references
@@ -78,48 +102,31 @@ struct Discriminator {
     mapping: DiscriminatorMapping,
 }
 
-// An intersection type combines multiple schemas into one
-struct AllOfProperties {
-    description: String,
-    allOf: Vec<OfValue>,
-}
-
-// An union type can contain one of the provided schemas
-struct OneOfProperties {
-    description: String,
-    discriminator: Discriminator,
-    oneOf: Vec<OfValue>,
-}
-
-type TemplateProperties = HashMap<String, ReferenceType>() {
-}
-
-// Represents a reference to another schema
+// Represents a reference type. A reference type points to a specific type at the definitions map
 struct ReferenceType {
     _ref: String,
     template: TemplateProperties,
 }
 
-// Represents a generic type
+type TemplateProperties = HashMap<String, String>() {
+}
+
+// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 struct GenericType {
     generic: String,
 }
 
-// Schema definitions which can be reused
-type Definitions = HashMap<String, DefinitionValue>() {
+// The definitions map which contains all types
+type Definitions = HashMap<String, Object>() {
 }
 
-// Contains external definitions which are imported. The imported schemas can be used via the namespace
+// Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
 type Import = HashMap<String, String>() {
 }
 
-// TypeSchema meta schema which describes a TypeSchema
+// The root TypeSchema
 struct TypeSchema {
     import: Import,
-    title: String,
-    description: String,
-    _type: String,
     definitions: Definitions,
-    properties: Properties,
-    required: Vec<String>,
+    _ref: String,
 }

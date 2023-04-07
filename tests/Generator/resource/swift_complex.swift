@@ -1,6 +1,5 @@
-// Common properties which can be used at any schema
-class CommonProperties: Codable {
-    var title: String
+// Represents a base type. Every type extends from this common type and shares the defined properties
+class CommonType: Codable {
     var description: String
     var _type: String
     var nullable: Bool
@@ -8,70 +7,48 @@ class CommonProperties: Codable {
     var readonly: Bool
 }
 
-class ScalarProperties: Codable {
-    var format: String
-    var _enum: EnumValue
-    var _default: ScalarValue
-}
-
-// Allowed values of an object property
-typealias PropertyValue = BooleanType | NumberType | StringType | ArrayType | CombinationType | ReferenceType | GenericType;
-
-// Properties of a schema
-typealias Properties = Dictionary<String, PropertyValue>;
-
-// Properties specific for a container
-class ContainerProperties: Codable {
+// Represents a struct type. A struct type contains a fix set of defined properties
+class StructType: CommonType {
+    var _final: Bool
+    var extends: String
     var _type: String
-}
-
-// Struct specific properties
-class StructProperties: Codable {
     var properties: Properties
-    var _required: StringArray
+    var _required: Array<String>
 }
 
-// A struct contains a fix set of defined properties
-typealias StructType = CommonProperties & ContainerProperties & StructProperties;
+// Properties of a struct
+typealias Properties = Dictionary<String, BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType>;
 
-// Map specific properties
-class MapProperties: Codable {
-    var additionalProperties: PropertyValue
+// Represents a map type. A map type contains variable key value entries of a specific type
+class MapType: CommonType {
+    var _type: String
+    var additionalProperties: BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType
     var maxProperties: Int
     var minProperties: Int
 }
 
-// A map contains variable key value entries of a specific type
-typealias MapType = CommonProperties & ContainerProperties & MapProperties;
-
-// An object represents either a struct or map type
-typealias ObjectType = StructType | MapType;
-
-// Allowed values of an array item
-typealias ArrayValue = BooleanType | NumberType | StringType | ReferenceType | GenericType;
-
-// Array properties
-class ArrayProperties: Codable {
+// Represents an array type. An array type contains an ordered list of a specific type
+class ArrayType: CommonType {
     var _type: String
-    var items: ArrayValue
+    var items: BooleanType | NumberType | StringType | ReferenceType | GenericType | AnyType
     var maxItems: Int
     var minItems: Int
-    var uniqueItems: Bool
 }
 
-// An array contains an ordered list of a specific type
-typealias ArrayType = CommonProperties & ArrayProperties;
+// Represents a scalar type
+class ScalarType: CommonType {
+    var format: String
+    var _enum: Array<String | Float>
+    var _default: String | Float | Bool
+}
 
-// Boolean properties
-class BooleanProperties: Codable {
+// Represents a boolean type
+class BooleanType: ScalarType {
     var _type: String
 }
 
-// Represents a boolean value
-typealias BooleanType = CommonProperties & ScalarProperties & BooleanProperties;
-
-// Number properties
-class NumberProperties: Codable {
+// Represents a number type (contains also integer)
+class NumberType: ScalarType {
     var _type: String
     var multipleOf: Float
     var maximum: Float
@@ -80,22 +57,31 @@ class NumberProperties: Codable {
     var exclusiveMinimum: Bool
 }
 
-// Represents a number value (contains also integer)
-typealias NumberType = CommonProperties & ScalarProperties & NumberProperties;
-
-// String properties
-class StringProperties: Codable {
+// Represents a string type
+class StringType: ScalarType {
     var _type: String
     var maxLength: Int
     var minLength: Int
     var pattern: String
 }
 
-// Represents a string value
-typealias StringType = CommonProperties & ScalarProperties & StringProperties;
+// Represents an any type
+class AnyType: CommonType {
+    var _type: String
+}
 
-// Allowed values in a combination schema
-typealias OfValue = NumberType | StringType | BooleanType | ReferenceType;
+// Represents an intersection type
+class IntersectionType: Codable {
+    var description: String
+    var allOf: Array<ReferenceType>
+}
+
+// Represents an union type. An union type can contain one of the provided types
+class UnionType: Codable {
+    var description: String
+    var discriminator: Discriminator
+    var oneOf: Array<NumberType | StringType | BooleanType | ReferenceType>
+}
 
 // An object to hold mappings between payload values and schema names or references
 typealias DiscriminatorMapping = Dictionary<String, String>;
@@ -106,63 +92,28 @@ class Discriminator: Codable {
     var mapping: DiscriminatorMapping
 }
 
-// An intersection type combines multiple schemas into one
-class AllOfProperties: Codable {
-    var description: String
-    var allOf: Array<OfValue>
-}
-
-// An union type can contain one of the provided schemas
-class OneOfProperties: Codable {
-    var description: String
-    var discriminator: Discriminator
-    var oneOf: Array<OfValue>
-}
-
-// A combination type is either a intersection or union type
-typealias CombinationType = AllOfProperties | OneOfProperties;
-
-typealias TemplateProperties = Dictionary<String, ReferenceType>;
-
-// Represents a reference to another schema
+// Represents a reference type. A reference type points to a specific type at the definitions map
 class ReferenceType: Codable {
     var ref: String
     var template: TemplateProperties
 }
 
-// Represents a generic type
+typealias TemplateProperties = Dictionary<String, String>;
+
+// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 class GenericType: Codable {
     var generic: String
 }
 
-// Represents a concrete type definition
-typealias DefinitionValue = ObjectType | ArrayType | BooleanType | NumberType | StringType | CombinationType;
+// The definitions map which contains all types
+typealias Definitions = Dictionary<String, StructType | MapType | ReferenceType>;
 
-// Schema definitions which can be reused
-typealias Definitions = Dictionary<String, DefinitionValue>;
-
-// Contains external definitions which are imported. The imported schemas can be used via the namespace
+// Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
 typealias Import = Dictionary<String, String>;
 
-// A list of possible enumeration values
-typealias EnumValue = StringArray | NumberArray;
-
-// Represents a scalar value
-typealias ScalarValue = String | Float | Bool;
-
-// Array string values
-typealias StringArray = Array<String>;
-
-// Array number values
-typealias NumberArray = Array<Float>;
-
-// TypeSchema meta schema which describes a TypeSchema
+// The root TypeSchema
 class TypeSchema: Codable {
     var _import: Import
-    var title: String
-    var description: String
-    var _type: String
     var definitions: Definitions
-    var properties: Properties
-    var _required: StringArray
+    var ref: String
 }

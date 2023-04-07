@@ -1,4 +1,4 @@
-class Human implements \JsonSerializable
+class Human implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $firstName = null;
     public function setFirstName(?string $firstName) : void
@@ -9,15 +9,20 @@ class Human implements \JsonSerializable
     {
         return $this->firstName;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('firstName', $this->firstName);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('firstName' => $this->firstName), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
-class Student extends Human implements \JsonSerializable
+class Student extends Human implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $matricleNumber = null;
     public function setMatricleNumber(?string $matricleNumber) : void
@@ -28,11 +33,16 @@ class Student extends Human implements \JsonSerializable
     {
         return $this->matricleNumber;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = parent::toRecord();
+        $record->put('matricleNumber', $this->matricleNumber);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_merge((array) parent::jsonSerialize(), array_filter(array('matricleNumber' => $this->matricleNumber), static function ($value) : bool {
-            return $value !== null;
-        }));
+        return (object) $this->toRecord()->getAll();
     }
 }
 
@@ -46,7 +56,7 @@ class StudentMap extends Map
 /**
  * @template T
  */
-class Map implements \JsonSerializable
+class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?int $totalResults = null;
     /**
@@ -72,15 +82,21 @@ class Map implements \JsonSerializable
     {
         return $this->entries;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('totalResults', $this->totalResults);
+        $record->put('entries', $this->entries);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('totalResults' => $this->totalResults, 'entries' => $this->entries), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
 
-class RootSchema implements \JsonSerializable
+class RootSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?StudentMap $students = null;
     public function setStudents(?StudentMap $students) : void
@@ -91,10 +107,15 @@ class RootSchema implements \JsonSerializable
     {
         return $this->students;
     }
+    public function toRecord() : \PSX\Record\RecordInterface
+    {
+        /** @var \PSX\Record\Record<mixed> $record */
+        $record = new \PSX\Record\Record();
+        $record->put('students', $this->students);
+        return $record;
+    }
     public function jsonSerialize() : object
     {
-        return (object) array_filter(array('students' => $this->students), static function ($value) : bool {
-            return $value !== null;
-        });
+        return (object) $this->toRecord()->getAll();
     }
 }
