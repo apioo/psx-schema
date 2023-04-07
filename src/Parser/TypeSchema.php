@@ -135,7 +135,7 @@ class TypeSchema implements ParserInterface
             $path = $basePath . $uri->getPath();
             $basePath = pathinfo($path, PATHINFO_DIRNAME);
 
-            $data = $this->resolver->resolve($uri, $basePath);
+            $data = $this->resolver->resolve($uri, $this->basePath);
             $this->parseImport($data, $definitions, $basePath);
             $this->parseDefinitions($namespace, $data, $definitions);
         }
