@@ -16,5 +16,7 @@
   },
   "author": {
     "title": "foo"
-  }
+  },
+  "price": 13.37,
+  "content": "foobar"
 }
