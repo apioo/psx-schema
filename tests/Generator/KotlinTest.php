@@ -37,7 +37,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin_complex.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_complex.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin_oop.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_oop.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin_union.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_union.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin_import.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_import.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class KotlinTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin_import_ns.kt');
+        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_import_ns.kt');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

@@ -37,7 +37,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby_complex.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_complex.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby_oop.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_oop.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby_union.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_union.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby_import.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_import.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class RubyTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby_import_ns.rb');
+        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_import_ns.rb');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

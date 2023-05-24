@@ -37,7 +37,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_complex.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_complex.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_oop.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_oop.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_union.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_union.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_import.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_import.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class CSharpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp_import_ns.cs');
+        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_import_ns.cs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

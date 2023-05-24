@@ -40,7 +40,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -52,7 +52,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php_complex.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php_complex.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -64,7 +64,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php_oop.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php_oop.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -76,7 +76,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php_union.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php_union.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -88,7 +88,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php_import.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php_import.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -100,7 +100,7 @@ class PhpTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/php_import_ns.php');
+        $expect = file_get_contents(__DIR__ . '/resource/php/php_import_ns.php');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

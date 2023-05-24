@@ -37,7 +37,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python_complex.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python_complex.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python_oop.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python_oop.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python_union.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python_union.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python_import.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python_import.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class PythonTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/python_import_ns.py');
+        $expect = file_get_contents(__DIR__ . '/resource/python/python_import_ns.py');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

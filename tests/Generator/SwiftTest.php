@@ -38,7 +38,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -50,7 +50,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift_complex.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_complex.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -62,7 +62,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift_oop.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_oop.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -74,7 +74,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift_union.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_union.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -86,7 +86,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift_import.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_import.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -98,7 +98,7 @@ class SwiftTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift_import_ns.swift');
+        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_import_ns.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

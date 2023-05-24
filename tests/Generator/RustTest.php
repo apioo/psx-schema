@@ -37,7 +37,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust_complex.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_complex.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust_oop.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_oop.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust_union.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_union.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust_import.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_import.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class RustTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust_import_ns.rs');
+        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_import_ns.rs');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

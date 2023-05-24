@@ -36,7 +36,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = $generator->generate($this->getSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -46,7 +46,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = (string) $generator->generate($this->getComplexSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_complex.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_complex.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -56,7 +56,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = (string) $generator->generate($this->getOOPSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_oop.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_oop.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -66,7 +66,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = (string) $generator->generate($this->getUnionSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_union.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_union.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -76,7 +76,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $generator = new JsonSchema();
 
         $actual = (string) $generator->generate($this->getImportSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/jsonschema_import.json');
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_import.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

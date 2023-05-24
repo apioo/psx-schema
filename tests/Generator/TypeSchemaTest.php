@@ -36,7 +36,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $generator = new TypeSchema();
 
         $actual = $generator->generate($this->getSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema.json');
+        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -46,7 +46,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $generator = new TypeSchema();
 
         $actual = (string) $generator->generate($this->getComplexSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema_complex.json');
+        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema_complex.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -56,7 +56,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $generator = new TypeSchema();
 
         $actual = (string) $generator->generate($this->getOOPSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema_oop.json');
+        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema_oop.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -66,7 +66,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $generator = new TypeSchema();
 
         $actual = (string) $generator->generate($this->getUnionSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema_union.json');
+        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema_union.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
@@ -76,7 +76,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $generator = new TypeSchema();
 
         $actual = (string) $generator->generate($this->getImportSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema_import.json');
+        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema_import.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

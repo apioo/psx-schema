@@ -37,7 +37,7 @@ class MarkdownTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/markdown.md');
+        $expect = file_get_contents(__DIR__ . '/resource/markdown/markdown.md');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class MarkdownTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/markdown_complex.md');
+        $expect = file_get_contents(__DIR__ . '/resource/markdown/markdown_complex.md');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

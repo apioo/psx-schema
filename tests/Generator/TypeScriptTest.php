@@ -37,7 +37,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -49,7 +49,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getComplexSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript_complex.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_complex.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -61,7 +61,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getOOPSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript_oop.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_oop.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -73,7 +73,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getUnionSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript_union.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_union.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -85,7 +85,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript_import.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_import.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
@@ -97,7 +97,7 @@ class TypeScriptTest extends GeneratorTestCase
 
         $actual = (string) $generator->generate($this->getImportSchema());
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript_import_ns.ts');
+        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_import_ns.ts');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);
