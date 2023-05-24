@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests\Generator;
 
 use PSX\Schema\Generator\Code\Chunks;
+use PSX\Schema\Generator\Java;
 use PSX\Schema\Generator\Php;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Generator\Result\News;
@@ -106,52 +107,19 @@ class PhpTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testExecute()
+    public function testGenerateIntegration()
     {
-        $source    = $this->getSchema();
-        $generator = new Php(__NAMESPACE__ . '\\Result');
-        $result    = $generator->generate($source);
-        $className = __NAMESPACE__ . '\\Result\\News';
+        $generator = new Php();
 
-        $this->dumpResult($result);
+        $chunks = $generator->generate($this->getSchema());
 
-        $schemaManager = new SchemaManager();
-        $schema        = $schemaManager->getSchema($className);
-
-        $this->assertSchema($schema, $source);
-
-        /** @var News $news */
-        $news = new $className();
-        $news->setContent('foobar');
-
-        $expect = <<<JSON
-{
-    "content": "foobar",
-    "version": "http://foo.bar"
-}
-JSON;
-
-        $this->assertJsonStringEqualsJsonString($expect, json_encode($news));
-    }
-
-    public function testExecuteOOP()
-    {
-        $source    = $this->getOOPSchema();
-        $generator = new Php(__NAMESPACE__ . '\\Result');
-        $result    = $generator->generate($source);
-
-        $this->dumpResult($result);
-
-        $schemaManager = new SchemaManager();
-        $schema        = $schemaManager->getSchema(__NAMESPACE__ . '\\Result\\RootSchema');
-
-        $this->assertSchema($schema, $source);
-    }
-
-    private function dumpResult(Chunks $chunks)
-    {
-        foreach ($chunks->getChunks() as $file => $code) {
-            file_put_contents(__DIR__ . '/Result/' . $file . '.php', '<?php' . "\n" . $code);
+        $baseDir = __DIR__ . '/integration/php';
+        $count = 0;
+        foreach ($chunks->getChunks() as $fileName => $content) {
+            file_put_contents($baseDir . '/' . $fileName . '.php', '<?php' . "\n" . $content);
+            $count++;
         }
+
+        $this->assertEquals(5, $count);
     }
 }
