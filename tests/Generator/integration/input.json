@@ -1,0 +1,20 @@
+{
+  "config": {
+    "foo": "bar"
+  },
+  "inlineConfig": {
+    "foo": "bar"
+  },
+  "tags": ["foo", "bar"],
+  "receiver": [{
+    "title": "foo"
+  }],
+  "profileImage": "",
+  "read": true,
+  "source": {
+    "foo": "bar"
+  },
+  "author": {
+    "title": "foo"
+  }
+}
