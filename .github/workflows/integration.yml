@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: tests/Generator/integration/go
+        working-directory: tests/Generator/integration/java
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -61,3 +61,21 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
       - name: Run
         run: java -jar target/test-0.1.0.jar
+  php:
+    name: PHP
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/Generator/integration/php
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+      - name: Composer install
+        run: composer install --no-interaction --no-ansi --no-progress
+      - name: Run
+        run: php main.php
