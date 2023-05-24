@@ -53,7 +53,8 @@ class Rust extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = 'struct ' . $name->getClass() . ' {' . "\n";
+        $code = '#[derive(Serialize, Deserialize)]' . "\n";
+        $code.= 'struct ' . $name->getClass() . ' {' . "\n";
 
         if (!empty($extends)) {
             $code.= $this->indent . '*' . $extends . "\n";
@@ -86,18 +87,34 @@ class Rust extends CodeGeneratorAbstract
 
     protected function writeHeader(TypeAbstract $origin): string
     {
-        $code = "\n";
+        $code = '';
 
         if (!empty($this->namespace)) {
             $code.= 'package ' . $this->namespace . "\n";
         }
 
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
+        $code.= "\n";
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= "\n";
             $code.= '// ' . $comment . "\n";
         }
 
         return $code;
+    }
+
+    private function getImports(TypeAbstract $origin): array
+    {
+        $imports = [];
+        $imports[] = 'use serde::{Deserialize, Serialize};';
+
+        return $imports;
     }
 }
