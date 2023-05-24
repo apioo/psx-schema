@@ -5,13 +5,12 @@ class Program
 {
     static void Main()
     {
-        string fileName = "../input.json";
-        string input = File.ReadAllText(fileName);
+        string input = File.ReadAllText("../input.json");
 
         News news = JsonSerializer.Deserialize<News>(input);
 
         string output = JsonSerializer.Serialize<News>(news);
 
-        Console.WriteLine(output);
+        File.WriteAllText("../output.json", output);
     }
 }

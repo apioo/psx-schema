@@ -5,18 +5,21 @@ import "encoding/json"
 import "fmt"
 
 func main() {
-    data, err := os.ReadFile("../input.json")
+    input, err := os.ReadFile("../input.json")
     if err != nil {
         panic(err)
     }
 
     var news News
-    err = json.Unmarshal(data, &news)
+    err = json.Unmarshal(input, &news)
 
-    raw, err := json.Marshal(news)
+    output, err := json.Marshal(news)
     if err != nil {
         panic(err)
     }
 
-    fmt.Println(string(raw))
+    err := os.WriteFile("../output.json", output, 0644)
+    if err != nil {
+        panic(err)
+    }
 }
