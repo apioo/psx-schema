@@ -21,14 +21,11 @@
 namespace PSX\Schema\Tests\Visitor;
 
 use PHPUnit\Framework\TestCase;
-use PSX\DateTime\Date;
-use PSX\DateTime\DateTime;
 use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
-use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;

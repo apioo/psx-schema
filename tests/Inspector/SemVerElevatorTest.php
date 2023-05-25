@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests;
 
-use PSX\Schema\Inspector\ChangelogGenerator;
 use PSX\Schema\Inspector\SemVerLifter;
 use PSX\Schema\Tests\Schema\SchemaA;
 use PSX\Schema\Tests\Schema\SchemaB;

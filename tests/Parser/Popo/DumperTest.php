@@ -21,14 +21,10 @@
 namespace PSX\Schema\Tests\Parser\Popo;
 
 use PHPUnit\Framework\TestCase;
-use PSX\DateTime\Date;
-use PSX\DateTime\DateTime;
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
-use PSX\DateTime\Time;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Parser\Popo\Dumper;
 use PSX\Uri\Uri;

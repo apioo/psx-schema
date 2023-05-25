@@ -20,11 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\Code\Chunks;
-use PSX\Schema\Generator\Java;
 use PSX\Schema\Generator\Php;
-use PSX\Schema\SchemaManager;
-use PSX\Schema\Tests\Generator\Result\News;
 
 /**
  * PhpTest

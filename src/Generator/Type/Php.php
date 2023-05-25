@@ -32,7 +32,6 @@ use PSX\Schema\Type\GenericType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeInterface;
 use PSX\Uri\Uri;
 

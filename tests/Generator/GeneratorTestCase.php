@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\SchemaTestCase;
 
 /**

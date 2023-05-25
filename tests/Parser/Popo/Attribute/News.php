@@ -4,7 +4,6 @@ namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Record\Record;
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Discriminator;
 use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Maximum;

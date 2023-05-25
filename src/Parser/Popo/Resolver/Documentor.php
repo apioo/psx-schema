@@ -34,7 +34,6 @@ use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
 use PSX\Uri\Uri;

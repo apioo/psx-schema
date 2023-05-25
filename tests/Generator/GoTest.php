@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use PSX\Schema\Generator\CSharp;
 use PSX\Schema\Generator\Go;
 
 /**

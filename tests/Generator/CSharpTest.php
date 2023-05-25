@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Tests\Generator;
 
-use Amp\Dns\Config;
 use PSX\Schema\Generator\CSharp;
 
 /**
