@@ -115,6 +115,7 @@ public class Meta extends HashMap<String, String> {
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.net.URI;
+import java.time.Period;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;

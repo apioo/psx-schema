@@ -150,6 +150,10 @@ class Java extends CodeGeneratorAbstract
             $imports[] = 'import java.time.Duration;';
         }
 
+        if (TypeUtil::contains($origin, StringType::class, Format::PERIOD)) {
+            $imports[] = 'import java.time.Period;';
+        }
+
         if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
             $imports[] = 'import java.time.LocalDate;';
         }
