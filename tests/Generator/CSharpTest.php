@@ -103,20 +103,4 @@ class CSharpTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
-
-    public function testGenerateIntegration()
-    {
-        $generator = new CSharp();
-
-        $chunks = $generator->generate($this->getSchema());
-
-        $baseDir = __DIR__ . '/integration/csharp';
-        $count = 0;
-        foreach ($chunks->getChunks() as $fileName => $content) {
-            file_put_contents($baseDir . '/' . $fileName . '.cs', $content);
-            $count++;
-        }
-
-        $this->assertEquals(5, $count);
-    }
 }

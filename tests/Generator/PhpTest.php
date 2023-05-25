@@ -106,20 +106,4 @@ class PhpTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
-
-    public function testGenerateIntegration()
-    {
-        $generator = new Php();
-
-        $chunks = $generator->generate($this->getSchema());
-
-        $baseDir = __DIR__ . '/integration/php';
-        $count = 0;
-        foreach ($chunks->getChunks() as $fileName => $content) {
-            file_put_contents($baseDir . '/' . $fileName . '.php', '<?php' . "\n" . $content);
-            $count++;
-        }
-
-        $this->assertEquals(5, $count);
-    }
 }

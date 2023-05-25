@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Python;
 use PSX\Schema\Generator\Ruby;
 
 /**
