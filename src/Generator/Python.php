@@ -28,6 +28,7 @@ use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
+use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -77,12 +78,18 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        return 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code.= '    pass' . "\n";
+
+        return $code;
     }
 
     protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        return 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
+        $code = 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
+        $code.= '    pass' . "\n";
+
+        return $code;
     }
 
     protected function writeHeader(TypeAbstract $origin): string
@@ -113,8 +120,8 @@ class Python extends CodeGeneratorAbstract
     private function getImports(TypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'from typing import Any';
         $imports[] = 'from dataclasses import dataclass';
+        $imports[] = 'from typing import Any';
 
         if (TypeUtil::contains($origin, ArrayType::class)) {
             $imports[] = 'from typing import List';
@@ -126,6 +133,26 @@ class Python extends CodeGeneratorAbstract
 
         if (TypeUtil::contains($origin, UnionType::class)) {
             $imports[] = 'from typing import Union';
+        }
+
+        $refs = [];
+        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
+            if ($type instanceof ReferenceType) {
+                $refs[$type->getRef()] = $type->getRef();
+                if ($type->getTemplate()) {
+                    foreach ($type->getTemplate() as $ref) {
+                        $refs[$ref] = $ref;
+                    }
+                }
+            } elseif ($type instanceof StructType && $type->getExtends()) {
+                $refs[$type->getExtends()] = $type->getExtends();
+            }
+        });
+
+        $imports = [];
+        foreach ($refs as $ref) {
+            [$ns, $name] = TypeUtil::split($ref);
+            $imports[] = 'from ' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
         }
 
         return $imports;
