@@ -47,4 +47,16 @@ class ProtobufTest extends GeneratorTestCase
 
         $this->assertEquals($expect, $actual, $actual);
     }
+
+    public function testGenerateOOP()
+    {
+        $generator = new Protobuf();
+
+        $actual = (string) $generator->generate($this->getOOPSchema());
+
+        $expect = file_get_contents(__DIR__ . '/resource/protobuf/protobuf_oop.txt');
+        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
+
+        $this->assertEquals($expect, $actual, $actual);
+    }
 }
