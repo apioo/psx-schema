@@ -51,14 +51,14 @@ class Rust extends CodeGeneratorAbstract
         return new Normalizer\Rust();
     }
 
+    protected function supportsExtends(): bool
+    {
+        return false;
+    }
+
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '#[derive(Serialize, Deserialize)]' . "\n";
-        $code.= 'struct ' . $name->getClass() . ' {' . "\n";
-
-        if (!empty($extends)) {
-            $code.= $this->indent . '*' . $extends . "\n";
-        }
+        $code = 'struct ' . $name->getClass() . ' {' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
@@ -113,7 +113,6 @@ class Rust extends CodeGeneratorAbstract
     private function getImports(TypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'use serde::{Deserialize, Serialize};';
 
         return $imports;
     }

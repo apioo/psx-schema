@@ -1,25 +1,17 @@
-use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize)]
 struct Creature {
     kind: String,
 }
 
-use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize)]
 struct Human {
-    *Creature
+    kind: String,
     firstName: String,
 }
 
-use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize)]
 struct Animal {
-    *Creature
+    kind: String,
     nickname: String,
 }
 
-use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize)]
 struct Union {
     union: Object,
     intersection: Object,
