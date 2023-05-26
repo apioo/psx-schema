@@ -1,42 +1,42 @@
 message Location {
-    float lat = 1;
-    float long = 2;
+    optional float lat = 1 [json_name="lat"];
+    optional float long = 2 [json_name="long"];
 }
 
 message Web {
-    string name = 1;
-    string url = 2;
+    optional string name = 1 [json_name="name"];
+    optional string url = 2 [json_name="url"];
 }
 
 message Author {
-    string title = 1;
-    string email = 2;
-    repeated string categories = 3;
-    repeated Location locations = 4;
-    Location origin = 5;
+    optional string title = 1 [json_name="title"];
+    optional string email = 2 [json_name="email"];
+    optional repeated string categories = 3 [json_name="categories"];
+    optional repeated Location locations = 4 [json_name="locations"];
+    optional Location origin = 5 [json_name="origin"];
 }
 
 message News {
-    map<string, string> config = 1;
-    map<string, string> inlineConfig = 2;
-    repeated string tags = 3;
-    repeated Author receiver = 4;
-    repeated Struct resources = 5;
-    bytes profileImage = 6;
-    bool read = 7;
-    Struct source = 8;
-    Author author = 9;
-    map<string, string> meta = 10;
-    Timestamp sendDate = 11;
-    Timestamp readDate = 12;
-    string expires = 13;
-    float price = 14;
-    int64 rating = 15;
-    string content = 16;
-    string question = 17;
-    string version = 18;
-    string coffeeTime = 19;
-    string profileUri = 20;
-    string captcha = 21;
-    Any payload = 22;
+    optional map<string, string> config = 1 [json_name="config"];
+    optional map<string, string> inlineConfig = 2 [json_name="inlineConfig"];
+    optional repeated string tags = 3 [json_name="tags"];
+    optional repeated Author receiver = 4 [json_name="receiver"];
+    optional repeated Struct resources = 5 [json_name="resources"];
+    optional bytes profileImage = 6 [json_name="profileImage"];
+    optional bool read = 7 [json_name="read"];
+    optional Struct source = 8 [json_name="source"];
+    optional Author author = 9 [json_name="author"];
+    optional map<string, string> meta = 10 [json_name="meta"];
+    optional Timestamp sendDate = 11 [json_name="sendDate"];
+    optional Timestamp readDate = 12 [json_name="readDate"];
+    optional string expires = 13 [json_name="expires"];
+    optional float price = 14 [json_name="price"];
+    optional int64 rating = 15 [json_name="rating"];
+    optional string content = 16 [json_name="content"];
+    optional string question = 17 [json_name="question"];
+    optional string version = 18 [json_name="version"];
+    optional string coffeeTime = 19 [json_name="coffeeTime"];
+    optional string profileUri = 20 [json_name="profileUri"];
+    optional string captcha = 21 [json_name="g-recaptcha-response"];
+    optional Any payload = 22 [json_name="payload"];
 }

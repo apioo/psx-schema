@@ -42,6 +42,11 @@ class Protobuf extends CodeGeneratorAbstract
         return new Type\Protobuf($mapping, $this->normalizer);
     }
 
+    protected function supportsExtends(): bool
+    {
+        return false;
+    }
+
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = 'message ' . $name->getClass() . ' {' . "\n";
@@ -49,7 +54,7 @@ class Protobuf extends CodeGeneratorAbstract
         $index = 1;
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $index . ';' . "\n";
+            $code.= $this->indent . 'optional ' . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $index . ' [json_name="' . $property->getName()->getRaw() . '"];' . "\n";
 
             $index++;
         }
