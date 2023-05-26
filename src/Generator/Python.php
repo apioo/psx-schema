@@ -149,7 +149,6 @@ class Python extends CodeGeneratorAbstract
             }
         });
 
-        $imports = [];
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
             $imports[] = 'from ' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);

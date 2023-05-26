@@ -1,8 +1,14 @@
+from dataclasses import dataclass
+from typing import Any
+
 # Location of the person
 @dataclass
 class Location:
     lat: float
     long: float
+
+from dataclasses import dataclass
+from typing import Any
 
 # An application
 @dataclass
@@ -10,6 +16,9 @@ class Web:
     name: str
     url: str
 
+from dataclasses import dataclass
+from typing import Any
+from typing import List
 from location import Location
 
 # An simple author element with some description
@@ -21,9 +30,17 @@ class Author:
     locations: List[Location]
     origin: Location
 
+from dataclasses import dataclass
+from typing import Any
+from typing import Dict
 class Meta(Dict[str, str]):
     pass
 
+from dataclasses import dataclass
+from typing import Any
+from typing import List
+from typing import Dict
+from typing import Union
 from meta import Meta
 from author import Author
 from location import Location
