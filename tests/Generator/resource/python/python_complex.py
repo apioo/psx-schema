@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Any
 
 # Represents a base type. Every type extends from this common type and shares the defined properties
 @dataclass
@@ -11,7 +10,6 @@ class CommonType:
     readonly: bool
 
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from common_type import CommonType
 from properties import Properties
@@ -26,7 +24,6 @@ class StructType(CommonType):
     required: List[str]
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
 from typing import Union
 from boolean_type import BooleanType
@@ -40,11 +37,11 @@ from generic_type import GenericType
 from any_type import AnyType
 
 # Properties of a struct
+@dataclass
 class Properties(Dict[str, Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType]]):
     pass
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Union
 from common_type import CommonType
 from boolean_type import BooleanType
@@ -66,7 +63,6 @@ class MapType(CommonType):
     min_properties: int
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Union
 from common_type import CommonType
 from boolean_type import BooleanType
@@ -85,7 +81,6 @@ class ArrayType(CommonType):
     min_items: int
 
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from typing import Union
 from common_type import CommonType
@@ -98,7 +93,6 @@ class ScalarType(CommonType):
     default: Union[str, float, bool]
 
 from dataclasses import dataclass
-from typing import Any
 from scalar_type import ScalarType
 
 # Represents a boolean type
@@ -107,7 +101,6 @@ class BooleanType(ScalarType):
     type: str
 
 from dataclasses import dataclass
-from typing import Any
 from scalar_type import ScalarType
 
 # Represents a number type (contains also integer)
@@ -121,7 +114,6 @@ class NumberType(ScalarType):
     exclusive_minimum: bool
 
 from dataclasses import dataclass
-from typing import Any
 from scalar_type import ScalarType
 
 # Represents a string type
@@ -133,7 +125,6 @@ class StringType(ScalarType):
     pattern: str
 
 from dataclasses import dataclass
-from typing import Any
 from common_type import CommonType
 
 # Represents an any type
@@ -142,7 +133,6 @@ class AnyType(CommonType):
     type: str
 
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from reference_type import ReferenceType
 
@@ -153,7 +143,6 @@ class IntersectionType:
     all_of: List[ReferenceType]
 
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from typing import Union
 from discriminator import Discriminator
@@ -170,15 +159,14 @@ class UnionType:
     one_of: List[Union[NumberType, StringType, BooleanType, ReferenceType]]
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
 
 # An object to hold mappings between payload values and schema names or references
+@dataclass
 class DiscriminatorMapping(Dict[str, str]):
     pass
 
 from dataclasses import dataclass
-from typing import Any
 from discriminator_mapping import DiscriminatorMapping
 
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -188,7 +176,6 @@ class Discriminator:
     mapping: DiscriminatorMapping
 
 from dataclasses import dataclass
-from typing import Any
 from template_properties import TemplateProperties
 
 # Represents a reference type. A reference type points to a specific type at the definitions map
@@ -198,13 +185,12 @@ class ReferenceType:
     _template: TemplateProperties
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
+@dataclass
 class TemplateProperties(Dict[str, str]):
     pass
 
 from dataclasses import dataclass
-from typing import Any
 
 # Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 @dataclass
@@ -212,7 +198,6 @@ class GenericType:
     _generic: str
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
 from typing import Union
 from struct_type import StructType
@@ -220,19 +205,19 @@ from map_type import MapType
 from reference_type import ReferenceType
 
 # The definitions map which contains all types
+@dataclass
 class Definitions(Dict[str, Union[StructType, MapType, ReferenceType]]):
     pass
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
 
 # Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
+@dataclass
 class Import(Dict[str, str]):
     pass
 
 from dataclasses import dataclass
-from typing import Any
 from import import Import
 from definitions import Definitions
 

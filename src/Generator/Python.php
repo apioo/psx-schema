@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
@@ -78,7 +79,8 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code = '@dataclass' . "\n";
+        $code.= 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
         $code.= '    pass' . "\n";
 
         return $code;
@@ -86,7 +88,8 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        $code = 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
+        $code = '@dataclass' . "\n";
+        $code.= 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
         $code.= '    pass' . "\n";
 
         return $code;
@@ -121,7 +124,10 @@ class Python extends CodeGeneratorAbstract
     {
         $imports = [];
         $imports[] = 'from dataclasses import dataclass';
-        $imports[] = 'from typing import Any';
+
+        if (TypeUtil::contains($origin, AnyType::class)) {
+            $imports[] = 'from typing import Any';
+        }
 
         if (TypeUtil::contains($origin, ArrayType::class)) {
             $imports[] = 'from typing import List';

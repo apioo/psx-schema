@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Any
 
 # Location of the person
 @dataclass
@@ -8,7 +7,6 @@ class Location:
     long: float
 
 from dataclasses import dataclass
-from typing import Any
 
 # An application
 @dataclass
@@ -17,7 +15,6 @@ class Web:
     url: str
 
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from location import Location
 
@@ -31,8 +28,8 @@ class Author:
     origin: Location
 
 from dataclasses import dataclass
-from typing import Any
 from typing import Dict
+@dataclass
 class Meta(Dict[str, str]):
     pass
 
