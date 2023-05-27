@@ -66,10 +66,21 @@ class Swift extends CodeGeneratorAbstract
 
         $code.= '{' . "\n";
 
+        $keys = [];
         foreach ($properties as $property) {
+            /** @var Code\Property $property */
+            $keys[$property->getName()->getProperty()] = $property->getName()->getRaw();
+
             /** @var Code\Property $property */
             $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
+
+        $code.= "\n";
+        $code.= $this->indent . 'enum CodingKeys: String, CodingKey {' . "\n";
+        foreach ($keys as $key => $raw) {
+            $code.= $this->indent . $this->indent . 'case ' . $key . ' = "' . $raw . '"' . "\n";
+        }
+        $code.= $this->indent . '}' . "\n";
 
         $code.= '}' . "\n";
 
