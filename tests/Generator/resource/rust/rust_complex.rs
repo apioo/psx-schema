@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 // Represents a base type. Every type extends from this common type and shares the defined properties
 #[derive(Serialize, Deserialize)]
-struct CommonType {
+pub struct CommonType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -16,10 +16,12 @@ struct CommonType {
 }
 
 use serde::{Serialize, Deserialize};
+use common_type::CommonType;
+use properties::Properties;
 
 // Represents a struct type. A struct type contains a fix set of defined properties
 #[derive(Serialize, Deserialize)]
-struct StructType {
+pub struct StructType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -33,22 +35,42 @@ struct StructType {
     #[serde(rename = "$final")]
     _final: bool,
     #[serde(rename = "$extends")]
-    extends: String,
+    _extends: String,
     #[serde(rename = "properties")]
     properties: Properties,
     #[serde(rename = "required")]
     required: Vec<String>,
 }
 
+use std::collections::HashMap;
+use boolean_type::BooleanType;
+use number_type::NumberType;
+use string_type::StringType;
+use array_type::ArrayType;
+use union_type::UnionType;
+use intersection_type::IntersectionType;
+use reference_type::ReferenceType;
+use generic_type::GenericType;
+use any_type::AnyType;
+
 // Properties of a struct
-type Properties = HashMap<String, Object>() {
-}
+pub type Properties = HashMap<String, serde_json::Value>;
 
 use serde::{Serialize, Deserialize};
+use common_type::CommonType;
+use boolean_type::BooleanType;
+use number_type::NumberType;
+use string_type::StringType;
+use array_type::ArrayType;
+use union_type::UnionType;
+use intersection_type::IntersectionType;
+use reference_type::ReferenceType;
+use generic_type::GenericType;
+use any_type::AnyType;
 
 // Represents a map type. A map type contains variable key value entries of a specific type
 #[derive(Serialize, Deserialize)]
-struct MapType {
+pub struct MapType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -60,18 +82,25 @@ struct MapType {
     #[serde(rename = "readonly")]
     readonly: bool,
     #[serde(rename = "additionalProperties")]
-    additionalProperties: Object,
+    additional_properties: serde_json::Value,
     #[serde(rename = "maxProperties")]
-    maxProperties: u64,
+    max_properties: u64,
     #[serde(rename = "minProperties")]
-    minProperties: u64,
+    min_properties: u64,
 }
 
 use serde::{Serialize, Deserialize};
+use common_type::CommonType;
+use boolean_type::BooleanType;
+use number_type::NumberType;
+use string_type::StringType;
+use reference_type::ReferenceType;
+use generic_type::GenericType;
+use any_type::AnyType;
 
 // Represents an array type. An array type contains an ordered list of a specific type
 #[derive(Serialize, Deserialize)]
-struct ArrayType {
+pub struct ArrayType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -83,18 +112,19 @@ struct ArrayType {
     #[serde(rename = "readonly")]
     readonly: bool,
     #[serde(rename = "items")]
-    items: Object,
+    items: serde_json::Value,
     #[serde(rename = "maxItems")]
-    maxItems: u64,
+    max_items: u64,
     #[serde(rename = "minItems")]
-    minItems: u64,
+    min_items: u64,
 }
 
 use serde::{Serialize, Deserialize};
+use common_type::CommonType;
 
 // Represents a scalar type
 #[derive(Serialize, Deserialize)]
-struct ScalarType {
+pub struct ScalarType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -108,16 +138,17 @@ struct ScalarType {
     #[serde(rename = "format")]
     format: String,
     #[serde(rename = "enum")]
-    _enum: Vec<Object>,
+    _enum: Vec<serde_json::Value>,
     #[serde(rename = "default")]
-    default: Object,
+    default: serde_json::Value,
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_type::ScalarType;
 
 // Represents a boolean type
 #[derive(Serialize, Deserialize)]
-struct BooleanType {
+pub struct BooleanType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -131,16 +162,17 @@ struct BooleanType {
     #[serde(rename = "format")]
     format: String,
     #[serde(rename = "enum")]
-    _enum: Vec<Object>,
+    _enum: Vec<serde_json::Value>,
     #[serde(rename = "default")]
-    default: Object,
+    default: serde_json::Value,
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_type::ScalarType;
 
 // Represents a number type (contains also integer)
 #[derive(Serialize, Deserialize)]
-struct NumberType {
+pub struct NumberType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -154,26 +186,27 @@ struct NumberType {
     #[serde(rename = "format")]
     format: String,
     #[serde(rename = "enum")]
-    _enum: Vec<Object>,
+    _enum: Vec<serde_json::Value>,
     #[serde(rename = "default")]
-    default: Object,
+    default: serde_json::Value,
     #[serde(rename = "multipleOf")]
-    multipleOf: float64,
+    multiple_of: f64,
     #[serde(rename = "maximum")]
-    maximum: float64,
+    maximum: f64,
     #[serde(rename = "exclusiveMaximum")]
-    exclusiveMaximum: bool,
+    exclusive_maximum: bool,
     #[serde(rename = "minimum")]
-    minimum: float64,
+    minimum: f64,
     #[serde(rename = "exclusiveMinimum")]
-    exclusiveMinimum: bool,
+    exclusive_minimum: bool,
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_type::ScalarType;
 
 // Represents a string type
 #[derive(Serialize, Deserialize)]
-struct StringType {
+pub struct StringType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -187,22 +220,23 @@ struct StringType {
     #[serde(rename = "format")]
     format: String,
     #[serde(rename = "enum")]
-    _enum: Vec<Object>,
+    _enum: Vec<serde_json::Value>,
     #[serde(rename = "default")]
-    default: Object,
+    default: serde_json::Value,
     #[serde(rename = "maxLength")]
-    maxLength: u64,
+    max_length: u64,
     #[serde(rename = "minLength")]
-    minLength: u64,
+    min_length: u64,
     #[serde(rename = "pattern")]
     pattern: String,
 }
 
 use serde::{Serialize, Deserialize};
+use common_type::CommonType;
 
 // Represents an any type
 #[derive(Serialize, Deserialize)]
-struct AnyType {
+pub struct AnyType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "type")]
@@ -216,82 +250,98 @@ struct AnyType {
 }
 
 use serde::{Serialize, Deserialize};
+use reference_type::ReferenceType;
 
 // Represents an intersection type
 #[derive(Serialize, Deserialize)]
-struct IntersectionType {
+pub struct IntersectionType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "allOf")]
-    allOf: Vec<ReferenceType>,
+    all_of: Vec<ReferenceType>,
 }
 
 use serde::{Serialize, Deserialize};
+use discriminator::Discriminator;
+use number_type::NumberType;
+use string_type::StringType;
+use boolean_type::BooleanType;
+use reference_type::ReferenceType;
 
 // Represents an union type. An union type can contain one of the provided types
 #[derive(Serialize, Deserialize)]
-struct UnionType {
+pub struct UnionType {
     #[serde(rename = "description")]
     description: String,
     #[serde(rename = "discriminator")]
     discriminator: Discriminator,
     #[serde(rename = "oneOf")]
-    oneOf: Vec<Object>,
+    one_of: Vec<serde_json::Value>,
 }
+
+use std::collections::HashMap;
 
 // An object to hold mappings between payload values and schema names or references
-type DiscriminatorMapping = HashMap<String, String>() {
-}
+pub type DiscriminatorMapping = HashMap<String, String>;
 
 use serde::{Serialize, Deserialize};
+use discriminator_mapping::DiscriminatorMapping;
 
 // Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 #[derive(Serialize, Deserialize)]
-struct Discriminator {
+pub struct Discriminator {
     #[serde(rename = "propertyName")]
-    propertyName: String,
+    property_name: String,
     #[serde(rename = "mapping")]
     mapping: DiscriminatorMapping,
 }
 
 use serde::{Serialize, Deserialize};
+use template_properties::TemplateProperties;
 
 // Represents a reference type. A reference type points to a specific type at the definitions map
 #[derive(Serialize, Deserialize)]
-struct ReferenceType {
+pub struct ReferenceType {
     #[serde(rename = "$ref")]
     _ref: String,
     #[serde(rename = "$template")]
-    template: TemplateProperties,
+    _template: TemplateProperties,
 }
 
-type TemplateProperties = HashMap<String, String>() {
-}
+use std::collections::HashMap;
+pub type TemplateProperties = HashMap<String, String>;
 
 use serde::{Serialize, Deserialize};
 
 // Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 #[derive(Serialize, Deserialize)]
-struct GenericType {
+pub struct GenericType {
     #[serde(rename = "$generic")]
-    generic: String,
+    _generic: String,
 }
+
+use std::collections::HashMap;
+use struct_type::StructType;
+use map_type::MapType;
+use reference_type::ReferenceType;
 
 // The definitions map which contains all types
-type Definitions = HashMap<String, Object>() {
-}
+pub type Definitions = HashMap<String, serde_json::Value>;
+
+use std::collections::HashMap;
 
 // Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
-type Import = HashMap<String, String>() {
-}
+pub type Import = HashMap<String, String>;
 
 use serde::{Serialize, Deserialize};
+use import::Import;
+use definitions::Definitions;
 
 // The root TypeSchema
 #[derive(Serialize, Deserialize)]
-struct TypeSchema {
+pub struct TypeSchema {
     #[serde(rename = "$import")]
-    import: Import,
+    _import: Import,
     #[serde(rename = "definitions")]
     definitions: Definitions,
     #[serde(rename = "$ref")]

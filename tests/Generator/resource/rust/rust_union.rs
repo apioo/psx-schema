@@ -1,22 +1,24 @@
 use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
-struct Creature {
+pub struct Creature {
     #[serde(rename = "kind")]
     kind: String,
 }
 
 use serde::{Serialize, Deserialize};
+use creature::Creature;
 #[derive(Serialize, Deserialize)]
-struct Human {
+pub struct Human {
     #[serde(rename = "kind")]
     kind: String,
     #[serde(rename = "firstName")]
-    firstName: String,
+    first_name: String,
 }
 
 use serde::{Serialize, Deserialize};
+use creature::Creature;
 #[derive(Serialize, Deserialize)]
-struct Animal {
+pub struct Animal {
     #[serde(rename = "kind")]
     kind: String,
     #[serde(rename = "nickname")]
@@ -24,12 +26,14 @@ struct Animal {
 }
 
 use serde::{Serialize, Deserialize};
+use human::Human;
+use animal::Animal;
 #[derive(Serialize, Deserialize)]
-struct Union {
+pub struct Union {
     #[serde(rename = "union")]
-    union: Object,
+    union: serde_json::Value,
     #[serde(rename = "intersection")]
-    intersection: Object,
+    intersection: serde_json::Value,
     #[serde(rename = "discriminator")]
-    discriminator: Object,
+    discriminator: serde_json::Value,
 }

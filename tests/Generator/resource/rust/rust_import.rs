@@ -1,6 +1,8 @@
 use serde::{Serialize, Deserialize};
+use student_map::StudentMap;
+use student::Student;
 #[derive(Serialize, Deserialize)]
-struct Import {
+pub struct Import {
     #[serde(rename = "students")]
     students: StudentMap,
     #[serde(rename = "student")]
@@ -8,10 +10,11 @@ struct Import {
 }
 
 use serde::{Serialize, Deserialize};
+use student::Student;
 #[derive(Serialize, Deserialize)]
-struct MyMap {
+pub struct MyMap {
     #[serde(rename = "matricleNumber")]
-    matricleNumber: String,
+    matricle_number: String,
     #[serde(rename = "firstName")]
-    firstName: String,
+    first_name: String,
 }

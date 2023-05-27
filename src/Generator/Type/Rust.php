@@ -31,22 +31,22 @@ class Rust extends GeneratorAbstract
 {
     protected function getDate(): string
     {
-        return 'time.Time';
+        return 'NaiveDate';
     }
 
     protected function getDateTime(): string
     {
-        return 'time.Time';
+        return 'NaiveDateTime';
     }
 
     protected function getTime(): string
     {
-        return 'time.Time';
+        return 'NaiveTime';
     }
 
     protected function getDuration(): string
     {
-        return 'time.Duration';
+        return 'Duration';
     }
 
     protected function getString(): string
@@ -71,7 +71,7 @@ class Rust extends GeneratorAbstract
 
     protected function getNumber(): string
     {
-        return 'float64';
+        return 'f64';
     }
 
     protected function getBoolean(): string
@@ -91,12 +91,12 @@ class Rust extends GeneratorAbstract
 
     protected function getUnion(array $types): string
     {
-        return 'Object';
+        return 'serde_json::Value';
     }
 
     protected function getIntersection(array $types): string
     {
-        return 'Object';
+        return 'serde_json::Value';
     }
 
     protected function getGroup(string $type): string
@@ -111,7 +111,7 @@ class Rust extends GeneratorAbstract
 
     protected function getAny(): string
     {
-        return 'Object';
+        return 'serde_json::Value';
     }
 
     protected function getNamespaced(string $namespace, string $name): string

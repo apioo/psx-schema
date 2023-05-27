@@ -20,12 +20,16 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * Rust
@@ -59,7 +63,7 @@ class Rust extends CodeGeneratorAbstract
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
         $code = '#[derive(Serialize, Deserialize)]' . "\n";
-        $code.= 'struct ' . $name->getClass() . ' {' . "\n";
+        $code.= 'pub struct ' . $name->getClass() . ' {' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
@@ -76,15 +80,12 @@ class Rust extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'type ' . $name->getClass() . ' = HashMap<String, ' . $subType . '>() {' . "\n";
-        $code.= '}' . "\n";
-
-        return $code;
+        return 'pub type ' . $name->getClass() . ' = HashMap<String, ' . $subType . '>;' . "\n";
     }
 
     protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        return 'type ' . $name->getClass() . ' = ' . $type . "\n";
+        return 'pub type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
     protected function writeHeader(TypeAbstract $origin): string
@@ -92,7 +93,7 @@ class Rust extends CodeGeneratorAbstract
         $code = '';
 
         if (!empty($this->namespace)) {
-            $code.= 'package ' . $this->namespace . "\n";
+            $code.= 'mod ' . $this->namespace . ';' . "\n";
         }
 
         $imports = $this->getImports($origin);
@@ -118,6 +119,45 @@ class Rust extends CodeGeneratorAbstract
 
         if ($origin instanceof StructType) {
             $imports[] = 'use serde::{Serialize, Deserialize};';
+        }
+
+        if (TypeUtil::contains($origin, MapType::class)) {
+            $imports[] = 'use std::collections::HashMap;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
+            $imports[] = 'use std::time::Duration;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
+            $imports[] = 'use chrono::NaiveDate;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
+            $imports[] = 'use chrono::NaiveTime;';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
+            $imports[] = 'use chrono::NaiveDateTime;';
+        }
+
+        $refs = [];
+        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
+            if ($type instanceof ReferenceType) {
+                $refs[$type->getRef()] = $type->getRef();
+                if ($type->getTemplate()) {
+                    foreach ($type->getTemplate() as $ref) {
+                        $refs[$ref] = $ref;
+                    }
+                }
+            } elseif ($type instanceof StructType && $type->getExtends()) {
+                $refs[$type->getExtends()] = $type->getExtends();
+            }
+        });
+
+        foreach ($refs as $ref) {
+            [$ns, $name] = TypeUtil::split($ref);
+            $imports[] = 'use ' . $this->normalizer->file($name) . '::' . $this->normalizer->class($name) . ';';
         }
 
         return $imports;

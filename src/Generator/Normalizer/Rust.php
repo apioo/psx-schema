@@ -29,7 +29,17 @@ namespace PSX\Schema\Generator\Normalizer;
  */
 class Rust extends NormalizerAbstract
 {
+    protected function getPropertyStyle(): int
+    {
+        return self::SNAKE_CASE;
+    }
+
     protected function getMethodStyle(): int
+    {
+        return self::SNAKE_CASE;
+    }
+
+    protected function getFileStyle(): int
     {
         return self::SNAKE_CASE;
     }
