@@ -29,14 +29,19 @@ namespace PSX\Schema\Generator\Normalizer;
  */
 class VisualBasic extends NormalizerAbstract
 {
+    protected function getArgumentStyle(): int
+    {
+        return self::PASCAL_CASE;
+    }
+
     protected function getPropertyStyle(): int
     {
         return self::PASCAL_CASE;
     }
 
-    protected function hasPropertyReserved(): bool
+    protected function getMethodStyle(): int
     {
-        return false;
+        return self::PASCAL_CASE;
     }
 
     protected function getKeywords(): array

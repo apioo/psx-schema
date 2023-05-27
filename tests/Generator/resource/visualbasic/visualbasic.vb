@@ -5,7 +5,7 @@ Public Class Location
     <JsonPropertyName("lat")>
     Public Property Lat As Double
     <JsonPropertyName("long")>
-    Public Property Long As Double
+    Public Property _Long As Double
 End Class
 
 Imports System.Text.Json.Serialization
@@ -35,13 +35,13 @@ Public Class Author
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 Public Class Meta
     Inherits Dictionary(Of String, String)
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 
 ' An general news entry
 Public Class News

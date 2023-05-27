@@ -32,7 +32,7 @@ Public Class StructType
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 
 ' Properties of a struct
 Public Class Properties
@@ -77,9 +77,9 @@ Public Class ScalarType
     <JsonPropertyName("format")>
     Public Property Format As String
     <JsonPropertyName("enum")>
-    Public Property Enum As Object()
+    Public Property _Enum As Object()
     <JsonPropertyName("default")>
-    Public Property Default As Object
+    Public Property _Default As Object
 End Class
 
 Imports System.Text.Json.Serialization
@@ -157,7 +157,7 @@ Public Class UnionType
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 
 ' An object to hold mappings between payload values and schema names or references
 Public Class DiscriminatorMapping
@@ -185,7 +185,7 @@ Public Class ReferenceType
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 Public Class TemplateProperties
     Inherits Dictionary(Of String, String)
 End Class
@@ -199,7 +199,7 @@ Public Class GenericType
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 
 ' The definitions map which contains all types
 Public Class Definitions
@@ -207,7 +207,7 @@ Public Class Definitions
 End Class
 
 Imports System.Text.Json.Serialization
-using System.Collections.Generic;
+Imports System.Collections.Generic
 
 ' Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
 Public Class Import
