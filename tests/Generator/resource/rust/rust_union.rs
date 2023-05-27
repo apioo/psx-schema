@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Creature {
     #[serde(rename = "kind")]
-    kind: String,
+    kind: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -10,9 +10,9 @@ use creature::Creature;
 #[derive(Serialize, Deserialize)]
 pub struct Human {
     #[serde(rename = "kind")]
-    kind: String,
+    kind: Option<String>,
     #[serde(rename = "firstName")]
-    first_name: String,
+    first_name: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -20,9 +20,9 @@ use creature::Creature;
 #[derive(Serialize, Deserialize)]
 pub struct Animal {
     #[serde(rename = "kind")]
-    kind: String,
+    kind: Option<String>,
     #[serde(rename = "nickname")]
-    nickname: String,
+    nickname: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -31,9 +31,9 @@ use animal::Animal;
 #[derive(Serialize, Deserialize)]
 pub struct Union {
     #[serde(rename = "union")]
-    union: serde_json::Value,
+    union: Option<serde_json::Value>,
     #[serde(rename = "intersection")]
-    intersection: serde_json::Value,
+    intersection: Option<serde_json::Value>,
     #[serde(rename = "discriminator")]
-    discriminator: serde_json::Value,
+    discriminator: Option<serde_json::Value>,
 }

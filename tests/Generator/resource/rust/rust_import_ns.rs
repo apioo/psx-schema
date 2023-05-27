@@ -6,9 +6,9 @@ use student::Student;
 #[derive(Serialize, Deserialize)]
 pub struct Import {
     #[serde(rename = "students")]
-    students: My::Import::StudentMap,
+    students: Option<My::Import::StudentMap>,
     #[serde(rename = "student")]
-    student: My::Import::Student,
+    student: Option<My::Import::Student>,
 }
 
 mod FooBar;
@@ -18,7 +18,7 @@ use student::Student;
 #[derive(Serialize, Deserialize)]
 pub struct MyMap {
     #[serde(rename = "matricleNumber")]
-    matricle_number: String,
+    matricle_number: Option<String>,
     #[serde(rename = "firstName")]
-    first_name: String,
+    first_name: Option<String>,
 }

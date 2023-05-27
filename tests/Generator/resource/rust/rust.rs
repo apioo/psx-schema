@@ -4,9 +4,9 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Location {
     #[serde(rename = "lat")]
-    lat: f64,
+    lat: Option<f64>,
     #[serde(rename = "long")]
-    long: f64,
+    long: Option<f64>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -15,9 +15,9 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Web {
     #[serde(rename = "name")]
-    name: String,
+    name: Option<String>,
     #[serde(rename = "url")]
-    url: String,
+    url: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -27,15 +27,15 @@ use location::Location;
 #[derive(Serialize, Deserialize)]
 pub struct Author {
     #[serde(rename = "title")]
-    title: String,
+    title: Option<String>,
     #[serde(rename = "email")]
-    email: String,
+    email: Option<String>,
     #[serde(rename = "categories")]
-    categories: Vec<String>,
+    categories: Option<Vec<String>>,
     #[serde(rename = "locations")]
-    locations: Vec<Location>,
+    locations: Option<Vec<Location>>,
     #[serde(rename = "origin")]
-    origin: Location,
+    origin: Option<Location>,
 }
 
 use std::collections::HashMap;
@@ -55,47 +55,47 @@ use web::Web;
 #[derive(Serialize, Deserialize)]
 pub struct News {
     #[serde(rename = "config")]
-    config: Meta,
+    config: Option<Meta>,
     #[serde(rename = "inlineConfig")]
-    inline_config: HashMap<String, String>,
+    inline_config: Option<HashMap<String, String>>,
     #[serde(rename = "tags")]
-    tags: Vec<String>,
+    tags: Option<Vec<String>>,
     #[serde(rename = "receiver")]
-    receiver: Vec<Author>,
+    receiver: Option<Vec<Author>>,
     #[serde(rename = "resources")]
-    resources: Vec<serde_json::Value>,
+    resources: Option<Vec<serde_json::Value>>,
     #[serde(rename = "profileImage")]
-    profile_image: String,
+    profile_image: Option<String>,
     #[serde(rename = "read")]
-    read: bool,
+    read: Option<bool>,
     #[serde(rename = "source")]
-    source: serde_json::Value,
+    source: Option<serde_json::Value>,
     #[serde(rename = "author")]
-    author: Author,
+    author: Option<Author>,
     #[serde(rename = "meta")]
-    meta: Meta,
+    meta: Option<Meta>,
     #[serde(rename = "sendDate")]
-    send_date: NaiveDate,
+    send_date: Option<NaiveDate>,
     #[serde(rename = "readDate")]
-    read_date: NaiveDateTime,
+    read_date: Option<NaiveDateTime>,
     #[serde(rename = "expires")]
-    expires: String,
+    expires: Option<String>,
     #[serde(rename = "price")]
-    price: f64,
+    price: Option<f64>,
     #[serde(rename = "rating")]
-    rating: u64,
+    rating: Option<u64>,
     #[serde(rename = "content")]
-    content: String,
+    content: Option<String>,
     #[serde(rename = "question")]
-    question: String,
+    question: Option<String>,
     #[serde(rename = "version")]
-    version: String,
+    version: Option<String>,
     #[serde(rename = "coffeeTime")]
-    coffee_time: NaiveTime,
+    coffee_time: Option<NaiveTime>,
     #[serde(rename = "profileUri")]
-    profile_uri: String,
+    profile_uri: Option<String>,
     #[serde(rename = "g-recaptcha-response")]
-    captcha: String,
+    captcha: Option<String>,
     #[serde(rename = "payload")]
-    payload: serde_json::Value,
+    payload: Option<serde_json::Value>,
 }

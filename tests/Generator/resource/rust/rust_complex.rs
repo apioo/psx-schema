@@ -4,15 +4,15 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct CommonType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -23,23 +23,23 @@ use properties::Properties;
 #[derive(Serialize, Deserialize)]
 pub struct StructType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "$final")]
-    _final: bool,
+    _final: Option<bool>,
     #[serde(rename = "$extends")]
-    _extends: String,
+    _extends: Option<String>,
     #[serde(rename = "properties")]
-    properties: Properties,
+    properties: Option<Properties>,
     #[serde(rename = "required")]
-    required: Vec<String>,
+    required: Option<Vec<String>>,
 }
 
 use std::collections::HashMap;
@@ -72,21 +72,21 @@ use any_type::AnyType;
 #[derive(Serialize, Deserialize)]
 pub struct MapType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "additionalProperties")]
-    additional_properties: serde_json::Value,
+    additional_properties: Option<serde_json::Value>,
     #[serde(rename = "maxProperties")]
-    max_properties: u64,
+    max_properties: Option<u64>,
     #[serde(rename = "minProperties")]
-    min_properties: u64,
+    min_properties: Option<u64>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -102,21 +102,21 @@ use any_type::AnyType;
 #[derive(Serialize, Deserialize)]
 pub struct ArrayType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "items")]
-    items: serde_json::Value,
+    items: Option<serde_json::Value>,
     #[serde(rename = "maxItems")]
-    max_items: u64,
+    max_items: Option<u64>,
     #[serde(rename = "minItems")]
-    min_items: u64,
+    min_items: Option<u64>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -126,21 +126,21 @@ use common_type::CommonType;
 #[derive(Serialize, Deserialize)]
 pub struct ScalarType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "format")]
-    format: String,
+    format: Option<String>,
     #[serde(rename = "enum")]
-    _enum: Vec<serde_json::Value>,
+    _enum: Option<Vec<serde_json::Value>>,
     #[serde(rename = "default")]
-    default: serde_json::Value,
+    default: Option<serde_json::Value>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -150,21 +150,21 @@ use scalar_type::ScalarType;
 #[derive(Serialize, Deserialize)]
 pub struct BooleanType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "format")]
-    format: String,
+    format: Option<String>,
     #[serde(rename = "enum")]
-    _enum: Vec<serde_json::Value>,
+    _enum: Option<Vec<serde_json::Value>>,
     #[serde(rename = "default")]
-    default: serde_json::Value,
+    default: Option<serde_json::Value>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -174,31 +174,31 @@ use scalar_type::ScalarType;
 #[derive(Serialize, Deserialize)]
 pub struct NumberType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "format")]
-    format: String,
+    format: Option<String>,
     #[serde(rename = "enum")]
-    _enum: Vec<serde_json::Value>,
+    _enum: Option<Vec<serde_json::Value>>,
     #[serde(rename = "default")]
-    default: serde_json::Value,
+    default: Option<serde_json::Value>,
     #[serde(rename = "multipleOf")]
-    multiple_of: f64,
+    multiple_of: Option<f64>,
     #[serde(rename = "maximum")]
-    maximum: f64,
+    maximum: Option<f64>,
     #[serde(rename = "exclusiveMaximum")]
-    exclusive_maximum: bool,
+    exclusive_maximum: Option<bool>,
     #[serde(rename = "minimum")]
-    minimum: f64,
+    minimum: Option<f64>,
     #[serde(rename = "exclusiveMinimum")]
-    exclusive_minimum: bool,
+    exclusive_minimum: Option<bool>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -208,27 +208,27 @@ use scalar_type::ScalarType;
 #[derive(Serialize, Deserialize)]
 pub struct StringType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
     #[serde(rename = "format")]
-    format: String,
+    format: Option<String>,
     #[serde(rename = "enum")]
-    _enum: Vec<serde_json::Value>,
+    _enum: Option<Vec<serde_json::Value>>,
     #[serde(rename = "default")]
-    default: serde_json::Value,
+    default: Option<serde_json::Value>,
     #[serde(rename = "maxLength")]
-    max_length: u64,
+    max_length: Option<u64>,
     #[serde(rename = "minLength")]
-    min_length: u64,
+    min_length: Option<u64>,
     #[serde(rename = "pattern")]
-    pattern: String,
+    pattern: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -238,15 +238,15 @@ use common_type::CommonType;
 #[derive(Serialize, Deserialize)]
 pub struct AnyType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "type")]
-    _type: String,
+    _type: Option<String>,
     #[serde(rename = "nullable")]
-    nullable: bool,
+    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
-    deprecated: bool,
+    deprecated: Option<bool>,
     #[serde(rename = "readonly")]
-    readonly: bool,
+    readonly: Option<bool>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -256,9 +256,9 @@ use reference_type::ReferenceType;
 #[derive(Serialize, Deserialize)]
 pub struct IntersectionType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "allOf")]
-    all_of: Vec<ReferenceType>,
+    all_of: Option<Vec<ReferenceType>>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -272,11 +272,11 @@ use reference_type::ReferenceType;
 #[derive(Serialize, Deserialize)]
 pub struct UnionType {
     #[serde(rename = "description")]
-    description: String,
+    description: Option<String>,
     #[serde(rename = "discriminator")]
-    discriminator: Discriminator,
+    discriminator: Option<Discriminator>,
     #[serde(rename = "oneOf")]
-    one_of: Vec<serde_json::Value>,
+    one_of: Option<Vec<serde_json::Value>>,
 }
 
 use std::collections::HashMap;
@@ -291,9 +291,9 @@ use discriminator_mapping::DiscriminatorMapping;
 #[derive(Serialize, Deserialize)]
 pub struct Discriminator {
     #[serde(rename = "propertyName")]
-    property_name: String,
+    property_name: Option<String>,
     #[serde(rename = "mapping")]
-    mapping: DiscriminatorMapping,
+    mapping: Option<DiscriminatorMapping>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -303,9 +303,9 @@ use template_properties::TemplateProperties;
 #[derive(Serialize, Deserialize)]
 pub struct ReferenceType {
     #[serde(rename = "$ref")]
-    _ref: String,
+    _ref: Option<String>,
     #[serde(rename = "$template")]
-    _template: TemplateProperties,
+    _template: Option<TemplateProperties>,
 }
 
 use std::collections::HashMap;
@@ -317,7 +317,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct GenericType {
     #[serde(rename = "$generic")]
-    _generic: String,
+    _generic: Option<String>,
 }
 
 use std::collections::HashMap;
@@ -341,9 +341,9 @@ use definitions::Definitions;
 #[derive(Serialize, Deserialize)]
 pub struct TypeSchema {
     #[serde(rename = "$import")]
-    _import: Import,
+    _import: Option<Import>,
     #[serde(rename = "definitions")]
-    definitions: Definitions,
+    definitions: Option<Definitions>,
     #[serde(rename = "$ref")]
-    _ref: String,
+    _ref: Option<String>,
 }

@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Human {
     #[serde(rename = "firstName")]
-    first_name: String,
+    first_name: Option<String>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -10,9 +10,9 @@ use human::Human;
 #[derive(Serialize, Deserialize)]
 pub struct Student {
     #[serde(rename = "firstName")]
-    first_name: String,
+    first_name: Option<String>,
     #[serde(rename = "matricleNumber")]
-    matricle_number: String,
+    matricle_number: Option<String>,
 }
 
 use map::Map;
@@ -23,9 +23,9 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Map {
     #[serde(rename = "totalResults")]
-    total_results: u64,
+    total_results: Option<u64>,
     #[serde(rename = "entries")]
-    entries: Vec<T>,
+    entries: Option<Vec<T>>,
 }
 
 use serde::{Serialize, Deserialize};
@@ -33,5 +33,5 @@ use student_map::StudentMap;
 #[derive(Serialize, Deserialize)]
 pub struct RootSchema {
     #[serde(rename = "students")]
-    students: StudentMap,
+    students: Option<StudentMap>,
 }
