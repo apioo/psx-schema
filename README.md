@@ -146,16 +146,21 @@ Beside PHP classes this library can generate the following types:
 
 * CSharp
 * Go
+* GraphQL
 * HTML
 * Java
 * JsonSchema
+* Kotlin
 * Markdown
 * PHP
 * Protobuf
 * Python
+* Ruby
+* Rust
 * Swift
 * TypeSchema
 * TypeScript
+* VisualBasic
 
 ## Attributes
 
