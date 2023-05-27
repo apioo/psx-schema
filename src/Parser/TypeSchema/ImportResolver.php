@@ -33,19 +33,21 @@ use PSX\Uri\Uri;
  */
 class ImportResolver
 {
-    /**
-     * @var array
-     */
-    protected $resolvers;
+    private array $resolvers;
 
     public function __construct()
     {
         $this->resolvers = [];
     }
 
-    public function addResolver(string $scheme, ResolverInterface $resolver)
+    public function addResolver(string $scheme, ResolverInterface $resolver): void
     {
         $this->resolvers[$scheme] = $resolver;
+    }
+
+    public function supports(Uri $source): bool
+    {
+        return isset($this->resolvers[$source->getScheme()]);
     }
 
     public function resolve(Uri $source, ?string $basePath = null): \stdClass
@@ -60,7 +62,7 @@ class ImportResolver
         return $resolver->resolve($source, $basePath);
     }
 
-    public static function createDefault(ClientInterface $httpClient = null)
+    public static function createDefault(ClientInterface $httpClient = null): self
     {
         $resolver = new self();
         $resolver->addResolver('file', new Resolver\File());

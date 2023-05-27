@@ -72,7 +72,7 @@ class SchemaManagerTest extends TestCase
 
     public function testGetSchemaTypeHub()
     {
-        $schema = $this->schemaManager->getSchema('apioo/developer:1.0.1');
+        $schema = $this->schemaManager->getSchema('typehub://apioo:developer@1.0.1');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
