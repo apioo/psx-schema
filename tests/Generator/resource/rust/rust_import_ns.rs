@@ -6,9 +6,9 @@ use student::Student;
 #[derive(Serialize, Deserialize)]
 pub struct Import {
     #[serde(rename = "students")]
-    students: My::Import.StudentMap,
+    students: My::Import::StudentMap,
     #[serde(rename = "student")]
-    student: My::Import.Student,
+    student: My::Import::Student,
 }
 
 mod FooBar;

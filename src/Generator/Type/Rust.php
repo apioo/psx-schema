@@ -116,6 +116,6 @@ class Rust extends GeneratorAbstract
 
     protected function getNamespaced(string $namespace, string $name): string
     {
-        return $namespace . '.' . $name;
+        return $namespace . '::' . $name;
     }
 }
