@@ -45,6 +45,7 @@ class GeneratorFactory
     public const TYPE_SWIFT = 'swift';
     public const TYPE_TYPESCHEMA = 'typeschema';
     public const TYPE_TYPESCRIPT = 'typescript';
+    public const TYPE_VISUALBASIC = 'visualbasic';
 
     public function getGenerator(string $format, ?string $config = null): GeneratorInterface
     {
@@ -102,6 +103,9 @@ class GeneratorFactory
             case self::TYPE_TYPESCRIPT:
                 return new Generator\TypeScript($namespace, $mapping, $indent);
 
+            case self::TYPE_VISUALBASIC:
+                return new Generator\VisualBasic($namespace, $mapping, $indent);
+
             default:
             case self::TYPE_TYPESCHEMA:
                 return new Generator\TypeSchema();
@@ -127,6 +131,7 @@ class GeneratorFactory
             self::TYPE_SWIFT,
             self::TYPE_TYPESCRIPT,
             self::TYPE_TYPESCHEMA,
+            self::TYPE_VISUALBASIC,
         ];
     }
 }
