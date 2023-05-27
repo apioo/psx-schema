@@ -137,7 +137,7 @@ class VisualBasic extends CodeGeneratorAbstract
         $imports[] = 'Imports System.Text.Json.Serialization';
 
         if (TypeUtil::contains($origin, MapType::class)) {
-            $imports[] = 'using System.Collections.Generic;';
+            $imports[] = 'Imports System.Collections.Generic;';
         }
 
         return $imports;
