@@ -63,6 +63,20 @@ class SchemaManagerTest extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
+    public function testGetSchemaHttps()
+    {
+        $schema = $this->schemaManager->getSchema('https://api.typehub.cloud/export/apioo-developer-1.0.1-typeschema');
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
+    }
+
+    public function testGetSchemaTypeHub()
+    {
+        $schema = $this->schemaManager->getSchema('apioo/developer:1.0.1');
+
+        $this->assertInstanceOf(SchemaInterface::class, $schema);
+    }
+
     public function testGetSchemaNotExisting()
     {
         $this->expectException(InvalidSchemaException::class);

@@ -24,6 +24,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use PSX\Http\Client\Client;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Parser\TypeSchema\ImportResolver;
+use PSX\Uri\Uri;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -76,7 +77,17 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         if ($type === self::TYPE_TYPESCHEMA) {
-            $schema = Parser\TypeSchema::fromFile($schemaName, $this->resolver);
+            if (str_starts_with($schemaName, 'http://') || str_starts_with($schemaName, 'https://') || str_starts_with($schemaName, 'file://')) {
+                $data   = $this->resolver->resolve(Uri::parse($schemaName));
+                $schema = (new Parser\TypeSchema($this->resolver))->parseSchema($data);
+            } elseif (is_file($schemaName)) {
+                $schema = Parser\TypeSchema::fromFile($schemaName, $this->resolver);
+            } elseif (preg_match('~^([A-Za-z0-9]+)/([A-Za-z0-9]+):([0-9]+\.[0-9]+\.[0-9]+)$~', $schemaName, $matches)) {
+                $data   = $this->resolver->resolve(Uri::parse('https://api.typehub.cloud/export/' . $matches[1] . '-' . $matches[2] . '-' . $matches[3] . '-typeschema'));
+                $schema = (new Parser\TypeSchema($this->resolver))->parseSchema($data);
+            } else {
+                throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
+            }
         } elseif ($type === self::TYPE_CLASS) {
             $schema = new $schemaName($this);
         } elseif ($type === self::TYPE_ANNOTATION) {
@@ -96,16 +107,14 @@ class SchemaManager implements SchemaManagerInterface
 
     private function guessTypeFromSchema(string $schemaName): ?string
     {
-        if (strpos($schemaName, '.') !== false) {
-            return self::TYPE_TYPESCHEMA;
-        } elseif (class_exists($schemaName)) {
+        if (class_exists($schemaName)) {
             if (in_array(SchemaInterface::class, class_implements($schemaName))) {
                 return self::TYPE_CLASS;
             } else {
                 return self::TYPE_ANNOTATION;
             }
         } else {
-            return null;
+            return self::TYPE_TYPESCHEMA;
         }
     }
 }
