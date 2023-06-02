@@ -141,7 +141,7 @@ class TypeUtil
      */
     public static function split(string $ref): array
     {
-        if (strpos($ref, ':') !== false) {
+        if (str_contains($ref, ':')) {
             $parts = explode(':', $ref, 2);
             $ns    = $parts[0] ?? '';
             $name  = $parts[1] ?? '';
