@@ -1,0 +1,19 @@
+{
+  "$import": {
+    "foo": "file://../../Generator/resource/source_import.json"
+  },
+  "definitions": {
+    "Test": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "$ref": "foo:Import"
+        },
+        "bar": {
+          "$ref": "my_import:Student"
+        }
+      }
+    }
+  },
+  "$ref": "Test"
+}

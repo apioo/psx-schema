@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
+use PSX\Schema\Parser\ContextInterface;
 
 /**
  * SchemaManagerInterface
@@ -32,10 +33,30 @@ use PSX\Schema\Exception\InvalidSchemaException;
 interface SchemaManagerInterface
 {
     /**
-     * The schema manager knows how to create a schema instance from the given
-     * schema name. Returns a schema interface or must throw an exception
-     * 
+     * The schema manager knows how to create a schema instance from the given schema name. Returns a schema interface
+     * or throws an exception.
+     *
+     * The schema name can be an uri format where you can specify a fitting parser i.e.
+     * - php+class://My.Acme.Dto
+     *   Resolves the schema as PHP DTO class by looking at the properties and attributes through reflection
+     * - php+schema://My.Acme.Schema
+     *   Resolves the schema as schema class, this means the class must be an instance of SchemaInterface
+     * - file:///path/to/a/file.json
+     *   Resolves the schema by parsing a JSON file
+     * - http://www.acme.com/schema.json
+     * - https://www.acme.com/schema.json
+     *   Resolves the schema by requesting a remote source through http or https
+     * - typehub://apioo:software@0.1.2
+     *   Resolves the schema directly from TypeHub, this would i.e. resolve the schema https://typehub.cloud/d/apioo/software
+     *
+     * If the schema name is a simple string the manager tries to guess the fitting schema uri format
+     *
      * @throws InvalidSchemaException
      */
-    public function getSchema(string $schemaName, ?string $type = null): SchemaInterface;
+    public function getSchema(string $schemaName, ?ContextInterface $context = null): SchemaInterface;
+
+    /**
+     * Registers a new parser for the provided scheme
+     */
+    public function register(string $scheme, ParserInterface $parser): void;
 }

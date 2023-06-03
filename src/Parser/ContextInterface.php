@@ -18,25 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\TypeSchema;
-
-use PSX\Uri\Uri;
+namespace PSX\Schema\Parser;
 
 /**
- * ResolverInterface
+ * ContextInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface ResolverInterface
+interface ContextInterface
 {
-    /**
-     * Resolves the given uri and returns an JsonSchema document
-     *
-     * @param \PSX\Uri\Uri $uri
-     * @param string $basePath
-     * @return \stdClass
-     */
-    public function resolve(Uri $uri, ?string $basePath = null): \stdClass;
 }

@@ -22,10 +22,9 @@ namespace PSX\Schema;
 
 use Psr\Cache\CacheItemPoolInterface;
 use PSX\Http\Client\Client;
+use PSX\Http\Client\ClientInterface;
 use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\Exception\ParserException;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
-use PSX\Uri\Uri;
+use PSX\Schema\Parser\ContextInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
@@ -37,33 +36,37 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  */
 class SchemaManager implements SchemaManagerInterface
 {
-    public const TYPE_TYPESCHEMA = 'typeschema';
-    public const TYPE_CLASS      = 'class';
-    public const TYPE_ANNOTATION = 'annotation';
+    private CacheItemPoolInterface $cache;
+    private bool $debug;
 
     /**
-     * @deprecated
+     * @var ParserInterface[]
      */
-    public const TYPE_JSONSCHEMA = 'typeschema';
+    private array $parsers = [];
 
-    private Parser\Popo $popoParser;
-    private ?CacheItemPoolInterface $cache;
-    private bool $debug;
-    private ImportResolver $resolver;
-
-    public function __construct(?CacheItemPoolInterface $cache = null, bool $debug = false, ?ImportResolver $resolver = null)
+    public function __construct(?CacheItemPoolInterface $cache = null, ?ClientInterface $httpClient = null, bool $debug = false)
     {
-        if ($resolver === null) {
-            $resolver = ImportResolver::createDefault(new Client());
+        $this->cache = $cache ?? new ArrayAdapter();
+        $this->debug = $debug;
+
+        if ($httpClient === null) {
+            $httpClient = new Client();
         }
 
-        $this->popoParser = new Parser\Popo();
-        $this->cache      = $cache === null ? new ArrayAdapter() : $cache;
-        $this->debug      = $debug;
-        $this->resolver   = $resolver;
+        $this->register('file', new Parser\File($this));
+        $this->register('http', new Parser\Http($this, $httpClient, false));
+        $this->register('https', new Parser\Http($this, $httpClient, true));
+        $this->register('php+class', new Parser\Popo());
+        $this->register('php+schema', new Parser\SchemaClass($this));
+        $this->register('typehub', new Parser\TypeHub($this, $httpClient));
     }
 
-    public function getSchema(string $schemaName, ?string $type = null): SchemaInterface
+    public function register(string $scheme, ParserInterface $parser): void
+    {
+        $this->parsers[$scheme] = $parser;
+    }
+
+    public function getSchema(string $schemaName, ?ContextInterface $context = null): SchemaInterface
     {
         $item = null;
         if (!$this->debug) {
@@ -73,25 +76,20 @@ class SchemaManager implements SchemaManagerInterface
             }
         }
 
-        if ($type === null) {
-            $type = $this->guessTypeFromSchema($schemaName);
+        $pos = strpos($schemaName, '://');
+        if ($pos === false) {
+            $schemaName = $this->guessSchemeFromSchemaName($schemaName);
+            $pos = strpos($schemaName, '://');
         }
 
-        if ($type === self::TYPE_TYPESCHEMA) {
-            if (!str_contains($schemaName, '://') && is_file($schemaName)) {
-                $schema = Parser\TypeSchema::fromFile($schemaName, $this->resolver);
-            } else {
-                try {
-                    $data   = $this->resolver->resolve(Uri::parse($schemaName));
-                    $schema = (new Parser\TypeSchema($this->resolver))->parseSchema($data);
-                } catch (ParserException $e) {
-                    throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist', 0, $e);
-                }
-            }
-        } elseif ($type === self::TYPE_CLASS) {
-            $schema = new $schemaName($this);
-        } elseif ($type === self::TYPE_ANNOTATION) {
-            $schema = $this->popoParser->parse($schemaName);
+        if ($pos === false) {
+            throw new InvalidSchemaException('Could not resolve schema uri');
+        }
+
+        $scheme = substr($schemaName, 0, $pos);
+        $value = substr($schemaName, $pos + 3);
+        if (isset($this->parsers[$scheme])) {
+            $schema = $this->parsers[$scheme]->parse($value, $context);
         } else {
             throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
         }
@@ -105,16 +103,18 @@ class SchemaManager implements SchemaManagerInterface
         return $schema;
     }
 
-    private function guessTypeFromSchema(string $schemaName): ?string
+    private function guessSchemeFromSchemaName(string $schemaName): ?string
     {
         if (class_exists($schemaName)) {
             if (in_array(SchemaInterface::class, class_implements($schemaName))) {
-                return self::TYPE_CLASS;
+                return 'php+schema://' . str_replace('\\', '.', $schemaName);
             } else {
-                return self::TYPE_ANNOTATION;
+                return 'php+class://' . str_replace('\\', '.', $schemaName);
             }
+        } elseif (is_file($schemaName)) {
+            return 'file://' . $schemaName;
         } else {
-            return self::TYPE_TYPESCHEMA;
+            return $schemaName;
         }
     }
 }

@@ -18,36 +18,39 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\TypeSchema\Resolver;
+namespace PSX\Schema\Parser;
 
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
-use PSX\Json\Parser;
 use PSX\Schema\Exception\ParserException;
-use PSX\Schema\Parser\TypeSchema\ResolverInterface;
+use PSX\Schema\SchemaInterface;
+use PSX\Schema\SchemaManagerInterface;
 use PSX\Uri\Uri;
 use PSX\Uri\Url;
 
 /**
- * Resolver which loads documents from the typehub.cloud platform
+ * TypeHub
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class TypeHub implements ResolverInterface
+class TypeHub extends TypeSchema
 {
     private const API_URL = 'https://api.typehub.cloud/export/%s-%s-%s-typeschema';
 
     private ClientInterface $httpClient;
 
-    public function __construct(ClientInterface $httpClient)
+    public function __construct(SchemaManagerInterface $schemaManager, ClientInterface $httpClient)
     {
+        parent::__construct($schemaManager);
+
         $this->httpClient = $httpClient;
     }
 
-    public function resolve(Uri $uri, ?string $basePath = null): \stdClass
+    public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface
     {
+        $uri = Uri::parse('typehub://' . $schema);
         $user = $uri->getUser();
         $document = $uri->getPassword();
         $version = $uri->getHost();
@@ -60,6 +63,6 @@ class TypeHub implements ResolverInterface
             throw new ParserException('Could not receive TypeHub document: ' . $user . '/' . $document . ' for version ' . $version . ' received ' . $response->getStatusCode());
         }
 
-        return Parser::decode((string) $response->getBody());
+        return parent::parse((string) $response->getBody(), $context);
     }
 }

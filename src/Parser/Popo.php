@@ -62,13 +62,14 @@ class Popo implements ParserInterface
     /**
      * @inheritDoc
      */
-    public function parse(string $schema): SchemaInterface
+    public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface
     {
+        $className = str_replace('.', '\\', $schema);
         $definitions = new Definitions();
 
-        $this->parseClass($schema, $definitions);
+        $this->parseClass($className, $definitions);
 
-        $name = (new ReflectionClass($schema))->getShortName();
+        $name = (new ReflectionClass($className))->getShortName();
         $type = TypeFactory::getReference($name);
 
         return new Schema($type, $definitions);

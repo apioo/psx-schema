@@ -18,14 +18,13 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\TypeSchema\Resolver;
+namespace PSX\Schema\Parser;
 
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
-use PSX\Json\Parser;
 use PSX\Schema\Exception\ParserException;
-use PSX\Schema\Parser\TypeSchema\ResolverInterface;
-use PSX\Uri\Uri;
+use PSX\Schema\SchemaInterface;
+use PSX\Schema\SchemaManagerInterface;
 
 /**
  * Http
@@ -34,32 +33,30 @@ use PSX\Uri\Uri;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class Http implements ResolverInterface
+class Http extends TypeSchema
 {
     public const USER_AGENT = 'TypeSchema Resolver (https://github.com/apioo/psx-schema)';
 
-    /**
-     * @var ClientInterface
-     */
-    private $httpClient;
+    private ClientInterface $httpClient;
+    private bool $secure;
 
-    public function __construct(ClientInterface $httpClient)
+    public function __construct(SchemaManagerInterface $schemaManager, ClientInterface $httpClient, bool $secure)
     {
+        parent::__construct($schemaManager);
+
         $this->httpClient = $httpClient;
+        $this->secure = $secure;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function resolve(Uri $uri, ?string $basePath = null): \stdClass
+    public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface
     {
-        $request  = new GetRequest($uri, ['Accept' => 'application/json', 'User-Agent' => self::USER_AGENT]);
+        $request  = new GetRequest(($this->secure ? 'https' : 'http') . '://' . $schema, ['Accept' => 'application/json', 'User-Agent' => self::USER_AGENT]);
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() !== 200) {
-            throw new ParserException('Could not load external schema ' . $uri->toString() . ' received ' . $response->getStatusCode());
+            throw new ParserException('Could not load external schema ' . $schema . ' received ' . $response->getStatusCode());
         }
 
-        return Parser::decode((string) $response->getBody());
+        return parent::parse((string) $response->getBody(), $context);
     }
 }

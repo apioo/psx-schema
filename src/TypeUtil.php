@@ -115,20 +115,43 @@ class TypeUtil
 
     /**
      * Normalizes all reference types and removes the self namespace
-     * 
-     * @param TypeInterface $type
      */
     public static function normalize(TypeInterface $type): void
     {
-        self::walk($type, function(TypeInterface $type){
-            if (!$type instanceof ReferenceType) {
-                return;
-            }
-
-            [$ns, $name] = self::split($type->getRef());
-
+        self::refs($type, function(string $ns, string $name){
             if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $type->setRef($name);
+                return $name;
+            } else {
+                return $ns . ':' . $name;
+            }
+        });
+    }
+
+    /**
+     * Goes through all refs and replaces the ref using a specific callback
+     */
+    public static function refs(TypeInterface $type, \Closure $callback): void
+    {
+        self::walk($type, function(TypeInterface $type) use ($callback){
+            if ($type instanceof ReferenceType) {
+                [$ns, $name] = self::split($type->getRef());
+                $type->setRef($callback($ns, $name));
+
+                $template = $type->getTemplate();
+                if (!empty($template)) {
+                    $result = [];
+                    foreach ($template as $key => $ref) {
+                        [$ns, $name] = self::split($ref);
+                        $result[$key] = $callback($ns, $name);
+                    }
+                    $type->setTemplate($result);
+                }
+            } elseif ($type instanceof StructType) {
+                $extends = $type->getExtends();
+                if (!empty($extends)) {
+                    [$ns, $name] = self::split($extends);
+                    $type->setExtends($callback($ns, $name));
+                }
             }
         });
     }

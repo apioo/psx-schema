@@ -18,37 +18,28 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Parser\TypeSchema\Resolver;
+namespace PSX\Schema\Parser\Context;
 
-use PSX\Json\Parser;
-use PSX\Schema\Exception\ParserException;
-use PSX\Schema\Parser\TypeSchema\ResolverInterface;
-use PSX\Uri\Uri;
+use PSX\Schema\Parser\ContextInterface;
 
 /**
- * File
+ * FilesystemContext
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class File implements ResolverInterface
+class FilesystemContext implements ContextInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function resolve(Uri $uri, ?string $basePath = null): \stdClass
+    private ?string $basePath;
+
+    public function __construct(?string $basePath = null)
     {
-        $path = $basePath ?? getcwd();
-        $path = $path . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, ltrim($uri->getPath(), '/'));
+        $this->basePath = $basePath;
+    }
 
-        if (is_file($path)) {
-            $schema = file_get_contents($path);
-            $data   = Parser::decode($schema);
-
-            return $data;
-        } else {
-            throw new ParserException('Could not load external schema ' . $path);
-        }
+    public function getBasePath(): ?string
+    {
+        return $this->basePath;
     }
 }

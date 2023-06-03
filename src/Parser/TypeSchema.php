@@ -28,10 +28,10 @@ use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\UnknownTypeException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
-use PSX\Schema\Parser\TypeSchema\ImportResolver;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\SchemaManagerInterface;
 use PSX\Schema\Type;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
@@ -47,6 +47,7 @@ use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 use PSX\Uri\Uri;
 
 /**
@@ -58,31 +59,29 @@ use PSX\Uri\Uri;
  */
 class TypeSchema implements ParserInterface
 {
-    private ImportResolver $resolver;
-    private ?string $basePath;
+    private SchemaManagerInterface $schemaManager;
 
-    public function __construct(ImportResolver $resolver = null, ?string $basePath = null)
+    public function __construct(SchemaManagerInterface $schemaManager)
     {
-        $this->resolver = $resolver ?: ImportResolver::createDefault();
-        $this->basePath = $basePath;
+        $this->schemaManager = $schemaManager;
     }
 
-    public function parse(string $schema): SchemaInterface
+    public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface
     {
         $data = Parser::decode($schema);
         if (!$data instanceof \stdClass) {
             throw new ParserException('Schema must be an object');
         }
 
-        return $this->parseSchema($data);
+        return $this->parseSchema($data, $context);
     }
 
-    public function parseSchema(\stdClass $data): SchemaInterface
+    public function parseSchema(\stdClass $data, ?ContextInterface $context = null): SchemaInterface
     {
         $definitions = new Definitions();
 
-        $this->parseImport($data, $definitions, $this->basePath);
-        $this->parseDefinitions(null, $data, $definitions);
+        $this->parseImport($data, $definitions, $context);
+        $this->parseDefinitions($data, $definitions);
 
         try {
             $type = $this->parseType($data);
@@ -95,7 +94,7 @@ class TypeSchema implements ParserInterface
         return new Schema($type, $definitions);
     }
 
-    private function parseDefinitions(?string $namespace, \stdClass $schema, DefinitionsInterface $definitions)
+    private function parseDefinitions(\stdClass $schema, DefinitionsInterface $definitions): void
     {
         $data = null;
         if (isset($schema->definitions)) {
@@ -110,20 +109,16 @@ class TypeSchema implements ParserInterface
 
         foreach ($data as $name => $definition) {
             try {
-                $type = $this->parseType($definition, $namespace);
+                $type = $this->parseType($definition);
             } catch (\Exception $e) {
                 throw new ParserException('Type ' . $name . ' contains an invalid schema: ' . $e->getMessage(), 0, $e);
             }
 
-            if ($namespace !== null) {
-                $definitions->addType($namespace . ':' . $name, $type);
-            } else {
-                $definitions->addType($name, $type);
-            }
+            $definitions->addType($name, $type);
         }
     }
 
-    private function parseImport(\stdClass $schema, DefinitionsInterface $definitions, ?string $basePath = null)
+    private function parseImport(\stdClass $schema, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
         $import = $schema->{'$import'} ?? null;
         if (!$import instanceof \stdClass) {
@@ -131,13 +126,23 @@ class TypeSchema implements ParserInterface
         }
 
         foreach ($import as $namespace => $uri) {
-            $uri = Uri::parse($uri);
-            $path = $basePath . $uri->getPath();
-            $basePath = pathinfo($path, PATHINFO_DIRNAME);
+            $schema = $this->schemaManager->getSchema($uri, $context);
+            foreach ($schema->getDefinitions()->getAllTypes() as $fullName => $type) {
+                TypeUtil::refs($type, function(string $ns, string $name) use ($namespace){
+                    if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                        return $namespace . ':' . $name;
+                    } else {
+                        return $ns . ':' . $name;
+                    }
+                });
 
-            $data = $this->resolver->resolve($uri, $this->basePath);
-            $this->parseImport($data, $definitions, $basePath);
-            $this->parseDefinitions($namespace, $data, $definitions);
+                [$ns, $name] = TypeUtil::split($fullName);
+                if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                    $definitions->addType($namespace . ':' . $name, $type);
+                } else {
+                    $definitions->addType($ns . ':' . $name, $type);
+                }
+            }
         }
     }
 
@@ -182,7 +187,7 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    protected function parseCommon(TypeAbstract $type, \stdClass $data)
+    protected function parseCommon(TypeAbstract $type, \stdClass $data): void
     {
         if (isset($data->title)) {
             $type->setTitle($data->title);
@@ -207,13 +212,13 @@ class TypeSchema implements ParserInterface
         // PSX specific attributes
         $vars = get_object_vars($data);
         foreach ($vars as $key => $value) {
-            if (substr($key, 0, 6) === 'x-psx-') {
+            if (str_starts_with($key, 'x-psx-')) {
                 $type->setAttribute(substr($key, 6), $value);
             }
         }
     }
 
-    protected function parseScalar(ScalarType $property, \stdClass $data)
+    protected function parseScalar(ScalarType $property, \stdClass $data): void
     {
         if (isset($data->format) && is_string($data->format)) {
             $format = Format::tryFrom($data->format);
@@ -469,17 +474,5 @@ class TypeSchema implements ParserInterface
         }
 
         throw new UnknownTypeException('Could not assign schema to a type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
-    }
-
-    public static function fromFile($file, ImportResolver $resolver = null): SchemaInterface
-    {
-        if (!empty($file) && is_file($file)) {
-            $basePath = pathinfo($file, PATHINFO_DIRNAME);
-            $parser   = new self($resolver, $basePath);
-
-            return $parser->parse(file_get_contents($file));
-        } else {
-            throw new ParserException('Could not load json schema ' . $file);
-        }
     }
 }
