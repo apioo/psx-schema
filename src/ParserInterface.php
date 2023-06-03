@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Parser\ContextInterface;
 
 /**
  * ParserInterface
@@ -34,9 +35,7 @@ interface ParserInterface
     /**
      * Parses the given schema
      *
-     * @param string $schema
-     * @return SchemaInterface
      * @throws ParserException
      */
-    public function parse(string $schema): SchemaInterface;
+    public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface;
 }
