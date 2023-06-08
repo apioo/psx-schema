@@ -56,7 +56,7 @@ class SchemaManager implements SchemaManagerInterface
         $this->register('file', new Parser\File($this));
         $this->register('http', new Parser\Http($this, $httpClient, false));
         $this->register('https', new Parser\Http($this, $httpClient, true));
-        $this->register('php+class', new Parser\Popo());
+        $this->register('php', new Parser\Popo());
         $this->register('php+schema', new Parser\SchemaClass($this));
         $this->register('typehub', new Parser\TypeHub($this, $httpClient));
     }
@@ -109,7 +109,7 @@ class SchemaManager implements SchemaManagerInterface
             if (in_array(SchemaInterface::class, class_implements($schemaName))) {
                 return 'php+schema://' . str_replace('\\', '.', $schemaName);
             } else {
-                return 'php+class://' . str_replace('\\', '.', $schemaName);
+                return 'php://' . str_replace('\\', '.', $schemaName);
             }
         } elseif (is_file($schemaName)) {
             return 'file://' . $schemaName;

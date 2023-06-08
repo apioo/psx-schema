@@ -37,7 +37,7 @@ interface SchemaManagerInterface
      * or throws an exception.
      *
      * The schema name can be an uri format where you can specify a fitting parser i.e.
-     * - php+class://My.Acme.Dto
+     * - php://My.Acme.Dto
      *   Resolves the schema as PHP DTO class by looking at the properties and attributes through reflection
      * - php+schema://My.Acme.Schema
      *   Resolves the schema as schema class, this means the class must be an instance of SchemaInterface
