@@ -33,6 +33,11 @@ use PSX\Schema\Parser\ContextInterface;
 interface SchemaManagerInterface
 {
     /**
+     * Registers a new parser for the provided scheme
+     */
+    public function register(string $scheme, ParserInterface $parser): void;
+
+    /**
      * The schema manager knows how to create a schema instance from the given schema name. Returns a schema interface
      * or throws an exception.
      *
@@ -56,7 +61,7 @@ interface SchemaManagerInterface
     public function getSchema(string $schemaName, ?ContextInterface $context = null): SchemaInterface;
 
     /**
-     * Registers a new parser for the provided scheme
+     * Clears the cache for a specific schema
      */
-    public function register(string $scheme, ParserInterface $parser): void;
+    public function clear(string $schemaName): void;
 }

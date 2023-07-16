@@ -70,7 +70,7 @@ class SchemaManager implements SchemaManagerInterface
     {
         $item = null;
         if (!$this->debug) {
-            $item = $this->cache->getItem(md5($schemaName));
+            $item = $this->cache->getItem('psx-schema-' . md5($schemaName));
             if ($item->isHit()) {
                 return $item->get();
             }
@@ -101,6 +101,11 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         return $schema;
+    }
+
+    public function clear(string $schemaName): void
+    {
+        $this->cache->deleteItem('psx-schema-' . md5($schemaName));
     }
 
     private function guessSchemeFromSchemaName(string $schemaName): ?string
