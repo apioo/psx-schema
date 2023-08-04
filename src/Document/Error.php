@@ -21,61 +21,50 @@
 namespace PSX\Schema\Document;
 
 /**
- * Import
+ * Error
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class Import implements \JsonSerializable
+class Error implements \JsonSerializable
 {
-    private ?string $alias;
-    private ?string $version;
-    private ?object $document;
+    private ?int $code;
+    private ?string $type;
 
-    public function __construct(array $import)
+    public function __construct(array $throw)
     {
-        $this->alias = $import['alias'] ?? null;
-        $this->version = $import['version'] ?? null;
-        $this->document = $import['document'] ?? null;
+        $this->code = $throw['code'] ?? null;
+        $this->type = $throw['type'] ?? null;
     }
 
-    public function getAlias(): ?string
+    public function getCode(): ?int
     {
-        return $this->alias;
+        return $this->code;
     }
 
-    public function setAlias(?string $alias): void
+    public function setCode(?int $code): void
     {
-        $this->alias = $alias;
+        $this->code = $code;
     }
 
-    public function getVersion(): ?string
+    public function getType(): ?string
     {
-        return $this->version;
+        return $this->type;
     }
 
-    public function setVersion(?string $version): void
+    public function setType(?string $type): void
     {
-        $this->version = $version;
-    }
-
-    public function getDocument(): ?object
-    {
-        return $this->document;
-    }
-
-    public function setDocument(?object $document): void
-    {
-        $this->document = $document;
+        $this->type = $type;
     }
 
     public function jsonSerialize(): array
     {
-        return [
-            'alias' => $this->alias,
-            'version' => $this->version,
-            'document' => $this->document,
-        ];
+        return array_filter([
+            'code' => $this->code,
+            'type' => $this->type,
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 }

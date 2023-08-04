@@ -27,7 +27,7 @@ namespace PSX\Schema\Document;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class Property
+class Property implements \JsonSerializable
 {
     public const TYPE_STRING = 'string';
     public const TYPE_INTEGER = 'integer';
@@ -76,9 +76,19 @@ class Property
         return $this->name;
     }
 
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     public function getType(): ?string
@@ -86,9 +96,19 @@ class Property
         return $this->type;
     }
 
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+
     public function getFormat(): ?string
     {
         return $this->format;
+    }
+
+    public function setFormat(?string $format): void
+    {
+        $this->format = $format;
     }
 
     public function getPattern(): ?string
@@ -96,9 +116,19 @@ class Property
         return $this->pattern;
     }
 
+    public function setPattern(?string $pattern): void
+    {
+        $this->pattern = $pattern;
+    }
+
     public function getMinLength(): ?int
     {
         return $this->minLength;
+    }
+
+    public function setMinLength(?int $minLength): void
+    {
+        $this->minLength = $minLength;
     }
 
     public function getMaxLength(): ?int
@@ -106,9 +136,19 @@ class Property
         return $this->maxLength;
     }
 
+    public function setMaxLength(?int $maxLength): void
+    {
+        $this->maxLength = $maxLength;
+    }
+
     public function getMinimum(): ?int
     {
         return $this->minimum;
+    }
+
+    public function setMinimum(?int $minimum): void
+    {
+        $this->minimum = $minimum;
     }
 
     public function getMaximum(): ?int
@@ -116,9 +156,19 @@ class Property
         return $this->maximum;
     }
 
+    public function setMaximum(?int $maximum): void
+    {
+        $this->maximum = $maximum;
+    }
+
     public function getDeprecated(): ?bool
     {
         return $this->deprecated;
+    }
+
+    public function setDeprecated(?bool $deprecated): void
+    {
+        $this->deprecated = $deprecated;
     }
 
     public function getNullable(): ?bool
@@ -126,9 +176,19 @@ class Property
         return $this->nullable;
     }
 
+    public function setNullable(?bool $nullable): void
+    {
+        $this->nullable = $nullable;
+    }
+
     public function getReadonly(): ?bool
     {
         return $this->readonly;
+    }
+
+    public function setReadonly(?bool $readonly): void
+    {
+        $this->readonly = $readonly;
     }
 
     public function getRefs(): ?array
@@ -136,8 +196,34 @@ class Property
         return $this->refs;
     }
 
+    public function setRefs(?array $refs): void
+    {
+        $this->refs = $refs;
+    }
+
     public function getFirstRef(): ?string
     {
         return !empty($this->refs) ? reset($this->refs) : null;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_filter([
+            'name' => $this->name,
+            'description' => $this->description,
+            'type' => $this->type,
+            'format' => $this->format,
+            'pattern' => $this->pattern,
+            'minLength' => $this->minLength,
+            'maxLength' => $this->maxLength,
+            'minimum' => $this->minimum,
+            'maximum' => $this->maximum,
+            'deprecated' => $this->deprecated,
+            'nullable' => $this->nullable,
+            'readonly' => $this->readonly,
+            'refs' => $this->refs,
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 }

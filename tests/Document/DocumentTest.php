@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Document;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Document\Document;
+use PSX\Schema\Document\Operation;
 use PSX\Schema\Document\Type;
 use Symfony\Component\Yaml\Yaml;
 
@@ -50,13 +51,23 @@ class DocumentTest extends TestCase
         $this->assertDocument($document);
     }
 
-    protected function assertDocument(Document $document)
+    protected function assertDocument(Document $document): void
     {
-        $this->assertEquals(4, count($document->getTypes()));
+        $this->assertEquals(1, count($document->getOperations()));
 
-        $type = $document->getType($document->indexOf('Product'));
+        $operation = $document->getOperation($document->indexOfOperation('test.execute'));
+        $this->assertInstanceOf(Operation::class, $operation);
+        $this->assertEquals('test.execute', $operation->getName());
+        $this->assertEquals('Executes a test operation', $operation->getDescription());
+        $this->assertEquals(3, count($operation->getArguments()));
+        $this->assertEquals(1, count($operation->getThrows()));
+
+        $this->assertEquals(5, count($document->getTypes()));
+
+        $type = $document->getType($document->indexOfType('Product'));
         $this->assertInstanceOf(Type::class, $type);
         $this->assertEquals('Product', $type->getName());
         $this->assertEquals('object', $type->getType());
+        $this->assertEquals(3, count($type->getProperties()));
     }
 }

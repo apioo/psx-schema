@@ -41,9 +41,9 @@ class Type implements \JsonSerializable
     private ?string $template;
 
     /**
-     * @var Property[]
+     * @var array<Property>
      */
-    private array $properties;
+    private array $properties = [];
 
     public function __construct(array $entity)
     {
@@ -53,7 +53,9 @@ class Type implements \JsonSerializable
         $this->parent = $entity['parent'] ?? null;
         $this->ref = $entity['ref'] ?? null;
         $this->template = $entity['template'] ?? null;
-        $this->properties = $this->convertProperties($entity['properties']);
+        if (isset($entity['properties']) && is_array($entity['properties'])) {
+            $this->properties = $this->convertProperties($entity['properties']);
+        }
     }
 
     public function getName(): ?string
@@ -61,9 +63,19 @@ class Type implements \JsonSerializable
         return $this->name;
     }
 
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
     }
 
     public function getDescription(): ?string
@@ -71,9 +83,19 @@ class Type implements \JsonSerializable
         return $this->description;
     }
 
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
     public function getParent(): ?string
     {
         return $this->parent;
+    }
+
+    public function setParent(?string $parent): void
+    {
+        $this->parent = $parent;
     }
 
     public function getRef(): ?string
@@ -81,17 +103,32 @@ class Type implements \JsonSerializable
         return $this->ref;
     }
 
+    public function setRef(?string $ref): void
+    {
+        $this->ref = $ref;
+    }
+
     public function getTemplate(): ?string
     {
         return $this->template;
     }
 
+    public function setTemplate(?string $template): void
+    {
+        $this->template = $template;
+    }
+
     /**
-     * @return Property[]
+     * @return array<Property>
      */
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    public function setProperties(array $properties): void
+    {
+        $this->properties = $properties;
     }
 
     public function getProperty(int $index): ?Property
@@ -112,14 +149,16 @@ class Type implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return [
+        return array_filter([
             'name' => $this->name,
             'description' => $this->description,
             'parent' => $this->parent,
             'ref' => $this->ref,
             'template' => $this->template,
             'properties' => $this->properties,
-        ];
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 
     private function convertProperties(array $properties): array

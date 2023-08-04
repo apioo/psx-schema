@@ -21,61 +21,63 @@
 namespace PSX\Schema\Document;
 
 /**
- * Import
+ * Argument
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class Import implements \JsonSerializable
+class Argument implements \JsonSerializable
 {
-    private ?string $alias;
-    private ?string $version;
-    private ?object $document;
+    private ?string $name;
+    private ?string $in;
+    private ?string $type;
 
-    public function __construct(array $import)
+    public function __construct(array $argument)
     {
-        $this->alias = $import['alias'] ?? null;
-        $this->version = $import['version'] ?? null;
-        $this->document = $import['document'] ?? null;
+        $this->name = $argument['name'] ?? null;
+        $this->in = $argument['in'] ?? null;
+        $this->type = $argument['type'] ?? null;
     }
 
-    public function getAlias(): ?string
+    public function getName(): ?string
     {
-        return $this->alias;
+        return $this->name;
     }
 
-    public function setAlias(?string $alias): void
+    public function setName(?string $name): void
     {
-        $this->alias = $alias;
+        $this->name = $name;
     }
 
-    public function getVersion(): ?string
+    public function getIn(): ?string
     {
-        return $this->version;
+        return $this->in;
     }
 
-    public function setVersion(?string $version): void
+    public function setIn(?string $in): void
     {
-        $this->version = $version;
+        $this->in = $in;
     }
 
-    public function getDocument(): ?object
+    public function getType(): ?string
     {
-        return $this->document;
+        return $this->type;
     }
 
-    public function setDocument(?object $document): void
+    public function setType(?string $type): void
     {
-        $this->document = $document;
+        $this->type = $type;
     }
 
     public function jsonSerialize(): array
     {
-        return [
-            'alias' => $this->alias,
-            'version' => $this->version,
-            'document' => $this->document,
-        ];
+        return array_filter([
+            'name' => $this->name,
+            'in' => $this->in,
+            'type' => $this->type,
+        ], function ($value) {
+            return $value !== null;
+        });
     }
 }

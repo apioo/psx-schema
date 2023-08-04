@@ -30,46 +30,28 @@ namespace PSX\Schema\Document;
 class Document implements \JsonSerializable
 {
     /**
-     * @var Type[]
-     */
-    private array $types;
-
-    /**
-     * @var Import[]
+     * @var array<Import>
      */
     private array $imports;
 
-    private ?int $root;
-
-    public function __construct(array $types, ?array $imports = null, ?int $root = null)
-    {
-        $this->types = $this->convertTypes($types);
-        $this->imports = $imports !== null ? $this->convertImports($imports) : [];
-        $this->root = $root;
-    }
+    /**
+     * @var array<Operation>
+     */
+    private array $operations;
 
     /**
-     * @return Type[]
+     * @var array<Type>
      */
-    public function getTypes(): array
-    {
-        return $this->types;
-    }
+    private array $types;
 
-    public function getType(int $index): ?Type
-    {
-        return $this->types[$index] ?? null;
-    }
+    private ?int $root;
 
-    public function indexOf(string $typeName): ?int
+    public function __construct(?array $imports = null, ?array $operations = null, ?array $types = null, ?int $root = null)
     {
-        foreach ($this->types as $index => $type) {
-            if ($type->getName() === $typeName) {
-                return $index;
-            }
-        }
-
-        return null;
+        $this->imports = $this->convertImports($imports ?? []);
+        $this->operations = $this->convertOperations($operations ?? []);
+        $this->types = $this->convertTypes($types ?? []);
+        $this->root = $root;
     }
 
     public function getImports(): ?array
@@ -88,6 +70,51 @@ class Document implements \JsonSerializable
         return null;
     }
 
+    public function getOperations(): array
+    {
+        return $this->operations;
+    }
+
+    public function getOperation(int $index): ?Operation
+    {
+        return $this->operations[$index] ?? null;
+    }
+
+    public function indexOfOperation(string $operationName): ?int
+    {
+        foreach ($this->operations as $index => $operation) {
+            if ($operation->getName() === $operationName) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Type[]
+     */
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
+
+    public function getType(int $index): ?Type
+    {
+        return $this->types[$index] ?? null;
+    }
+
+    public function indexOfType(string $typeName): ?int
+    {
+        foreach ($this->types as $index => $type) {
+            if ($type->getName() === $typeName) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
     public function getRoot(): ?int
     {
         return $this->root;
@@ -97,23 +124,10 @@ class Document implements \JsonSerializable
     {
         return [
             'imports' => $this->imports,
+            'operations' => $this->operations,
             'types' => $this->types,
             'root' => $this->root,
         ];
-    }
-
-    private function convertTypes(array $types): array
-    {
-        $result = [];
-        foreach ($types as $type) {
-            if ($type instanceof \stdClass) {
-                $result[] = new Type((array) $type);
-            } elseif (is_array($type)) {
-                $result[] = new Type($type);
-            }
-        }
-
-        return $result;
     }
 
     private function convertImports(array $imports): array
@@ -130,6 +144,34 @@ class Document implements \JsonSerializable
         return $result;
     }
 
+    private function convertOperations(array $operations): array
+    {
+        $result = [];
+        foreach ($operations as $operation) {
+            if ($operation instanceof \stdClass) {
+                $result[] = new Operation((array) $operation);
+            } elseif (is_array($operation)) {
+                $result[] = new Operation($operation);
+            }
+        }
+
+        return $result;
+    }
+
+    private function convertTypes(array $types): array
+    {
+        $result = [];
+        foreach ($types as $type) {
+            if ($type instanceof \stdClass) {
+                $result[] = new Type((array) $type);
+            } elseif (is_array($type)) {
+                $result[] = new Type($type);
+            }
+        }
+
+        return $result;
+    }
+
     public static function from($document): self
     {
         if (is_string($document)) {
@@ -138,12 +180,12 @@ class Document implements \JsonSerializable
 
         if (is_array($document)) {
             if (isset($document['types'])) {
-                return new self($document['types'] ?? [], $document['imports'] ?? [], $document['root'] ?? null);
+                return new self($document['imports'] ?? [], $document['operations'] ?? [], $document['types'] ?? [], $document['root'] ?? null);
             } else {
                 return new self($document);
             }
         } elseif ($document instanceof \stdClass) {
-            return new self($document->types ?? [], $document->imports ?? [], $document->root ?? null);
+            return new self($document->imports ?? [], $document->operations ?? [], $document->types ?? [], $document->root ?? null);
         } elseif ($document === null) {
             return new self([]);
         } else {

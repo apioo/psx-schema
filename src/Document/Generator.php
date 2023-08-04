@@ -43,6 +43,12 @@ class Generator
             $schema->{'$import'} = $import;
         }
 
+        $operations = new \stdClass();
+        foreach ($document->getOperations() as $operation) {
+            $operations->{$operation->getName()} = $this->generateOperation($operation);
+        }
+        $schema->operations = $operations;
+
         $definitions = new \stdClass();
         $types = $document->getTypes();
         foreach ($types as $type) {
@@ -65,24 +71,95 @@ class Generator
 
         $import = [];
         foreach ($imports as $include) {
-            $document = $include->getDocument();
-            if (empty($document)) {
+            $alias = $include->getAlias() ?? null;
+            $user = $include->getDocument()->user->name ?? null;
+            $document = $include->getDocument()->name ?? null;
+            $version = $include->getVersion() ?? null;
+
+            if (empty($alias) || empty($user) || empty($document) || empty($version)) {
                 continue;
             }
 
-            $version = $include->getVersion();
-            if (empty($version) || $version === 'master') {
-                $version = null;
-            }
-
-            if (!empty($version)) {
-                $import[$include->getAlias()] = 'document://' . $document->userName . '/' . $document->name . '?version=' . $version;
-            } else {
-                $import[$include->getAlias()] = 'document://' . $document->userName . '/' . $document->name;
-            }
+            $import[$alias] = 'typehub://' . $user . ':' . $document . '@' . $version;
         }
 
         return $import;
+    }
+
+    private function generateOperation(Operation $operation): \stdClass
+    {
+        $result = new \stdClass();
+
+        if ($operation->getDescription() !== null) {
+            $result->description = $operation->getDescription();
+        }
+
+        if ($operation->getHttpMethod() !== null) {
+            $result->method = $operation->getHttpMethod();
+        }
+
+        if ($operation->getHttpPath() !== null) {
+            $result->path = $operation->getHttpPath();
+        }
+
+        if (count($operation->getArguments()) > 0) {
+            $args = new \stdClass();
+            foreach ($operation->getArguments() as $argument) {
+                $args->{$argument->getName()} = $this->generateArgument($argument->getIn(), $argument->getType());
+            }
+            $result->arguments = $args;
+        }
+
+        if (count($operation->getThrows()) > 0) {
+            $throws = [];
+            foreach ($operation->getThrows() as $throw) {
+                $throws[] = $this->generateResponse($throw->getCode() ?? 500, $throw->getType());
+            }
+            $result->throws = $throws;
+        }
+
+        $return = $operation->getReturn();
+        if ($return !== null) {
+            $result->return = $this->generateResponse($operation->getHttpCode() ?? 200, $return);
+        }
+
+        if ($operation->getStability() !== null) {
+            $result->stability = $operation->getStability();
+        }
+
+        if ($operation->getSecurity() !== null) {
+            $result->security = $operation->getSecurity();
+        }
+
+        if ($operation->getAuthorization() !== null) {
+            $result->authorization = $operation->getAuthorization();
+        }
+
+        if ($operation->getTags() !== null) {
+            $result->tags = $operation->getTags();
+        }
+
+        return $result;
+    }
+
+    private function generateArgument(string $in, string $type): \stdClass
+    {
+        return (object) [
+            'in' => $in,
+            'schema' => (object) [
+                '$ref' => $type
+            ],
+        ];
+    }
+
+    private function generateResponse(int $httpCode, string $return): object
+    {
+        return (object) [
+            'code' => $httpCode,
+            'schema' => (object) [
+                '$ref' => $return
+            ],
+        ];
     }
 
     private function generateType(Type $type): \stdClass

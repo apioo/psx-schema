@@ -1,35 +1,63 @@
-- name: Customer
-  type: object
-  properties:
-    - name: name
-      type: string
-    - name: age
-      type: integer
-- name: Product
-  type: object
-  properties:
-    - name: name
-      type: string
-      maxLength: 120
-    - name: price
-      type: number
-    - name: groups
-      type: array
-      refs:
-        - Group
-- name: Group
-  type: object
-  properties:
-    - name: name
-      type: string
-- name: Contract
-  type: object
-  properties:
-    - name: customer
-      type: object
-      refs:
-        - Customer
-    - name: product
-      type: object
-      refs:
-        - Product
+operations:
+  - name: test.execute
+    description: Executes a test operation
+    httpMethod: POST
+    httpPath: "/test"
+    httpCode: 200
+    arguments:
+      - name: id
+        in: path
+        type: string
+      - name: ref_id
+        in: query
+        type: string
+      - name: payload
+        in: body
+        type: Product
+    throws:
+      - code: 500
+        type: Error
+    return: Customer
+types:
+  - name: Customer
+    type: object
+    properties:
+      - name: name
+        type: string
+      - name: age
+        type: integer
+  - name: Product
+    type: object
+    properties:
+      - name: name
+        type: string
+        maxLength: 120
+      - name: price
+        type: number
+      - name: groups
+        type: array
+        refs:
+          - Group
+  - name: Group
+    type: object
+    properties:
+      - name: name
+        type: string
+  - name: Contract
+    type: object
+    properties:
+      - name: customer
+        type: object
+        refs:
+          - Customer
+      - name: product
+        type: object
+        refs:
+          - Product
+  - name: Error
+    type: object
+    properties:
+      - name: success
+        type: boolean
+      - name: message
+        type: string
