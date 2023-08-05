@@ -37,7 +37,7 @@ class DocumentTest extends TestCase
 {
     public function testDocumentJson()
     {
-        $json     = \json_decode(file_get_contents(__DIR__ . '/document.json'));
+        $json     = \json_decode(file_get_contents(__DIR__ . '/resource/document.json'));
         $document = Document::from($json);
 
         $this->assertDocument($document);
@@ -45,7 +45,7 @@ class DocumentTest extends TestCase
 
     public function testDocumentYaml()
     {
-        $yaml     = Yaml::parse(file_get_contents(__DIR__ . '/document.json'));
+        $yaml     = Yaml::parse(file_get_contents(__DIR__ . '/resource/document.json'));
         $document = Document::from($yaml);
 
         $this->assertDocument($document);

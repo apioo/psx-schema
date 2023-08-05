@@ -21,7 +21,8 @@
 namespace PSX\Schema\Document;
 
 /**
- * Document
+ * A document represents a TypeSchema in an intermediate format which is used at the editor etc. to properly render a
+ * specification. It uses arrays instead of objects so that it possible to explicit modify the property order
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0

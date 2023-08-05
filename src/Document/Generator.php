@@ -31,9 +31,6 @@ class Generator
 {
     /**
      * Generates a TypeSchema specification based on the document
-     * 
-     * @param Document $document
-     * @return string
      */
     public function generate(Document $document): string
     {
