@@ -58,7 +58,8 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '@dataclass' . "\n";
+        $code = '@dataclass_json' . "\n";
+        $code.= '@dataclass' . "\n";
         $code.= 'class ' . $name->getClass();
 
         if (!empty($extends)) {
@@ -79,7 +80,8 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = '@dataclass' . "\n";
+        $code = '@dataclass_json' . "\n";
+        $code.= '@dataclass' . "\n";
         $code.= 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
         $code.= '    pass' . "\n";
 
@@ -88,7 +90,8 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
     {
-        $code = '@dataclass' . "\n";
+        $code = '@dataclass_json' . "\n";
+        $code.= '@dataclass' . "\n";
         $code.= 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
         $code.= '    pass' . "\n";
 
@@ -124,6 +127,7 @@ class Python extends CodeGeneratorAbstract
     {
         $imports = [];
         $imports[] = 'from dataclasses import dataclass';
+        $imports[] = 'from dataclasses_json import dataclass_json';
 
         if (TypeUtil::contains($origin, AnyType::class)) {
             $imports[] = 'from typing import Any';

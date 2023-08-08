@@ -1,24 +1,30 @@
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 
 # Location of the person
+@dataclass_json
 @dataclass
 class Location:
     lat: float
     long: float
 
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 
 # An application
+@dataclass_json
 @dataclass
 class Web:
     name: str
     url: str
 
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from typing import List
 from location import Location
 
 # An simple author element with some description
+@dataclass_json
 @dataclass
 class Author:
     title: str
@@ -28,12 +34,15 @@ class Author:
     origin: Location
 
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from typing import Dict
+@dataclass_json
 @dataclass
 class Meta(Dict[str, str]):
     pass
 
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from typing import Any
 from typing import List
 from typing import Dict
@@ -44,6 +53,7 @@ from location import Location
 from web import Web
 
 # An general news entry
+@dataclass_json
 @dataclass
 class News:
     config: Meta
