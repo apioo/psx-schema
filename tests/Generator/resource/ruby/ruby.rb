@@ -33,9 +33,9 @@ end
 
 # An general news entry
 class News
-    attr_accessor :config, :inline_config, :tags, :receiver, :resources, :profile_image, :read, :source, :author, :meta, :send_date, :read_date, :expires, :price, :rating, :content, :question, :version, :coffee_time, :profile_uri, :captcha, :payload
+    attr_accessor :config, :inline_config, :tags, :receiver, :resources, :profile_image, :read, :source, :author, :meta, :send_date, :read_date, :expires, :range, :price, :rating, :content, :question, :version, :coffee_time, :profile_uri, :captcha, :payload
 
-    def initialize(config, inline_config, tags, receiver, resources, profile_image, read, source, author, meta, send_date, read_date, expires, price, rating, content, question, version, coffee_time, profile_uri, captcha, payload)
+    def initialize(config, inline_config, tags, receiver, resources, profile_image, read, source, author, meta, send_date, read_date, expires, range, price, rating, content, question, version, coffee_time, profile_uri, captcha, payload)
         @config = config
         @inline_config = inline_config
         @tags = tags
@@ -49,6 +49,7 @@ class News
         @send_date = send_date
         @read_date = read_date
         @expires = expires
+        @range = range
         @price = price
         @rating = rating
         @content = content

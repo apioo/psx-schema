@@ -30,13 +30,14 @@ message News {
     optional Timestamp sendDate = 11 [json_name="sendDate"];
     optional Timestamp readDate = 12 [json_name="readDate"];
     optional string expires = 13 [json_name="expires"];
-    optional float price = 14 [json_name="price"];
-    optional int64 rating = 15 [json_name="rating"];
-    optional string content = 16 [json_name="content"];
-    optional string question = 17 [json_name="question"];
-    optional string version = 18 [json_name="version"];
-    optional string coffeeTime = 19 [json_name="coffeeTime"];
-    optional string profileUri = 20 [json_name="profileUri"];
-    optional string captcha = 21 [json_name="g-recaptcha-response"];
-    optional Any payload = 22 [json_name="payload"];
+    optional string range = 14 [json_name="range"];
+    optional float price = 15 [json_name="price"];
+    optional int64 rating = 16 [json_name="rating"];
+    optional string content = 17 [json_name="content"];
+    optional string question = 18 [json_name="question"];
+    optional string version = 19 [json_name="version"];
+    optional string coffeeTime = 20 [json_name="coffeeTime"];
+    optional string profileUri = 21 [json_name="profileUri"];
+    optional string captcha = 22 [json_name="g-recaptcha-response"];
+    optional Any payload = 23 [json_name="payload"];
 }

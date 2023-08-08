@@ -24,11 +24,11 @@
                     "description": "Array of locations",
                     "type": "array",
                     "items": {
-                        "$ref": "#\/definitions\/Location"
+                        "$ref": "#/definitions/Location"
                     }
                 },
                 "origin": {
-                    "$ref": "#\/definitions\/Location"
+                    "$ref": "#/definitions/Location"
                 }
             },
             "required": [
@@ -64,7 +64,7 @@
             "type": "object",
             "properties": {
                 "config": {
-                    "$ref": "#\/definitions\/Meta"
+                    "$ref": "#/definitions/Meta"
                 },
                 "inlineConfig": {
                     "type": "object",
@@ -83,7 +83,7 @@
                 "receiver": {
                     "type": "array",
                     "items": {
-                        "$ref": "#\/definitions\/Author"
+                        "$ref": "#/definitions/Author"
                     },
                     "minItems": 1
                 },
@@ -92,10 +92,10 @@
                     "items": {
                         "oneOf": [
                             {
-                                "$ref": "#\/definitions\/Location"
+                                "$ref": "#/definitions/Location"
                             },
                             {
-                                "$ref": "#\/definitions\/Web"
+                                "$ref": "#/definitions/Web"
                             }
                         ]
                     }
@@ -110,18 +110,18 @@
                 "source": {
                     "oneOf": [
                         {
-                            "$ref": "#\/definitions\/Author"
+                            "$ref": "#/definitions/Author"
                         },
                         {
-                            "$ref": "#\/definitions\/Web"
+                            "$ref": "#/definitions/Web"
                         }
                     ]
                 },
                 "author": {
-                    "$ref": "#\/definitions\/Author"
+                    "$ref": "#/definitions/Author"
                 },
                 "meta": {
-                    "$ref": "#\/definitions\/Meta"
+                    "$ref": "#/definitions/Meta"
                 },
                 "sendDate": {
                     "format": "date",
@@ -133,6 +133,10 @@
                 },
                 "expires": {
                     "format": "period",
+                    "type": "string"
+                },
+                "range": {
+                    "format": "duration",
                     "type": "string"
                 },
                 "price": {
@@ -159,7 +163,7 @@
                     "type": "string"
                 },
                 "version": {
-                    "const": "http:\/\/foo.bar",
+                    "const": "http://foo.bar",
                     "type": "string"
                 },
                 "coffeeTime": {
@@ -198,5 +202,5 @@
             ]
         }
     },
-    "$ref": "#\/definitions\/News"
+    "$ref": "#/definitions/News"
 }

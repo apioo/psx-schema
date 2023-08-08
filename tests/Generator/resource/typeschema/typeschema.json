@@ -135,6 +135,10 @@
                     "format": "period",
                     "type": "string"
                 },
+                "range": {
+                    "format": "duration",
+                    "type": "string"
+                },
                 "price": {
                     "type": "number",
                     "minimum": 1,
@@ -159,7 +163,7 @@
                     "type": "string"
                 },
                 "version": {
-                    "const": "http:\/\/foo.bar",
+                    "const": "http://foo.bar",
                     "type": "string"
                 },
                 "coffeeTime": {

@@ -95,6 +95,7 @@ class TestSchema extends SchemaAbstract
         $news->addDate('sendDate');
         $news->addDateTime('readDate');
         $news->addPeriod('expires');
+        $news->addDuration('range');
         $news->addNumber('price')
             ->setMinimum(1)
             ->setMaximum(100);

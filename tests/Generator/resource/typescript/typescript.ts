@@ -51,6 +51,7 @@ export interface News {
     sendDate?: string
     readDate?: string
     expires?: string
+    range?: string
     price: number
     rating?: number
     content: string

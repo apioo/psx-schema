@@ -83,6 +83,8 @@ public class News
     public string ReadDate { get; set; }
     [JsonPropertyName("expires")]
     public string Expires { get; set; }
+    [JsonPropertyName("range")]
+    public string Range { get; set; }
     [JsonPropertyName("price")]
     public float Price { get; set; }
     [JsonPropertyName("rating")]

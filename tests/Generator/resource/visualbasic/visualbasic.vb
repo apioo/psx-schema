@@ -71,6 +71,8 @@ Public Class News
     Public Property ReadDate As String
     <JsonPropertyName("expires")>
     Public Property Expires As String
+    <JsonPropertyName("range")>
+    Public Property Range As String
     <JsonPropertyName("price")>
     Public Property Price As Double
     <JsonPropertyName("rating")>

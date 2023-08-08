@@ -222,6 +222,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
     protected ?\PSX\DateTime\Period $expires = null;
+    protected ?\PSX\DateTime\Duration $range = null;
     #[Minimum(1)]
     #[Maximum(100)]
     protected ?float $price = null;
@@ -353,6 +354,14 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->expires;
     }
+    public function setRange(?\PSX\DateTime\Duration $range) : void
+    {
+        $this->range = $range;
+    }
+    public function getRange() : ?\PSX\DateTime\Duration
+    {
+        return $this->range;
+    }
     public function setPrice(?float $price) : void
     {
         $this->price = $price;
@@ -442,6 +451,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('sendDate', $this->sendDate);
         $record->put('readDate', $this->readDate);
         $record->put('expires', $this->expires);
+        $record->put('range', $this->range);
         $record->put('price', $this->price);
         $record->put('rating', $this->rating);
         $record->put('content', $this->content);

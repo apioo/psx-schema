@@ -30,6 +30,7 @@ type News {
     sendDate: String
     readDate: String
     expires: String
+    range: String
     price: Float!
     rating: Int
     content: String!

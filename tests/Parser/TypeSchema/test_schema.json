@@ -151,6 +151,10 @@
           "format": "period",
           "type": "string"
         },
+        "range": {
+          "format": "duration",
+          "type": "string"
+        },
         "price": {
           "type": "number",
           "minimum": 1,

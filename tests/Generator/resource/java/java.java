@@ -115,6 +115,7 @@ public class Meta extends HashMap<String, String> {
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.net.URI;
+import java.time.Duration;
 import java.time.Period;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -138,6 +139,7 @@ public class News {
     private LocalDate sendDate;
     private LocalDateTime readDate;
     private Period expires;
+    private Duration range;
     private double price;
     private int rating;
     private String content;
@@ -250,6 +252,14 @@ public class News {
     @JsonGetter("expires")
     public Period getExpires() {
         return this.expires;
+    }
+    @JsonSetter("range")
+    public void setRange(Duration range) {
+        this.range = range;
+    }
+    @JsonGetter("range")
+    public Duration getRange() {
+        return this.range;
     }
     @JsonSetter("price")
     public void setPrice(double price) {

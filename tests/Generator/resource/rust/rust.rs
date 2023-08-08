@@ -43,6 +43,7 @@ pub type Meta = HashMap<String, String>;
 
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
+use std::time::Duration;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
 use chrono::NaiveDateTime;
@@ -80,6 +81,8 @@ pub struct News {
     read_date: Option<NaiveDateTime>,
     #[serde(rename = "expires")]
     expires: Option<String>,
+    #[serde(rename = "range")]
+    range: Option<Duration>,
     #[serde(rename = "price")]
     price: Option<f64>,
     #[serde(rename = "rating")]

@@ -54,6 +54,7 @@ class News: Codable {
     var sendDate: String
     var readDate: String
     var expires: String
+    var range: String
     var price: Float
     var rating: Int
     var content: String
@@ -78,6 +79,7 @@ class News: Codable {
         case sendDate = "sendDate"
         case readDate = "readDate"
         case expires = "expires"
+        case range = "range"
         case price = "price"
         case rating = "rating"
         case content = "content"

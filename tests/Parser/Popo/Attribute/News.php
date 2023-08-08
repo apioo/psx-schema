@@ -55,6 +55,7 @@ class News
     protected ?\PSX\DateTime\LocalDate $sendDate;
     protected ?\PSX\DateTime\LocalDateTime $readDate;
     protected ?\PSX\DateTime\Period $expires;
+    protected ?\PSX\DateTime\Duration $range;
 
     #[Minimum(1)]
     #[Maximum(100)]

@@ -69,6 +69,7 @@ class News:
     send_date: str
     read_date: str
     expires: str
+    range: str
     price: float
     rating: int
     content: str
