@@ -123,13 +123,15 @@ class Go extends CodeGeneratorAbstract
     {
         $imports = [];
 
-        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
+        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
             $imports[] = 'import "time"';
         } elseif (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
+            $imports[] = 'import "time"';
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
+            $imports[] = 'import "time"';
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::PERIOD)) {
+            $imports[] = 'import "time"';
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
             $imports[] = 'import "time"';
         }
 
