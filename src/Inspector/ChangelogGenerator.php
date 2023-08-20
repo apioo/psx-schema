@@ -120,8 +120,8 @@ class ChangelogGenerator
 
     private function generateStruct(StructType $leftType, StructType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getProperties();
-        $right = $rightType->getProperties();
+        $left = $leftType->getProperties() ?? [];
+        $right = $rightType->getProperties() ?? [];
 
         foreach ($left as $key => $property) {
             if (isset($right[$key])) {
@@ -160,8 +160,8 @@ class ChangelogGenerator
 
     private function generateIntersection(IntersectionType $leftType, IntersectionType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getAllOf();
-        $right = $rightType->getAllOf();
+        $left = $leftType->getAllOf() ?? [];
+        $right = $rightType->getAllOf() ?? [];
 
         foreach ($left as $index => $value) {
             if (isset($right[$index])) {
@@ -180,8 +180,8 @@ class ChangelogGenerator
 
     private function generateUnion(UnionType $leftType, UnionType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getOneOf();
-        $right = $rightType->getOneOf();
+        $left = $leftType->getOneOf() ?? [];
+        $right = $rightType->getOneOf() ?? [];
 
         foreach ($left as $index => $value) {
             if (isset($right[$index])) {
