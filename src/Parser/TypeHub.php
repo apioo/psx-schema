@@ -22,6 +22,7 @@ namespace PSX\Schema\Parser;
 
 use PSX\Http\Client\ClientInterface;
 use PSX\Http\Client\GetRequest;
+use PSX\Http\Client\PostRequest;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManagerInterface;
@@ -37,7 +38,7 @@ use PSX\Uri\Url;
  */
 class TypeHub extends TypeSchema
 {
-    private const API_URL = 'https://api.typehub.cloud/export/%s-%s-%s-typeschema';
+    private const API_URL = 'https://api.typehub.cloud/document/%s/%s/export';
 
     private ClientInterface $httpClient;
 
@@ -55,8 +56,8 @@ class TypeHub extends TypeSchema
         $document = $uri->getPassword();
         $version = $uri->getHost();
 
-        $url      = Url::parse(sprintf(self::API_URL, $user, $document, $version));
-        $request  = new GetRequest($url, ['Accept' => 'application/json', 'User-Agent' => Http::USER_AGENT]);
+        $url = $this->export($user, $document, $version);
+        $request = new GetRequest($url, ['Accept' => 'application/json', 'User-Agent' => Http::USER_AGENT]);
         $response = $this->httpClient->request($request);
 
         if ($response->getStatusCode() !== 200) {
@@ -64,5 +65,25 @@ class TypeHub extends TypeSchema
         }
 
         return parent::parse((string) $response->getBody(), $context);
+    }
+
+    private function export(string $user, string $document, string $version): Url
+    {
+        $url = Url::parse(sprintf(self::API_URL, $user, $document));
+        $request = new PostRequest($url, ['Accept' => 'application/json', 'Content-Type' => 'application/json', 'User-Agent' => Http::USER_AGENT], \json_encode(['format' => 'model-typeschema', 'version' => $version]));
+        $response = $this->httpClient->request($request);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new ParserException('Could not export TypeHub document: ' . $user . '/' . $document . ' for version ' . $version . ' received ' . $response->getStatusCode() . ' - ' . $response->getBody());
+        }
+
+        $data = \json_decode((string) $response->getBody());
+        $href = $data->href ?? null;
+
+        if (empty($href) || !is_string($href)) {
+            throw new ParserException('Could not export TypeHub document: ' . $user . '/' . $document . ' for version ' . $version . ' returned no export href');
+        }
+
+        return Url::parse($href);
     }
 }
