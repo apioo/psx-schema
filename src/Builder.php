@@ -24,6 +24,7 @@ use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\BooleanType;
 use PSX\Schema\Type\IntegerType;
 use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\NumberType;
 use PSX\Schema\Type\ReferenceType;
 use PSX\Schema\Type\StringType;
@@ -102,6 +103,14 @@ class Builder
     public function addArray(string $name, TypeInterface $items): ArrayType
     {
         return $this->add($name, TypeFactory::getArray($items));
+    }
+
+    /**
+     * @throws Exception\InvalidSchemaException
+     */
+    public function addMap(string $name, TypeInterface $additionalProperty): MapType
+    {
+        return $this->add($name, TypeFactory::getMap($additionalProperty));
     }
 
     /**
