@@ -43,6 +43,9 @@ typealias Meta = Dictionary<String, String>;
 class News: Codable {
     var config: Meta
     var inlineConfig: Dictionary<String, String>
+    var mapTags: Dictionary<String, String>
+    var mapReceiver: Dictionary<String, Author>
+    var mapResources: Dictionary<String, Location | Web>
     var tags: Array<String>
     var receiver: Array<Author>
     var resources: Array<Location | Web>
@@ -68,6 +71,9 @@ class News: Codable {
     enum CodingKeys: String, CodingKey {
         case config = "config"
         case inlineConfig = "inlineConfig"
+        case mapTags = "mapTags"
+        case mapReceiver = "mapReceiver"
+        case mapResources = "mapResources"
         case tags = "tags"
         case receiver = "receiver"
         case resources = "resources"

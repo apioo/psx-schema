@@ -61,6 +61,12 @@ public class News
     public Meta Config { get; set; }
     [JsonPropertyName("inlineConfig")]
     public Dictionary<string, string> InlineConfig { get; set; }
+    [JsonPropertyName("mapTags")]
+    public Dictionary<string, string> MapTags { get; set; }
+    [JsonPropertyName("mapReceiver")]
+    public Dictionary<string, Author> MapReceiver { get; set; }
+    [JsonPropertyName("mapResources")]
+    public Dictionary<string, object> MapResources { get; set; }
     [JsonPropertyName("tags")]
     public string[] Tags { get; set; }
     [JsonPropertyName("receiver")]

@@ -49,6 +49,12 @@ Public Class News
     Public Property Config As Meta
     <JsonPropertyName("inlineConfig")>
     Public Property InlineConfig As Dictionary(Of String, String)
+    <JsonPropertyName("mapTags")>
+    Public Property MapTags As Dictionary(Of String, String)
+    <JsonPropertyName("mapReceiver")>
+    Public Property MapReceiver As Dictionary(Of String, Author)
+    <JsonPropertyName("mapResources")>
+    Public Property MapResources As Dictionary(Of String, Object)
     <JsonPropertyName("tags")>
     Public Property Tags As String()
     <JsonPropertyName("receiver")>

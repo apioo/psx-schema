@@ -59,6 +59,12 @@ pub struct News {
     config: Option<Meta>,
     #[serde(rename = "inlineConfig")]
     inline_config: Option<HashMap<String, String>>,
+    #[serde(rename = "mapTags")]
+    map_tags: Option<HashMap<String, String>>,
+    #[serde(rename = "mapReceiver")]
+    map_receiver: Option<HashMap<String, Author>>,
+    #[serde(rename = "mapResources")]
+    map_resources: Option<HashMap<String, serde_json::Value>>,
     #[serde(rename = "tags")]
     tags: Option<Vec<String>>,
     #[serde(rename = "receiver")]

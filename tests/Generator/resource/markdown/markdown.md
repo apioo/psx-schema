@@ -42,6 +42,9 @@ Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 config | Meta |  | 
 inlineConfig | Map (String) |  | 
+mapTags | Map (String) |  | 
+mapReceiver | Map (Author) |  | 
+mapResources | Map (Location &#124; Web) |  | 
 tags | Array (String) |  | MinItems: `1`, MaxItems: `6`
 receiver | Array (Author) | **REQUIRED**.  | MinItems: `1`
 resources | Array (Location &#124; Web) |  | 

@@ -128,6 +128,9 @@ import java.util.HashMap;
 public class News {
     private Meta config;
     private HashMap<String, String> inlineConfig;
+    private HashMap<String, String> mapTags;
+    private HashMap<String, Author> mapReceiver;
+    private HashMap<String, Object> mapResources;
     private String[] tags;
     private Author[] receiver;
     private Object[] resources;
@@ -164,6 +167,30 @@ public class News {
     @JsonGetter("inlineConfig")
     public HashMap<String, String> getInlineConfig() {
         return this.inlineConfig;
+    }
+    @JsonSetter("mapTags")
+    public void setMapTags(HashMap<String, String> mapTags) {
+        this.mapTags = mapTags;
+    }
+    @JsonGetter("mapTags")
+    public HashMap<String, String> getMapTags() {
+        return this.mapTags;
+    }
+    @JsonSetter("mapReceiver")
+    public void setMapReceiver(HashMap<String, Author> mapReceiver) {
+        this.mapReceiver = mapReceiver;
+    }
+    @JsonGetter("mapReceiver")
+    public HashMap<String, Author> getMapReceiver() {
+        return this.mapReceiver;
+    }
+    @JsonSetter("mapResources")
+    public void setMapResources(HashMap<String, Object> mapResources) {
+        this.mapResources = mapResources;
+    }
+    @JsonGetter("mapResources")
+    public HashMap<String, Object> getMapResources() {
+        return this.mapResources;
     }
     @JsonSetter("tags")
     public void setTags(String[] tags) {

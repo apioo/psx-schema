@@ -197,6 +197,18 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      */
     protected ?\PSX\Record\Record $inlineConfig = null;
     /**
+     * @var \PSX\Record\Record<string>|null
+     */
+    protected ?\PSX\Record\Record $mapTags = null;
+    /**
+     * @var \PSX\Record\Record<Author>|null
+     */
+    protected ?\PSX\Record\Record $mapReceiver = null;
+    /**
+     * @var \PSX\Record\Record<Location|Web>|null
+     */
+    protected ?\PSX\Record\Record $mapResources = null;
+    /**
      * @var array<string>|null
      */
     #[MinItems(1)]
@@ -256,6 +268,30 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getInlineConfig() : ?\PSX\Record\Record
     {
         return $this->inlineConfig;
+    }
+    public function setMapTags(?\PSX\Record\Record $mapTags) : void
+    {
+        $this->mapTags = $mapTags;
+    }
+    public function getMapTags() : ?\PSX\Record\Record
+    {
+        return $this->mapTags;
+    }
+    public function setMapReceiver(?\PSX\Record\Record $mapReceiver) : void
+    {
+        $this->mapReceiver = $mapReceiver;
+    }
+    public function getMapReceiver() : ?\PSX\Record\Record
+    {
+        return $this->mapReceiver;
+    }
+    public function setMapResources(?\PSX\Record\Record $mapResources) : void
+    {
+        $this->mapResources = $mapResources;
+    }
+    public function getMapResources() : ?\PSX\Record\Record
+    {
+        return $this->mapResources;
     }
     /**
      * @param array<string>|null $tags
@@ -440,6 +476,9 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record = new \PSX\Record\Record();
         $record->put('config', $this->config);
         $record->put('inlineConfig', $this->inlineConfig);
+        $record->put('mapTags', $this->mapTags);
+        $record->put('mapReceiver', $this->mapReceiver);
+        $record->put('mapResources', $this->mapResources);
         $record->put('tags', $this->tags);
         $record->put('receiver', $this->receiver);
         $record->put('resources', $this->resources);

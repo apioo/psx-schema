@@ -58,6 +58,9 @@ from web import Web
 class News:
     config: Meta
     inline_config: Dict[str, str]
+    map_tags: Dict[str, str]
+    map_receiver: Dict[str, Author]
+    map_resources: Dict[str, Union[Location, Web]]
     tags: List[str]
     receiver: List[Author]
     resources: List[Union[Location, Web]]

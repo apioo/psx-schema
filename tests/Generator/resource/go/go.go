@@ -27,6 +27,9 @@ import "time"
 type News struct {
     Config Meta `json:"config"`
     InlineConfig map[string]string `json:"inlineConfig"`
+    MapTags map[string]string `json:"mapTags"`
+    MapReceiver map[string]Author `json:"mapReceiver"`
+    MapResources map[string]interface{} `json:"mapResources"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []interface{} `json:"resources"`

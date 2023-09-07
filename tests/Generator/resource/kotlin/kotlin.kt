@@ -42,6 +42,9 @@ import java.util.HashMap;
 open class News {
     var config: Meta? = null
     var inlineConfig: HashMap<String, String>? = null
+    var mapTags: HashMap<String, String>? = null
+    var mapReceiver: HashMap<String, Author>? = null
+    var mapResources: HashMap<String, Any>? = null
     var tags: Array<String>? = null
     var receiver: Array<Author>? = null
     var resources: Array<Any>? = null

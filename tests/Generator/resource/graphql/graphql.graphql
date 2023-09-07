@@ -19,6 +19,9 @@ type Author {
 type News {
     config: [String]
     inlineConfig: [String]
+    mapTags: [String]
+    mapReceiver: [Author]
+    mapResources: [Location | Web]
     tags: [String]
     receiver: [Author]!
     resources: [Location | Web]

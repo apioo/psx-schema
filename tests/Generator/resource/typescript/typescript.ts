@@ -40,6 +40,9 @@ import {Web} from "./Web";
 export interface News {
     config?: Meta
     inlineConfig?: Record<string, string>
+    mapTags?: Record<string, string>
+    mapReceiver?: Record<string, Author>
+    mapResources?: Record<string, Location | Web>
     tags?: Array<string>
     receiver: Array<Author>
     resources?: Array<Location | Web>

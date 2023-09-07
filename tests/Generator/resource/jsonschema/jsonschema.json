@@ -72,6 +72,31 @@
                         "type": "string"
                     }
                 },
+                "mapTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "mapReceiver": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Author"
+                    }
+                },
+                "mapResources": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/Location"
+                            },
+                            {
+                                "$ref": "#/definitions/Web"
+                            }
+                        ]
+                    }
+                },
                 "tags": {
                     "type": "array",
                     "items": {
