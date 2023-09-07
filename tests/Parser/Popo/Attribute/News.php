@@ -26,6 +26,21 @@ class News
     protected ?Record $inlineConfig = null;
 
     /**
+     * @var Record<string>
+     */
+    protected ?array $mapTags = null;
+
+    /**
+     * @var Record<Author>
+     */
+    protected ?Record $mapReceiver = null;
+
+    /**
+     * @var Record<Location|Web>
+     */
+    protected ?Record $mapResources = null;
+
+    /**
      * @var array<string>
      */
     #[MinItems(1)]

@@ -75,6 +75,14 @@ class TestSchema extends SchemaAbstract
         $news->setDescription('An general news entry');
         $news->addReference('config', 'Meta');
         $news->add('inlineConfig', TypeFactory::getMap(TypeFactory::getString()));
+
+        $news->addMap('mapTags', TypeFactory::getString());
+        $news->addMap('mapReceiver', TypeFactory::getReference('Author'));
+        $news->addMap('mapResources', TypeFactory::getUnion([
+            TypeFactory::getReference('Location'),
+            TypeFactory::getReference('Web')
+        ]));
+
         $news->addArray('tags', TypeFactory::getString())
             ->setMinItems(1)
             ->setMaxItems(6);
@@ -84,6 +92,7 @@ class TestSchema extends SchemaAbstract
             TypeFactory::getReference('Location'),
             TypeFactory::getReference('Web')
         ]));
+
         $news->addBinary('profileImage');
         $news->addBoolean('read');
         $news->addUnion('source', [
