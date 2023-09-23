@@ -25,7 +25,9 @@ use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Format;
+use PSX\Schema\Parser\Context\NamespaceContext;
 use PSX\Schema\Parser\Popo\ResolverInterface;
+use PSX\Schema\Parser\Popo\TypeNameBuilder;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
@@ -53,10 +55,12 @@ use ReflectionClass;
 class Popo implements ParserInterface
 {
     private ResolverInterface $resolver;
+    private TypeNameBuilder $typeNameBuilder;
 
     public function __construct()
     {
         $this->resolver = self::createDefaultResolver();
+        $this->typeNameBuilder = new TypeNameBuilder();
     }
 
     /**
@@ -67,20 +71,21 @@ class Popo implements ParserInterface
         $className = str_replace('.', '\\', $schema);
         $definitions = new Definitions();
 
-        $this->parseClass($className, $definitions);
+        $this->parseClass($className, $definitions, $context);
 
-        $name = (new ReflectionClass($className))->getShortName();
+        $name = $this->getTypeName(new ReflectionClass($className), $context);
         $type = TypeFactory::getReference($name);
 
         return new Schema($type, $definitions);
     }
 
-    protected function parseClass(string $className, DefinitionsInterface $definitions): TypeInterface
+    protected function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null): TypeInterface
     {
         $class = new ReflectionClass($className);
 
-        if ($definitions->hasType($class->getShortName())) {
-            return $definitions->getType($class->getShortName());
+        $typeName = $this->getTypeName($class, $context);
+        if ($definitions->hasType($typeName)) {
+            return $definitions->getType($typeName);
         }
 
         $type = $this->resolver->resolveClass($class);
@@ -90,14 +95,14 @@ class Popo implements ParserInterface
             $annotations[] = $attribute->newInstance();
         }
 
-        $definitions->addType($class->getShortName(), $type);
+        $definitions->addType($typeName, $type);
 
         if ($type instanceof StructType) {
             $parent = $class->getParentClass();
             if ($parent instanceof \ReflectionClass) {
                 $extends = $this->parseClass($parent->getName(), $definitions);
                 if ($extends instanceof StructType) {
-                    $type->setExtends($parent->getShortName());
+                    $type->setExtends($this->getTypeName($parent, $context));
                 }
             }
         }
@@ -108,12 +113,12 @@ class Popo implements ParserInterface
 
         if ($type instanceof StructType) {
             $this->parseStructAnnotations($annotations, $type);
-            $this->parseProperties($class, $type, $definitions);
+            $this->parseProperties($class, $type, $definitions, $context);
         } elseif ($type instanceof MapType) {
             $this->parseMapAnnotations($annotations, $type);
-            $this->parseReferences($type, $definitions);
+            $this->parseReferences($type, $definitions, $context);
         } elseif ($type instanceof ReferenceType) {
-            $this->parseReferences($type, $definitions);
+            $this->parseReferences($type, $definitions, $context);
         } else {
             throw new ParserException('Could not determine class type');
         }
@@ -123,7 +128,7 @@ class Popo implements ParserInterface
         return $type;
     }
 
-    private function parseProperties(ReflectionClass $class, StructType $property, DefinitionsInterface $definitions)
+    private function parseProperties(ReflectionClass $class, StructType $property, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
         $properties = Popo\ObjectReader::getProperties($class);
         $mapping    = [];
@@ -140,7 +145,7 @@ class Popo implements ParserInterface
 
             $type = $this->parseProperty($reflection);
             if ($type instanceof TypeInterface) {
-                $this->parseReferences($type, $definitions);
+                $this->parseReferences($type, $definitions, $context);
 
                 $property->addProperty($key, $type);
             }
@@ -189,7 +194,7 @@ class Popo implements ParserInterface
         return $type;
     }
 
-    private function parseCommonAnnotations(array $annotations, TypeAbstract $type)
+    private function parseCommonAnnotations(array $annotations, TypeAbstract $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Title) {
@@ -206,7 +211,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseScalarAnnotations(array $annotations, ScalarType $type)
+    private function parseScalarAnnotations(array $annotations, ScalarType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Format) {
@@ -220,7 +225,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseStructAnnotations(array $annotations, StructType $type)
+    private function parseStructAnnotations(array $annotations, StructType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Required) {
@@ -229,7 +234,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseMapAnnotations(array $annotations, MapType $type)
+    private function parseMapAnnotations(array $annotations, MapType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\MinProperties) {
@@ -240,7 +245,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseArrayAnnotations(array $annotations, ArrayType $type)
+    private function parseArrayAnnotations(array $annotations, ArrayType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\MinItems) {
@@ -253,7 +258,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseStringAnnotations(array $annotations, StringType $type)
+    private function parseStringAnnotations(array $annotations, StringType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\MinLength) {
@@ -271,7 +276,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseNumberAnnotations(array $annotations, NumberType $type)
+    private function parseNumberAnnotations(array $annotations, NumberType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Minimum) {
@@ -288,7 +293,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseUnionAnnotations(array $annotations, UnionType $type)
+    private function parseUnionAnnotations(array $annotations, UnionType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Discriminator) {
@@ -297,43 +302,43 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseReferences(TypeInterface $type, DefinitionsInterface $definitions)
+    private function parseReferences(TypeInterface $type, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
         if ($type instanceof MapType) {
             $additionalProperties = $type->getAdditionalProperties();
             if ($additionalProperties instanceof TypeInterface) {
-                $this->parseReferences($additionalProperties, $definitions);
+                $this->parseReferences($additionalProperties, $definitions, $context);
             }
         } elseif ($type instanceof ArrayType) {
             $items = $type->getItems();
             if ($items instanceof TypeInterface) {
-                $this->parseReferences($items, $definitions);
+                $this->parseReferences($items, $definitions, $context);
             }
         } elseif ($type instanceof UnionType) {
             $items = $type->getOneOf();
             foreach ($items as $item) {
                 if ($item instanceof ReferenceType) {
-                    $this->parseReferences($item, $definitions);
+                    $this->parseReferences($item, $definitions, $context);
                 }
             }
         } elseif ($type instanceof IntersectionType) {
             $items = $type->getAllOf();
             foreach ($items as $item) {
                 if ($item instanceof ReferenceType) {
-                    $this->parseReferences($item, $definitions);
+                    $this->parseReferences($item, $definitions, $context);
                 }
             }
         } elseif ($type instanceof ReferenceType) {
-            $this->parseRef($type, $definitions);
+            $this->parseRef($type, $definitions, $context);
         }
     }
 
-    private function parseRef(ReferenceType $type, DefinitionsInterface $definitions)
+    private function parseRef(ReferenceType $type, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
         $className = $type->getRef();
         try {
             $reflection = new ReflectionClass($className);
-            $type->setRef($reflection->getShortName());
+            $type->setRef($this->getTypeName($reflection, $context));
 
             $this->parseClass($className, $definitions);
         } catch (\ReflectionException $e) {
@@ -346,7 +351,7 @@ class Popo implements ParserInterface
             foreach ($template as $key => $className) {
                 try {
                     $reflection = new ReflectionClass($className);
-                    $result[$key] = $reflection->getShortName();
+                    $result[$key] = $this->getTypeName($reflection, $context);
                     $this->parseClass($className, $definitions);
                 } catch (\ReflectionException $e) {
                     // in this case the class does not exist
@@ -354,6 +359,16 @@ class Popo implements ParserInterface
             }
             $type->setTemplate($result);
         }
+    }
+
+    private function getTypeName(ReflectionClass $reflection, ?ContextInterface $context): string
+    {
+        $level = 1;
+        if ($context instanceof NamespaceContext) {
+            $level = $context->getLevel();
+        }
+
+        return $this->typeNameBuilder->build($reflection, $level);
     }
 
     public static function createDefaultResolver(): Popo\ResolverInterface
