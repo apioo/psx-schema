@@ -15,38 +15,12 @@ class CommonType: Codable {
     }
 }
 
-// Represents a struct type. A struct type contains a fix set of defined properties
-class StructType: CommonType {
-    var _final: Bool
-    var extends: String
+// Represents an any type
+class AnyType: CommonType {
     var _type: String
-    var properties: Properties
-    var _required: Array<String>
-
-    enum CodingKeys: String, CodingKey {
-        case _final = "$final"
-        case extends = "$extends"
-        case _type = "type"
-        case properties = "properties"
-        case _required = "required"
-    }
-}
-
-// Properties of a struct
-typealias Properties = Dictionary<String, BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType>;
-
-// Represents a map type. A map type contains variable key value entries of a specific type
-class MapType: CommonType {
-    var _type: String
-    var additionalProperties: BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType
-    var maxProperties: Int
-    var minProperties: Int
 
     enum CodingKeys: String, CodingKey {
         case _type = "type"
-        case additionalProperties = "additionalProperties"
-        case maxProperties = "maxProperties"
-        case minProperties = "minProperties"
     }
 }
 
@@ -87,6 +61,52 @@ class BooleanType: ScalarType {
     }
 }
 
+// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
+class Discriminator: Codable {
+    var propertyName: String
+    var mapping: Dictionary<String, String>
+
+    enum CodingKeys: String, CodingKey {
+        case propertyName = "propertyName"
+        case mapping = "mapping"
+    }
+}
+
+// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+class GenericType: Codable {
+    var generic: String
+
+    enum CodingKeys: String, CodingKey {
+        case generic = "$generic"
+    }
+}
+
+// Represents an intersection type
+class IntersectionType: Codable {
+    var description: String
+    var allOf: Array<ReferenceType>
+
+    enum CodingKeys: String, CodingKey {
+        case description = "description"
+        case allOf = "allOf"
+    }
+}
+
+// Represents a map type. A map type contains variable key value entries of a specific type
+class MapType: CommonType {
+    var _type: String
+    var additionalProperties: BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType
+    var maxProperties: Int
+    var minProperties: Int
+
+    enum CodingKeys: String, CodingKey {
+        case _type = "type"
+        case additionalProperties = "additionalProperties"
+        case maxProperties = "maxProperties"
+        case minProperties = "minProperties"
+    }
+}
+
 // Represents a number type (contains also integer)
 class NumberType: ScalarType {
     var _type: String
@@ -106,6 +126,17 @@ class NumberType: ScalarType {
     }
 }
 
+// Represents a reference type. A reference type points to a specific type at the definitions map
+class ReferenceType: Codable {
+    var ref: String
+    var template: Dictionary<String, String>
+
+    enum CodingKeys: String, CodingKey {
+        case ref = "$ref"
+        case template = "$template"
+    }
+}
+
 // Represents a string type
 class StringType: ScalarType {
     var _type: String
@@ -121,23 +152,33 @@ class StringType: ScalarType {
     }
 }
 
-// Represents an any type
-class AnyType: CommonType {
+// Represents a struct type. A struct type contains a fix set of defined properties
+class StructType: CommonType {
+    var _final: Bool
+    var extends: String
     var _type: String
+    var properties: Dictionary<String, MapType | ArrayType | BooleanType | NumberType | StringType | AnyType | IntersectionType | UnionType | ReferenceType | GenericType>
+    var _required: Array<String>
 
     enum CodingKeys: String, CodingKey {
+        case _final = "$final"
+        case extends = "$extends"
         case _type = "type"
+        case properties = "properties"
+        case _required = "required"
     }
 }
 
-// Represents an intersection type
-class IntersectionType: Codable {
-    var description: String
-    var allOf: Array<ReferenceType>
+// The root TypeSchema
+class TypeSchema: Codable {
+    var _import: Dictionary<String, String>
+    var definitions: Dictionary<String, StructType | MapType | ReferenceType>
+    var ref: String
 
     enum CodingKeys: String, CodingKey {
-        case description = "description"
-        case allOf = "allOf"
+        case _import = "$import"
+        case definitions = "definitions"
+        case ref = "$ref"
     }
 }
 
@@ -151,60 +192,5 @@ class UnionType: Codable {
         case description = "description"
         case discriminator = "discriminator"
         case oneOf = "oneOf"
-    }
-}
-
-// An object to hold mappings between payload values and schema names or references
-typealias DiscriminatorMapping = Dictionary<String, String>;
-
-// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
-class Discriminator: Codable {
-    var propertyName: String
-    var mapping: DiscriminatorMapping
-
-    enum CodingKeys: String, CodingKey {
-        case propertyName = "propertyName"
-        case mapping = "mapping"
-    }
-}
-
-// Represents a reference type. A reference type points to a specific type at the definitions map
-class ReferenceType: Codable {
-    var ref: String
-    var template: TemplateProperties
-
-    enum CodingKeys: String, CodingKey {
-        case ref = "$ref"
-        case template = "$template"
-    }
-}
-
-typealias TemplateProperties = Dictionary<String, String>;
-
-// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
-class GenericType: Codable {
-    var generic: String
-
-    enum CodingKeys: String, CodingKey {
-        case generic = "$generic"
-    }
-}
-
-// The definitions map which contains all types
-typealias Definitions = Dictionary<String, StructType | MapType | ReferenceType>;
-
-// Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
-typealias Import = Dictionary<String, String>;
-
-// The root TypeSchema
-class TypeSchema: Codable {
-    var _import: Import
-    var definitions: Definitions
-    var ref: String
-
-    enum CodingKeys: String, CodingKey {
-        case _import = "$import"
-        case definitions = "definitions"
-        case ref = "$ref"
     }
 }

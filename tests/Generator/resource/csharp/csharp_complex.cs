@@ -20,47 +20,12 @@ public class CommonType
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// Represents a struct type. A struct type contains a fix set of defined properties
+/// Represents an any type
 /// </summary>
-public class StructType extends CommonType
-{
-    [JsonPropertyName("$final")]
-    public bool Final { get; set; }
-    [JsonPropertyName("$extends")]
-    public string Extends { get; set; }
-    [JsonPropertyName("type")]
-    public string Type { get; set; }
-    [JsonPropertyName("properties")]
-    public Properties Properties { get; set; }
-    [JsonPropertyName("required")]
-    public string[] Required { get; set; }
-}
-
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-
-/// <summary>
-/// Properties of a struct
-/// </summary>
-public class Properties : Dictionary<string, object>
-{
-}
-
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// Represents a map type. A map type contains variable key value entries of a specific type
-/// </summary>
-public class MapType extends CommonType
+public class AnyType extends CommonType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
-    [JsonPropertyName("additionalProperties")]
-    public object AdditionalProperties { get; set; }
-    [JsonPropertyName("maxProperties")]
-    public int MaxProperties { get; set; }
-    [JsonPropertyName("minProperties")]
-    public int MinProperties { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -107,6 +72,61 @@ public class BooleanType extends ScalarType
 }
 
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
+
+/// <summary>
+/// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
+/// </summary>
+public class Discriminator
+{
+    [JsonPropertyName("propertyName")]
+    public string PropertyName { get; set; }
+    [JsonPropertyName("mapping")]
+    public Dictionary<string, string> Mapping { get; set; }
+}
+
+using System.Text.Json.Serialization;
+
+/// <summary>
+/// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+/// </summary>
+public class GenericType
+{
+    [JsonPropertyName("$generic")]
+    public string Generic { get; set; }
+}
+
+using System.Text.Json.Serialization;
+
+/// <summary>
+/// Represents an intersection type
+/// </summary>
+public class IntersectionType
+{
+    [JsonPropertyName("description")]
+    public string Description { get; set; }
+    [JsonPropertyName("allOf")]
+    public ReferenceType[] AllOf { get; set; }
+}
+
+using System.Text.Json.Serialization;
+
+/// <summary>
+/// Represents a map type. A map type contains variable key value entries of a specific type
+/// </summary>
+public class MapType extends CommonType
+{
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+    [JsonPropertyName("additionalProperties")]
+    public object AdditionalProperties { get; set; }
+    [JsonPropertyName("maxProperties")]
+    public int MaxProperties { get; set; }
+    [JsonPropertyName("minProperties")]
+    public int MinProperties { get; set; }
+}
+
+using System.Text.Json.Serialization;
 
 /// <summary>
 /// Represents a number type (contains also integer)
@@ -128,6 +148,20 @@ public class NumberType extends ScalarType
 }
 
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
+
+/// <summary>
+/// Represents a reference type. A reference type points to a specific type at the definitions map
+/// </summary>
+public class ReferenceType
+{
+    [JsonPropertyName("$ref")]
+    public string Ref { get; set; }
+    [JsonPropertyName("$template")]
+    public Dictionary<string, string> Template { get; set; }
+}
+
+using System.Text.Json.Serialization;
 
 /// <summary>
 /// Represents a string type
@@ -145,27 +179,39 @@ public class StringType extends ScalarType
 }
 
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 /// <summary>
-/// Represents an any type
+/// Represents a struct type. A struct type contains a fix set of defined properties
 /// </summary>
-public class AnyType extends CommonType
+public class StructType extends CommonType
 {
+    [JsonPropertyName("$final")]
+    public bool Final { get; set; }
+    [JsonPropertyName("$extends")]
+    public string Extends { get; set; }
     [JsonPropertyName("type")]
     public string Type { get; set; }
+    [JsonPropertyName("properties")]
+    public Dictionary<string, object> Properties { get; set; }
+    [JsonPropertyName("required")]
+    public string[] Required { get; set; }
 }
 
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 /// <summary>
-/// Represents an intersection type
+/// The root TypeSchema
 /// </summary>
-public class IntersectionType
+public class TypeSchema
 {
-    [JsonPropertyName("description")]
-    public string Description { get; set; }
-    [JsonPropertyName("allOf")]
-    public ReferenceType[] AllOf { get; set; }
+    [JsonPropertyName("$import")]
+    public Dictionary<string, string> Import { get; set; }
+    [JsonPropertyName("definitions")]
+    public Dictionary<string, object> Definitions { get; set; }
+    [JsonPropertyName("$ref")]
+    public string Ref { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -181,92 +227,4 @@ public class UnionType
     public Discriminator Discriminator { get; set; }
     [JsonPropertyName("oneOf")]
     public object[] OneOf { get; set; }
-}
-
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-
-/// <summary>
-/// An object to hold mappings between payload values and schema names or references
-/// </summary>
-public class DiscriminatorMapping : Dictionary<string, string>
-{
-}
-
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
-/// </summary>
-public class Discriminator
-{
-    [JsonPropertyName("propertyName")]
-    public string PropertyName { get; set; }
-    [JsonPropertyName("mapping")]
-    public DiscriminatorMapping Mapping { get; set; }
-}
-
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// Represents a reference type. A reference type points to a specific type at the definitions map
-/// </summary>
-public class ReferenceType
-{
-    [JsonPropertyName("$ref")]
-    public string Ref { get; set; }
-    [JsonPropertyName("$template")]
-    public TemplateProperties Template { get; set; }
-}
-
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-public class TemplateProperties : Dictionary<string, string>
-{
-}
-
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
-/// </summary>
-public class GenericType
-{
-    [JsonPropertyName("$generic")]
-    public string Generic { get; set; }
-}
-
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-
-/// <summary>
-/// The definitions map which contains all types
-/// </summary>
-public class Definitions : Dictionary<string, object>
-{
-}
-
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-
-/// <summary>
-/// Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
-/// </summary>
-public class Import : Dictionary<string, string>
-{
-}
-
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// The root TypeSchema
-/// </summary>
-public class TypeSchema
-{
-    [JsonPropertyName("$import")]
-    public Import Import { get; set; }
-    [JsonPropertyName("definitions")]
-    public Definitions Definitions { get; set; }
-    [JsonPropertyName("$ref")]
-    public string Ref { get; set; }
 }

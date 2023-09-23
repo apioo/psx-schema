@@ -10,32 +10,10 @@ open class CommonType {
 }
 
 /**
- * Represents a struct type. A struct type contains a fix set of defined properties
+ * Represents an any type
  */
-open class StructType : CommonType {
-    var final: Boolean? = null
-    var extends: String? = null
+open class AnyType : CommonType {
     var type: String? = null
-    var properties: Properties? = null
-    var required: Array<String>? = null
-}
-
-import java.util.HashMap;
-
-/**
- * Properties of a struct
- */
-open class Properties : HashMap<String, Any>() {
-}
-
-/**
- * Represents a map type. A map type contains variable key value entries of a specific type
- */
-open class MapType : CommonType {
-    var type: String? = null
-    var additionalProperties: Any? = null
-    var maxProperties: Int? = null
-    var minProperties: Int? = null
 }
 
 /**
@@ -64,6 +42,41 @@ open class BooleanType : ScalarType {
     var type: String? = null
 }
 
+import java.util.HashMap;
+
+/**
+ * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
+ */
+open class Discriminator {
+    var propertyName: String? = null
+    var mapping: HashMap<String, String>? = null
+}
+
+/**
+ * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+ */
+open class GenericType {
+    var generic: String? = null
+}
+
+/**
+ * Represents an intersection type
+ */
+open class IntersectionType {
+    var description: String? = null
+    var allOf: Array<ReferenceType>? = null
+}
+
+/**
+ * Represents a map type. A map type contains variable key value entries of a specific type
+ */
+open class MapType : CommonType {
+    var type: String? = null
+    var additionalProperties: Any? = null
+    var maxProperties: Int? = null
+    var minProperties: Int? = null
+}
+
 /**
  * Represents a number type (contains also integer)
  */
@@ -76,6 +89,16 @@ open class NumberType : ScalarType {
     var exclusiveMinimum: Boolean? = null
 }
 
+import java.util.HashMap;
+
+/**
+ * Represents a reference type. A reference type points to a specific type at the definitions map
+ */
+open class ReferenceType {
+    var ref: String? = null
+    var template: HashMap<String, String>? = null
+}
+
 /**
  * Represents a string type
  */
@@ -86,19 +109,28 @@ open class StringType : ScalarType {
     var pattern: String? = null
 }
 
-/**
- * Represents an any type
- */
-open class AnyType : CommonType {
-    var type: String? = null
-}
+import java.util.HashMap;
 
 /**
- * Represents an intersection type
+ * Represents a struct type. A struct type contains a fix set of defined properties
  */
-open class IntersectionType {
-    var description: String? = null
-    var allOf: Array<ReferenceType>? = null
+open class StructType : CommonType {
+    var final: Boolean? = null
+    var extends: String? = null
+    var type: String? = null
+    var properties: HashMap<String, Any>? = null
+    var required: Array<String>? = null
+}
+
+import java.util.HashMap;
+
+/**
+ * The root TypeSchema
+ */
+open class TypeSchema {
+    var import: HashMap<String, String>? = null
+    var definitions: HashMap<String, Any>? = null
+    var ref: String? = null
 }
 
 /**
@@ -108,64 +140,4 @@ open class UnionType {
     var description: String? = null
     var discriminator: Discriminator? = null
     var oneOf: Array<Any>? = null
-}
-
-import java.util.HashMap;
-
-/**
- * An object to hold mappings between payload values and schema names or references
- */
-open class DiscriminatorMapping : HashMap<String, String>() {
-}
-
-/**
- * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
- */
-open class Discriminator {
-    var propertyName: String? = null
-    var mapping: DiscriminatorMapping? = null
-}
-
-/**
- * Represents a reference type. A reference type points to a specific type at the definitions map
- */
-open class ReferenceType {
-    var ref: String? = null
-    var template: TemplateProperties? = null
-}
-
-import java.util.HashMap;
-open class TemplateProperties : HashMap<String, String>() {
-}
-
-/**
- * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
- */
-open class GenericType {
-    var generic: String? = null
-}
-
-import java.util.HashMap;
-
-/**
- * The definitions map which contains all types
- */
-open class Definitions : HashMap<String, Any>() {
-}
-
-import java.util.HashMap;
-
-/**
- * Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'
- */
-open class Import : HashMap<String, String>() {
-}
-
-/**
- * The root TypeSchema
- */
-open class TypeSchema {
-    var import: Import? = null
-    var definitions: Definitions? = null
-    var ref: String? = null
 }

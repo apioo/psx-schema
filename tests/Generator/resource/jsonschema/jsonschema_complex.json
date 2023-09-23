@@ -3,59 +3,53 @@
     "AnyType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/CommonType"
+          "$ref": "#/definitions/CommonType"
         },
         {
           "description": "Represents an any type",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "any"
-              ],
+              "description": "",
               "type": "string"
             }
-          },
-          "required": [
-            "type"
-          ]
+          }
         }
       ]
     },
     "ArrayType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/CommonType"
+          "$ref": "#/definitions/CommonType"
         },
         {
           "description": "Represents an array type. An array type contains an ordered list of a specific type",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "array"
-              ],
+              "description": "",
               "type": "string"
             },
             "items": {
+              "description": "",
               "oneOf": [
                 {
-                  "$ref": "#\/definitions\/BooleanType"
+                  "$ref": "#/definitions/BooleanType"
                 },
                 {
-                  "$ref": "#\/definitions\/NumberType"
+                  "$ref": "#/definitions/NumberType"
                 },
                 {
-                  "$ref": "#\/definitions\/StringType"
+                  "$ref": "#/definitions/StringType"
                 },
                 {
-                  "$ref": "#\/definitions\/ReferenceType"
+                  "$ref": "#/definitions/ReferenceType"
                 },
                 {
-                  "$ref": "#\/definitions\/GenericType"
+                  "$ref": "#/definitions/GenericType"
                 },
                 {
-                  "$ref": "#\/definitions\/AnyType"
+                  "$ref": "#/definitions/AnyType"
                 }
               ]
             },
@@ -67,33 +61,24 @@
               "description": "Positive integer value",
               "type": "integer"
             }
-          },
-          "required": [
-            "type",
-            "items"
-          ]
+          }
         }
       ]
     },
     "BooleanType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/ScalarType"
+          "$ref": "#/definitions/ScalarType"
         },
         {
           "description": "Represents a boolean type",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "boolean"
-              ],
+              "description": "",
               "type": "string"
             }
-          },
-          "required": [
-            "type"
-          ]
+          }
         }
       ]
     },
@@ -107,15 +92,6 @@
         },
         "type": {
           "description": "Type of the property",
-          "enum": [
-            "object",
-            "array",
-            "boolean",
-            "integer",
-            "number",
-            "string",
-            "any"
-          ],
           "type": "string"
         },
         "nullable": {
@@ -132,23 +108,6 @@
         }
       }
     },
-    "Definitions": {
-      "description": "The definitions map which contains all types",
-      "type": "object",
-      "additionalProperties": {
-        "oneOf": [
-          {
-            "$ref": "#\/definitions\/StructType"
-          },
-          {
-            "$ref": "#\/definitions\/MapType"
-          },
-          {
-            "$ref": "#\/definitions\/ReferenceType"
-          }
-        ]
-      }
-    },
     "Discriminator": {
       "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
       "type": "object",
@@ -158,18 +117,12 @@
           "type": "string"
         },
         "mapping": {
-          "$ref": "#\/definitions\/DiscriminatorMapping"
+          "description": "An object to hold mappings between payload values and schema names or references",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
-      },
-      "required": [
-        "propertyName"
-      ]
-    },
-    "DiscriminatorMapping": {
-      "description": "An object to hold mappings between payload values and schema names or references",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
       }
     },
     "GenericType": {
@@ -177,18 +130,9 @@
       "type": "object",
       "properties": {
         "$generic": {
+          "description": "",
           "type": "string"
         }
-      },
-      "required": [
-        "$generic"
-      ]
-    },
-    "Import": {
-      "description": "Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
       }
     },
     "IntersectionType": {
@@ -196,63 +140,60 @@
       "type": "object",
       "properties": {
         "description": {
+          "description": "",
           "type": "string"
         },
         "allOf": {
           "description": "Contains an array of references. The reference must only point to a struct type",
           "type": "array",
           "items": {
-            "$ref": "#\/definitions\/ReferenceType"
+            "$ref": "#/definitions/ReferenceType"
           }
         }
-      },
-      "required": [
-        "allOf"
-      ]
+      }
     },
     "MapType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/CommonType"
+          "$ref": "#/definitions/CommonType"
         },
         {
           "description": "Represents a map type. A map type contains variable key value entries of a specific type",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "object"
-              ],
+              "description": "",
               "type": "string"
             },
             "additionalProperties": {
+              "description": "",
               "oneOf": [
                 {
-                  "$ref": "#\/definitions\/BooleanType"
+                  "$ref": "#/definitions/BooleanType"
                 },
                 {
-                  "$ref": "#\/definitions\/NumberType"
+                  "$ref": "#/definitions/NumberType"
                 },
                 {
-                  "$ref": "#\/definitions\/StringType"
+                  "$ref": "#/definitions/StringType"
                 },
                 {
-                  "$ref": "#\/definitions\/ArrayType"
+                  "$ref": "#/definitions/ArrayType"
                 },
                 {
-                  "$ref": "#\/definitions\/UnionType"
+                  "$ref": "#/definitions/UnionType"
                 },
                 {
-                  "$ref": "#\/definitions\/IntersectionType"
+                  "$ref": "#/definitions/IntersectionType"
                 },
                 {
-                  "$ref": "#\/definitions\/ReferenceType"
+                  "$ref": "#/definitions/ReferenceType"
                 },
                 {
-                  "$ref": "#\/definitions\/GenericType"
+                  "$ref": "#/definitions/GenericType"
                 },
                 {
-                  "$ref": "#\/definitions\/AnyType"
+                  "$ref": "#/definitions/AnyType"
                 }
               ]
             },
@@ -264,88 +205,47 @@
               "description": "Positive integer value",
               "type": "integer"
             }
-          },
-          "required": [
-            "type",
-            "additionalProperties"
-          ]
+          }
         }
       ]
     },
     "NumberType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/ScalarType"
+          "$ref": "#/definitions/ScalarType"
         },
         {
           "description": "Represents a number type (contains also integer)",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "number",
-                "integer"
-              ],
+              "description": "",
               "type": "string"
             },
             "multipleOf": {
+              "description": "",
               "type": "number",
-              "minimum": 0,
-              "exclusiveMinimum": true
+              "minimum": 0
             },
             "maximum": {
+              "description": "",
               "type": "number"
             },
             "exclusiveMaximum": {
+              "description": "",
               "type": "boolean"
             },
             "minimum": {
+              "description": "",
               "type": "number"
             },
             "exclusiveMinimum": {
+              "description": "",
               "type": "boolean"
             }
-          },
-          "required": [
-            "type"
-          ]
+          }
         }
       ]
-    },
-    "Properties": {
-      "description": "Properties of a struct",
-      "type": "object",
-      "additionalProperties": {
-        "oneOf": [
-          {
-            "$ref": "#\/definitions\/BooleanType"
-          },
-          {
-            "$ref": "#\/definitions\/NumberType"
-          },
-          {
-            "$ref": "#\/definitions\/StringType"
-          },
-          {
-            "$ref": "#\/definitions\/ArrayType"
-          },
-          {
-            "$ref": "#\/definitions\/UnionType"
-          },
-          {
-            "$ref": "#\/definitions\/IntersectionType"
-          },
-          {
-            "$ref": "#\/definitions\/ReferenceType"
-          },
-          {
-            "$ref": "#\/definitions\/GenericType"
-          },
-          {
-            "$ref": "#\/definitions\/AnyType"
-          }
-        ]
-      }
     },
     "ReferenceType": {
       "description": "Represents a reference type. A reference type points to a specific type at the definitions map",
@@ -356,17 +256,18 @@
           "type": "string"
         },
         "$template": {
-          "$ref": "#\/definitions\/TemplateProperties"
+          "description": "Optional concrete type definitions which replace generic template types",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         }
-      },
-      "required": [
-        "$ref"
-      ]
+      }
     },
     "ScalarType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/CommonType"
+          "$ref": "#/definitions/CommonType"
         },
         {
           "description": "Represents a scalar type",
@@ -377,6 +278,7 @@
               "type": "string"
             },
             "enum": {
+              "description": "",
               "type": "array",
               "items": {
                 "oneOf": [
@@ -390,6 +292,7 @@
               }
             },
             "default": {
+              "description": "",
               "oneOf": [
                 {
                   "type": "string"
@@ -409,16 +312,14 @@
     "StringType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/ScalarType"
+          "$ref": "#/definitions/ScalarType"
         },
         {
           "description": "Represents a string type",
           "type": "object",
           "properties": {
             "type": {
-              "enum": [
-                "string"
-              ],
+              "description": "",
               "type": "string"
             },
             "maxLength": {
@@ -432,19 +333,17 @@
               "minimum": 0
             },
             "pattern": {
+              "description": "",
               "type": "string"
             }
-          },
-          "required": [
-            "type"
-          ]
+          }
         }
       ]
     },
     "StructType": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/CommonType"
+          "$ref": "#/definitions/CommonType"
         },
         {
           "description": "Represents a struct type. A struct type contains a fix set of defined properties",
@@ -459,62 +358,102 @@
               "type": "string"
             },
             "type": {
-              "enum": [
-                "object"
-              ],
+              "description": "",
               "type": "string"
             },
             "properties": {
-              "$ref": "#\/definitions\/Properties"
+              "description": "",
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/MapType"
+                  },
+                  {
+                    "$ref": "#/definitions/ArrayType"
+                  },
+                  {
+                    "$ref": "#/definitions/BooleanType"
+                  },
+                  {
+                    "$ref": "#/definitions/NumberType"
+                  },
+                  {
+                    "$ref": "#/definitions/StringType"
+                  },
+                  {
+                    "$ref": "#/definitions/AnyType"
+                  },
+                  {
+                    "$ref": "#/definitions/IntersectionType"
+                  },
+                  {
+                    "$ref": "#/definitions/UnionType"
+                  },
+                  {
+                    "$ref": "#/definitions/ReferenceType"
+                  },
+                  {
+                    "$ref": "#/definitions/GenericType"
+                  }
+                ]
+              }
             },
             "required": {
+              "description": "",
               "type": "array",
               "items": {
                 "type": "string"
               }
             }
-          },
-          "required": [
-            "type",
-            "properties"
-          ]
+          }
         }
       ]
-    },
-    "TemplateProperties": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
     },
     "TypeSchema": {
       "description": "The root TypeSchema",
       "type": "object",
       "properties": {
         "$import": {
-          "$ref": "#\/definitions\/Import"
+          "description": "Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "definitions": {
-          "$ref": "#\/definitions\/Definitions"
+          "description": "",
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/StructType"
+              },
+              {
+                "$ref": "#/definitions/MapType"
+              },
+              {
+                "$ref": "#/definitions/ReferenceType"
+              }
+            ]
+          }
         },
         "$ref": {
           "description": "Reference to a root schema under the definitions key",
           "type": "string"
         }
-      },
-      "required": [
-        "definitions"
-      ]
+      }
     },
     "UnionType": {
       "description": "Represents an union type. An union type can contain one of the provided types",
       "type": "object",
       "properties": {
         "description": {
+          "description": "",
           "type": "string"
         },
         "discriminator": {
-          "$ref": "#\/definitions\/Discriminator"
+          "$ref": "#/definitions/Discriminator"
         },
         "oneOf": {
           "description": "Contains an array of references. The reference must only point to a struct type",
@@ -522,25 +461,21 @@
           "items": {
             "oneOf": [
               {
-                "$ref": "#\/definitions\/NumberType"
+                "$ref": "#/definitions/NumberType"
               },
               {
-                "$ref": "#\/definitions\/StringType"
+                "$ref": "#/definitions/StringType"
               },
               {
-                "$ref": "#\/definitions\/BooleanType"
+                "$ref": "#/definitions/BooleanType"
               },
               {
-                "$ref": "#\/definitions\/ReferenceType"
+                "$ref": "#/definitions/ReferenceType"
               }
             ]
           }
         }
-      },
-      "required": [
-        "oneOf"
-      ]
+      }
     }
-  },
-  "$ref": "#\/definitions\/TypeSchema"
+  }
 }
