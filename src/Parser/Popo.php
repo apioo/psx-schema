@@ -100,7 +100,7 @@ class Popo implements ParserInterface
         if ($type instanceof StructType) {
             $parent = $class->getParentClass();
             if ($parent instanceof \ReflectionClass) {
-                $extends = $this->parseClass($parent->getName(), $definitions);
+                $extends = $this->parseClass($parent->getName(), $definitions, $context);
                 if ($extends instanceof StructType) {
                     $type->setExtends($this->getTypeName($parent, $context));
                 }
@@ -340,7 +340,7 @@ class Popo implements ParserInterface
             $reflection = new ReflectionClass($className);
             $type->setRef($this->getTypeName($reflection, $context));
 
-            $this->parseClass($className, $definitions);
+            $this->parseClass($className, $definitions, $context);
         } catch (\ReflectionException $e) {
             // in this case the class does not exist
         }
@@ -352,7 +352,7 @@ class Popo implements ParserInterface
                 try {
                     $reflection = new ReflectionClass($className);
                     $result[$key] = $this->getTypeName($reflection, $context);
-                    $this->parseClass($className, $definitions);
+                    $this->parseClass($className, $definitions, $context);
                 } catch (\ReflectionException $e) {
                     // in this case the class does not exist
                 }
