@@ -160,6 +160,7 @@ class Php extends CodeGeneratorAbstract
                         // in case we have an array we must add a var annotation to describe which type is inside the array
                         $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $property->getName()->getArgument()]));
                     }
+
                     if ($type !== 'mixed') {
                         $param->setType(new Node\NullableType($type));
                     } else {
@@ -182,6 +183,11 @@ class Php extends CodeGeneratorAbstract
                 if (str_contains($type, '|')) {
                     $getter->setReturnType($type . '|null');
                 } else {
+                    if ($type === 'array') {
+                        // in case we have an array we must add a return annotation to describe which type is inside the array
+                        $getter->setDocComment($this->buildComment(['return' => $property->getDocType() . '|null']));
+                    }
+
                     if ($type !== 'mixed') {
                         $getter->setReturnType(new Node\NullableType($type));
                     } else {

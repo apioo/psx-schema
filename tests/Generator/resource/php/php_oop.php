@@ -78,6 +78,9 @@ class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->entries = $entries;
     }
+    /**
+     * @return array<T>|null
+     */
     public function getEntries() : ?array
     {
         return $this->entries;

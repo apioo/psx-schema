@@ -188,6 +188,9 @@ class ScalarType extends CommonType implements \JsonSerializable, \PSX\Record\Re
     {
         $this->enum = $enum;
     }
+    /**
+     * @return array<string|float>|null
+     */
     public function getEnum() : ?array
     {
         return $this->enum;
@@ -342,6 +345,9 @@ class IntersectionType implements \JsonSerializable, \PSX\Record\RecordableInter
     {
         $this->allOf = $allOf;
     }
+    /**
+     * @return array<ReferenceType>|null
+     */
     public function getAllOf() : ?array
     {
         return $this->allOf;
@@ -678,6 +684,9 @@ class StructType extends CommonType implements \JsonSerializable, \PSX\Record\Re
     {
         $this->required = $required;
     }
+    /**
+     * @return array<string>|null
+     */
     public function getRequired() : ?array
     {
         return $this->required;
@@ -795,6 +804,9 @@ class UnionType implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->oneOf = $oneOf;
     }
+    /**
+     * @return array<NumberType|StringType|BooleanType|ReferenceType>|null
+     */
     public function getOneOf() : ?array
     {
         return $this->oneOf;

@@ -125,6 +125,9 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->categories = $categories;
     }
+    /**
+     * @return array<string>|null
+     */
     public function getCategories() : ?array
     {
         return $this->categories;
@@ -136,6 +139,9 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->locations = $locations;
     }
+    /**
+     * @return array<Location>|null
+     */
     public function getLocations() : ?array
     {
         return $this->locations;
@@ -300,6 +306,9 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->tags = $tags;
     }
+    /**
+     * @return array<string>|null
+     */
     public function getTags() : ?array
     {
         return $this->tags;
@@ -311,6 +320,9 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->receiver = $receiver;
     }
+    /**
+     * @return array<Author>|null
+     */
     public function getReceiver() : ?array
     {
         return $this->receiver;
@@ -322,6 +334,9 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         $this->resources = $resources;
     }
+    /**
+     * @return array<Location|Web>|null
+     */
     public function getResources() : ?array
     {
         return $this->resources;
