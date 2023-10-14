@@ -102,16 +102,15 @@ class CSharp extends CodeGeneratorAbstract
     {
         $code = '';
 
-        if (!empty($this->namespace)) {
-            $code.= 'namespace ' . $this->namespace . "\n";
-            $code.= '{' . "\n";
-        }
-
         $imports = $this->getImports($origin);
         if (!empty($imports)) {
             $code.= "\n";
             $code.= implode("\n", $imports);
             $code.= "\n";
+        }
+
+        if (!empty($this->namespace)) {
+            $code.= 'namespace ' . $this->namespace . ';' . "\n";
         }
 
         $code.= "\n";
@@ -128,11 +127,7 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeFooter(TypeAbstract $origin): string
     {
-        if (!empty($this->namespace)) {
-            return '}' . "\n";
-        } else {
-            return '';
-        }
+        return '';
     }
 
     private function getImports(TypeAbstract $origin): array
