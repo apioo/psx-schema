@@ -91,12 +91,12 @@ class Go extends GeneratorAbstract
 
     protected function getUnion(array $types): string
     {
-        return 'interface{}';
+        return 'any';
     }
 
     protected function getIntersection(array $types): string
     {
-        return 'interface{}';
+        return 'any';
     }
 
     protected function getGroup(string $type): string
@@ -111,7 +111,7 @@ class Go extends GeneratorAbstract
 
     protected function getAny(): string
     {
-        return 'interface{}';
+        return 'any';
     }
 
     protected function getNamespaced(string $namespace, string $name): string
