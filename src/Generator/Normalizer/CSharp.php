@@ -34,6 +34,11 @@ class CSharp extends NormalizerAbstract
         return self::PASCAL_CASE;
     }
 
+    protected function getMethodStyle(): int
+    {
+        return self::PASCAL_CASE;
+    }
+
     protected function hasPropertyReserved(): bool
     {
         return false;
