@@ -1,7 +1,5 @@
-namespace Foo.Bar
-{
-
 using System.Text.Json.Serialization;
+namespace Foo.Bar;
 public class Import
 {
     [JsonPropertyName("students")]
@@ -9,13 +7,9 @@ public class Import
     [JsonPropertyName("student")]
     public My.Import.Student Student { get; set; }
 }
-}
-
-namespace Foo.Bar
-{
 
 using System.Text.Json.Serialization;
+namespace Foo.Bar;
 public class MyMap extends My.Import.Student
 {
-}
 }

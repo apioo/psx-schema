@@ -14,7 +14,7 @@ type ArrayType struct {
     Nullable bool `json:"nullable"`
     Deprecated bool `json:"deprecated"`
     Readonly bool `json:"readonly"`
-    Items interface{} `json:"items"`
+    Items any `json:"items"`
     MaxItems int `json:"maxItems"`
     MinItems int `json:"minItems"`
 }
@@ -22,8 +22,8 @@ type ArrayType struct {
 // Represents a boolean type
 type BooleanType struct {
     Format string `json:"format"`
-    Enum []interface{} `json:"enum"`
-    Default interface{} `json:"default"`
+    Enum []any `json:"enum"`
+    Default any `json:"default"`
     Description string `json:"description"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
@@ -64,7 +64,7 @@ type MapType struct {
     Nullable bool `json:"nullable"`
     Deprecated bool `json:"deprecated"`
     Readonly bool `json:"readonly"`
-    AdditionalProperties interface{} `json:"additionalProperties"`
+    AdditionalProperties any `json:"additionalProperties"`
     MaxProperties int `json:"maxProperties"`
     MinProperties int `json:"minProperties"`
 }
@@ -72,8 +72,8 @@ type MapType struct {
 // Represents a number type (contains also integer)
 type NumberType struct {
     Format string `json:"format"`
-    Enum []interface{} `json:"enum"`
-    Default interface{} `json:"default"`
+    Enum []any `json:"enum"`
+    Default any `json:"default"`
     Description string `json:"description"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
@@ -100,8 +100,8 @@ type ScalarType struct {
     Deprecated bool `json:"deprecated"`
     Readonly bool `json:"readonly"`
     Format string `json:"format"`
-    Enum []interface{} `json:"enum"`
-    Default interface{} `json:"default"`
+    Enum []any `json:"enum"`
+    Default any `json:"default"`
 }
 
 // Represents a string type
@@ -112,8 +112,8 @@ type StringType struct {
     Deprecated bool `json:"deprecated"`
     Readonly bool `json:"readonly"`
     Format string `json:"format"`
-    Enum []interface{} `json:"enum"`
-    Default interface{} `json:"default"`
+    Enum []any `json:"enum"`
+    Default any `json:"default"`
     MaxLength int `json:"maxLength"`
     MinLength int `json:"minLength"`
     Pattern string `json:"pattern"`
@@ -128,14 +128,14 @@ type StructType struct {
     Readonly bool `json:"readonly"`
     Final bool `json:"$final"`
     Extends string `json:"$extends"`
-    Properties map[string]interface{} `json:"properties"`
+    Properties map[string]any `json:"properties"`
     Required []string `json:"required"`
 }
 
 // The root TypeSchema
 type TypeSchema struct {
     Import map[string]string `json:"$import"`
-    Definitions map[string]interface{} `json:"definitions"`
+    Definitions map[string]any `json:"definitions"`
     Ref string `json:"$ref"`
 }
 
@@ -143,5 +143,5 @@ type TypeSchema struct {
 type UnionType struct {
     Description string `json:"description"`
     Discriminator Discriminator `json:"discriminator"`
-    OneOf []interface{} `json:"oneOf"`
+    OneOf []any `json:"oneOf"`
 }

@@ -13,7 +13,7 @@ type Animal struct {
 }
 
 type Union struct {
-    Union interface{} `json:"union"`
-    Intersection interface{} `json:"intersection"`
-    Discriminator interface{} `json:"discriminator"`
+    Union any `json:"union"`
+    Intersection any `json:"intersection"`
+    Discriminator any `json:"discriminator"`
 }

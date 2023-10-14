@@ -29,13 +29,13 @@ type News struct {
     InlineConfig map[string]string `json:"inlineConfig"`
     MapTags map[string]string `json:"mapTags"`
     MapReceiver map[string]Author `json:"mapReceiver"`
-    MapResources map[string]interface{} `json:"mapResources"`
+    MapResources map[string]any `json:"mapResources"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
-    Resources []interface{} `json:"resources"`
+    Resources []any `json:"resources"`
     ProfileImage string `json:"profileImage"`
     Read bool `json:"read"`
-    Source interface{} `json:"source"`
+    Source any `json:"source"`
     Author Author `json:"author"`
     Meta Meta `json:"meta"`
     SendDate time.Time `json:"sendDate"`
@@ -50,5 +50,5 @@ type News struct {
     CoffeeTime time.Time `json:"coffeeTime"`
     ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
-    Payload interface{} `json:"payload"`
+    Payload any `json:"payload"`
 }
