@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
+
 # Represents a base type. Every type extends from this common type and shares the defined properties
 @dataclass_json
 @dataclass
@@ -14,6 +15,7 @@ class CommonType:
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from common_type import CommonType
+
 
 # Represents an any type
 @dataclass_json
@@ -32,6 +34,7 @@ from reference_type import ReferenceType
 from generic_type import GenericType
 from any_type import AnyType
 
+
 # Represents an array type. An array type contains an ordered list of a specific type
 @dataclass_json
 @dataclass
@@ -47,6 +50,7 @@ from typing import List
 from typing import Union
 from common_type import CommonType
 
+
 # Represents a scalar type
 @dataclass_json
 @dataclass
@@ -59,6 +63,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from scalar_type import ScalarType
 
+
 # Represents a boolean type
 @dataclass_json
 @dataclass
@@ -68,6 +73,7 @@ class BooleanType(ScalarType):
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import Dict
+
 
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
 @dataclass_json
@@ -79,6 +85,7 @@ class Discriminator:
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
+
 # Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
 @dataclass_json
 @dataclass
@@ -89,6 +96,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import List
 from reference_type import ReferenceType
+
 
 # Represents an intersection type
 @dataclass_json
@@ -111,6 +119,7 @@ from reference_type import ReferenceType
 from generic_type import GenericType
 from any_type import AnyType
 
+
 # Represents a map type. A map type contains variable key value entries of a specific type
 @dataclass_json
 @dataclass
@@ -123,6 +132,7 @@ class MapType(CommonType):
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from scalar_type import ScalarType
+
 
 # Represents a number type (contains also integer)
 @dataclass_json
@@ -139,6 +149,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import Dict
 
+
 # Represents a reference type. A reference type points to a specific type at the definitions map
 @dataclass_json
 @dataclass
@@ -149,6 +160,7 @@ class ReferenceType:
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from scalar_type import ScalarType
+
 
 # Represents a string type
 @dataclass_json
@@ -176,6 +188,7 @@ from union_type import UnionType
 from reference_type import ReferenceType
 from generic_type import GenericType
 
+
 # Represents a struct type. A struct type contains a fix set of defined properties
 @dataclass_json
 @dataclass
@@ -194,6 +207,7 @@ from struct_type import StructType
 from map_type import MapType
 from reference_type import ReferenceType
 
+
 # The root TypeSchema
 @dataclass_json
 @dataclass
@@ -211,6 +225,7 @@ from number_type import NumberType
 from string_type import StringType
 from boolean_type import BooleanType
 from reference_type import ReferenceType
+
 
 # Represents an union type. An union type can contain one of the provided types
 @dataclass_json

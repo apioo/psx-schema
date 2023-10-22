@@ -73,6 +73,9 @@ class Python extends CodeGeneratorAbstract
             $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 
+        $code.= "\n";
+        $code.= "\n";
+
         return $code;
     }
 
@@ -80,10 +83,10 @@ class Python extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = '@dataclass_json' . "\n";
-        $code.= '@dataclass' . "\n";
-        $code.= 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
         $code.= '    pass' . "\n";
+        $code.= "\n";
+        $code.= "\n";
 
         return $code;
     }
@@ -94,6 +97,8 @@ class Python extends CodeGeneratorAbstract
         $code.= '@dataclass' . "\n";
         $code.= 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
         $code.= '    pass' . "\n";
+        $code.= "\n";
+        $code.= "\n";
 
         return $code;
     }
@@ -113,6 +118,7 @@ class Python extends CodeGeneratorAbstract
             $code.= "\n";
         }
 
+        $code.= "\n";
         $code.= "\n";
 
         $comment = $origin->getDescription();
