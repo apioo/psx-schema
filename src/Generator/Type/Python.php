@@ -29,6 +29,36 @@ namespace PSX\Schema\Generator\Type;
  */
 class Python extends GeneratorAbstract
 {
+    protected function getDate(): string
+    {
+        return 'datetime.date';
+    }
+
+    protected function getDateTime(): string
+    {
+        return 'datetime.datetime';
+    }
+
+    protected function getTime(): string
+    {
+        return 'datetime.time';
+    }
+
+    protected function getPeriod(): string
+    {
+        return 'datetime.timedelta';
+    }
+
+    protected function getDuration(): string
+    {
+        return 'datetime.timedelta';
+    }
+
+    protected function getBinary(): string
+    {
+        return 'bytearray';
+    }
+
     protected function getString(): string
     {
         return 'str';
@@ -76,7 +106,7 @@ class Python extends GeneratorAbstract
 
     protected function getGeneric(array $types): string
     {
-        return '';
+        return '[' . implode(', ', $types) . ']';
     }
 
     protected function getAny(): string
