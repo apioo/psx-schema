@@ -69,6 +69,16 @@ class Java extends GeneratorAbstract
         return 'String';
     }
 
+    protected function getInteger32(): string
+    {
+        return 'int';
+    }
+
+    protected function getInteger64(): string
+    {
+        return 'long';
+    }
+
     protected function getInteger(): string
     {
         return 'int';
@@ -86,12 +96,12 @@ class Java extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return $type . '[]';
+        return 'List<' . $type . '>';
     }
 
     protected function getMap(string $type): string
     {
-        return 'HashMap<String, ' . $type . '>';
+        return 'Map<String, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string
