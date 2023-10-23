@@ -49,6 +49,16 @@ class Go extends GeneratorAbstract
         return 'time.Duration';
     }
 
+    protected function getUri(): string
+    {
+        return 'url.URL';
+    }
+
+    protected function getBinary(): string
+    {
+        return '[]byte';
+    }
+
     protected function getString(): string
     {
         return 'string';
