@@ -29,9 +29,54 @@ namespace PSX\Schema\Generator\Type;
  */
 class CSharp extends GeneratorAbstract
 {
+    protected function getDate(): string
+    {
+        return 'DateOnly';
+    }
+
+    protected function getDateTime(): string
+    {
+        return 'DateTime';
+    }
+
+    protected function getTime(): string
+    {
+        return 'TimeOnly';
+    }
+
+    protected function getPeriod(): string
+    {
+        return 'TimeSpan';
+    }
+
+    protected function getDuration(): string
+    {
+        return 'TimeSpan';
+    }
+
+    protected function getUri(): string
+    {
+        return 'Uri';
+    }
+
+    protected function getBinary(): string
+    {
+        return 'byte[]';
+    }
+
     protected function getString(): string
     {
         return 'string';
+    }
+
+    protected function getInteger32(): string
+    {
+        return 'int';
+    }
+
+    protected function getInteger64(): string
+    {
+        return 'long';
     }
 
     protected function getInteger(): string
@@ -41,7 +86,7 @@ class CSharp extends GeneratorAbstract
 
     protected function getNumber(): string
     {
-        return 'float';
+        return 'double';
     }
 
     protected function getBoolean(): string
@@ -51,7 +96,7 @@ class CSharp extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return $type . '[]';
+        return 'List<' . $type . '>';
     }
 
     protected function getMap(string $type): string
