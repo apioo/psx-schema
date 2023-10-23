@@ -29,6 +29,26 @@ namespace PSX\Schema\Generator\Type;
  */
 class TypeScript extends GeneratorAbstract
 {
+    protected function getDate(): string
+    {
+        return 'Date';
+    }
+
+    protected function getDateTime(): string
+    {
+        return 'Date';
+    }
+
+    protected function getTime(): string
+    {
+        return 'Date';
+    }
+
+    protected function getUri(): string
+    {
+        return 'Url';
+    }
+
     protected function getString(): string
     {
         return 'string';
