@@ -57,10 +57,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     public function __construct(?Config $config = null)
     {
-        $mapping = $config?->get(Config::MAPPING) ?? [];
-        if (!is_array($mapping)) {
-            throw new \InvalidArgumentException('Provided mapping config must be an array');
-        }
+        $mapping = (array) $config?->get(Config::MAPPING);
 
         $this->normalizer = $this->newNormalizer();
         $this->generator  = $this->newTypeGenerator($mapping);
