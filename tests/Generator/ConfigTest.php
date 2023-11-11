@@ -33,7 +33,29 @@ use PSX\Schema\Generator\Config;
 class ConfigTest extends TestCase
 {
     /**
-     * @dataProvider stringProvider
+     * @dataProvider toStringProvider
+     */
+    public function testToString(array $value, string $expect)
+    {
+        $config = Config::fromArray($value);
+
+        $this->assertEquals($expect, $config->toString());
+    }
+
+    public function toStringProvider(): array
+    {
+        return [
+            [[], 'e30='],
+            [[], 'e30='],
+            [[], 'e30='],
+            [['foo' => ''], 'eyJmb28iOiIifQ=='],
+            [['foo' => 'bar'], 'eyJmb28iOiJiYXIifQ=='],
+            [['foo' => ['test' => 'bar']], 'eyJmb28iOnsidGVzdCI6ImJhciJ9fQ=='],
+        ];
+    }
+
+    /**
+     * @dataProvider queryStringProvider
      */
     public function testFromQueryString(mixed $value, array $expect)
     {
@@ -43,7 +65,7 @@ class ConfigTest extends TestCase
         $this->assertEquals($expect, $config->getAll());
     }
 
-    public function stringProvider(): array
+    public function queryStringProvider(): array
     {
         return [
             [null, []],
@@ -52,6 +74,29 @@ class ConfigTest extends TestCase
             ['foo', ['foo' => '']],
             ['foo=bar', ['foo' => 'bar']],
             ['foo[test]=bar', ['foo' => ['test' => 'bar']]],
+        ];
+    }
+
+    /**
+     * @dataProvider base64StringProvider
+     */
+    public function testFromBase64String(string $value, object $expect)
+    {
+        $config = Config::fromBase64String($value);
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertJsonStringEqualsJsonString(\json_encode($expect), \json_encode($config));
+    }
+
+    public function base64StringProvider(): array
+    {
+        return [
+            ['e30=', (object) []],
+            ['e30=', (object) []],
+            ['e30=', (object) []],
+            ['eyJmb28iOiIifQ==', (object) ['foo' => '']],
+            ['eyJmb28iOiJiYXIifQ==', (object) ['foo' => 'bar']],
+            ['eyJmb28iOnsidGVzdCI6ImJhciJ9fQ==', (object) ['foo' => (object) ['test' => 'bar']]],
         ];
     }
 }

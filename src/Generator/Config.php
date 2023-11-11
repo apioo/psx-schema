@@ -37,12 +37,32 @@ class Config extends Record
     public const HEADING = 'heading';
     public const PREFIX = 'prefix';
 
+    public function toString(): string
+    {
+        return base64_encode(json_encode($this));
+    }
+
     public static function fromQueryString(?string $query): Config
     {
         $result = [];
         parse_str($query ?? '', $result);
 
         return self::from($result);
+    }
+
+    public static function fromBase64String(?string $config): Config
+    {
+        if (!empty($config)) {
+            $data = json_decode(base64_decode($config));
+        } else {
+            $data = [];
+        }
+
+        if (is_iterable($data) || is_object($data)) {
+            return self::from($data);
+        } else {
+            return new self();
+        }
     }
 
     public static function of(string $namespace, array $mapping = []): Config
