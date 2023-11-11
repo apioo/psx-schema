@@ -33,7 +33,7 @@ type News struct {
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []any `json:"resources"`
-    ProfileImage string `json:"profileImage"`
+    ProfileImage []byte `json:"profileImage"`
     Read bool `json:"read"`
     Source any `json:"source"`
     Author Author `json:"author"`
@@ -48,7 +48,7 @@ type News struct {
     Question string `json:"question"`
     Version string `json:"version"`
     CoffeeTime time.Time `json:"coffeeTime"`
-    ProfileUri string `json:"profileUri"`
+    ProfileUri url.URL `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
     Payload any `json:"payload"`
 }

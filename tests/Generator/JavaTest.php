@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\Java;
 
 /**
@@ -93,7 +94,7 @@ class JavaTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Java('Foo.Bar', ['my_import' => 'My.Import']);
+        $generator = new Java(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

@@ -55,7 +55,7 @@ public class ScalarType extends CommonType
     [JsonPropertyName("format")]
     public string Format { get; set; }
     [JsonPropertyName("enum")]
-    public object[] Enum { get; set; }
+    public List<object> Enum { get; set; }
     [JsonPropertyName("default")]
     public object Default { get; set; }
 }
@@ -106,7 +106,7 @@ public class IntersectionType
     [JsonPropertyName("description")]
     public string Description { get; set; }
     [JsonPropertyName("allOf")]
-    public ReferenceType[] AllOf { get; set; }
+    public List<ReferenceType> AllOf { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -136,13 +136,13 @@ public class NumberType extends ScalarType
     [JsonPropertyName("type")]
     public string Type { get; set; }
     [JsonPropertyName("multipleOf")]
-    public float MultipleOf { get; set; }
+    public double MultipleOf { get; set; }
     [JsonPropertyName("maximum")]
-    public float Maximum { get; set; }
+    public double Maximum { get; set; }
     [JsonPropertyName("exclusiveMaximum")]
     public bool ExclusiveMaximum { get; set; }
     [JsonPropertyName("minimum")]
-    public float Minimum { get; set; }
+    public double Minimum { get; set; }
     [JsonPropertyName("exclusiveMinimum")]
     public bool ExclusiveMinimum { get; set; }
 }
@@ -195,7 +195,7 @@ public class StructType extends CommonType
     [JsonPropertyName("properties")]
     public Dictionary<string, object> Properties { get; set; }
     [JsonPropertyName("required")]
-    public string[] Required { get; set; }
+    public List<string> Required { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -226,5 +226,5 @@ public class UnionType
     [JsonPropertyName("discriminator")]
     public Discriminator Discriminator { get; set; }
     [JsonPropertyName("oneOf")]
-    public object[] OneOf { get; set; }
+    public List<object> OneOf { get; set; }
 }

@@ -46,9 +46,9 @@ class JsonSchema implements GeneratorInterface
 {
     private string $refBase;
 
-    public function __construct(string $refBase = '#/definitions/')
+    public function __construct(?Config $config = null)
     {
-        $this->refBase = $refBase;
+        $this->refBase = $config?->get('ref_base') ?? '#/definitions/';
     }
 
     public function generate(SchemaInterface $schema)

@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Generator\Config;
+
 /**
  * GeneratorFactory
  *
@@ -47,64 +49,56 @@ class GeneratorFactory
     public const TYPE_TYPESCRIPT = 'typescript';
     public const TYPE_VISUALBASIC = 'visualbasic';
 
-    public function getGenerator(string $format, ?string $config = null): GeneratorInterface
+    public function getGenerator(string $format, ?Config $config = null): GeneratorInterface
     {
-        $result = [];
-        parse_str($config ?? '', $result);
-        $namespace = $result['namespace'] ?? null;
-        $mapping = $result['mapping'] ?? [];
-        $indent = $result['indent'] ?? 4;
-        $heading = $result['heading'] ?? 1;
-        $prefix = $result['prefix'] ?? 'psx_model_';
-
         switch ($format) {
             case self::TYPE_CSHARP:
-                return new Generator\CSharp($namespace, $mapping, $indent);
+                return new Generator\CSharp($config);
 
             case self::TYPE_GO:
-                return new Generator\Go($namespace, $mapping, $indent);
+                return new Generator\Go($config);
 
             case self::TYPE_GRAPHQL:
-                return new Generator\GraphQL($namespace, $mapping, $indent);
+                return new Generator\GraphQL($config);
 
             case self::TYPE_HTML:
-                return new Generator\Html((int) $heading, $prefix);
+                return new Generator\Html($config);
 
             case self::TYPE_JAVA:
-                return new Generator\Java($namespace, $mapping, $indent);
+                return new Generator\Java($config);
 
             case self::TYPE_JSONSCHEMA:
-                return new Generator\JsonSchema();
+                return new Generator\JsonSchema($config);
 
             case self::TYPE_KOTLIN:
-                return new Generator\Kotlin($namespace, $mapping, $indent);
+                return new Generator\Kotlin($config);
 
             case self::TYPE_MARKDOWN:
-                return new Generator\Markdown((int) $heading, $prefix);
+                return new Generator\Markdown($config);
 
             case self::TYPE_PHP:
-                return new Generator\Php($namespace, $mapping, $indent);
+                return new Generator\Php($config);
 
             case self::TYPE_PROTOBUF:
-                return new Generator\Protobuf($namespace, $mapping, $indent);
+                return new Generator\Protobuf($config);
 
             case self::TYPE_PYTHON:
-                return new Generator\Python($namespace, $mapping, $indent);
+                return new Generator\Python($config);
 
             case self::TYPE_RUBY:
-                return new Generator\Ruby($namespace, $mapping, $indent);
+                return new Generator\Ruby($config);
 
             case self::TYPE_RUST:
-                return new Generator\Rust($namespace, $mapping, $indent);
+                return new Generator\Rust($config);
 
             case self::TYPE_SWIFT:
-                return new Generator\Swift($namespace, $mapping, $indent);
+                return new Generator\Swift($config);
 
             case self::TYPE_TYPESCRIPT:
-                return new Generator\TypeScript($namespace, $mapping, $indent);
+                return new Generator\TypeScript($config);
 
             case self::TYPE_VISUALBASIC:
-                return new Generator\VisualBasic($namespace, $mapping, $indent);
+                return new Generator\VisualBasic($config);
 
             default:
             case self::TYPE_TYPESCHEMA:

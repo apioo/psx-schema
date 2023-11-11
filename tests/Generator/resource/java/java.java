@@ -61,8 +61,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class Author {
     private String title;
     private String email;
-    private String[] categories;
-    private Location[] locations;
+    private List<String> categories;
+    private List<Location> locations;
     private Location origin;
     @JsonSetter("title")
     public void setTitle(String title) {
@@ -81,19 +81,19 @@ public class Author {
         return this.email;
     }
     @JsonSetter("categories")
-    public void setCategories(String[] categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
     }
     @JsonGetter("categories")
-    public String[] getCategories() {
+    public List<String> getCategories() {
         return this.categories;
     }
     @JsonSetter("locations")
-    public void setLocations(Location[] locations) {
+    public void setLocations(List<Location> locations) {
         this.locations = locations;
     }
     @JsonGetter("locations")
-    public Location[] getLocations() {
+    public List<Location> getLocations() {
         return this.locations;
     }
     @JsonSetter("origin")
@@ -127,13 +127,13 @@ import java.util.HashMap;
  */
 public class News {
     private Meta config;
-    private HashMap<String, String> inlineConfig;
-    private HashMap<String, String> mapTags;
-    private HashMap<String, Author> mapReceiver;
-    private HashMap<String, Object> mapResources;
-    private String[] tags;
-    private Author[] receiver;
-    private Object[] resources;
+    private Map<String, String> inlineConfig;
+    private Map<String, String> mapTags;
+    private Map<String, Author> mapReceiver;
+    private Map<String, Object> mapResources;
+    private List<String> tags;
+    private List<Author> receiver;
+    private List<Object> resources;
     private byte[] profileImage;
     private boolean read;
     private Object source;
@@ -161,59 +161,59 @@ public class News {
         return this.config;
     }
     @JsonSetter("inlineConfig")
-    public void setInlineConfig(HashMap<String, String> inlineConfig) {
+    public void setInlineConfig(Map<String, String> inlineConfig) {
         this.inlineConfig = inlineConfig;
     }
     @JsonGetter("inlineConfig")
-    public HashMap<String, String> getInlineConfig() {
+    public Map<String, String> getInlineConfig() {
         return this.inlineConfig;
     }
     @JsonSetter("mapTags")
-    public void setMapTags(HashMap<String, String> mapTags) {
+    public void setMapTags(Map<String, String> mapTags) {
         this.mapTags = mapTags;
     }
     @JsonGetter("mapTags")
-    public HashMap<String, String> getMapTags() {
+    public Map<String, String> getMapTags() {
         return this.mapTags;
     }
     @JsonSetter("mapReceiver")
-    public void setMapReceiver(HashMap<String, Author> mapReceiver) {
+    public void setMapReceiver(Map<String, Author> mapReceiver) {
         this.mapReceiver = mapReceiver;
     }
     @JsonGetter("mapReceiver")
-    public HashMap<String, Author> getMapReceiver() {
+    public Map<String, Author> getMapReceiver() {
         return this.mapReceiver;
     }
     @JsonSetter("mapResources")
-    public void setMapResources(HashMap<String, Object> mapResources) {
+    public void setMapResources(Map<String, Object> mapResources) {
         this.mapResources = mapResources;
     }
     @JsonGetter("mapResources")
-    public HashMap<String, Object> getMapResources() {
+    public Map<String, Object> getMapResources() {
         return this.mapResources;
     }
     @JsonSetter("tags")
-    public void setTags(String[] tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
     @JsonGetter("tags")
-    public String[] getTags() {
+    public List<String> getTags() {
         return this.tags;
     }
     @JsonSetter("receiver")
-    public void setReceiver(Author[] receiver) {
+    public void setReceiver(List<Author> receiver) {
         this.receiver = receiver;
     }
     @JsonGetter("receiver")
-    public Author[] getReceiver() {
+    public List<Author> getReceiver() {
         return this.receiver;
     }
     @JsonSetter("resources")
-    public void setResources(Object[] resources) {
+    public void setResources(List<Object> resources) {
         this.resources = resources;
     }
     @JsonGetter("resources")
-    public Object[] getResources() {
+    public List<Object> getResources() {
         return this.resources;
     }
     @JsonSetter("profileImage")

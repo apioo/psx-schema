@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\Kotlin;
 
 /**
@@ -93,7 +94,7 @@ class KotlinTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Kotlin('Foo.Bar', ['my_import' => 'My.Import']);
+        $generator = new Kotlin(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\CSharp;
 
 /**
@@ -93,7 +94,7 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new CSharp('Foo.Bar', ['my_import' => 'My.Import']);
+        $generator = new CSharp(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

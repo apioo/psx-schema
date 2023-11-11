@@ -19,7 +19,7 @@ from map import Map
 from student import Student
 @dataclass_json
 @dataclass
-class StudentMap(Map):
+class StudentMap(Map[Student]):
     pass
 
 from dataclasses import dataclass

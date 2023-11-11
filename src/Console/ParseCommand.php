@@ -21,6 +21,7 @@
 namespace PSX\Schema\Console;
 
 use PSX\Schema\Generator\Code\Chunks;
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\FileAwareInterface;
 use PSX\Schema\GeneratorFactory;
 use PSX\Schema\SchemaManagerInterface;
@@ -70,7 +71,8 @@ class ParseCommand extends Command
         }
 
         $factory   = new GeneratorFactory();
-        $generator = $factory->getGenerator($input->getOption('format'), $input->getOption('config'));
+        $config    = Config::fromQueryString($input->getOption('config'));
+        $generator = $factory->getGenerator($input->getOption('format'), $config);
         $response  = $generator->generate($schema);
 
         if ($generator instanceof FileAwareInterface && $response instanceof Chunks) {

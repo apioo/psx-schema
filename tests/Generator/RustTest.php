@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\Rust;
 
 /**
@@ -93,7 +94,7 @@ class RustTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Rust('FooBar', ['my_import' => 'My::Import']);
+        $generator = new Rust(Config::of('FooBar', ['my_import' => 'My::Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

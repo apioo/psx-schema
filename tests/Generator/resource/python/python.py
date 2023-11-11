@@ -66,21 +66,21 @@ class News:
     tags: List[str]
     receiver: List[Author]
     resources: List[Union[Location, Web]]
-    profile_image: str
+    profile_image: bytearray
     read: bool
     source: Union[Author, Web]
     author: Author
     meta: Meta
-    send_date: str
-    read_date: str
-    expires: str
-    range: str
+    send_date: datetime.date
+    read_date: datetime.datetime
+    expires: datetime.timedelta
+    range: datetime.timedelta
     price: float
     rating: int
     content: str
     question: str
     version: str
-    coffee_time: str
+    coffee_time: datetime.time
     profile_uri: str
     captcha: str
     payload: Any

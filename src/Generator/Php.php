@@ -53,9 +53,9 @@ class Php extends CodeGeneratorAbstract
     private BuilderFactory $factory;
     private PrettyPrinter\Standard $printer;
 
-    public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
+    public function __construct(?Config $config = null)
     {
-        parent::__construct($namespace, $mapping, $indent);
+        parent::__construct($config);
 
         $this->factory = new BuilderFactory();
         $this->printer = new PrettyPrinter\Standard();

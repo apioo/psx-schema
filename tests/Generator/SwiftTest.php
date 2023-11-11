@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\Proto;
 use PSX\Schema\Generator\Swift;
 
@@ -94,7 +95,7 @@ class SwiftTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Swift('Foo.Bar', ['my_import' => 'My.Import']);
+        $generator = new Swift(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

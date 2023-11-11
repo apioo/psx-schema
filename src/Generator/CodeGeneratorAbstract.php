@@ -55,13 +55,18 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected DefinitionsInterface $definitions;
     private Code\Chunks $chunks;
 
-    public function __construct(?string $namespace = null, array $mapping = [], int $indent = 4)
+    public function __construct(?Config $config = null)
     {
+        $mapping = $config?->get(Config::MAPPING) ?? [];
+        if (!is_array($mapping)) {
+            throw new \InvalidArgumentException('Provided mapping config must be an array');
+        }
+
         $this->normalizer = $this->newNormalizer();
         $this->generator  = $this->newTypeGenerator($mapping);
-        $this->namespace  = $namespace;
+        $this->namespace  = $config?->get(Config::NAMESPACE);
         $this->mapping    = $mapping;
-        $this->indent     = str_repeat(' ', $indent);
+        $this->indent     = str_repeat(' ', $config?->get(Config::INDENT) ?? 4);
     }
 
     public function generate(SchemaInterface $schema)

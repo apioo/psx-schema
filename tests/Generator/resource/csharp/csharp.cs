@@ -6,9 +6,9 @@ using System.Text.Json.Serialization;
 public class Location
 {
     [JsonPropertyName("lat")]
-    public float Lat { get; set; }
+    public double Lat { get; set; }
     [JsonPropertyName("long")]
-    public float Long { get; set; }
+    public double Long { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -36,9 +36,9 @@ public class Author
     [JsonPropertyName("email")]
     public string Email { get; set; }
     [JsonPropertyName("categories")]
-    public string[] Categories { get; set; }
+    public List<string> Categories { get; set; }
     [JsonPropertyName("locations")]
-    public Location[] Locations { get; set; }
+    public List<Location> Locations { get; set; }
     [JsonPropertyName("origin")]
     public Location Origin { get; set; }
 }
@@ -68,13 +68,13 @@ public class News
     [JsonPropertyName("mapResources")]
     public Dictionary<string, object> MapResources { get; set; }
     [JsonPropertyName("tags")]
-    public string[] Tags { get; set; }
+    public List<string> Tags { get; set; }
     [JsonPropertyName("receiver")]
-    public Author[] Receiver { get; set; }
+    public List<Author> Receiver { get; set; }
     [JsonPropertyName("resources")]
-    public object[] Resources { get; set; }
+    public List<object> Resources { get; set; }
     [JsonPropertyName("profileImage")]
-    public string ProfileImage { get; set; }
+    public byte[] ProfileImage { get; set; }
     [JsonPropertyName("read")]
     public bool Read { get; set; }
     [JsonPropertyName("source")]
@@ -84,15 +84,15 @@ public class News
     [JsonPropertyName("meta")]
     public Meta Meta { get; set; }
     [JsonPropertyName("sendDate")]
-    public string SendDate { get; set; }
+    public DateOnly SendDate { get; set; }
     [JsonPropertyName("readDate")]
-    public string ReadDate { get; set; }
+    public DateTime ReadDate { get; set; }
     [JsonPropertyName("expires")]
-    public string Expires { get; set; }
+    public TimeSpan Expires { get; set; }
     [JsonPropertyName("range")]
-    public string Range { get; set; }
+    public TimeSpan Range { get; set; }
     [JsonPropertyName("price")]
-    public float Price { get; set; }
+    public double Price { get; set; }
     [JsonPropertyName("rating")]
     public int Rating { get; set; }
     [JsonPropertyName("content")]
@@ -102,9 +102,9 @@ public class News
     [JsonPropertyName("version")]
     public string Version { get; set; }
     [JsonPropertyName("coffeeTime")]
-    public string CoffeeTime { get; set; }
+    public TimeOnly CoffeeTime { get; set; }
     [JsonPropertyName("profileUri")]
-    public string ProfileUri { get; set; }
+    public Uri ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
     public string Captcha { get; set; }
     [JsonPropertyName("payload")]

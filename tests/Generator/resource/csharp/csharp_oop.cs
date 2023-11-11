@@ -23,7 +23,7 @@ public class Map<T>
     [JsonPropertyName("totalResults")]
     public int TotalResults { get; set; }
     [JsonPropertyName("entries")]
-    public T[] Entries { get; set; }
+    public List<T> Entries { get; set; }
 }
 
 using System.Text.Json.Serialization;

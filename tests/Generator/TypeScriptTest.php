@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\TypeScript;
 
 /**
@@ -93,7 +94,7 @@ class TypeScriptTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new TypeScript('Foo.Bar', ['my_import' => 'My.Import']);
+        $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

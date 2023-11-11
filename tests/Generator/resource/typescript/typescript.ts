@@ -51,8 +51,8 @@ export interface News {
     source?: Author | Web
     author?: Author
     meta?: Meta
-    sendDate?: string
-    readDate?: string
+    sendDate?: Date
+    readDate?: Date
     expires?: string
     range?: string
     price: number
@@ -60,8 +60,8 @@ export interface News {
     content: string
     question?: string
     version?: string
-    coffeeTime?: string
-    profileUri?: string
+    coffeeTime?: Date
+    profileUri?: Url
     "g-recaptcha-response"?: string
     payload?: any
 }

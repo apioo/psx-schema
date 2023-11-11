@@ -38,12 +38,14 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
     protected int $heading;
     protected string $prefix;
 
-    public function __construct(int $heading = 1, string $prefix = 'psx_model_')
+    public function __construct(?Config $config = null)
     {
         parent::__construct();
 
+        $heading = (int) $config?->get('heading');
+
         $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
-        $this->prefix  = $prefix;
+        $this->prefix  = $config?->get('prefix') ?? 'psx_model_';
     }
 
     protected function getConstraints(TypeInterface $type): array

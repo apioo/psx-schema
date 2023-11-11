@@ -123,7 +123,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  */
 public class ScalarType extends CommonType {
     private String format;
-    private Object[] _enum;
+    private List<Object> _enum;
     private Object _default;
     @JsonSetter("format")
     public void setFormat(String format) {
@@ -134,11 +134,11 @@ public class ScalarType extends CommonType {
         return this.format;
     }
     @JsonSetter("enum")
-    public void setEnum(Object[] _enum) {
+    public void setEnum(List<Object> _enum) {
         this._enum = _enum;
     }
     @JsonGetter("enum")
-    public Object[] getEnum() {
+    public List<Object> getEnum() {
         return this._enum;
     }
     @JsonSetter("default")
@@ -178,7 +178,7 @@ import java.util.HashMap;
  */
 public class Discriminator {
     private String propertyName;
-    private HashMap<String, String> mapping;
+    private Map<String, String> mapping;
     @JsonSetter("propertyName")
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
@@ -188,11 +188,11 @@ public class Discriminator {
         return this.propertyName;
     }
     @JsonSetter("mapping")
-    public void setMapping(HashMap<String, String> mapping) {
+    public void setMapping(Map<String, String> mapping) {
         this.mapping = mapping;
     }
     @JsonGetter("mapping")
-    public HashMap<String, String> getMapping() {
+    public Map<String, String> getMapping() {
         return this.mapping;
     }
 }
@@ -223,7 +223,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  */
 public class IntersectionType {
     private String description;
-    private ReferenceType[] allOf;
+    private List<ReferenceType> allOf;
     @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
@@ -233,11 +233,11 @@ public class IntersectionType {
         return this.description;
     }
     @JsonSetter("allOf")
-    public void setAllOf(ReferenceType[] allOf) {
+    public void setAllOf(List<ReferenceType> allOf) {
         this.allOf = allOf;
     }
     @JsonGetter("allOf")
-    public ReferenceType[] getAllOf() {
+    public List<ReferenceType> getAllOf() {
         return this.allOf;
     }
 }
@@ -359,7 +359,7 @@ import java.util.HashMap;
  */
 public class ReferenceType {
     private String ref;
-    private HashMap<String, String> template;
+    private Map<String, String> template;
     @JsonSetter("$ref")
     public void setRef(String ref) {
         this.ref = ref;
@@ -369,11 +369,11 @@ public class ReferenceType {
         return this.ref;
     }
     @JsonSetter("$template")
-    public void setTemplate(HashMap<String, String> template) {
+    public void setTemplate(Map<String, String> template) {
         this.template = template;
     }
     @JsonGetter("$template")
-    public HashMap<String, String> getTemplate() {
+    public Map<String, String> getTemplate() {
         return this.template;
     }
 }
@@ -434,8 +434,8 @@ public class StructType extends CommonType {
     private boolean _final;
     private String _extends;
     private String type;
-    private HashMap<String, Object> properties;
-    private String[] required;
+    private Map<String, Object> properties;
+    private List<String> required;
     @JsonSetter("$final")
     public void setFinal(boolean _final) {
         this._final = _final;
@@ -461,19 +461,19 @@ public class StructType extends CommonType {
         return this.type;
     }
     @JsonSetter("properties")
-    public void setProperties(HashMap<String, Object> properties) {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
     @JsonGetter("properties")
-    public HashMap<String, Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return this.properties;
     }
     @JsonSetter("required")
-    public void setRequired(String[] required) {
+    public void setRequired(List<String> required) {
         this.required = required;
     }
     @JsonGetter("required")
-    public String[] getRequired() {
+    public List<String> getRequired() {
         return this.required;
     }
 }
@@ -486,23 +486,23 @@ import java.util.HashMap;
  * The root TypeSchema
  */
 public class TypeSchema {
-    private HashMap<String, String> _import;
-    private HashMap<String, Object> definitions;
+    private Map<String, String> _import;
+    private Map<String, Object> definitions;
     private String ref;
     @JsonSetter("$import")
-    public void setImport(HashMap<String, String> _import) {
+    public void setImport(Map<String, String> _import) {
         this._import = _import;
     }
     @JsonGetter("$import")
-    public HashMap<String, String> getImport() {
+    public Map<String, String> getImport() {
         return this._import;
     }
     @JsonSetter("definitions")
-    public void setDefinitions(HashMap<String, Object> definitions) {
+    public void setDefinitions(Map<String, Object> definitions) {
         this.definitions = definitions;
     }
     @JsonGetter("definitions")
-    public HashMap<String, Object> getDefinitions() {
+    public Map<String, Object> getDefinitions() {
         return this.definitions;
     }
     @JsonSetter("$ref")
@@ -524,7 +524,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class UnionType {
     private String description;
     private Discriminator discriminator;
-    private Object[] oneOf;
+    private List<Object> oneOf;
     @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
@@ -542,11 +542,11 @@ public class UnionType {
         return this.discriminator;
     }
     @JsonSetter("oneOf")
-    public void setOneOf(Object[] oneOf) {
+    public void setOneOf(List<Object> oneOf) {
         this.oneOf = oneOf;
     }
     @JsonGetter("oneOf")
-    public Object[] getOneOf() {
+    public List<Object> getOneOf() {
         return this.oneOf;
     }
 }
