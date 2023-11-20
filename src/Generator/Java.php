@@ -141,6 +141,7 @@ class Java extends CodeGeneratorAbstract
         $imports = [];
         $imports[] = 'import com.fasterxml.jackson.annotation.JsonGetter;';
         $imports[] = 'import com.fasterxml.jackson.annotation.JsonSetter;';
+        $imports[] = 'import java.util.List;';
 
         if (TypeUtil::contains($origin, StringType::class, Format::URI)) {
             $imports[] = 'import java.net.URI;';
