@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Location of the person
@@ -27,6 +28,7 @@ public class Location {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * An application
@@ -54,6 +56,7 @@ public class Web {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * An simple author element with some description
@@ -108,12 +111,14 @@ public class Author {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.util.HashMap;
 public class Meta extends HashMap<String, String> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Period;

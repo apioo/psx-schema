@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a base type. Every type extends from this common type and shares the defined properties
@@ -54,6 +55,7 @@ public class CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents an any type
@@ -72,6 +74,7 @@ public class AnyType extends CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents an array type. An array type contains an ordered list of a specific type
@@ -117,6 +120,7 @@ public class ArrayType extends CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a scalar type
@@ -153,6 +157,7 @@ public class ScalarType extends CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a boolean type
@@ -171,6 +176,7 @@ public class BooleanType extends ScalarType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -199,6 +205,7 @@ public class Discriminator {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
@@ -217,6 +224,7 @@ public class GenericType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents an intersection type
@@ -244,6 +252,7 @@ public class IntersectionType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a map type. A map type contains variable key value entries of a specific type
@@ -289,6 +298,7 @@ public class MapType extends CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a number type (contains also integer)
@@ -352,6 +362,7 @@ public class NumberType extends ScalarType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -380,6 +391,7 @@ public class ReferenceType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents a string type
@@ -425,6 +437,7 @@ public class StringType extends ScalarType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -480,6 +493,7 @@ public class StructType extends CommonType {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -517,6 +531,7 @@ public class TypeSchema {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.util.List;
 
 /**
  * Represents an union type. An union type can contain one of the provided types
