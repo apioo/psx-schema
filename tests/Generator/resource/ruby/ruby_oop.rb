@@ -1,37 +1,37 @@
 class Human
-    attr_accessor :first_name
+  attr_accessor :first_name
 
-    def initialize(first_name)
-        @first_name = first_name
-    end
+  def initialize(first_name)
+    @first_name = first_name
+  end
 end
 
 class Student
-    extend Human
-    attr_accessor :matricle_number
+  extend Human
+  attr_accessor :matricle_number
 
-    def initialize(matricle_number)
-        @matricle_number = matricle_number
-    end
+  def initialize(matricle_number)
+    @matricle_number = matricle_number
+  end
 end
 
 class StudentMap
-    extend Map
+  extend Map
 end
 
 class Map
-    attr_accessor :total_results, :entries
+  attr_accessor :total_results, :entries
 
-    def initialize(total_results, entries)
-        @total_results = total_results
-        @entries = entries
-    end
+  def initialize(total_results, entries)
+    @total_results = total_results
+    @entries = entries
+  end
 end
 
 class RootSchema
-    attr_accessor :students
+  attr_accessor :students
 
-    def initialize(students)
-        @students = students
-    end
+  def initialize(students)
+    @students = students
+  end
 end

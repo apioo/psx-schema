@@ -63,7 +63,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $this->generator  = $this->newTypeGenerator($mapping);
         $this->namespace  = $config?->get(Config::NAMESPACE);
         $this->mapping    = $mapping;
-        $this->indent     = str_repeat(' ', $config?->get(Config::INDENT) ?? 4);
+        $this->indent     = str_repeat(' ', $this->getIndent());
     }
 
     public function generate(SchemaInterface $schema)
@@ -345,5 +345,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected function writeFooter(TypeAbstract $origin): string
     {
         return '';
+    }
+
+    protected function getIndent(): int
+    {
+        return 4;
     }
 }

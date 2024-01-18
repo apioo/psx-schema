@@ -119,4 +119,9 @@ class Ruby extends CodeGeneratorAbstract
 
         return $code;
     }
+
+    protected function getIndent(): int
+    {
+        return 2;
+    }
 }

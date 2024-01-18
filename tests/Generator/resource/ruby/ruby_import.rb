@@ -1,15 +1,15 @@
 class Import
-    attr_accessor :students, :student
+  attr_accessor :students, :student
 
-    def initialize(students, student)
-        @students = students
-        @student = student
-    end
+  def initialize(students, student)
+    @students = students
+    @student = student
+  end
 end
 
 class MyMap
-    extend Student
+  extend Student
 
-    def initialize()
-    end
+  def initialize()
+  end
 end
