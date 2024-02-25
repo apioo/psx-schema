@@ -21,13 +21,13 @@
     "psx/record": "^3.0",
     "psx/uri": "^3.0",
     "psx/validate": "^2.0",
-    "symfony/console": "^4.0|^5.0|^6.0|^7.0",
-    "symfony/cache": "^4.0|^5.0|^6.0|^7.0",
+    "symfony/console": "^5.0|^6.0|^7.0",
+    "symfony/cache": "^5.0|^6.0|^7.0",
     "phpdocumentor/type-resolver": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
-    "symfony/yaml": "^4.0|^5.0|^6.0",
+    "symfony/yaml": "^5.0|^6.0|^7.0",
     "vimeo/psalm": "^4.0"
   },
   "bin": ["bin/schema"],
