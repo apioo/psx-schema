@@ -6,9 +6,9 @@ using System.Text.Json.Serialization;
 public class Location
 {
     [JsonPropertyName("lat")]
-    public double Lat { get; set; }
+    public double? Lat { get; set; }
     [JsonPropertyName("long")]
-    public double Long { get; set; }
+    public double? Long { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -19,9 +19,9 @@ using System.Text.Json.Serialization;
 public class Web
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     [JsonPropertyName("url")]
-    public string Url { get; set; }
+    public string? Url { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -32,15 +32,15 @@ using System.Text.Json.Serialization;
 public class Author
 {
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
     [JsonPropertyName("email")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     [JsonPropertyName("categories")]
-    public List<string> Categories { get; set; }
+    public List<string>? Categories { get; set; }
     [JsonPropertyName("locations")]
-    public List<Location> Locations { get; set; }
+    public List<Location>? Locations { get; set; }
     [JsonPropertyName("origin")]
-    public Location Origin { get; set; }
+    public Location? Origin { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -58,55 +58,55 @@ using System.Collections.Generic;
 public class News
 {
     [JsonPropertyName("config")]
-    public Meta Config { get; set; }
+    public Meta? Config { get; set; }
     [JsonPropertyName("inlineConfig")]
-    public Dictionary<string, string> InlineConfig { get; set; }
+    public Dictionary<string, string>? InlineConfig { get; set; }
     [JsonPropertyName("mapTags")]
-    public Dictionary<string, string> MapTags { get; set; }
+    public Dictionary<string, string>? MapTags { get; set; }
     [JsonPropertyName("mapReceiver")]
-    public Dictionary<string, Author> MapReceiver { get; set; }
+    public Dictionary<string, Author>? MapReceiver { get; set; }
     [JsonPropertyName("mapResources")]
-    public Dictionary<string, object> MapResources { get; set; }
+    public Dictionary<string, object>? MapResources { get; set; }
     [JsonPropertyName("tags")]
-    public List<string> Tags { get; set; }
+    public List<string>? Tags { get; set; }
     [JsonPropertyName("receiver")]
-    public List<Author> Receiver { get; set; }
+    public List<Author>? Receiver { get; set; }
     [JsonPropertyName("resources")]
-    public List<object> Resources { get; set; }
+    public List<object>? Resources { get; set; }
     [JsonPropertyName("profileImage")]
-    public byte[] ProfileImage { get; set; }
+    public byte[]? ProfileImage { get; set; }
     [JsonPropertyName("read")]
-    public bool Read { get; set; }
+    public bool? Read { get; set; }
     [JsonPropertyName("source")]
-    public object Source { get; set; }
+    public object? Source { get; set; }
     [JsonPropertyName("author")]
-    public Author Author { get; set; }
+    public Author? Author { get; set; }
     [JsonPropertyName("meta")]
-    public Meta Meta { get; set; }
+    public Meta? Meta { get; set; }
     [JsonPropertyName("sendDate")]
-    public DateOnly SendDate { get; set; }
+    public DateOnly? SendDate { get; set; }
     [JsonPropertyName("readDate")]
-    public DateTime ReadDate { get; set; }
+    public DateTime? ReadDate { get; set; }
     [JsonPropertyName("expires")]
-    public TimeSpan Expires { get; set; }
+    public TimeSpan? Expires { get; set; }
     [JsonPropertyName("range")]
-    public TimeSpan Range { get; set; }
+    public TimeSpan? Range { get; set; }
     [JsonPropertyName("price")]
-    public double Price { get; set; }
+    public double? Price { get; set; }
     [JsonPropertyName("rating")]
-    public int Rating { get; set; }
+    public int? Rating { get; set; }
     [JsonPropertyName("content")]
-    public string Content { get; set; }
+    public string? Content { get; set; }
     [JsonPropertyName("question")]
-    public string Question { get; set; }
+    public string? Question { get; set; }
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string? Version { get; set; }
     [JsonPropertyName("coffeeTime")]
-    public TimeOnly CoffeeTime { get; set; }
+    public TimeOnly? CoffeeTime { get; set; }
     [JsonPropertyName("profileUri")]
-    public Uri ProfileUri { get; set; }
+    public Uri? ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
-    public string Captcha { get; set; }
+    public string? Captcha { get; set; }
     [JsonPropertyName("payload")]
-    public object Payload { get; set; }
+    public object? Payload { get; set; }
 }

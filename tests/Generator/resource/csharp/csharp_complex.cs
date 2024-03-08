@@ -6,15 +6,15 @@ using System.Text.Json.Serialization;
 public class CommonType
 {
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("nullable")]
-    public bool Nullable { get; set; }
+    public bool? Nullable { get; set; }
     [JsonPropertyName("deprecated")]
-    public bool Deprecated { get; set; }
+    public bool? Deprecated { get; set; }
     [JsonPropertyName("readonly")]
-    public bool Readonly { get; set; }
+    public bool? Readonly { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -25,7 +25,7 @@ using System.Text.Json.Serialization;
 public class AnyType : CommonType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -36,13 +36,13 @@ using System.Text.Json.Serialization;
 public class ArrayType : CommonType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("items")]
-    public object Items { get; set; }
+    public object? Items { get; set; }
     [JsonPropertyName("maxItems")]
-    public int MaxItems { get; set; }
+    public int? MaxItems { get; set; }
     [JsonPropertyName("minItems")]
-    public int MinItems { get; set; }
+    public int? MinItems { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -53,11 +53,11 @@ using System.Text.Json.Serialization;
 public class ScalarType : CommonType
 {
     [JsonPropertyName("format")]
-    public string Format { get; set; }
+    public string? Format { get; set; }
     [JsonPropertyName("enum")]
-    public List<object> Enum { get; set; }
+    public List<object>? Enum { get; set; }
     [JsonPropertyName("default")]
-    public object Default { get; set; }
+    public object? Default { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -68,7 +68,7 @@ using System.Text.Json.Serialization;
 public class BooleanType : ScalarType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -80,9 +80,9 @@ using System.Collections.Generic;
 public class Discriminator
 {
     [JsonPropertyName("propertyName")]
-    public string PropertyName { get; set; }
+    public string? PropertyName { get; set; }
     [JsonPropertyName("mapping")]
-    public Dictionary<string, string> Mapping { get; set; }
+    public Dictionary<string, string>? Mapping { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -93,7 +93,7 @@ using System.Text.Json.Serialization;
 public class GenericType
 {
     [JsonPropertyName("$generic")]
-    public string Generic { get; set; }
+    public string? Generic { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -104,9 +104,9 @@ using System.Text.Json.Serialization;
 public class IntersectionType
 {
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [JsonPropertyName("allOf")]
-    public List<ReferenceType> AllOf { get; set; }
+    public List<ReferenceType>? AllOf { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -117,13 +117,13 @@ using System.Text.Json.Serialization;
 public class MapType : CommonType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("additionalProperties")]
-    public object AdditionalProperties { get; set; }
+    public object? AdditionalProperties { get; set; }
     [JsonPropertyName("maxProperties")]
-    public int MaxProperties { get; set; }
+    public int? MaxProperties { get; set; }
     [JsonPropertyName("minProperties")]
-    public int MinProperties { get; set; }
+    public int? MinProperties { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -134,17 +134,17 @@ using System.Text.Json.Serialization;
 public class NumberType : ScalarType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("multipleOf")]
-    public double MultipleOf { get; set; }
+    public double? MultipleOf { get; set; }
     [JsonPropertyName("maximum")]
-    public double Maximum { get; set; }
+    public double? Maximum { get; set; }
     [JsonPropertyName("exclusiveMaximum")]
-    public bool ExclusiveMaximum { get; set; }
+    public bool? ExclusiveMaximum { get; set; }
     [JsonPropertyName("minimum")]
-    public double Minimum { get; set; }
+    public double? Minimum { get; set; }
     [JsonPropertyName("exclusiveMinimum")]
-    public bool ExclusiveMinimum { get; set; }
+    public bool? ExclusiveMinimum { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -156,9 +156,9 @@ using System.Collections.Generic;
 public class ReferenceType
 {
     [JsonPropertyName("$ref")]
-    public string Ref { get; set; }
+    public string? Ref { get; set; }
     [JsonPropertyName("$template")]
-    public Dictionary<string, string> Template { get; set; }
+    public Dictionary<string, string>? Template { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -169,13 +169,13 @@ using System.Text.Json.Serialization;
 public class StringType : ScalarType
 {
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("maxLength")]
-    public int MaxLength { get; set; }
+    public int? MaxLength { get; set; }
     [JsonPropertyName("minLength")]
-    public int MinLength { get; set; }
+    public int? MinLength { get; set; }
     [JsonPropertyName("pattern")]
-    public string Pattern { get; set; }
+    public string? Pattern { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -187,15 +187,15 @@ using System.Collections.Generic;
 public class StructType : CommonType
 {
     [JsonPropertyName("$final")]
-    public bool Final { get; set; }
+    public bool? Final { get; set; }
     [JsonPropertyName("$extends")]
-    public string Extends { get; set; }
+    public string? Extends { get; set; }
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     [JsonPropertyName("properties")]
-    public Dictionary<string, object> Properties { get; set; }
+    public Dictionary<string, object>? Properties { get; set; }
     [JsonPropertyName("required")]
-    public List<string> Required { get; set; }
+    public List<string>? Required { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -207,11 +207,11 @@ using System.Collections.Generic;
 public class TypeSchema
 {
     [JsonPropertyName("$import")]
-    public Dictionary<string, string> Import { get; set; }
+    public Dictionary<string, string>? Import { get; set; }
     [JsonPropertyName("definitions")]
-    public Dictionary<string, object> Definitions { get; set; }
+    public Dictionary<string, object>? Definitions { get; set; }
     [JsonPropertyName("$ref")]
-    public string Ref { get; set; }
+    public string? Ref { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -222,9 +222,9 @@ using System.Text.Json.Serialization;
 public class UnionType
 {
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [JsonPropertyName("discriminator")]
-    public Discriminator Discriminator { get; set; }
+    public Discriminator? Discriminator { get; set; }
     [JsonPropertyName("oneOf")]
-    public List<object> OneOf { get; set; }
+    public List<object>? OneOf { get; set; }
 }
