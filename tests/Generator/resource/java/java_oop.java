@@ -38,14 +38,14 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.List;
 public class Map<T> {
-    private int totalResults;
+    private Integer totalResults;
     private List<T> entries;
     @JsonSetter("totalResults")
-    public void setTotalResults(int totalResults) {
+    public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
     @JsonGetter("totalResults")
-    public int getTotalResults() {
+    public Integer getTotalResults() {
         return this.totalResults;
     }
     @JsonSetter("entries")

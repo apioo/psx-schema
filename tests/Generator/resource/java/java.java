@@ -6,22 +6,22 @@ import java.util.List;
  * Location of the person
  */
 public class Location {
-    private double lat;
-    private double _long;
+    private Double lat;
+    private Double _long;
     @JsonSetter("lat")
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
     @JsonGetter("lat")
-    public double getLat() {
+    public Double getLat() {
         return this.lat;
     }
     @JsonSetter("long")
-    public void setLong(double _long) {
+    public void setLong(Double _long) {
         this._long = _long;
     }
     @JsonGetter("long")
-    public double getLong() {
+    public Double getLong() {
         return this._long;
     }
 }
@@ -140,7 +140,7 @@ public class News {
     private List<Author> receiver;
     private List<Object> resources;
     private byte[] profileImage;
-    private boolean read;
+    private Boolean read;
     private Object source;
     private Author author;
     private Meta meta;
@@ -148,8 +148,8 @@ public class News {
     private LocalDateTime readDate;
     private Period expires;
     private Duration range;
-    private double price;
-    private int rating;
+    private Double price;
+    private Integer rating;
     private String content;
     private String question;
     private String version;
@@ -230,11 +230,11 @@ public class News {
         return this.profileImage;
     }
     @JsonSetter("read")
-    public void setRead(boolean read) {
+    public void setRead(Boolean read) {
         this.read = read;
     }
     @JsonGetter("read")
-    public boolean getRead() {
+    public Boolean getRead() {
         return this.read;
     }
     @JsonSetter("source")
@@ -294,19 +294,19 @@ public class News {
         return this.range;
     }
     @JsonSetter("price")
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
     @JsonGetter("price")
-    public double getPrice() {
+    public Double getPrice() {
         return this.price;
     }
     @JsonSetter("rating")
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
     @JsonGetter("rating")
-    public int getRating() {
+    public Integer getRating() {
         return this.rating;
     }
     @JsonSetter("content")

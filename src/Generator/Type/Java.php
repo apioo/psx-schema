@@ -71,27 +71,27 @@ class Java extends GeneratorAbstract
 
     protected function getInteger32(): string
     {
-        return 'int';
+        return 'Integer';
     }
 
     protected function getInteger64(): string
     {
-        return 'long';
+        return 'Long';
     }
 
     protected function getInteger(): string
     {
-        return 'int';
+        return 'Integer';
     }
 
     protected function getNumber(): string
     {
-        return 'double';
+        return 'Double';
     }
 
     protected function getBoolean(): string
     {
-        return 'boolean';
+        return 'Boolean';
     }
 
     protected function getArray(string $type): string

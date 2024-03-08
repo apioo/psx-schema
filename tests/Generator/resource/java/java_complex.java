@@ -8,9 +8,9 @@ import java.util.List;
 public class CommonType {
     private String description;
     private String type;
-    private boolean nullable;
-    private boolean deprecated;
-    private boolean readonly;
+    private Boolean nullable;
+    private Boolean deprecated;
+    private Boolean readonly;
     @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
@@ -28,27 +28,27 @@ public class CommonType {
         return this.type;
     }
     @JsonSetter("nullable")
-    public void setNullable(boolean nullable) {
+    public void setNullable(Boolean nullable) {
         this.nullable = nullable;
     }
     @JsonGetter("nullable")
-    public boolean getNullable() {
+    public Boolean getNullable() {
         return this.nullable;
     }
     @JsonSetter("deprecated")
-    public void setDeprecated(boolean deprecated) {
+    public void setDeprecated(Boolean deprecated) {
         this.deprecated = deprecated;
     }
     @JsonGetter("deprecated")
-    public boolean getDeprecated() {
+    public Boolean getDeprecated() {
         return this.deprecated;
     }
     @JsonSetter("readonly")
-    public void setReadonly(boolean readonly) {
+    public void setReadonly(Boolean readonly) {
         this.readonly = readonly;
     }
     @JsonGetter("readonly")
-    public boolean getReadonly() {
+    public Boolean getReadonly() {
         return this.readonly;
     }
 }
@@ -82,8 +82,8 @@ import java.util.List;
 public class ArrayType extends CommonType {
     private String type;
     private Object items;
-    private int maxItems;
-    private int minItems;
+    private Integer maxItems;
+    private Integer minItems;
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -101,19 +101,19 @@ public class ArrayType extends CommonType {
         return this.items;
     }
     @JsonSetter("maxItems")
-    public void setMaxItems(int maxItems) {
+    public void setMaxItems(Integer maxItems) {
         this.maxItems = maxItems;
     }
     @JsonGetter("maxItems")
-    public int getMaxItems() {
+    public Integer getMaxItems() {
         return this.maxItems;
     }
     @JsonSetter("minItems")
-    public void setMinItems(int minItems) {
+    public void setMinItems(Integer minItems) {
         this.minItems = minItems;
     }
     @JsonGetter("minItems")
-    public int getMinItems() {
+    public Integer getMinItems() {
         return this.minItems;
     }
 }
@@ -260,8 +260,8 @@ import java.util.List;
 public class MapType extends CommonType {
     private String type;
     private Object additionalProperties;
-    private int maxProperties;
-    private int minProperties;
+    private Integer maxProperties;
+    private Integer minProperties;
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -279,19 +279,19 @@ public class MapType extends CommonType {
         return this.additionalProperties;
     }
     @JsonSetter("maxProperties")
-    public void setMaxProperties(int maxProperties) {
+    public void setMaxProperties(Integer maxProperties) {
         this.maxProperties = maxProperties;
     }
     @JsonGetter("maxProperties")
-    public int getMaxProperties() {
+    public Integer getMaxProperties() {
         return this.maxProperties;
     }
     @JsonSetter("minProperties")
-    public void setMinProperties(int minProperties) {
+    public void setMinProperties(Integer minProperties) {
         this.minProperties = minProperties;
     }
     @JsonGetter("minProperties")
-    public int getMinProperties() {
+    public Integer getMinProperties() {
         return this.minProperties;
     }
 }
@@ -305,11 +305,11 @@ import java.util.List;
  */
 public class NumberType extends ScalarType {
     private String type;
-    private double multipleOf;
-    private double maximum;
-    private boolean exclusiveMaximum;
-    private double minimum;
-    private boolean exclusiveMinimum;
+    private Double multipleOf;
+    private Double maximum;
+    private Boolean exclusiveMaximum;
+    private Double minimum;
+    private Boolean exclusiveMinimum;
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -319,43 +319,43 @@ public class NumberType extends ScalarType {
         return this.type;
     }
     @JsonSetter("multipleOf")
-    public void setMultipleOf(double multipleOf) {
+    public void setMultipleOf(Double multipleOf) {
         this.multipleOf = multipleOf;
     }
     @JsonGetter("multipleOf")
-    public double getMultipleOf() {
+    public Double getMultipleOf() {
         return this.multipleOf;
     }
     @JsonSetter("maximum")
-    public void setMaximum(double maximum) {
+    public void setMaximum(Double maximum) {
         this.maximum = maximum;
     }
     @JsonGetter("maximum")
-    public double getMaximum() {
+    public Double getMaximum() {
         return this.maximum;
     }
     @JsonSetter("exclusiveMaximum")
-    public void setExclusiveMaximum(boolean exclusiveMaximum) {
+    public void setExclusiveMaximum(Boolean exclusiveMaximum) {
         this.exclusiveMaximum = exclusiveMaximum;
     }
     @JsonGetter("exclusiveMaximum")
-    public boolean getExclusiveMaximum() {
+    public Boolean getExclusiveMaximum() {
         return this.exclusiveMaximum;
     }
     @JsonSetter("minimum")
-    public void setMinimum(double minimum) {
+    public void setMinimum(Double minimum) {
         this.minimum = minimum;
     }
     @JsonGetter("minimum")
-    public double getMinimum() {
+    public Double getMinimum() {
         return this.minimum;
     }
     @JsonSetter("exclusiveMinimum")
-    public void setExclusiveMinimum(boolean exclusiveMinimum) {
+    public void setExclusiveMinimum(Boolean exclusiveMinimum) {
         this.exclusiveMinimum = exclusiveMinimum;
     }
     @JsonGetter("exclusiveMinimum")
-    public boolean getExclusiveMinimum() {
+    public Boolean getExclusiveMinimum() {
         return this.exclusiveMinimum;
     }
 }
@@ -398,8 +398,8 @@ import java.util.List;
  */
 public class StringType extends ScalarType {
     private String type;
-    private int maxLength;
-    private int minLength;
+    private Integer maxLength;
+    private Integer minLength;
     private String pattern;
     @JsonSetter("type")
     public void setType(String type) {
@@ -410,19 +410,19 @@ public class StringType extends ScalarType {
         return this.type;
     }
     @JsonSetter("maxLength")
-    public void setMaxLength(int maxLength) {
+    public void setMaxLength(Integer maxLength) {
         this.maxLength = maxLength;
     }
     @JsonGetter("maxLength")
-    public int getMaxLength() {
+    public Integer getMaxLength() {
         return this.maxLength;
     }
     @JsonSetter("minLength")
-    public void setMinLength(int minLength) {
+    public void setMinLength(Integer minLength) {
         this.minLength = minLength;
     }
     @JsonGetter("minLength")
-    public int getMinLength() {
+    public Integer getMinLength() {
         return this.minLength;
     }
     @JsonSetter("pattern")
@@ -444,17 +444,17 @@ import java.util.HashMap;
  * Represents a struct type. A struct type contains a fix set of defined properties
  */
 public class StructType extends CommonType {
-    private boolean _final;
+    private Boolean _final;
     private String _extends;
     private String type;
     private Map<String, Object> properties;
     private List<String> required;
     @JsonSetter("$final")
-    public void setFinal(boolean _final) {
+    public void setFinal(Boolean _final) {
         this._final = _final;
     }
     @JsonGetter("$final")
-    public boolean getFinal() {
+    public Boolean getFinal() {
         return this._final;
     }
     @JsonSetter("$extends")
