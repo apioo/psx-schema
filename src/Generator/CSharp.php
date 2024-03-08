@@ -61,7 +61,7 @@ class CSharp extends CodeGeneratorAbstract
         }
 
         if (!empty($extends)) {
-            $code.= ' extends ' . $extends;
+            $code.= ' : ' . $extends;
         }
 
         $code.= "\n";
