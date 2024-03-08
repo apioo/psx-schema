@@ -6,14 +6,14 @@ public class Creature
 }
 
 using System.Text.Json.Serialization;
-public class Human extends Creature
+public class Human : Creature
 {
     [JsonPropertyName("firstName")]
     public string FirstName { get; set; }
 }
 
 using System.Text.Json.Serialization;
-public class Animal extends Creature
+public class Animal : Creature
 {
     [JsonPropertyName("nickname")]
     public string Nickname { get; set; }

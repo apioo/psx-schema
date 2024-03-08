@@ -8,6 +8,6 @@ public class Import
 }
 
 using System.Text.Json.Serialization;
-public class MyMap extends Student
+public class MyMap : Student
 {
 }

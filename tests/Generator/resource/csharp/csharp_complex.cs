@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents an any type
 /// </summary>
-public class AnyType extends CommonType
+public class AnyType : CommonType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -33,7 +33,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents an array type. An array type contains an ordered list of a specific type
 /// </summary>
-public class ArrayType extends CommonType
+public class ArrayType : CommonType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -50,7 +50,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents a scalar type
 /// </summary>
-public class ScalarType extends CommonType
+public class ScalarType : CommonType
 {
     [JsonPropertyName("format")]
     public string Format { get; set; }
@@ -65,7 +65,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents a boolean type
 /// </summary>
-public class BooleanType extends ScalarType
+public class BooleanType : ScalarType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -114,7 +114,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents a map type. A map type contains variable key value entries of a specific type
 /// </summary>
-public class MapType extends CommonType
+public class MapType : CommonType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -131,7 +131,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents a number type (contains also integer)
 /// </summary>
-public class NumberType extends ScalarType
+public class NumberType : ScalarType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -166,7 +166,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Represents a string type
 /// </summary>
-public class StringType extends ScalarType
+public class StringType : ScalarType
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -184,7 +184,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Represents a struct type. A struct type contains a fix set of defined properties
 /// </summary>
-public class StructType extends CommonType
+public class StructType : CommonType
 {
     [JsonPropertyName("$final")]
     public bool Final { get; set; }

@@ -10,6 +10,6 @@ public class Import
 
 using System.Text.Json.Serialization;
 namespace Foo.Bar;
-public class MyMap extends My.Import.Student
+public class MyMap : My.Import.Student
 {
 }
