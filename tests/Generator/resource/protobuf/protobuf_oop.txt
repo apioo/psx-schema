@@ -1,10 +1,12 @@
 message Human {
     optional string firstName = 1 [json_name="firstName"];
+    optional Human parent = 2 [json_name="parent"];
 }
 
 message Student {
     optional string firstName = 1 [json_name="firstName"];
-    optional string matricleNumber = 2 [json_name="matricleNumber"];
+    optional Human parent = 2 [json_name="parent"];
+    optional string matricleNumber = 3 [json_name="matricleNumber"];
 }
 
 message Map {

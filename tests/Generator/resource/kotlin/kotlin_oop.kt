@@ -1,5 +1,6 @@
 open class Human {
     var firstName: String? = null
+    var parent: Human? = null
 }
 
 open class Student : Human {

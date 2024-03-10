@@ -121,7 +121,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
-    private function generateStruct(string $className, StructType $type)
+    private function generateStruct(string $className, StructType $type): void
     {
         $properties = [];
 
@@ -195,57 +195,57 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $code = $this->writeStruct($className, $props, $extends, $generics, $type);
 
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
-    private function generateMap(string $className, MapType $type)
+    private function generateMap(string $className, MapType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
         $code = $this->writeMap($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
-    private function generateArray(string $className, ArrayType $type)
+    private function generateArray(string $className, ArrayType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
         $code = $this->writeArray($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
-    private function generateUnion(string $className, UnionType $type)
+    private function generateUnion(string $className, UnionType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
         $code = $this->writeUnion($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
-    private function generateIntersection(string $className, IntersectionType $type)
+    private function generateIntersection(string $className, IntersectionType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
         $code = $this->writeIntersection($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
-    private function generateReference(string $className, ReferenceType $type)
+    private function generateReference(string $className, ReferenceType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
         $code = $this->writeReference($className, $this->generator->getType($type), $type);
         if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type));
+            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
     }
 
@@ -284,12 +284,12 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
-    private function wrap(string $code, TypeAbstract $type): string
+    private function wrap(string $code, TypeAbstract $type, Code\Name $className): string
     {
         return implode("\n", array_filter(array_map('trim', [
-            $this->writeHeader($type),
+            $this->writeHeader($type, $className),
             $code,
-            $this->writeFooter($type)
+            $this->writeFooter($type, $className)
         ]))) . "\n";
     }
 
@@ -337,12 +337,12 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return '';
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         return '';
     }
 
-    protected function writeFooter(TypeAbstract $origin): string
+    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
     {
         return '';
     }

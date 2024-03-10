@@ -5,6 +5,9 @@
       "properties": {
         "firstName": {
           "type": "string"
+        },
+        "parent": {
+          "$ref": "my_import:Human"
         }
       }
     },

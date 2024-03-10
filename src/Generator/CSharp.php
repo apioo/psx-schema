@@ -98,7 +98,7 @@ class CSharp extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -123,11 +123,6 @@ class CSharp extends CodeGeneratorAbstract
         }
 
         return $code;
-    }
-
-    protected function writeFooter(TypeAbstract $origin): string
-    {
-        return '';
     }
 
     private function getImports(TypeAbstract $origin): array

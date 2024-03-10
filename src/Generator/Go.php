@@ -99,7 +99,7 @@ class Go extends CodeGeneratorAbstract
         return 'type ' . $name->getClass() . ' = ' . $type . "\n";
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = "\n";
 

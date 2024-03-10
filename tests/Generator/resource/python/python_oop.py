@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+from human import Human
 @dataclass_json
 @dataclass
 class Human:
     first_name: str
+    parent: Human
 
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json

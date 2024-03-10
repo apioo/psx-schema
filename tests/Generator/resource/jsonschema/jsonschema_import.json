@@ -5,6 +5,9 @@
       "properties": {
         "firstName": {
           "type": "string"
+        },
+        "parent": {
+          "$ref": "#/definitions/Human"
         }
       }
     },
@@ -24,14 +27,14 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "#\/definitions\/StudentMap"
+          "$ref": "#/definitions/StudentMap"
         }
       }
     },
     "Student": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/Human"
+          "$ref": "#/definitions/Human"
         },
         {
           "type": "object",
@@ -54,7 +57,7 @@
           "items": {
             "allOf": [
               {
-                "$ref": "#\/definitions\/Human"
+                "$ref": "#/definitions/Human"
               },
               {
                 "type": "object",
@@ -73,17 +76,17 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "#\/definitions\/StudentMap"
+          "$ref": "#/definitions/StudentMap"
         },
         "student": {
-          "$ref": "#\/definitions\/Student"
+          "$ref": "#/definitions/Student"
         }
       }
     },
     "MyMap": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/Student"
+          "$ref": "#/definitions/Student"
         },
         {
           "type": "object"
@@ -91,5 +94,5 @@
       ]
     }
   },
-  "$ref": "#\/definitions\/Import"
+  "$ref": "#/definitions/Import"
 }

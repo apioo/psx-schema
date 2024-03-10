@@ -103,7 +103,7 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

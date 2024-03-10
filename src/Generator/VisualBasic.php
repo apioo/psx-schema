@@ -97,7 +97,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -122,7 +122,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(TypeAbstract $origin): string
+    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
     {
         if (!empty($this->namespace)) {
             return 'End Namespace' . "\n";

@@ -1,5 +1,6 @@
 export interface Human {
     firstName?: string
+    parent?: Human
 }
 
 import {Human} from "./Human";

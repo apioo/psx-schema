@@ -88,7 +88,7 @@ class Rust extends CodeGeneratorAbstract
         return 'pub type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

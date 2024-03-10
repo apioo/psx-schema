@@ -112,11 +112,11 @@ class TypeScript extends CodeGeneratorAbstract
         return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeHeader(TypeAbstract $origin): string
+    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
-        $imports = $this->getImports($origin);
+        $imports = $this->getImports($origin, $className);
         if (!empty($imports)) {
             $code.= "\n";
             $code.= implode("\n", $imports);
@@ -135,10 +135,10 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(TypeInterface $origin): array
+    private function getImports(TypeInterface $origin, Code\Name $className): array
     {
         $refs = [];
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
+        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs, $className){
             if ($type instanceof ReferenceType) {
                 $refs[$type->getRef()] = $type->getRef();
                 if ($type->getTemplate()) {
@@ -154,7 +154,14 @@ class TypeScript extends CodeGeneratorAbstract
         $imports = [];
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
-            $imports[] = 'import {' . $this->normalizer->class($name) . '} from "./' . $this->normalizer->file($name) . '";';
+
+            $typeName = $this->normalizer->class($name);
+            if ($typeName === $className->getClass()) {
+                // we dont need to include the same class
+                continue;
+            }
+
+            $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->file($name) . '";';
         }
 
         return $imports;

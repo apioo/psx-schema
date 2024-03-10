@@ -5,6 +5,9 @@
       "properties": {
         "firstName": {
           "type": "string"
+        },
+        "parent": {
+          "$ref": "#/definitions/Human"
         }
       }
     },
@@ -24,14 +27,14 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "#\/definitions\/StudentMap"
+          "$ref": "#/definitions/StudentMap"
         }
       }
     },
     "Student": {
       "allOf": [
         {
-          "$ref": "#\/definitions\/Human"
+          "$ref": "#/definitions/Human"
         },
         {
           "type": "object",
@@ -54,7 +57,7 @@
           "items": {
             "allOf": [
               {
-                "$ref": "#\/definitions\/Human"
+                "$ref": "#/definitions/Human"
               },
               {
                 "type": "object",
@@ -70,5 +73,5 @@
       }
     }
   },
-  "$ref": "#\/definitions\/RootSchema"
+  "$ref": "#/definitions/RootSchema"
 }
