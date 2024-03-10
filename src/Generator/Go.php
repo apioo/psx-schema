@@ -74,7 +74,12 @@ class Go extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ' ' . $property->getType() . ' `json:"' . $property->getName()->getRaw() . '"`' . "\n";
+            $ref = '';
+            if ($property->getOrigin() instanceof ReferenceType) {
+                $ref = '*';
+            }
+
+            $code.= $this->indent . $property->getName()->getProperty() . ' ' . $ref . $property->getType() . ' `json:"' . $property->getName()->getRaw() . '"`' . "\n";
         }
 
         $code.= '}' . "\n";

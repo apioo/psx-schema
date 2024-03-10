@@ -142,6 +142,6 @@ type TypeSchema struct {
 // Represents an union type. An union type can contain one of the provided types
 type UnionType struct {
     Description string `json:"description"`
-    Discriminator Discriminator `json:"discriminator"`
+    Discriminator *Discriminator `json:"discriminator"`
     OneOf []any `json:"oneOf"`
 }

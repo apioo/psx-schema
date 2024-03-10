@@ -15,5 +15,5 @@ type Map[T any] struct {
 }
 
 type RootSchema struct {
-    Students StudentMap `json:"students"`
+    Students *StudentMap `json:"students"`
 }

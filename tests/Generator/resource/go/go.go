@@ -16,7 +16,7 @@ type Author struct {
     Email string `json:"email"`
     Categories []string `json:"categories"`
     Locations []Location `json:"locations"`
-    Origin Location `json:"origin"`
+    Origin *Location `json:"origin"`
 }
 
 type Meta = map[string]string
@@ -25,7 +25,7 @@ import "time"
 
 // An general news entry
 type News struct {
-    Config Meta `json:"config"`
+    Config *Meta `json:"config"`
     InlineConfig map[string]string `json:"inlineConfig"`
     MapTags map[string]string `json:"mapTags"`
     MapReceiver map[string]Author `json:"mapReceiver"`
@@ -36,8 +36,8 @@ type News struct {
     ProfileImage []byte `json:"profileImage"`
     Read bool `json:"read"`
     Source any `json:"source"`
-    Author Author `json:"author"`
-    Meta Meta `json:"meta"`
+    Author *Author `json:"author"`
+    Meta *Meta `json:"meta"`
     SendDate time.Time `json:"sendDate"`
     ReadDate time.Time `json:"readDate"`
     Expires string `json:"expires"`
