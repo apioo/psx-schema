@@ -29,7 +29,100 @@ namespace PSX\Schema\Inspector;
  */
 class SemVer
 {
-    public const PATCH = 'patch';
-    public const MINOR = 'minor';
     public const MAJOR = 'major';
+    public const MINOR = 'minor';
+    public const PATCH = 'patch';
+
+    private int $major;
+    private int $minor;
+    private int $patch;
+
+    public function __construct(int $major, int $minor, int $patch)
+    {
+        $this->major = $major;
+        $this->minor = $minor;
+        $this->patch = $patch;
+    }
+
+    public function getMajor(): int
+    {
+        return $this->major;
+    }
+
+    public function getMinor(): int
+    {
+        return $this->minor;
+    }
+
+    public function getPatch(): int
+    {
+        return $this->patch;
+    }
+
+    public function equals(SemVer $version): bool
+    {
+        return version_compare($this->toString(), $version->toString()) === 0;
+    }
+
+    public function greater(SemVer $version): bool
+    {
+        return version_compare($this->toString(), $version->toString()) === 1;
+    }
+
+    public function lower(SemVer $version): bool
+    {
+        return version_compare($this->toString(), $version->toString()) === -1;
+    }
+
+    public function increase(string $type): void
+    {
+        if ($type === self::MAJOR) {
+            $this->increaseMajor();
+        } elseif ($type === self::MINOR) {
+            $this->increaseMinor();
+        } elseif ($type === self::PATCH) {
+            $this->increasePatch();
+        } else {
+            throw new \InvalidArgumentException('Provided an invalid semantic versioning type, must be either major, minor or patch');
+        }
+    }
+
+    public function increaseMajor(): void
+    {
+        $this->major++;
+        $this->minor = 0;
+        $this->patch = 0;
+    }
+
+    public function increaseMinor(): void
+    {
+        $this->minor++;
+        $this->patch = 0;
+    }
+
+    public function increasePatch(): void
+    {
+        $this->patch++;
+    }
+
+    public function toString(): string
+    {
+        return implode('.', [$this->major, $this->minor, $this->patch]);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
+
+    public static function fromString(string $version): self
+    {
+        $parts = explode('.', $version, 3);
+
+        return new self(
+            (int) ($parts[0] ?? 0),
+            (int) ($parts[1] ?? 0),
+            (int) ($parts[2] ?? 0)
+        );
+    }
 }

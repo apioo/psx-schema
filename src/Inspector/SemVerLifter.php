@@ -32,37 +32,37 @@ use PSX\Schema\DefinitionsInterface;
  */
 class SemVerLifter
 {
+    private ChangelogGenerator $generator;
+
+    public function __construct()
+    {
+        $this->generator = new ChangelogGenerator();
+    }
+
     public function elevate(string $baseVersion, DefinitionsInterface $left, ?DefinitionsInterface $right = null): string
     {
         if ($right === null) {
             return '0.1.0';
         }
 
-        $parts = explode('.', $baseVersion, 3);
-        $major = (int) ($parts[0] ?? 0);
-        $minor = (int) ($parts[1] ?? 0);
-        $patch = (int) ($parts[2] ?? 0);
+        $version = SemVer::fromString($baseVersion);
 
         $level = $this->getMaxSemVerLevel($left, $right);
         if ($level === SemVer::MAJOR) {
-            $major++;
-            $minor = 0;
-            $patch = 0;
+            $version->increaseMajor();
         } elseif ($level === SemVer::MINOR) {
-            $minor++;
-            $patch = 0;
+            $version->increaseMinor();
         } else {
-            $patch++;
+            $version->increasePatch();
         }
 
-        return implode('.', [$major, $minor, $patch]);
+        return $version->toString();
     }
 
     private function getMaxSemVerLevel(DefinitionsInterface $left, DefinitionsInterface $right): string
     {
-        $generator = new ChangelogGenerator();
         $levels = [];
-        foreach ($generator->generate($left, $right) as $level => $message) {
+        foreach ($this->generator->generate($left, $right) as $level => $message) {
             $levels[$level] = $level;
         }
 
