@@ -70,7 +70,7 @@ class Python extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ' = field(metadata=config(field_name="' . $property->getName()->getRaw() . '"))' . "\n";
         }
 
         $code.= "\n";
@@ -132,8 +132,8 @@ class Python extends CodeGeneratorAbstract
     private function getImports(TypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'from dataclasses import dataclass';
-        $imports[] = 'from dataclasses_json import dataclass_json';
+        $imports[] = 'from dataclasses import dataclass, field';
+        $imports[] = 'from dataclasses_json import dataclass_json, config';
 
         if (TypeUtil::contains($origin, AnyType::class)) {
             $imports[] = 'from typing import Any';
