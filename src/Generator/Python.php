@@ -70,7 +70,7 @@ class Python extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ' = field(metadata=config(field_name="' . $property->getName()->getRaw() . '"))' . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ' = field(default=None, metadata=config(field_name="' . $property->getName()->getRaw() . '"))' . "\n";
         }
 
         $code.= "\n";

@@ -6,11 +6,11 @@ from dataclasses_json import dataclass_json, config
 @dataclass_json
 @dataclass
 class CommonType:
-    description: str = field(metadata=config(field_name="description"))
-    type: str = field(metadata=config(field_name="type"))
-    nullable: bool = field(metadata=config(field_name="nullable"))
-    deprecated: bool = field(metadata=config(field_name="deprecated"))
-    readonly: bool = field(metadata=config(field_name="readonly"))
+    description: str = field(default=None, metadata=config(field_name="description"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    nullable: bool = field(default=None, metadata=config(field_name="nullable"))
+    deprecated: bool = field(default=None, metadata=config(field_name="deprecated"))
+    readonly: bool = field(default=None, metadata=config(field_name="readonly"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -21,7 +21,7 @@ from common_type import CommonType
 @dataclass_json
 @dataclass
 class AnyType(CommonType):
-    type: str = field(metadata=config(field_name="type"))
+    type: str = field(default=None, metadata=config(field_name="type"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -39,10 +39,10 @@ from any_type import AnyType
 @dataclass_json
 @dataclass
 class ArrayType(CommonType):
-    type: str = field(metadata=config(field_name="type"))
-    items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType, AnyType] = field(metadata=config(field_name="items"))
-    max_items: int = field(metadata=config(field_name="maxItems"))
-    min_items: int = field(metadata=config(field_name="minItems"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType, AnyType] = field(default=None, metadata=config(field_name="items"))
+    max_items: int = field(default=None, metadata=config(field_name="maxItems"))
+    min_items: int = field(default=None, metadata=config(field_name="minItems"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -55,9 +55,9 @@ from common_type import CommonType
 @dataclass_json
 @dataclass
 class ScalarType(CommonType):
-    format: str = field(metadata=config(field_name="format"))
-    enum: List[Union[str, float]] = field(metadata=config(field_name="enum"))
-    default: Union[str, float, bool] = field(metadata=config(field_name="default"))
+    format: str = field(default=None, metadata=config(field_name="format"))
+    enum: List[Union[str, float]] = field(default=None, metadata=config(field_name="enum"))
+    default: Union[str, float, bool] = field(default=None, metadata=config(field_name="default"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -68,7 +68,7 @@ from scalar_type import ScalarType
 @dataclass_json
 @dataclass
 class BooleanType(ScalarType):
-    type: str = field(metadata=config(field_name="type"))
+    type: str = field(default=None, metadata=config(field_name="type"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -79,8 +79,8 @@ from typing import Dict
 @dataclass_json
 @dataclass
 class Discriminator:
-    property_name: str = field(metadata=config(field_name="propertyName"))
-    mapping: Dict[str, str] = field(metadata=config(field_name="mapping"))
+    property_name: str = field(default=None, metadata=config(field_name="propertyName"))
+    mapping: Dict[str, str] = field(default=None, metadata=config(field_name="mapping"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -90,7 +90,7 @@ from dataclasses_json import dataclass_json, config
 @dataclass_json
 @dataclass
 class GenericType:
-    _generic: str = field(metadata=config(field_name="$generic"))
+    _generic: str = field(default=None, metadata=config(field_name="$generic"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -102,8 +102,8 @@ from reference_type import ReferenceType
 @dataclass_json
 @dataclass
 class IntersectionType:
-    description: str = field(metadata=config(field_name="description"))
-    all_of: List[ReferenceType] = field(metadata=config(field_name="allOf"))
+    description: str = field(default=None, metadata=config(field_name="description"))
+    all_of: List[ReferenceType] = field(default=None, metadata=config(field_name="allOf"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -124,10 +124,10 @@ from any_type import AnyType
 @dataclass_json
 @dataclass
 class MapType(CommonType):
-    type: str = field(metadata=config(field_name="type"))
-    additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType] = field(metadata=config(field_name="additionalProperties"))
-    max_properties: int = field(metadata=config(field_name="maxProperties"))
-    min_properties: int = field(metadata=config(field_name="minProperties"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType] = field(default=None, metadata=config(field_name="additionalProperties"))
+    max_properties: int = field(default=None, metadata=config(field_name="maxProperties"))
+    min_properties: int = field(default=None, metadata=config(field_name="minProperties"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -138,12 +138,12 @@ from scalar_type import ScalarType
 @dataclass_json
 @dataclass
 class NumberType(ScalarType):
-    type: str = field(metadata=config(field_name="type"))
-    multiple_of: float = field(metadata=config(field_name="multipleOf"))
-    maximum: float = field(metadata=config(field_name="maximum"))
-    exclusive_maximum: bool = field(metadata=config(field_name="exclusiveMaximum"))
-    minimum: float = field(metadata=config(field_name="minimum"))
-    exclusive_minimum: bool = field(metadata=config(field_name="exclusiveMinimum"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    multiple_of: float = field(default=None, metadata=config(field_name="multipleOf"))
+    maximum: float = field(default=None, metadata=config(field_name="maximum"))
+    exclusive_maximum: bool = field(default=None, metadata=config(field_name="exclusiveMaximum"))
+    minimum: float = field(default=None, metadata=config(field_name="minimum"))
+    exclusive_minimum: bool = field(default=None, metadata=config(field_name="exclusiveMinimum"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -154,8 +154,8 @@ from typing import Dict
 @dataclass_json
 @dataclass
 class ReferenceType:
-    _ref: str = field(metadata=config(field_name="$ref"))
-    _template: Dict[str, str] = field(metadata=config(field_name="$template"))
+    _ref: str = field(default=None, metadata=config(field_name="$ref"))
+    _template: Dict[str, str] = field(default=None, metadata=config(field_name="$template"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -166,10 +166,10 @@ from scalar_type import ScalarType
 @dataclass_json
 @dataclass
 class StringType(ScalarType):
-    type: str = field(metadata=config(field_name="type"))
-    max_length: int = field(metadata=config(field_name="maxLength"))
-    min_length: int = field(metadata=config(field_name="minLength"))
-    pattern: str = field(metadata=config(field_name="pattern"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    max_length: int = field(default=None, metadata=config(field_name="maxLength"))
+    min_length: int = field(default=None, metadata=config(field_name="minLength"))
+    pattern: str = field(default=None, metadata=config(field_name="pattern"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -193,11 +193,11 @@ from generic_type import GenericType
 @dataclass_json
 @dataclass
 class StructType(CommonType):
-    _final: bool = field(metadata=config(field_name="$final"))
-    _extends: str = field(metadata=config(field_name="$extends"))
-    type: str = field(metadata=config(field_name="type"))
-    properties: Dict[str, Union[MapType, ArrayType, BooleanType, NumberType, StringType, AnyType, IntersectionType, UnionType, ReferenceType, GenericType]] = field(metadata=config(field_name="properties"))
-    required: List[str] = field(metadata=config(field_name="required"))
+    _final: bool = field(default=None, metadata=config(field_name="$final"))
+    _extends: str = field(default=None, metadata=config(field_name="$extends"))
+    type: str = field(default=None, metadata=config(field_name="type"))
+    properties: Dict[str, Union[MapType, ArrayType, BooleanType, NumberType, StringType, AnyType, IntersectionType, UnionType, ReferenceType, GenericType]] = field(default=None, metadata=config(field_name="properties"))
+    required: List[str] = field(default=None, metadata=config(field_name="required"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -212,9 +212,9 @@ from reference_type import ReferenceType
 @dataclass_json
 @dataclass
 class TypeSchema:
-    _import: Dict[str, str] = field(metadata=config(field_name="$import"))
-    definitions: Dict[str, Union[StructType, MapType, ReferenceType]] = field(metadata=config(field_name="definitions"))
-    _ref: str = field(metadata=config(field_name="$ref"))
+    _import: Dict[str, str] = field(default=None, metadata=config(field_name="$import"))
+    definitions: Dict[str, Union[StructType, MapType, ReferenceType]] = field(default=None, metadata=config(field_name="definitions"))
+    _ref: str = field(default=None, metadata=config(field_name="$ref"))
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -231,6 +231,6 @@ from reference_type import ReferenceType
 @dataclass_json
 @dataclass
 class UnionType:
-    description: str = field(metadata=config(field_name="description"))
-    discriminator: Discriminator = field(metadata=config(field_name="discriminator"))
-    one_of: List[Union[NumberType, StringType, BooleanType, ReferenceType]] = field(metadata=config(field_name="oneOf"))
+    description: str = field(default=None, metadata=config(field_name="description"))
+    discriminator: Discriminator = field(default=None, metadata=config(field_name="discriminator"))
+    one_of: List[Union[NumberType, StringType, BooleanType, ReferenceType]] = field(default=None, metadata=config(field_name="oneOf"))
