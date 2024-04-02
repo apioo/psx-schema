@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Creature {
     private String kind;
     @JsonSetter("kind")
@@ -15,7 +14,6 @@ public class Creature {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Human extends Creature {
     private String firstName;
     @JsonSetter("firstName")
@@ -30,7 +28,6 @@ public class Human extends Creature {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Animal extends Creature {
     private String nickname;
     @JsonSetter("nickname")
@@ -45,7 +42,6 @@ public class Animal extends Creature {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Union {
     private Object union;
     private Object intersection;

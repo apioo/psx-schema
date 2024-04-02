@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Human {
     private String firstName;
     private Human parent;
@@ -24,7 +23,6 @@ public class Human {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Student extends Human {
     private String matricleNumber;
     @JsonSetter("matricleNumber")
@@ -39,7 +37,6 @@ public class Student extends Human {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class StudentMap extends Map<Student> {
 }
 
@@ -69,7 +66,6 @@ public class Map<T> {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class RootSchema {
     private StudentMap students;
     @JsonSetter("students")

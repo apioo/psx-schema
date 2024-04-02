@@ -2,7 +2,6 @@ package Foo.Bar;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Import {
     private My.Import.StudentMap students;
     private My.Import.Student student;
@@ -28,6 +27,5 @@ package Foo.Bar;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class MyMap extends My.Import.Student {
 }

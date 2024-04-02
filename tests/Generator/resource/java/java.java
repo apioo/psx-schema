@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 
 /**
  * Location of the person
@@ -28,7 +27,6 @@ public class Location {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 
 /**
  * An application
@@ -111,21 +109,20 @@ public class Author {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 public class Meta extends HashMap<String, String> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Period;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An general news entry
