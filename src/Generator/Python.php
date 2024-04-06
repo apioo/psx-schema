@@ -20,12 +20,14 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\AnyType;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
 use PSX\Schema\Type\UnionType;
@@ -149,6 +151,14 @@ class Python extends CodeGeneratorAbstract
 
         if (TypeUtil::contains($origin, UnionType::class)) {
             $imports[] = 'from typing import Union';
+        }
+
+        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
+            $imports[] = 'import datetime';
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
+            $imports[] = 'import datetime';
+        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
+            $imports[] = 'import datetime';
         }
 
         $refs = [];
