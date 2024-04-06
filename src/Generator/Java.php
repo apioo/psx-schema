@@ -175,6 +175,10 @@ class Java extends CodeGeneratorAbstract
             $imports[] = 'import java.util.Map;';
         }
 
+        if ($origin instanceof MapType) {
+            $imports[] = 'import java.util.HashMap;';
+        }
+
         return $imports;
     }
 }
