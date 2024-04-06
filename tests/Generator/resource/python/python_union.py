@@ -7,7 +7,7 @@ class Creature:
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from creature import Creature
+from .creature import Creature
 @dataclass_json
 @dataclass
 class Human(Creature):
@@ -15,7 +15,7 @@ class Human(Creature):
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from creature import Creature
+from .creature import Creature
 @dataclass_json
 @dataclass
 class Animal(Creature):
@@ -24,8 +24,8 @@ class Animal(Creature):
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Union
-from human import Human
-from animal import Animal
+from .human import Human
+from .animal import Animal
 @dataclass_json
 @dataclass
 class Union:

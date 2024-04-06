@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from human import Human
+from .human import Human
 @dataclass_json
 @dataclass
 class Human:
@@ -9,7 +9,7 @@ class Human:
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from human import Human
+from .human import Human
 @dataclass_json
 @dataclass
 class Student(Human):
@@ -17,8 +17,8 @@ class Student(Human):
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from map import Map
-from student import Student
+from .map import Map
+from .student import Student
 @dataclass_json
 @dataclass
 class StudentMap(Map[Student]):
@@ -35,7 +35,7 @@ class Map:
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from student_map import StudentMap
+from .student_map import StudentMap
 @dataclass_json
 @dataclass
 class RootSchema:

@@ -14,7 +14,7 @@ class CommonType:
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from common_type import CommonType
+from .common_type import CommonType
 
 
 # Represents an any type
@@ -26,13 +26,13 @@ class AnyType(CommonType):
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Union
-from common_type import CommonType
-from boolean_type import BooleanType
-from number_type import NumberType
-from string_type import StringType
-from reference_type import ReferenceType
-from generic_type import GenericType
-from any_type import AnyType
+from .common_type import CommonType
+from .boolean_type import BooleanType
+from .number_type import NumberType
+from .string_type import StringType
+from .reference_type import ReferenceType
+from .generic_type import GenericType
+from .any_type import AnyType
 
 
 # Represents an array type. An array type contains an ordered list of a specific type
@@ -48,7 +48,7 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Union
-from common_type import CommonType
+from .common_type import CommonType
 
 
 # Represents a scalar type
@@ -61,7 +61,7 @@ class ScalarType(CommonType):
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from scalar_type import ScalarType
+from .scalar_type import ScalarType
 
 
 # Represents a boolean type
@@ -95,7 +95,7 @@ class GenericType:
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
-from reference_type import ReferenceType
+from .reference_type import ReferenceType
 
 
 # Represents an intersection type
@@ -108,16 +108,16 @@ class IntersectionType:
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Union
-from common_type import CommonType
-from boolean_type import BooleanType
-from number_type import NumberType
-from string_type import StringType
-from array_type import ArrayType
-from union_type import UnionType
-from intersection_type import IntersectionType
-from reference_type import ReferenceType
-from generic_type import GenericType
-from any_type import AnyType
+from .common_type import CommonType
+from .boolean_type import BooleanType
+from .number_type import NumberType
+from .string_type import StringType
+from .array_type import ArrayType
+from .union_type import UnionType
+from .intersection_type import IntersectionType
+from .reference_type import ReferenceType
+from .generic_type import GenericType
+from .any_type import AnyType
 
 
 # Represents a map type. A map type contains variable key value entries of a specific type
@@ -131,7 +131,7 @@ class MapType(CommonType):
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from scalar_type import ScalarType
+from .scalar_type import ScalarType
 
 
 # Represents a number type (contains also integer)
@@ -159,7 +159,7 @@ class ReferenceType:
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
-from scalar_type import ScalarType
+from .scalar_type import ScalarType
 
 
 # Represents a string type
@@ -176,17 +176,17 @@ from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Dict
 from typing import Union
-from common_type import CommonType
-from map_type import MapType
-from array_type import ArrayType
-from boolean_type import BooleanType
-from number_type import NumberType
-from string_type import StringType
-from any_type import AnyType
-from intersection_type import IntersectionType
-from union_type import UnionType
-from reference_type import ReferenceType
-from generic_type import GenericType
+from .common_type import CommonType
+from .map_type import MapType
+from .array_type import ArrayType
+from .boolean_type import BooleanType
+from .number_type import NumberType
+from .string_type import StringType
+from .any_type import AnyType
+from .intersection_type import IntersectionType
+from .union_type import UnionType
+from .reference_type import ReferenceType
+from .generic_type import GenericType
 
 
 # Represents a struct type. A struct type contains a fix set of defined properties
@@ -203,9 +203,9 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Dict
 from typing import Union
-from struct_type import StructType
-from map_type import MapType
-from reference_type import ReferenceType
+from .struct_type import StructType
+from .map_type import MapType
+from .reference_type import ReferenceType
 
 
 # The root TypeSchema
@@ -220,11 +220,11 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Union
-from discriminator import Discriminator
-from number_type import NumberType
-from string_type import StringType
-from boolean_type import BooleanType
-from reference_type import ReferenceType
+from .discriminator import Discriminator
+from .number_type import NumberType
+from .string_type import StringType
+from .boolean_type import BooleanType
+from .reference_type import ReferenceType
 
 
 # Represents an union type. An union type can contain one of the provided types

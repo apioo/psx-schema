@@ -23,7 +23,7 @@ class Web:
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
-from location import Location
+from .location import Location
 
 
 # An simple author element with some description
@@ -48,10 +48,10 @@ from typing import Any
 from typing import List
 from typing import Dict
 from typing import Union
-from meta import Meta
-from author import Author
-from location import Location
-from web import Web
+from .meta import Meta
+from .author import Author
+from .location import Location
+from .web import Web
 
 
 # An general news entry
