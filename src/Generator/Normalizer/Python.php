@@ -90,6 +90,7 @@ class Python extends NormalizerAbstract
             'continue',
             'global',
             'pass',
+            'async',
         ];
     }
 }

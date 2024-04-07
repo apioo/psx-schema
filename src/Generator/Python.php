@@ -60,12 +60,30 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
     {
-        $code = '@dataclass_json' . "\n";
+        $code = '';
+        if (!empty($generics)) {
+            foreach ($generics as $type) {
+                $code.= $type . ' = TypeVar("' . $type . '")' . "\n";
+            }
+        }
+
+        $code.= '@dataclass_json' . "\n";
         $code.= '@dataclass' . "\n";
         $code.= 'class ' . $name->getClass();
 
+        $parts = [];
         if (!empty($extends)) {
-            $code.= '(' . $extends . ')';
+            $parts[] = $extends;
+        }
+
+        if (!empty($generics)) {
+            foreach ($generics as $type) {
+                $parts[] = 'Generic[' . $type . ']';
+            }
+        }
+
+        if (!empty($parts)) {
+            $code.= '(' . implode(', ', $parts) . ')';
         }
 
         $code.= ':' . "\n";

@@ -27,9 +27,10 @@ class StudentMap(Map[Student]):
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
+T = TypeVar("T")
 @dataclass_json
 @dataclass
-class Map:
+class Map(Generic[T]):
     total_results: int = field(default=None, metadata=config(field_name="totalResults"))
     entries: List[T] = field(default=None, metadata=config(field_name="entries"))
 
