@@ -1,5 +1,7 @@
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import TypeVar, Generic
 
 
@@ -7,12 +9,14 @@ from typing import TypeVar, Generic
 @dataclass_json
 @dataclass
 class Location:
-    lat: float = field(default=None, metadata=config(field_name="lat"))
-    long: float = field(default=None, metadata=config(field_name="long"))
+    lat: float = data_field(default=None, metadata=json_config(field_name="lat"))
+    long: float = data_field(default=None, metadata=json_config(field_name="long"))
     pass
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import TypeVar, Generic
 
 
@@ -20,12 +24,14 @@ from typing import TypeVar, Generic
 @dataclass_json
 @dataclass
 class Web:
-    name: str = field(default=None, metadata=config(field_name="name"))
-    url: str = field(default=None, metadata=config(field_name="url"))
+    name: str = data_field(default=None, metadata=json_config(field_name="name"))
+    url: str = data_field(default=None, metadata=json_config(field_name="url"))
     pass
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import List
 from typing import TypeVar, Generic
 from .location import Location
@@ -35,22 +41,26 @@ from .location import Location
 @dataclass_json
 @dataclass
 class Author:
-    title: str = field(default=None, metadata=config(field_name="title"))
-    email: str = field(default=None, metadata=config(field_name="email"))
-    categories: List[str] = field(default=None, metadata=config(field_name="categories"))
-    locations: List[Location] = field(default=None, metadata=config(field_name="locations"))
-    origin: Location = field(default=None, metadata=config(field_name="origin"))
+    title: str = data_field(default=None, metadata=json_config(field_name="title"))
+    email: str = data_field(default=None, metadata=json_config(field_name="email"))
+    categories: List[str] = data_field(default=None, metadata=json_config(field_name="categories"))
+    locations: List[Location] = data_field(default=None, metadata=json_config(field_name="locations"))
+    origin: Location = data_field(default=None, metadata=json_config(field_name="origin"))
     pass
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import Dict
 from typing import TypeVar, Generic
 class Meta(Dict[str, str]):
     pass
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import Any
 from typing import List
 from typing import Dict
@@ -67,30 +77,30 @@ from .web import Web
 @dataclass_json
 @dataclass
 class News:
-    config: Meta = field(default=None, metadata=config(field_name="config"))
-    inline_config: Dict[str, str] = field(default=None, metadata=config(field_name="inlineConfig"))
-    map_tags: Dict[str, str] = field(default=None, metadata=config(field_name="mapTags"))
-    map_receiver: Dict[str, Author] = field(default=None, metadata=config(field_name="mapReceiver"))
-    map_resources: Dict[str, Union[Location, Web]] = field(default=None, metadata=config(field_name="mapResources"))
-    tags: List[str] = field(default=None, metadata=config(field_name="tags"))
-    receiver: List[Author] = field(default=None, metadata=config(field_name="receiver"))
-    resources: List[Union[Location, Web]] = field(default=None, metadata=config(field_name="resources"))
-    profile_image: bytearray = field(default=None, metadata=config(field_name="profileImage"))
-    read: bool = field(default=None, metadata=config(field_name="read"))
-    source: Union[Author, Web] = field(default=None, metadata=config(field_name="source"))
-    author: Author = field(default=None, metadata=config(field_name="author"))
-    meta: Meta = field(default=None, metadata=config(field_name="meta"))
-    send_date: datetime.date = field(default=None, metadata=config(field_name="sendDate"))
-    read_date: datetime.datetime = field(default=None, metadata=config(field_name="readDate"))
-    expires: datetime.timedelta = field(default=None, metadata=config(field_name="expires"))
-    range: datetime.timedelta = field(default=None, metadata=config(field_name="range"))
-    price: float = field(default=None, metadata=config(field_name="price"))
-    rating: int = field(default=None, metadata=config(field_name="rating"))
-    content: str = field(default=None, metadata=config(field_name="content"))
-    question: str = field(default=None, metadata=config(field_name="question"))
-    version: str = field(default=None, metadata=config(field_name="version"))
-    coffee_time: datetime.time = field(default=None, metadata=config(field_name="coffeeTime"))
-    profile_uri: str = field(default=None, metadata=config(field_name="profileUri"))
-    captcha: str = field(default=None, metadata=config(field_name="g-recaptcha-response"))
-    payload: Any = field(default=None, metadata=config(field_name="payload"))
+    config: Meta = data_field(default=None, metadata=json_config(field_name="config"))
+    inline_config: Dict[str, str] = data_field(default=None, metadata=json_config(field_name="inlineConfig"))
+    map_tags: Dict[str, str] = data_field(default=None, metadata=json_config(field_name="mapTags"))
+    map_receiver: Dict[str, Author] = data_field(default=None, metadata=json_config(field_name="mapReceiver"))
+    map_resources: Dict[str, Union[Location, Web]] = data_field(default=None, metadata=json_config(field_name="mapResources"))
+    tags: List[str] = data_field(default=None, metadata=json_config(field_name="tags"))
+    receiver: List[Author] = data_field(default=None, metadata=json_config(field_name="receiver"))
+    resources: List[Union[Location, Web]] = data_field(default=None, metadata=json_config(field_name="resources"))
+    profile_image: bytearray = data_field(default=None, metadata=json_config(field_name="profileImage"))
+    read: bool = data_field(default=None, metadata=json_config(field_name="read"))
+    source: Union[Author, Web] = data_field(default=None, metadata=json_config(field_name="source"))
+    author: Author = data_field(default=None, metadata=json_config(field_name="author"))
+    meta: Meta = data_field(default=None, metadata=json_config(field_name="meta"))
+    send_date: datetime.date = data_field(default=None, metadata=json_config(field_name="sendDate"))
+    read_date: datetime.datetime = data_field(default=None, metadata=json_config(field_name="readDate"))
+    expires: datetime.timedelta = data_field(default=None, metadata=json_config(field_name="expires"))
+    range: datetime.timedelta = data_field(default=None, metadata=json_config(field_name="range"))
+    price: float = data_field(default=None, metadata=json_config(field_name="price"))
+    rating: int = data_field(default=None, metadata=json_config(field_name="rating"))
+    content: str = data_field(default=None, metadata=json_config(field_name="content"))
+    question: str = data_field(default=None, metadata=json_config(field_name="question"))
+    version: str = data_field(default=None, metadata=json_config(field_name="version"))
+    coffee_time: datetime.time = data_field(default=None, metadata=json_config(field_name="coffeeTime"))
+    profile_uri: str = data_field(default=None, metadata=json_config(field_name="profileUri"))
+    captcha: str = data_field(default=None, metadata=json_config(field_name="g-recaptcha-response"))
+    payload: Any = data_field(default=None, metadata=json_config(field_name="payload"))
     pass

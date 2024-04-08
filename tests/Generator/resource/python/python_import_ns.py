@@ -1,17 +1,21 @@
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import TypeVar, Generic
 from .student_map import StudentMap
 from .student import Student
 @dataclass_json
 @dataclass
 class Import:
-    students: My.Import.StudentMap = field(default=None, metadata=config(field_name="students"))
-    student: My.Import.Student = field(default=None, metadata=config(field_name="student"))
+    students: My.Import.StudentMap = data_field(default=None, metadata=json_config(field_name="students"))
+    student: My.Import.Student = data_field(default=None, metadata=json_config(field_name="student"))
     pass
 
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
+from dataclasses import dataclass
+from dataclasses import field as data_field
+from dataclasses_json import dataclass_json
+from dataclasses_json import config as json_config
 from typing import TypeVar, Generic
 from .student import Student
 @dataclass_json
