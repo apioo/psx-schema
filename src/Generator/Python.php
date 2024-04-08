@@ -93,6 +93,7 @@ class Python extends CodeGeneratorAbstract
             $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ' = field(default=None, metadata=config(field_name="' . $property->getName()->getRaw() . '"))' . "\n";
         }
 
+        $code.= '    pass' . "\n";
         $code.= "\n";
         $code.= "\n";
 
@@ -170,6 +171,8 @@ class Python extends CodeGeneratorAbstract
         if (TypeUtil::contains($origin, UnionType::class)) {
             $imports[] = 'from typing import Union';
         }
+
+        $imports[] = 'from typing import TypeVar, Generic';
 
         if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
             $imports[] = 'import datetime';

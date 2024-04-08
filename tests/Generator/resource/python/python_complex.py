@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 
 
 # Represents a base type. Every type extends from this common type and shares the defined properties
@@ -11,9 +12,11 @@ class CommonType:
     nullable: bool = field(default=None, metadata=config(field_name="nullable"))
     deprecated: bool = field(default=None, metadata=config(field_name="deprecated"))
     readonly: bool = field(default=None, metadata=config(field_name="readonly"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 from .common_type import CommonType
 
 
@@ -22,10 +25,12 @@ from .common_type import CommonType
 @dataclass
 class AnyType(CommonType):
     type: str = field(default=None, metadata=config(field_name="type"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Union
+from typing import TypeVar, Generic
 from .common_type import CommonType
 from .boolean_type import BooleanType
 from .number_type import NumberType
@@ -43,11 +48,13 @@ class ArrayType(CommonType):
     items: Union[BooleanType, NumberType, StringType, ReferenceType, GenericType, AnyType] = field(default=None, metadata=config(field_name="items"))
     max_items: int = field(default=None, metadata=config(field_name="maxItems"))
     min_items: int = field(default=None, metadata=config(field_name="minItems"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Union
+from typing import TypeVar, Generic
 from .common_type import CommonType
 
 
@@ -58,9 +65,11 @@ class ScalarType(CommonType):
     format: str = field(default=None, metadata=config(field_name="format"))
     enum: List[Union[str, float]] = field(default=None, metadata=config(field_name="enum"))
     default: Union[str, float, bool] = field(default=None, metadata=config(field_name="default"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 from .scalar_type import ScalarType
 
 
@@ -69,10 +78,12 @@ from .scalar_type import ScalarType
 @dataclass
 class BooleanType(ScalarType):
     type: str = field(default=None, metadata=config(field_name="type"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Dict
+from typing import TypeVar, Generic
 
 
 # Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
@@ -81,9 +92,11 @@ from typing import Dict
 class Discriminator:
     property_name: str = field(default=None, metadata=config(field_name="propertyName"))
     mapping: Dict[str, str] = field(default=None, metadata=config(field_name="mapping"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 
 
 # Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
@@ -91,10 +104,12 @@ from dataclasses_json import dataclass_json, config
 @dataclass
 class GenericType:
     _generic: str = field(default=None, metadata=config(field_name="$generic"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
+from typing import TypeVar, Generic
 from .reference_type import ReferenceType
 
 
@@ -104,10 +119,12 @@ from .reference_type import ReferenceType
 class IntersectionType:
     description: str = field(default=None, metadata=config(field_name="description"))
     all_of: List[ReferenceType] = field(default=None, metadata=config(field_name="allOf"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Union
+from typing import TypeVar, Generic
 from .common_type import CommonType
 from .boolean_type import BooleanType
 from .number_type import NumberType
@@ -128,9 +145,11 @@ class MapType(CommonType):
     additional_properties: Union[BooleanType, NumberType, StringType, ArrayType, UnionType, IntersectionType, ReferenceType, GenericType, AnyType] = field(default=None, metadata=config(field_name="additionalProperties"))
     max_properties: int = field(default=None, metadata=config(field_name="maxProperties"))
     min_properties: int = field(default=None, metadata=config(field_name="minProperties"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 from .scalar_type import ScalarType
 
 
@@ -144,10 +163,12 @@ class NumberType(ScalarType):
     exclusive_maximum: bool = field(default=None, metadata=config(field_name="exclusiveMaximum"))
     minimum: float = field(default=None, metadata=config(field_name="minimum"))
     exclusive_minimum: bool = field(default=None, metadata=config(field_name="exclusiveMinimum"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Dict
+from typing import TypeVar, Generic
 
 
 # Represents a reference type. A reference type points to a specific type at the definitions map
@@ -156,9 +177,11 @@ from typing import Dict
 class ReferenceType:
     _ref: str = field(default=None, metadata=config(field_name="$ref"))
     _template: Dict[str, str] = field(default=None, metadata=config(field_name="$template"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 from .scalar_type import ScalarType
 
 
@@ -170,12 +193,14 @@ class StringType(ScalarType):
     max_length: int = field(default=None, metadata=config(field_name="maxLength"))
     min_length: int = field(default=None, metadata=config(field_name="minLength"))
     pattern: str = field(default=None, metadata=config(field_name="pattern"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Dict
 from typing import Union
+from typing import TypeVar, Generic
 from .common_type import CommonType
 from .map_type import MapType
 from .array_type import ArrayType
@@ -198,11 +223,13 @@ class StructType(CommonType):
     type: str = field(default=None, metadata=config(field_name="type"))
     properties: Dict[str, Union[MapType, ArrayType, BooleanType, NumberType, StringType, AnyType, IntersectionType, UnionType, ReferenceType, GenericType]] = field(default=None, metadata=config(field_name="properties"))
     required: List[str] = field(default=None, metadata=config(field_name="required"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Dict
 from typing import Union
+from typing import TypeVar, Generic
 from .struct_type import StructType
 from .map_type import MapType
 from .reference_type import ReferenceType
@@ -215,11 +242,13 @@ class TypeSchema:
     _import: Dict[str, str] = field(default=None, metadata=config(field_name="$import"))
     definitions: Dict[str, Union[StructType, MapType, ReferenceType]] = field(default=None, metadata=config(field_name="definitions"))
     _ref: str = field(default=None, metadata=config(field_name="$ref"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
 from typing import Union
+from typing import TypeVar, Generic
 from .discriminator import Discriminator
 from .number_type import NumberType
 from .string_type import StringType
@@ -234,3 +263,4 @@ class UnionType:
     description: str = field(default=None, metadata=config(field_name="description"))
     discriminator: Discriminator = field(default=None, metadata=config(field_name="discriminator"))
     one_of: List[Union[NumberType, StringType, BooleanType, ReferenceType]] = field(default=None, metadata=config(field_name="oneOf"))
+    pass

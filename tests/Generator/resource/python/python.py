@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 
 
 # Location of the person
@@ -8,9 +9,11 @@ from dataclasses_json import dataclass_json, config
 class Location:
     lat: float = field(default=None, metadata=config(field_name="lat"))
     long: float = field(default=None, metadata=config(field_name="long"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
+from typing import TypeVar, Generic
 
 
 # An application
@@ -19,10 +22,12 @@ from dataclasses_json import dataclass_json, config
 class Web:
     name: str = field(default=None, metadata=config(field_name="name"))
     url: str = field(default=None, metadata=config(field_name="url"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import List
+from typing import TypeVar, Generic
 from .location import Location
 
 
@@ -35,10 +40,12 @@ class Author:
     categories: List[str] = field(default=None, metadata=config(field_name="categories"))
     locations: List[Location] = field(default=None, metadata=config(field_name="locations"))
     origin: Location = field(default=None, metadata=config(field_name="origin"))
+    pass
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from typing import Dict
+from typing import TypeVar, Generic
 class Meta(Dict[str, str]):
     pass
 
@@ -48,6 +55,7 @@ from typing import Any
 from typing import List
 from typing import Dict
 from typing import Union
+from typing import TypeVar, Generic
 import datetime
 from .meta import Meta
 from .author import Author
@@ -85,3 +93,4 @@ class News:
     profile_uri: str = field(default=None, metadata=config(field_name="profileUri"))
     captcha: str = field(default=None, metadata=config(field_name="g-recaptcha-response"))
     payload: Any = field(default=None, metadata=config(field_name="payload"))
+    pass
