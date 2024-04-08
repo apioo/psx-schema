@@ -44,16 +44,6 @@ class Python extends GeneratorAbstract
         return 'datetime.time';
     }
 
-    protected function getPeriod(): string
-    {
-        return 'datetime.timedelta';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'datetime.timedelta';
-    }
-
     protected function getBinary(): string
     {
         return 'bytearray';
