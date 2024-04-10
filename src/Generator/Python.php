@@ -79,11 +79,7 @@ class Python extends CodeGeneratorAbstract
             }
         }
 
-        if (!empty($parts)) {
-            $code.= '(' . implode(', ', $parts) . ')';
-        }
-
-        $code.= ':' . "\n";
+        $code.= '(' . implode(', ', $parts) . '):' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
