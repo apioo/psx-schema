@@ -1,71 +1,51 @@
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 
 # Location of the person
-@dataclass_json
-@dataclass
-class Location:
-    lat: float = data_field(default=None, metadata=json_config(field_name="lat"))
-    long: float = data_field(default=None, metadata=json_config(field_name="long"))
+class Location(BaseModel):
+    lat: Optional[float] = Field(default=None, alias="lat")
+    long: Optional[float] = Field(default=None, alias="long")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 
 # An application
-@dataclass_json
-@dataclass
-class Web:
-    name: str = data_field(default=None, metadata=json_config(field_name="name"))
-    url: str = data_field(default=None, metadata=json_config(field_name="url"))
+class Web(BaseModel):
+    name: Optional[str] = Field(default=None, alias="name")
+    url: Optional[str] = Field(default=None, alias="url")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import List
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .location import Location
 
 
 # An simple author element with some description
-@dataclass_json
-@dataclass
-class Author:
-    title: str = data_field(default=None, metadata=json_config(field_name="title"))
-    email: str = data_field(default=None, metadata=json_config(field_name="email"))
-    categories: List[str] = data_field(default=None, metadata=json_config(field_name="categories"))
-    locations: List[Location] = data_field(default=None, metadata=json_config(field_name="locations"))
-    origin: Location = data_field(default=None, metadata=json_config(field_name="origin"))
+class Author(BaseModel):
+    title: Optional[str] = Field(default=None, alias="title")
+    email: Optional[str] = Field(default=None, alias="email")
+    categories: Optional[List[str]] = Field(default=None, alias="categories")
+    locations: Optional[List[Location]] = Field(default=None, alias="locations")
+    origin: Optional[Location] = Field(default=None, alias="origin")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import Dict
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 class Meta(Dict[str, str]):
-    pass
+    @classmethod
+    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
+        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(str))
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import Any
-from typing import List
-from typing import Dict
-from typing import Union
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 import datetime
 from .meta import Meta
 from .author import Author
@@ -74,33 +54,31 @@ from .web import Web
 
 
 # An general news entry
-@dataclass_json
-@dataclass
-class News:
-    config: Meta = data_field(default=None, metadata=json_config(field_name="config"))
-    inline_config: Dict[str, str] = data_field(default=None, metadata=json_config(field_name="inlineConfig"))
-    map_tags: Dict[str, str] = data_field(default=None, metadata=json_config(field_name="mapTags"))
-    map_receiver: Dict[str, Author] = data_field(default=None, metadata=json_config(field_name="mapReceiver"))
-    map_resources: Dict[str, Union[Location, Web]] = data_field(default=None, metadata=json_config(field_name="mapResources"))
-    tags: List[str] = data_field(default=None, metadata=json_config(field_name="tags"))
-    receiver: List[Author] = data_field(default=None, metadata=json_config(field_name="receiver"))
-    resources: List[Union[Location, Web]] = data_field(default=None, metadata=json_config(field_name="resources"))
-    profile_image: bytearray = data_field(default=None, metadata=json_config(field_name="profileImage"))
-    read: bool = data_field(default=None, metadata=json_config(field_name="read"))
-    source: Union[Author, Web] = data_field(default=None, metadata=json_config(field_name="source"))
-    author: Author = data_field(default=None, metadata=json_config(field_name="author"))
-    meta: Meta = data_field(default=None, metadata=json_config(field_name="meta"))
-    send_date: datetime.date = data_field(default=None, metadata=json_config(field_name="sendDate"))
-    read_date: datetime.datetime = data_field(default=None, metadata=json_config(field_name="readDate"))
-    expires: str = data_field(default=None, metadata=json_config(field_name="expires"))
-    range: str = data_field(default=None, metadata=json_config(field_name="range"))
-    price: float = data_field(default=None, metadata=json_config(field_name="price"))
-    rating: int = data_field(default=None, metadata=json_config(field_name="rating"))
-    content: str = data_field(default=None, metadata=json_config(field_name="content"))
-    question: str = data_field(default=None, metadata=json_config(field_name="question"))
-    version: str = data_field(default=None, metadata=json_config(field_name="version"))
-    coffee_time: datetime.time = data_field(default=None, metadata=json_config(field_name="coffeeTime"))
-    profile_uri: str = data_field(default=None, metadata=json_config(field_name="profileUri"))
-    captcha: str = data_field(default=None, metadata=json_config(field_name="g-recaptcha-response"))
-    payload: Any = data_field(default=None, metadata=json_config(field_name="payload"))
+class News(BaseModel):
+    config: Optional[Meta] = Field(default=None, alias="config")
+    inline_config: Optional[Dict[str, str]] = Field(default=None, alias="inlineConfig")
+    map_tags: Optional[Dict[str, str]] = Field(default=None, alias="mapTags")
+    map_receiver: Optional[Dict[str, Author]] = Field(default=None, alias="mapReceiver")
+    map_resources: Optional[Dict[str, Union[Location, Web]]] = Field(default=None, alias="mapResources")
+    tags: Optional[List[str]] = Field(default=None, alias="tags")
+    receiver: Optional[List[Author]] = Field(default=None, alias="receiver")
+    resources: Optional[List[Union[Location, Web]]] = Field(default=None, alias="resources")
+    profile_image: Optional[bytearray] = Field(default=None, alias="profileImage")
+    read: Optional[bool] = Field(default=None, alias="read")
+    source: Optional[Union[Author, Web]] = Field(default=None, alias="source")
+    author: Optional[Author] = Field(default=None, alias="author")
+    meta: Optional[Meta] = Field(default=None, alias="meta")
+    send_date: Optional[datetime.date] = Field(default=None, alias="sendDate")
+    read_date: Optional[datetime.datetime] = Field(default=None, alias="readDate")
+    expires: Optional[str] = Field(default=None, alias="expires")
+    range: Optional[str] = Field(default=None, alias="range")
+    price: Optional[float] = Field(default=None, alias="price")
+    rating: Optional[int] = Field(default=None, alias="rating")
+    content: Optional[str] = Field(default=None, alias="content")
+    question: Optional[str] = Field(default=None, alias="question")
+    version: Optional[str] = Field(default=None, alias="version")
+    coffee_time: Optional[datetime.time] = Field(default=None, alias="coffeeTime")
+    profile_uri: Optional[str] = Field(default=None, alias="profileUri")
+    captcha: Optional[str] = Field(default=None, alias="g-recaptcha-response")
+    payload: Optional[Any] = Field(default=None, alias="payload")
     pass

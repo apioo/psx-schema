@@ -1,24 +1,16 @@
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .student_map import StudentMap
 from .student import Student
-@dataclass_json
-@dataclass
-class Import:
-    students: My.Import.StudentMap = data_field(default=None, metadata=json_config(field_name="students"))
-    student: My.Import.Student = data_field(default=None, metadata=json_config(field_name="student"))
+class Import(BaseModel):
+    students: Optional[My.Import.StudentMap] = Field(default=None, alias="students")
+    student: Optional[My.Import.Student] = Field(default=None, alias="student")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .student import Student
-@dataclass_json
-@dataclass
 class MyMap(My.Import.Student):
     pass

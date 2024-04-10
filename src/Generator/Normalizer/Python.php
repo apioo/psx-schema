@@ -91,6 +91,15 @@ class Python extends NormalizerAbstract
             'global',
             'pass',
             'async',
+            'int',
+            'float',
+            'str',
+            'bool',
         ];
+    }
+
+    protected function makeReservedNameUsable(string $name): string
+    {
+        return $name . '_';
     }
 }

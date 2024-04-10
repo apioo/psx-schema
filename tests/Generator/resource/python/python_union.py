@@ -1,50 +1,33 @@
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
-@dataclass_json
-@dataclass
-class Creature:
-    kind: str = data_field(default=None, metadata=json_config(field_name="kind"))
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
+class Creature(BaseModel):
+    kind: Optional[str] = Field(default=None, alias="kind")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .creature import Creature
-@dataclass_json
-@dataclass
 class Human(Creature):
-    first_name: str = data_field(default=None, metadata=json_config(field_name="firstName"))
+    first_name: Optional[str] = Field(default=None, alias="firstName")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .creature import Creature
-@dataclass_json
-@dataclass
 class Animal(Creature):
-    nickname: str = data_field(default=None, metadata=json_config(field_name="nickname"))
+    nickname: Optional[str] = Field(default=None, alias="nickname")
     pass
 
-from dataclasses import dataclass
-from dataclasses import field as data_field
-from dataclasses_json import dataclass_json
-from dataclasses_json import config as json_config
-from typing import Union
-from typing import TypeVar, Generic
+from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 from .human import Human
 from .animal import Animal
-@dataclass_json
-@dataclass
-class Union:
-    union: Union[Human, Animal] = data_field(default=None, metadata=json_config(field_name="union"))
-    intersection: Any = data_field(default=None, metadata=json_config(field_name="intersection"))
-    discriminator: Union[Human, Animal] = data_field(default=None, metadata=json_config(field_name="discriminator"))
+class Union(BaseModel):
+    union: Optional[Union[Human, Animal]] = Field(default=None, alias="union")
+    intersection: Optional[Any] = Field(default=None, alias="intersection")
+    discriminator: Optional[Union[Human, Animal]] = Field(default=None, alias="discriminator")
     pass
