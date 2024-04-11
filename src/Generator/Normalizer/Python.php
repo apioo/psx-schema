@@ -95,6 +95,7 @@ class Python extends NormalizerAbstract
             'float',
             'str',
             'bool',
+            'schema',
         ];
     }
 
