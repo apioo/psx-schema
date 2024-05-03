@@ -107,6 +107,8 @@ public class News
     public Uri? ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
     public string? Captcha { get; set; }
+    [JsonPropertyName("media.fields")]
+    public string? MediaFields { get; set; }
     [JsonPropertyName("payload")]
     public object? Payload { get; set; }
 }

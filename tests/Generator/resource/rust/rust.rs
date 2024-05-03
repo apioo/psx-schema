@@ -105,6 +105,8 @@ pub struct News {
     profile_uri: Option<String>,
     #[serde(rename = "g-recaptcha-response")]
     captcha: Option<String>,
+    #[serde(rename = "media.fields")]
+    media_fields: Option<String>,
     #[serde(rename = "payload")]
     payload: Option<serde_json::Value>,
 }

@@ -65,4 +65,5 @@ version | String |  | Const: `http://foo.bar`
 coffeeTime | Time |  | 
 profileUri | URI |  | 
 captcha | String |  | 
+mediaFields | String |  | 
 payload | Any |  |

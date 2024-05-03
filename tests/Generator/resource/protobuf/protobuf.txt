@@ -42,5 +42,6 @@ message News {
     optional string coffeeTime = 23 [json_name="coffeeTime"];
     optional string profileUri = 24 [json_name="profileUri"];
     optional string captcha = 25 [json_name="g-recaptcha-response"];
-    optional Any payload = 26 [json_name="payload"];
+    optional string mediaFields = 26 [json_name="media.fields"];
+    optional Any payload = 27 [json_name="payload"];
 }

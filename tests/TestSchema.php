@@ -122,6 +122,7 @@ class TestSchema extends SchemaAbstract
         $news->addTime('coffeeTime');
         $news->addUri('profileUri');
         $news->addString('g-recaptcha-response');
+        $news->addString('media.fields');
         $news->add('payload', TypeFactory::getAny());
         $news->setRequired(['receiver', 'price', 'content']);
         $news->setAttribute(TypeAbstract::ATTR_CLASS, Popo\News::class);

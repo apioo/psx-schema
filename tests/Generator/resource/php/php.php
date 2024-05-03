@@ -258,6 +258,8 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?\PSX\Uri\Uri $profileUri = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
+    #[Key('media.fields')]
+    protected ?string $mediaFields = null;
     protected mixed $payload = null;
     public function setConfig(?Meta $config) : void
     {
@@ -477,6 +479,14 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->captcha;
     }
+    public function setMediaFields(?string $mediaFields) : void
+    {
+        $this->mediaFields = $mediaFields;
+    }
+    public function getMediaFields() : ?string
+    {
+        return $this->mediaFields;
+    }
     public function setPayload(mixed $payload) : void
     {
         $this->payload = $payload;
@@ -514,6 +524,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('coffeeTime', $this->coffeeTime);
         $record->put('profileUri', $this->profileUri);
         $record->put('g-recaptcha-response', $this->captcha);
+        $record->put('media.fields', $this->mediaFields);
         $record->put('payload', $this->payload);
         return $record;
     }

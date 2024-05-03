@@ -94,6 +94,8 @@ class News
 
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
+    #[Key('media.fields')]
+    protected ?string $mediaFields = null;
     protected mixed $payload = null;
 
     public function setConfig(?Meta $config)
@@ -294,6 +296,16 @@ class News
     public function getCaptcha() : ?string
     {
         return $this->captcha;
+    }
+
+    public function setMediaFields(?string $mediaFields)
+    {
+        $this->mediaFields = $mediaFields;
+    }
+
+    public function getMediaFields() : ?string
+    {
+        return $this->mediaFields;
     }
 
     public function getPayload(): mixed

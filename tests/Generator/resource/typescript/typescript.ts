@@ -63,5 +63,6 @@ export interface News {
     coffeeTime?: string
     profileUri?: string
     "g-recaptcha-response"?: string
+    "media.fields"?: string
     payload?: any
 }

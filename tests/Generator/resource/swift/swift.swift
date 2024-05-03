@@ -66,6 +66,7 @@ class News: Codable {
     var coffeeTime: String
     var profileUri: String
     var captcha: String
+    var mediaFields: String
     var payload: Any
 
     enum CodingKeys: String, CodingKey {
@@ -94,6 +95,7 @@ class News: Codable {
         case coffeeTime = "coffeeTime"
         case profileUri = "profileUri"
         case captcha = "g-recaptcha-response"
+        case mediaFields = "media.fields"
         case payload = "payload"
     }
 }

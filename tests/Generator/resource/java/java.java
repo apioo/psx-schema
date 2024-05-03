@@ -154,6 +154,7 @@ public class News {
     private LocalTime coffeeTime;
     private URI profileUri;
     private String captcha;
+    private String mediaFields;
     private Object payload;
     @JsonSetter("config")
     public void setConfig(Meta config) {
@@ -354,6 +355,14 @@ public class News {
     @JsonGetter("g-recaptcha-response")
     public String getCaptcha() {
         return this.captcha;
+    }
+    @JsonSetter("media.fields")
+    public void setMediaFields(String mediaFields) {
+        this.mediaFields = mediaFields;
+    }
+    @JsonGetter("media.fields")
+    public String getMediaFields() {
+        return this.mediaFields;
     }
     @JsonSetter("payload")
     public void setPayload(Object payload) {

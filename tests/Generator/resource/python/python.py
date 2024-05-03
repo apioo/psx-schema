@@ -80,5 +80,6 @@ class News(BaseModel):
     coffee_time: Optional[datetime.time] = Field(default=None, alias="coffeeTime")
     profile_uri: Optional[str] = Field(default=None, alias="profileUri")
     captcha: Optional[str] = Field(default=None, alias="g-recaptcha-response")
+    media_fields: Optional[str] = Field(default=None, alias="media.fields")
     payload: Optional[Any] = Field(default=None, alias="payload")
     pass

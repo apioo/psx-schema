@@ -95,6 +95,8 @@ Public Class News
     Public Property ProfileUri As String
     <JsonPropertyName("g-recaptcha-response")>
     Public Property Captcha As String
+    <JsonPropertyName("media.fields")>
+    Public Property MediaFields As String
     <JsonPropertyName("payload")>
     Public Property Payload As Object
 End Class

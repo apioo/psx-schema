@@ -50,5 +50,6 @@ type News struct {
     CoffeeTime time.Time `json:"coffeeTime"`
     ProfileUri url.URL `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
+    MediaFields string `json:"media.fields"`
     Payload any `json:"payload"`
 }
