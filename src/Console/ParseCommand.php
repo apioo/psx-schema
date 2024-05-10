@@ -49,7 +49,7 @@ class ParseCommand extends Command
         $this->schemaManager = $schemaManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('schema:parse')
@@ -60,7 +60,7 @@ class ParseCommand extends Command
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Optional a config value which gets passed to the generator');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $source = $input->getArgument('source');
         $target = $input->getArgument('target') ?: getcwd();
@@ -87,6 +87,6 @@ class ParseCommand extends Command
             $output->write((string) $response);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }
