@@ -70,6 +70,9 @@ class TypeScript extends CodeGeneratorAbstract
 
         $code.= ' {' . "\n";
 
+        $reservedClassNames = ['Array', 'Record'];
+        $isReservedClassName = in_array($name->getClass(), $reservedClassNames);
+
         foreach ($properties as $property) {
             /** @var Code\Property $property */
             // we must use the raw property name since in typescript we dont have a JsonGetter annotation like in Java
@@ -79,7 +82,12 @@ class TypeScript extends CodeGeneratorAbstract
                 $propertyName = '"' . $propertyName . '"';
             }
 
-            $code.= $this->indent . $propertyName . ($property->isRequired() ? '' : '?') . ': ' . $property->getType() . "\n";
+            $type = $property->getType();
+            if ($isReservedClassName) {
+                $type = $this->appendGlobalThis($type, $reservedClassNames);
+            }
+
+            $code.= $this->indent . $propertyName . ($property->isRequired() ? '' : '?') . ': ' . $type . "\n";
         }
 
         $code.= '}' . "\n";
@@ -170,5 +178,16 @@ class TypeScript extends CodeGeneratorAbstract
     private function needsQuoting(string $propertyName): bool
     {
         return !preg_match('/^[a-zA-Z0-9$_]+$/', $propertyName);
+    }
+
+    private function appendGlobalThis(string $type, array $reservedNames): string
+    {
+        foreach ($reservedNames as $reservedName) {
+            if (str_starts_with($type, $reservedName)) {
+                return 'globalThis.' . $type;
+            }
+        }
+
+        return $type;
     }
 }
