@@ -424,6 +424,25 @@ JSON;
         $this->assertEquals('foo', $result->getParent()->getType());
     }
 
+    public function testTraverseUnknownProperties()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('/ property "foo" is unknown');
+
+        $schema = $this->schemaManager->getSchema(Form_Element_Input::class);
+        $data = <<<JSON
+{
+    "element": "text",
+    "name": "foo",
+    "type": "bar",
+    "foo": "bar"
+}
+JSON;
+
+        $traverser = new SchemaTraverser(ignoreUnknown: false);
+        $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
+    }
+
     protected function getData()
     {
         return json_decode(file_get_contents(__DIR__ . '/SchemaTraverser/expected.json'));

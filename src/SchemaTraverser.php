@@ -55,10 +55,12 @@ class SchemaTraverser
 {
     private array $pathStack = [];
     private bool $assertConstraints;
+    private bool $ignoreUnknown;
 
-    public function __construct(bool $assertConstraints = true)
+    public function __construct(bool $assertConstraints = true, bool $ignoreUnknown = true)
     {
         $this->assertConstraints = $assertConstraints;
+        $this->ignoreUnknown = $ignoreUnknown;
     }
 
     /**
@@ -217,6 +219,14 @@ class SchemaTraverser
                 }
 
                 array_pop($this->pathStack);
+            }
+
+            if ($this->ignoreUnknown === false) {
+                foreach ($data as $key => $value) {
+                    if (!array_key_exists($key, $properties)) {
+                        throw new ValidationException($this->getCurrentPath() . ' property "' . $key . '" is unknown', 'properties', $this->pathStack);
+                    }
+                }
             }
         }
 
