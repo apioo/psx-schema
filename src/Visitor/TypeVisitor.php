@@ -64,7 +64,7 @@ class TypeVisitor implements VisitorInterface
             $mapping = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
             foreach ($data as $key => $value) {
                 try {
-                    $name   = isset($mapping[$key]) ? $mapping[$key] : $key;
+                    $name   = $mapping[$key] ?? $key;
                     $method = $class->getMethod('set' . ucfirst($name));
                     $method->invokeArgs($record, [$value]);
                 } catch (\ReflectionException $e) {
@@ -72,7 +72,7 @@ class TypeVisitor implements VisitorInterface
                 }
             }
         } else {
-            $record = Record::fromStdClass($data);
+            $record = Record::fromObject($data);
         }
 
         if ($this->validator !== null) {
@@ -98,7 +98,7 @@ class TypeVisitor implements VisitorInterface
                 throw new \RuntimeException('Map implementation must implement the ArrayAccess interface');
             }
         } else {
-            $record = Record::fromStdClass($data);
+            $record = Record::fromObject($data);
         }
 
         if ($this->validator !== null) {
