@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Code;
 
+use ZipArchive;
+
 /**
  * Chunks
  *
@@ -29,74 +31,64 @@ namespace PSX\Schema\Generator\Code;
  */
 class Chunks
 {
-    /**
-     * @var string|null
-     */
-    private $namespace;
+    private ?string $namespace;
+    private array $parts = [];
 
-    /**
-     * @var array 
-     */
-    private $parts = [];
-
-    /**
-     * @param string|null $namespace
-     */
     public function __construct(?string $namespace = null)
     {
         $this->namespace = $namespace;
     }
 
-    /**
-     * @param string $identifier
-     * @param string $code
-     */
-    public function append(string $identifier, string $code)
+    public function append(string $identifier, string|Chunks $code): void
     {
         $this->parts[$identifier] = $code;
     }
 
-    /**
-     * @param Chunks $chunks
-     */
-    public function merge(Chunks $chunks)
+    public function merge(Chunks $chunks): void
     {
         foreach ($chunks->getChunks() as $identifier => $code) {
             $this->append($identifier, $code);
         }
     }
 
-    /**
-     * @return string|null
-     */
     public function getNamespace(): ?string
     {
         return $this->namespace;
     }
 
     /**
-     * @return array
+     * @return array<string|Chunks>
      */
-    public function getChunks()
+    public function getChunks(): array
     {
         return $this->parts;
     }
 
     /**
      * Writes this chunk collection as zip archive to the provided file
-     * 
-     * @param string $file
      */
-    public function writeTo(string $file)
+    public function writeTo(string $file): void
     {
-        $zip = new \ZipArchive();
-        $zip->open($file, \ZipArchive::CREATE);
+        $zip = new ZipArchive();
+        $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        foreach ($this->getChunks() as $identifier => $code) {
-            $zip->addFromString($identifier, $code);
-        }
+        $this->recursiveAddToZip($zip, $this);
 
         $zip->close();
+    }
+
+    private function recursiveAddToZip(ZipArchive $zip, Chunks $chunks, ?string $basePath = null): void
+    {
+        foreach ($chunks->getChunks() as $identifier => $code) {
+            $prefix = $basePath !== null ? $basePath . '/' : '';
+
+            if ($code instanceof Chunks) {
+                $zip->addEmptyDir($prefix . $identifier);
+                $this->recursiveAddToZip($zip, $code, $prefix . $identifier);
+            } else {
+                $zip->addFromString($prefix . $identifier, $code);
+            }
+        }
     }
 
     /**
