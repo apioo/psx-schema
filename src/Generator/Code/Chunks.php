@@ -66,6 +66,30 @@ class Chunks
         return $this->parts;
     }
 
+    public function getChunk(string $identifier): Chunks|string|null
+    {
+        return $this->parts[$identifier] ?? null;
+    }
+
+    /**
+     * Tries to find a nested chunks based on the provided path
+     */
+    public function findByPath(string $path): Chunks|string|null
+    {
+        $parts = explode('/', $path);
+        $first = array_shift($parts);
+
+        $result = $this->parts[$first] ?? null;
+
+        if (empty($parts)) {
+            return $result;
+        } elseif ($result instanceof Chunks) {
+            return $result->findByPath(implode('/', $parts));
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @deprecated use the explicit writeToZip method
      */

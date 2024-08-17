@@ -64,4 +64,34 @@ class ChunksTest extends TestCase
         $this->assertDirectoryExists(__DIR__ . '/resource/folder');
         $this->assertFileExists(__DIR__ . '/resource/folder/file_b');
     }
+
+    public function testFindByPath()
+    {
+        $subSubChunks = new Chunks();
+        $subSubChunks->append('file_c', 'foobar');
+
+        $subChunks = new Chunks();
+        $subChunks->append('file_b', 'foobar');
+        $subChunks->append('folder_1', $subSubChunks);
+
+        $chunks = new Chunks();
+        $chunks->append('folder', $subChunks);
+        $chunks->append('file_a', 'foobar');
+
+        $this->assertEquals('foobar', $chunks->findByPath('folder/folder_1/file_c'));
+        $this->assertInstanceOf(Chunks::class, $chunks->findByPath('folder/folder_1'));
+        $this->assertEquals('foobar', $chunks->findByPath('folder/file_b'));
+        $this->assertInstanceOf(Chunks::class, $chunks->findByPath('folder'));
+        $this->assertEquals('foobar', $chunks->findByPath('file_a'));
+    }
+
+    public function testGetChunk()
+    {
+        $chunks = new Chunks();
+        $chunks->append('folder', new Chunks());
+        $chunks->append('file_a', 'foobar');
+
+        $this->assertInstanceOf(Chunks::class, $chunks->getChunk('folder'));
+        $this->assertEquals('foobar', $chunks->getChunk('file_a'));
+    }
 }
