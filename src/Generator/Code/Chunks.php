@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Code;
 
+use Closure;
+use Generator;
 use ZipArchive;
 
 /**
@@ -65,28 +67,79 @@ class Chunks
     }
 
     /**
-     * Writes this chunk collection as zip archive to the provided file
+     * @deprecated use the explicit writeToZip method
      */
     public function writeTo(string $file): void
+    {
+        $this->writeToZip($file);
+    }
+
+    /**
+     * Writes this chunk collection as zip archive to the provided file
+     */
+    public function writeToZip(string $file): void
     {
         $zip = new ZipArchive();
         $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        $this->recursiveAddToZip($zip, $this);
+        $this->recursiveWriteToZip($zip, $this);
 
         $zip->close();
     }
 
-    private function recursiveAddToZip(ZipArchive $zip, Chunks $chunks, ?string $basePath = null): void
+    /**
+     * Writes all files to the provided folder, returns a generator which you need to iterate in order to write all
+     * files, this allows to output all generated files
+     *
+     * @return Generator<string>
+     */
+    public function writeToFolder(string $folder, ?Closure $fileCallback = null, ?Closure $codeCallback = null): Generator
+    {
+        if (!is_dir($folder)) {
+            throw new \InvalidArgumentException('Provided folder is not a directory');
+        }
+
+        yield from $this->recursiveWriteToFolder($folder, $this, $fileCallback, $codeCallback);
+    }
+
+    private function recursiveWriteToZip(ZipArchive $zip, Chunks $chunks, ?string $basePath = null): void
     {
         foreach ($chunks->getChunks() as $identifier => $code) {
-            $prefix = $basePath !== null ? $basePath . '/' : '';
+            $item = ($basePath !== null ? $basePath . '/' : '') . $identifier;
 
             if ($code instanceof Chunks) {
-                $zip->addEmptyDir($prefix . $identifier);
-                $this->recursiveAddToZip($zip, $code, $prefix . $identifier);
+                $zip->addEmptyDir($item);
+
+                $this->recursiveWriteToZip($zip, $code, $item);
             } else {
-                $zip->addFromString($prefix . $identifier, $code);
+                $zip->addFromString($item, $code);
+            }
+        }
+    }
+
+    private function recursiveWriteToFolder(string $folder, Chunks $chunks, ?Closure $fileCallback = null, ?Closure $codeCallback = null): Generator
+    {
+        foreach ($chunks->getChunks() as $identifier => $code) {
+            $item = $folder . '/' . $identifier;
+
+            if ($code instanceof Chunks) {
+                if (!is_dir($item)) {
+                    mkdir($item, recursive: true);
+                }
+
+                yield from $this->recursiveWriteToFolder($item, $code, $fileCallback, $codeCallback);
+            } else {
+                if ($fileCallback instanceof Closure) {
+                    $item = $fileCallback($item);
+                }
+
+                if ($codeCallback instanceof Closure) {
+                    $code = $codeCallback($code);
+                }
+
+                file_put_contents($item, $code);
+
+                yield $item;
             }
         }
     }

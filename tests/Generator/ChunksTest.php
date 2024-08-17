@@ -33,7 +33,7 @@ use PSX\Schema\Generator\Config;
  */
 class ChunksTest extends TestCase
 {
-    public function testWriteTo()
+    public function testWriteToZip()
     {
         $subChunks = new Chunks();
         $subChunks->append('file_b', 'foobar');
@@ -42,8 +42,26 @@ class ChunksTest extends TestCase
         $chunks->append('folder', $subChunks);
         $chunks->append('file_a', 'foobar');
 
-        $chunks->writeTo(__DIR__ . '/resource/test.zip');
+        $chunks->writeToZip(__DIR__ . '/resource/test.zip');
 
         $this->assertFileExists(__DIR__ . '/resource/test.zip');
+    }
+
+    public function testWriteToFolder()
+    {
+        $subChunks = new Chunks();
+        $subChunks->append('file_b', 'foobar');
+
+        $chunks = new Chunks();
+        $chunks->append('folder', $subChunks);
+        $chunks->append('file_a', 'foobar');
+
+        $result = $chunks->writeToFolder(__DIR__ . '/resource');
+
+        iterator_to_array($result);
+
+        $this->assertFileExists(__DIR__ . '/resource/file_a');
+        $this->assertDirectoryExists(__DIR__ . '/resource/folder');
+        $this->assertFileExists(__DIR__ . '/resource/folder/file_b');
     }
 }

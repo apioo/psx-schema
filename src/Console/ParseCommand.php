@@ -76,9 +76,15 @@ class ParseCommand extends Command
         $response  = $generator->generate($schema);
 
         if ($generator instanceof FileAwareInterface && $response instanceof Chunks) {
+            $result = $response->writeToFolder(
+                $target,
+                fn (string $fileName) => $generator->getFileName($fileName),
+                fn (string $code) => $generator->getFileContent($code)
+            );
+
             $count = 0;
-            foreach ($response->getChunks() as $file => $code) {
-                file_put_contents($target . '/' . $generator->getFileName($file), $generator->getFileContent($code));
+            foreach ($result as $file) {
+                $output->writeln('Wrote:  ' . $file);
                 $count++;
             }
 
