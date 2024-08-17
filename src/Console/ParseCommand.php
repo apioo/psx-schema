@@ -84,7 +84,7 @@ class ParseCommand extends Command
 
             $count = 0;
             foreach ($result as $file) {
-                $output->writeln('Wrote:  ' . $file);
+                $output->writeln('Wrote: ' . $file);
                 $count++;
             }
 
