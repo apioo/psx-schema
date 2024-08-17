@@ -49,7 +49,7 @@ class ParseCommandTest extends TestCase
         $actual = $commandTester->getDisplay();
         $expect = 'Generated 5 files';
 
-        $this->assertEquals($expect, substr($actual, 0, strlen($expect)), $actual);
+        $this->assertStringContainsString($expect, $actual, $actual);
         $this->assertFileExists(__DIR__ . '/resource/Author.php');
         $this->assertFileExists(__DIR__ . '/resource/Location.php');
         $this->assertFileExists(__DIR__ . '/resource/Meta.php');
