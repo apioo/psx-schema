@@ -22,7 +22,6 @@ namespace PSX\Schema\Tests\Generator;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Generator\Code\Chunks;
-use PSX\Schema\Generator\Config;
 
 /**
  * ChunksTest
