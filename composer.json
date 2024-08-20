@@ -30,6 +30,7 @@
     "symfony/yaml": "^5.0|^6.0|^7.0",
     "vimeo/psalm": "^4.0"
   },
+  "bin": ["bin/schema"],
   "autoload": {
     "psr-4": {
       "PSX\\Schema\\": "src/"
