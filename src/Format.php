@@ -37,6 +37,16 @@ enum Format: string
     case BINARY = 'base64';
 
     /**
+     * An ISO 3166-1 alpha-2 country code
+     */
+    case COUNTRY = 'country';
+
+    /**
+     * An 3-letter ISO 4217 currency name
+     */
+    case CURRENCY = 'currency';
+
+    /**
      * A date without a time-zone in the ISO-8601 calendar system, such as '2007-12-03'
      *
      * @see https://www.rfc-editor.org/rfc/rfc3339
@@ -121,6 +131,13 @@ enum Format: string
      * @see https://www.rfc-editor.org/rfc/rfc8141
      */
     case URN = 'urn';
+
+    /**
+     * An ulid string, such as '01ARZ3NDEKTSV4RRFFQ69G5FAV'
+     *
+     * @see https://github.com/ulid/spec
+     */
+    case ULID = 'ulid';
 
     /**
      * An uuid string, such as 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
