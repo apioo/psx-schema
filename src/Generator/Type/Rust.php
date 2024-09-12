@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Rust
  *
@@ -29,24 +32,16 @@ namespace PSX\Schema\Generator\Type;
  */
 class Rust extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType): string
     {
-        return 'NaiveDate';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'NaiveDateTime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'NaiveTime';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'Duration';
+        return match ($contentType) {
+            ContentType::BINARY => 'Bytes',
+            ContentType::FORM => 'HashMap<string, string>',
+            ContentType::JSON => 'serde_json::Value',
+            ContentType::MULTIPART => $this->getString(),
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => 'xml_doc::Document',
+        };
     }
 
     protected function getString(): string
@@ -54,19 +49,29 @@ class Rust extends GeneratorAbstract
         return 'String';
     }
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return 'u32';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'u64';
+        return match ($format) {
+            Format::BINARY => 'Bytes',
+            Format::DATE => 'chrono::NaiveDate',
+            Format::DATETIME => 'chrono::NaiveDateTime',
+            Format::TIME => 'chrono::NaiveTime',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
     {
         return 'u64';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'u32',
+            Format::INT64 => 'u64',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string

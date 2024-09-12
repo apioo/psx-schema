@@ -41,14 +41,14 @@ type News struct {
     SendDate time.Time `json:"sendDate"`
     ReadDate time.Time `json:"readDate"`
     Expires string `json:"expires"`
-    Range time.Duration `json:"range"`
+    Range string `json:"range"`
     Price float64 `json:"price"`
     Rating int `json:"rating"`
     Content string `json:"content"`
     Question string `json:"question"`
     Version string `json:"version"`
     CoffeeTime time.Time `json:"coffeeTime"`
-    ProfileUri url.URL `json:"profileUri"`
+    ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
     MediaFields string `json:"media.fields"`
     Payload any `json:"payload"`

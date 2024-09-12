@@ -20,12 +20,11 @@
 
 namespace PSX\Schema\Generator\Type;
 
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
 use PSX\Record\Record;
+use PSX\Schema\ContentType;
 use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
@@ -33,7 +32,6 @@ use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\TypeInterface;
-use PSX\Uri\Uri;
 
 /**
  * Php
@@ -75,44 +73,32 @@ class Php extends GeneratorAbstract
         }
     }
 
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType): string
     {
-        return '\\' . LocalDate::class;
-    }
-
-    protected function getDateTime(): string
-    {
-        return '\\' . LocalDateTime::class;
-    }
-
-    protected function getTime(): string
-    {
-        return '\\' . LocalTime::class;
-    }
-
-    protected function getPeriod(): string
-    {
-        return '\\' . Period::class;
-    }
-
-    protected function getDuration(): string
-    {
-        return '\\' . Duration::class;
-    }
-
-    protected function getUri(): string
-    {
-        return '\\' . Uri::class;
-    }
-
-    protected function getBinary(): string
-    {
-        return '';
+        return match ($contentType) {
+            ContentType::BINARY => 'resource',
+            ContentType::FORM => 'array',
+            ContentType::JSON => 'mixed',
+            ContentType::MULTIPART => 'array',
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => '\\' . \DOMDocument::class,
+        };
     }
 
     protected function getString(): string
     {
         return 'string';
+    }
+
+    protected function getStringFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::BINARY => 'resource',
+            Format::DATE => '\\' . LocalDate::class,
+            Format::DATETIME => '\\' . LocalDateTime::class,
+            Format::TIME => '\\' . LocalTime::class,
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string

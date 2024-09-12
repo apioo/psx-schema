@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\Format;
+
 /**
  * Protobuf
  *
@@ -29,39 +31,33 @@ namespace PSX\Schema\Generator\Type;
  */
 class Protobuf extends GeneratorAbstract
 {
-    protected function getDate(): string
-    {
-        return 'Timestamp';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'Timestamp';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'bytes';
-    }
-
     protected function getString(): string
     {
         return 'string';
     }
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return 'int32';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'int64';
+        return match ($format) {
+            Format::BINARY => 'bytes',
+            Format::DATE => 'Timestamp',
+            Format::DATETIME => 'Timestamp',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
     {
         return 'int64';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'int32',
+            Format::INT64 => 'int64',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string

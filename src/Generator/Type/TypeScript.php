@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+
 /**
  * TypeScript
  *
@@ -29,6 +31,18 @@ namespace PSX\Schema\Generator\Type;
  */
 class TypeScript extends GeneratorAbstract
 {
+    public function getContentType(ContentType $contentType): string
+    {
+        return match ($contentType) {
+            ContentType::BINARY => 'ArrayBuffer',
+            ContentType::FORM => 'Record<string, string>',
+            ContentType::JSON => 'any',
+            ContentType::MULTIPART => 'FormData',
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => 'XMLDocument',
+        };
+    }
+
     protected function getString(): string
     {
         return 'string';

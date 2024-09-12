@@ -88,9 +88,9 @@ public class News
     [JsonPropertyName("readDate")]
     public DateTime? ReadDate { get; set; }
     [JsonPropertyName("expires")]
-    public TimeSpan? Expires { get; set; }
+    public string? Expires { get; set; }
     [JsonPropertyName("range")]
-    public TimeSpan? Range { get; set; }
+    public string? Range { get; set; }
     [JsonPropertyName("price")]
     public double? Price { get; set; }
     [JsonPropertyName("rating")]
@@ -104,7 +104,7 @@ public class News
     [JsonPropertyName("coffeeTime")]
     public TimeOnly? CoffeeTime { get; set; }
     [JsonPropertyName("profileUri")]
-    public Uri? ProfileUri { get; set; }
+    public string? ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
     public string? Captcha { get; set; }
     [JsonPropertyName("media.fields")]

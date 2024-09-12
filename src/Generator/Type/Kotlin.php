@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Kotlin
  *
@@ -29,44 +32,32 @@ namespace PSX\Schema\Generator\Type;
  */
 class Kotlin extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType): string
     {
-        return 'LocalDate';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'LocalDateTime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'LocalTime';
-    }
-
-    protected function getPeriod(): string
-    {
-        return 'Period';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'Duration';
-    }
-
-    protected function getUri(): string
-    {
-        return 'URI';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'ByteArray';
+        return match ($contentType) {
+            ContentType::BINARY => 'ByteArray',
+            ContentType::FORM => 'Map<string, string>',
+            ContentType::JSON => 'Object',
+            ContentType::MULTIPART => 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder',
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => 'XMLDocument',
+        };
     }
 
     protected function getString(): string
     {
         return 'String';
+    }
+
+    protected function getStringFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::BINARY => 'ByteArray',
+            Format::DATE => 'java.time.LocalDate',
+            Format::DATETIME => 'java.time.LocalDateTime',
+            Format::TIME => 'java.time.LocalTime',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
@@ -91,7 +82,7 @@ class Kotlin extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'HashMap<String, ' . $type . '>';
+        return 'Map<String, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string

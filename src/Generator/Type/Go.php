@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Go
  *
@@ -29,34 +32,16 @@ namespace PSX\Schema\Generator\Type;
  */
 class Go extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType): string
     {
-        return 'time.Time';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'time.Time';
-    }
-
-    protected function getTime(): string
-    {
-        return 'time.Time';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'time.Duration';
-    }
-
-    protected function getUri(): string
-    {
-        return 'url.URL';
-    }
-
-    protected function getBinary(): string
-    {
-        return '[]byte';
+        return match ($contentType) {
+            ContentType::BINARY => 'byte[]',
+            ContentType::FORM => 'map[string]string',
+            ContentType::JSON => 'any',
+            ContentType::MULTIPART => '',
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => $this->getString(),
+        };
     }
 
     protected function getString(): string
@@ -64,19 +49,29 @@ class Go extends GeneratorAbstract
         return 'string';
     }
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return 'int32';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'int64';
+        return match ($format) {
+            Format::BINARY => '[]byte',
+            Format::DATE => 'time.Time',
+            Format::DATETIME => 'time.Time',
+            Format::TIME => 'time.Time',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
     {
         return 'int';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'int32',
+            Format::INT64 => 'int64',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string

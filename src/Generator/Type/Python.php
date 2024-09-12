@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Python
  *
@@ -29,29 +32,32 @@ namespace PSX\Schema\Generator\Type;
  */
 class Python extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType): string
     {
-        return 'datetime.date';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'datetime.datetime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'datetime.time';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'bytearray';
+        return match ($contentType) {
+            ContentType::BINARY => 'bytearray',
+            ContentType::FORM => 'Dict[str, str]',
+            ContentType::JSON => 'Any',
+            ContentType::MULTIPART => 'Dict[str, Any]',
+            ContentType::TEXT => $this->getString(),
+            ContentType::XML => $this->getString(),
+        };
     }
 
     protected function getString(): string
     {
         return 'str';
+    }
+
+    protected function getStringFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::BINARY => 'bytearray',
+            Format::DATE => 'datetime.date',
+            Format::DATETIME => 'datetime.datetime',
+            Format::TIME => 'datetime.time',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string

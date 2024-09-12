@@ -20,14 +20,11 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Format;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeUtil;
 
 /**
  * Kotlin
@@ -116,32 +113,6 @@ class Kotlin extends CodeGeneratorAbstract
 
     private function getImports(TypeAbstract $origin): array
     {
-        $imports = [];
-
-        if (TypeUtil::contains($origin, StringType::class, Format::URI)) {
-            $imports[] = 'import java.net.URI;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
-            $imports[] = 'import java.time.Duration;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
-            $imports[] = 'import java.time.LocalDate;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
-            $imports[] = 'import java.time.LocalTime;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
-            $imports[] = 'import java.time.LocalDateTime;';
-        }
-
-        if (TypeUtil::contains($origin, MapType::class)) {
-            $imports[] = 'import java.util.HashMap;';
-        }
-
-        return $imports;
+        return [];
     }
 }
