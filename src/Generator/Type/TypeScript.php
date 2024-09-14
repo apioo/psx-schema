@@ -35,7 +35,7 @@ class TypeScript extends GeneratorAbstract
     {
         return match ($contentType) {
             ContentType::BINARY => 'ArrayBuffer',
-            ContentType::FORM => 'Record<string, string>',
+            ContentType::FORM => 'URLSearchParams',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => 'FormData',
             ContentType::TEXT => $this->getString(),
