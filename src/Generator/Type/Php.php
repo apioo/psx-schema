@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use Psr\Http\Message\StreamInterface;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
@@ -28,7 +29,6 @@ use PSX\Schema\ContentType;
 use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\StringType;
 use PSX\Schema\TypeInterface;
@@ -70,7 +70,7 @@ class Php extends GeneratorAbstract
     public function getContentType(ContentType $contentType): string
     {
         return match ($contentType) {
-            ContentType::BINARY => 'resource',
+            ContentType::BINARY => '\\' . StreamInterface::class,
             ContentType::FORM => 'array',
             ContentType::JSON => 'mixed',
             ContentType::MULTIPART => 'array',
