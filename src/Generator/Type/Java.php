@@ -52,7 +52,6 @@ class Java extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'byte[]',
             Format::DATE => 'java.time.LocalDate',
             Format::DATETIME => 'java.time.LocalDateTime',
             Format::TIME => 'java.time.LocalTime',

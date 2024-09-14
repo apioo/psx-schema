@@ -52,7 +52,6 @@ class Python extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'bytearray',
             Format::DATE => 'datetime.date',
             Format::DATETIME => 'datetime.datetime',
             Format::TIME => 'datetime.time',

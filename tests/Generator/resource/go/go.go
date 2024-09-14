@@ -33,7 +33,7 @@ type News struct {
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []any `json:"resources"`
-    ProfileImage []byte `json:"profileImage"`
+    ProfileImage string `json:"profileImage"`
     Read bool `json:"read"`
     Source any `json:"source"`
     Author *Author `json:"author"`

@@ -60,12 +60,6 @@ class Php extends GeneratorAbstract
             }
         } elseif ($type instanceof StringType && $type->getFormat() === Format::BINARY) {
             return 'resource';
-        } elseif ($type instanceof IntersectionType) {
-            $parts = [];
-            foreach ($type->getAllOf() as $item) {
-                $parts[] = $this->getDocType($item);
-            }
-            return implode('&', $parts);
         } elseif ($type instanceof GenericType) {
             return $type->getGeneric() ?? '';
         } else {
@@ -93,7 +87,6 @@ class Php extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'resource',
             Format::DATE => '\\' . LocalDate::class,
             Format::DATETIME => '\\' . LocalDateTime::class,
             Format::TIME => '\\' . LocalTime::class,
@@ -133,7 +126,7 @@ class Php extends GeneratorAbstract
 
     protected function getIntersection(array $types): string
     {
-        return '';
+        return implode('&', $types);
     }
 
     protected function getGroup(string $type): string

@@ -52,7 +52,6 @@ class Rust extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'Bytes',
             Format::DATE => 'chrono::NaiveDate',
             Format::DATETIME => 'chrono::NaiveDateTime',
             Format::TIME => 'chrono::NaiveTime',

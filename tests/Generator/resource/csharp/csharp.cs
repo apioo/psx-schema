@@ -74,7 +74,7 @@ public class News
     [JsonPropertyName("resources")]
     public List<object>? Resources { get; set; }
     [JsonPropertyName("profileImage")]
-    public byte[]? ProfileImage { get; set; }
+    public string? ProfileImage { get; set; }
     [JsonPropertyName("read")]
     public bool? Read { get; set; }
     [JsonPropertyName("source")]

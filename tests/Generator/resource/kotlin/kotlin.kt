@@ -40,7 +40,7 @@ open class News {
     var tags: Array<String>? = null
     var receiver: Array<Author>? = null
     var resources: Array<Any>? = null
-    var profileImage: ByteArray? = null
+    var profileImage: String? = null
     var read: Boolean? = null
     var source: Any? = null
     var author: Author? = null

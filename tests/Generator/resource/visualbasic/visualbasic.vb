@@ -72,9 +72,9 @@ Public Class News
     <JsonPropertyName("meta")>
     Public Property Meta As Meta
     <JsonPropertyName("sendDate")>
-    Public Property SendDate As String
+    Public Property SendDate As DateString
     <JsonPropertyName("readDate")>
-    Public Property ReadDate As String
+    Public Property ReadDate As DateAndTime
     <JsonPropertyName("expires")>
     Public Property Expires As String
     <JsonPropertyName("range")>
@@ -90,7 +90,7 @@ Public Class News
     <JsonPropertyName("version")>
     Public Property Version As String
     <JsonPropertyName("coffeeTime")>
-    Public Property CoffeeTime As String
+    Public Property CoffeeTime As TimeString
     <JsonPropertyName("profileUri")>
     Public Property ProfileUri As String
     <JsonPropertyName("g-recaptcha-response")>

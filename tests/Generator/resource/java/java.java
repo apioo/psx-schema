@@ -126,7 +126,7 @@ public class News {
     private java.util.List<String> tags;
     private java.util.List<Author> receiver;
     private java.util.List<Object> resources;
-    private byte[] profileImage;
+    private String profileImage;
     private Boolean read;
     private Object source;
     private Author author;
@@ -210,11 +210,11 @@ public class News {
         return this.resources;
     }
     @JsonSetter("profileImage")
-    public void setProfileImage(byte[] profileImage) {
+    public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
     @JsonGetter("profileImage")
-    public byte[] getProfileImage() {
+    public String getProfileImage() {
         return this.profileImage;
     }
     @JsonSetter("read")

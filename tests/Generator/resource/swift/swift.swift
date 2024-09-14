@@ -49,7 +49,7 @@ class News: Codable {
     var tags: Array<String>
     var receiver: Array<Author>
     var resources: Array<Location | Web>
-    var profileImage: Data
+    var profileImage: String
     var read: Bool
     var source: Author | Web
     var author: Author

@@ -52,7 +52,6 @@ class Kotlin extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'ByteArray',
             Format::DATE => 'java.time.LocalDate',
             Format::DATETIME => 'java.time.LocalDateTime',
             Format::TIME => 'java.time.LocalTime',
@@ -63,6 +62,15 @@ class Kotlin extends GeneratorAbstract
     protected function getInteger(): string
     {
         return 'Int';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'Int',
+            Format::INT64 => 'Long',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string

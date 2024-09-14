@@ -229,7 +229,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      * @var array<Location|Web>|null
      */
     protected ?array $resources = null;
-    protected ?resource $profileImage = null;
+    protected ?string $profileImage = null;
     protected ?bool $read = null;
     protected Author|Web|null $source = null;
     protected ?Author $author = null;
@@ -340,11 +340,11 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->resources;
     }
-    public function setProfileImage(?resource $profileImage) : void
+    public function setProfileImage(?string $profileImage) : void
     {
         $this->profileImage = $profileImage;
     }
-    public function getProfileImage() : ?resource
+    public function getProfileImage() : ?string
     {
         return $this->profileImage;
     }

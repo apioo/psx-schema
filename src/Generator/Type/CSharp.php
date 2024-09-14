@@ -52,7 +52,6 @@ class CSharp extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'byte[]',
             Format::DATE => 'DateOnly',
             Format::DATETIME => 'DateTime',
             Format::TIME => 'TimeOnly',

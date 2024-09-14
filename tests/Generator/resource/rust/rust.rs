@@ -72,7 +72,7 @@ pub struct News {
     #[serde(rename = "resources")]
     resources: Option<Vec<serde_json::Value>>,
     #[serde(rename = "profileImage")]
-    profile_image: Option<Bytes>,
+    profile_image: Option<String>,
     #[serde(rename = "read")]
     read: Option<bool>,
     #[serde(rename = "source")]

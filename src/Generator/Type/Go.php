@@ -35,7 +35,7 @@ class Go extends GeneratorAbstract
     public function getContentType(ContentType $contentType): string
     {
         return match ($contentType) {
-            ContentType::BINARY => 'byte[]',
+            ContentType::BINARY => '[]byte',
             ContentType::FORM => 'map[string]string',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => '',
@@ -52,7 +52,6 @@ class Go extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => '[]byte',
             Format::DATE => 'time.Time',
             Format::DATETIME => 'time.Time',
             Format::TIME => 'time.Time',

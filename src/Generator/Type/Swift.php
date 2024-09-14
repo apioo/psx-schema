@@ -52,7 +52,6 @@ class Swift extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'Data',
             Format::DATE => 'Date',
             Format::DATETIME => 'Date',
             default => $this->getString(),
