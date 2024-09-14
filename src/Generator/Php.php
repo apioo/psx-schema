@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PhpParser\Builder\Class_;
+use PhpParser\Builder\Property;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
@@ -118,8 +119,9 @@ class Php extends CodeGeneratorAbstract
             $prop->makeProtected();
             $type = $property->getType();
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $prop->setType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $prop->setType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
@@ -153,8 +155,9 @@ class Php extends CodeGeneratorAbstract
             $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $param->setType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $param->setType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
@@ -180,8 +183,9 @@ class Php extends CodeGeneratorAbstract
 
             $getter = $this->factory->method($property->getName()->getMethod(prefix: ['get']));
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $getter->setReturnType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $getter->setReturnType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a return annotation to describe which type is inside the array
@@ -482,5 +486,16 @@ class Php extends CodeGeneratorAbstract
         $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($toRecord)));
 
         $class->addStmt($serialize);
+    }
+
+    private function getNullableCombinationType(string $type): ?string
+    {
+        if (str_contains($type, '|')) {
+            return $type . '|null';
+        } elseif (str_contains($type, '&')) {
+            return '(' . $type . ')|null';
+        } else {
+            return null;
+        }
     }
 }

@@ -78,7 +78,7 @@ use PSX\Schema\Attribute\Discriminator;
 class Union implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected Human|Animal|null $union = null;
-    protected ?Human&Animal $intersection = null;
+    protected (Human&Animal)|null $intersection = null;
     #[Discriminator('kind', array('Human', 'Animal'))]
     protected Human|Animal|null $discriminator = null;
     public function setUnion(Human|Animal|null $union) : void
@@ -89,11 +89,11 @@ class Union implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->union;
     }
-    public function setIntersection(?Human&Animal $intersection) : void
+    public function setIntersection((Human&Animal)|null $intersection) : void
     {
         $this->intersection = $intersection;
     }
-    public function getIntersection() : ?Human&Animal
+    public function getIntersection() : (Human&Animal)|null
     {
         return $this->intersection;
     }
