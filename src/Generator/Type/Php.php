@@ -71,9 +71,9 @@ class Php extends GeneratorAbstract
     {
         return match ($contentType) {
             ContentType::BINARY => '\\' . StreamInterface::class,
-            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'array' : '\\' . \stdClass::class,
-            ContentType::JSON => '\\' . \stdClass::class,
-            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Reader\\Multipart',
+            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Body\\Form',
+            ContentType::JSON => $context & self::CONTEXT_CLIENT ? '\\' . \stdClass::class : '\\PSX\\Data\\Body\\Json',
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Body\\Multipart',
             ContentType::TEXT => $this->getString(),
             ContentType::XML => '\\' . \DOMDocument::class,
         };
