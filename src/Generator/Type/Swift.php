@@ -32,7 +32,7 @@ use PSX\Schema\Format;
  */
 class Swift extends GeneratorAbstract
 {
-    public function getContentType(ContentType $contentType): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
         return match ($contentType) {
             ContentType::BINARY => 'Data',

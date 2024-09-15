@@ -35,6 +35,11 @@ use PSX\Schema\TypeInterface;
  */
 interface GeneratorInterface
 {
+    public const CONTEXT_CLIENT = 1;
+    public const CONTEXT_SERVER = 2;
+    public const CONTEXT_REQUEST = 4;
+    public const CONTEXT_RESPONSE = 8;
+
     /**
      * Returns a type string
      */
@@ -50,5 +55,5 @@ interface GeneratorInterface
      * type it should return it, i.e. for "application/xml" Java could return "org.w3c.dom.Document" and PHP "DOMDocument".
      * As default the method should simply return a string type
      */
-    public function getContentType(ContentType $contentType): string;
+    public function getContentType(ContentType $contentType, int $context): string;
 }

@@ -31,7 +31,7 @@ use PSX\Schema\ContentType;
  */
 class TypeScript extends GeneratorAbstract
 {
-    public function getContentType(ContentType $contentType): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
         return match ($contentType) {
             ContentType::BINARY => 'ArrayBuffer',

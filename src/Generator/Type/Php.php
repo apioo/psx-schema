@@ -67,13 +67,13 @@ class Php extends GeneratorAbstract
         }
     }
 
-    public function getContentType(ContentType $contentType): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
         return match ($contentType) {
             ContentType::BINARY => '\\' . StreamInterface::class,
-            ContentType::FORM => 'array',
-            ContentType::JSON => 'mixed',
-            ContentType::MULTIPART => 'array',
+            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'array' : '\\' . \stdClass::class,
+            ContentType::JSON => '\\' . \stdClass::class,
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Reader\\Multipart',
             ContentType::TEXT => $this->getString(),
             ContentType::XML => '\\' . \DOMDocument::class,
         };

@@ -32,13 +32,13 @@ use PSX\Schema\Format;
  */
 class Java extends GeneratorAbstract
 {
-    public function getContentType(ContentType $contentType): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
         return match ($contentType) {
-            ContentType::BINARY => 'byte[]',
-            ContentType::FORM => 'java.util.Map<string, string>',
-            ContentType::JSON => 'Object',
-            ContentType::MULTIPART => 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder',
+            ContentType::BINARY => 'java.io.InputStream',
+            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'java.util.Map<String, String>' : 'org.springframework.util.MultiValueMap<String, String>',
+            ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'Object' : 'String',
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder' : 'reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<String, org.springframework.http.codec.multipart.Part>>',
             ContentType::TEXT => $this->getString(),
             ContentType::XML => 'org.w3c.dom.Document',
         };
