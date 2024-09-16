@@ -41,4 +41,5 @@ interface NormalizerInterface
     public function method(string... $name): string;
     public function class(string... $name): string;
     public function file(string... $name): string;
+    public function import(string $name, ?string $namespace = null): string;
 }
