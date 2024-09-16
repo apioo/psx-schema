@@ -1,10 +1,10 @@
-import {StudentMap} from "./StudentMap";
-import {Student} from "./Student";
+import {StudentMap} from "./my_import/StudentMap";
+import {Student} from "./my_import/Student";
 export interface Import {
     students?: StudentMap
     student?: Student
 }
 
-import {Student} from "./Student";
+import {Student} from "./my_import/Student";
 export interface MyMap extends Student {
 }

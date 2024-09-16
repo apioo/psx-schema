@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
@@ -169,7 +170,13 @@ class TypeScript extends CodeGeneratorAbstract
                 continue;
             }
 
-            $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->file($name) . '";';
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $file = $this->normalizer->import($name);
+            } else {
+                $file = $this->normalizer->import($name, $ns);
+            }
+
+            $imports[] = 'import {' . $typeName . '} from "./' . $file . '";';
         }
 
         return $imports;
