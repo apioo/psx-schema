@@ -33,23 +33,9 @@ use Throwable;
  */
 class ValidationException extends \Exception
 {
-    /**
-     * @var string
-     */
-    protected $keyword;
+    protected string $keyword;
+    protected array $path;
 
-    /**
-     * @var array
-     */
-    protected $path;
-
-    /**
-     * @param string $message
-     * @param string $keyword
-     * @param array $path
-     * @param int $code
-     * @param Throwable|null $previous
-     */
     public function __construct(string $message, string $keyword, array $path, int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
@@ -58,17 +44,11 @@ class ValidationException extends \Exception
         $this->path    = $path;
     }
 
-    /**
-     * @return string
-     */
     public function getKeyword(): string
     {
         return $this->keyword;
     }
 
-    /**
-     * @return array
-     */
     public function getPath(): array
     {
         return $this->path;
