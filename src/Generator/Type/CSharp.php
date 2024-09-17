@@ -36,11 +36,11 @@ class CSharp extends GeneratorAbstract
     {
         return match ($contentType) {
             ContentType::BINARY => 'byte[]',
-            ContentType::FORM => 'Dictionary<string, string>',
+            ContentType::FORM => 'System.Collections.Specialized.NameValueCollection',
             ContentType::JSON => 'object',
-            ContentType::MULTIPART => '',
+            ContentType::MULTIPART => 'System.Collections.Generic.Dictionary<string, string>',
             ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'XmlDocument',
+            ContentType::XML => 'System.Xml.XmlDocument',
         };
     }
 
@@ -52,9 +52,9 @@ class CSharp extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::DATE => 'DateOnly',
-            Format::DATETIME => 'DateTime',
-            Format::TIME => 'TimeOnly',
+            Format::DATE => 'System.DateOnly',
+            Format::DATETIME => 'System.DateTime',
+            Format::TIME => 'System.TimeOnly',
             default => $this->getString(),
         };
     }
@@ -85,12 +85,12 @@ class CSharp extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return 'List<' . $type . '>';
+        return 'System.Collections.Generic.List<' . $type . '>';
     }
 
     protected function getMap(string $type): string
     {
-        return 'Dictionary<string, ' . $type . '>';
+        return 'System.Collections.Generic.Dictionary<string, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string
