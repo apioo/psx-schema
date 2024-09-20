@@ -29,7 +29,7 @@ use PSX\Record\Record;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  *
- * @template-extends Record<string>
+ * @template-extends Record<mixed>
  */
 class Config extends Record
 {
