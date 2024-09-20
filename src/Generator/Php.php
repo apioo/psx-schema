@@ -21,7 +21,6 @@
 namespace PSX\Schema\Generator;
 
 use PhpParser\Builder\Class_;
-use PhpParser\Builder\Property;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
@@ -132,7 +131,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $prop->setType(new Node\NullableType($type));
+                        $prop->setType('?' . $type);
                     } else {
                         $prop->setType($type);
                     }
@@ -165,7 +164,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $param->setType(new Node\NullableType($type));
+                        $param->setType('?' . $type);
                     } else {
                         $param->setType($type);
                     }
@@ -193,7 +192,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $getter->setReturnType(new Node\NullableType($type));
+                        $getter->setReturnType('?' . $type);
                     } else {
                         $getter->setReturnType($type);
                     }
