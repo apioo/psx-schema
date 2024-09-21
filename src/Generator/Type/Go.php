@@ -35,7 +35,7 @@ class Go extends GeneratorAbstract
     public function getContentType(ContentType $contentType, int $context): string
     {
         return match ($contentType->getShape()) {
-            ContentType::BINARY => 'io.Reader',
+            ContentType::BINARY => '[]byte',
             ContentType::FORM => 'url.Values',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => 'map[string]any',
