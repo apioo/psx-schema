@@ -34,13 +34,12 @@ class Python extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'bytearray',
             ContentType::FORM => 'Dict[str, str]',
             ContentType::JSON => 'Any',
             ContentType::MULTIPART => 'Dict[str, Any]',
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => $this->getString(),
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

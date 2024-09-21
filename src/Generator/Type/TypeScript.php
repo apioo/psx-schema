@@ -33,13 +33,12 @@ class TypeScript extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'ArrayBuffer',
             ContentType::FORM => 'URLSearchParams',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => 'FormData',
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'XMLDocument',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

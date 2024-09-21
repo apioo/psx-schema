@@ -34,13 +34,12 @@ class Rust extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'Bytes',
             ContentType::FORM => 'HashMap<string, string>',
             ContentType::JSON => 'serde_json::Value',
             ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'xml_doc::Document',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

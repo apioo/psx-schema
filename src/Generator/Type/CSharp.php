@@ -34,13 +34,12 @@ class CSharp extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'byte[]',
             ContentType::FORM => 'System.Collections.Specialized.NameValueCollection',
             ContentType::JSON => 'object',
             ContentType::MULTIPART => 'System.Collections.Generic.Dictionary<string, string>',
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'System.Xml.XmlDocument',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

@@ -34,13 +34,12 @@ class Go extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
-            ContentType::BINARY => '[]byte',
-            ContentType::FORM => 'map[string]string',
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'io.Reader',
+            ContentType::FORM => 'url.Values',
             ContentType::JSON => 'any',
-            ContentType::MULTIPART => '',
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => $this->getString(),
+            ContentType::MULTIPART => 'map[string]any',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

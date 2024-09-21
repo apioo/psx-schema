@@ -34,13 +34,12 @@ class Swift extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'Data',
             ContentType::FORM => 'Dictionary<String, String>',
             ContentType::JSON => 'Any',
             ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'XMLDocument',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

@@ -34,13 +34,12 @@ class Kotlin extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
-            ContentType::BINARY => 'ByteArray',
-            ContentType::FORM => 'Map<string, string>',
-            ContentType::JSON => 'Object',
-            ContentType::MULTIPART => 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder',
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'XMLDocument',
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'java.io.InputStream',
+            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'java.util.List<org.apache.hc.core5.http.NameValuePair>' : 'org.springframework.util.MultiValueMap<String, String>',
+            ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'Object' : 'String',
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder' : 'reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<String, org.springframework.http.codec.multipart.Part>>',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 

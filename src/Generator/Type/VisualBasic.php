@@ -34,13 +34,12 @@ class VisualBasic extends GeneratorAbstract
 {
     public function getContentType(ContentType $contentType, int $context): string
     {
-        return match ($contentType) {
+        return match ($contentType->getShape()) {
             ContentType::BINARY => 'Byte',
             ContentType::FORM => 'Dictionary(Of String, String)',
             ContentType::JSON => 'Object',
             ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT => $this->getString(),
-            ContentType::XML => 'XDocument',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
 
