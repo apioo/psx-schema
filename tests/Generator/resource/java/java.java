@@ -108,7 +108,7 @@ public class Author {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class Meta extends HashMap<String, String> {
+public class Meta extends java.util.HashMap<String, String> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;

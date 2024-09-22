@@ -92,7 +92,7 @@ class Java extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'public class ' . $name->getClass() . ' extends HashMap<String, ' . $subType . '> {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends java.util.HashMap<String, ' . $subType . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
