@@ -107,13 +107,6 @@ class Go extends CodeGeneratorAbstract
             $code.= 'package ' . $this->namespace . "\n";
         }
 
-        $imports = $this->getImports($origin);
-        if (!empty($imports)) {
-            $code.= "\n";
-            $code.= implode("\n", $imports);
-            $code.= "\n";
-        }
-
         $code.= "\n";
 
         $comment = $origin->getDescription();
@@ -122,24 +115,5 @@ class Go extends CodeGeneratorAbstract
         }
 
         return $code;
-    }
-
-    private function getImports(TypeAbstract $origin): array
-    {
-        $imports = [];
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::PERIOD)) {
-            $imports[] = 'import "time"';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
-            $imports[] = 'import "time"';
-        }
-
-        return $imports;
     }
 }

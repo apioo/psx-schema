@@ -21,8 +21,6 @@ type Author struct {
 
 type Meta = map[string]string
 
-import "time"
-
 // An general news entry
 type News struct {
     Config *Meta `json:"config"`
