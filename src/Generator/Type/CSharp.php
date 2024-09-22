@@ -38,7 +38,7 @@ class CSharp extends GeneratorAbstract
             ContentType::BINARY => 'byte[]',
             ContentType::FORM => 'System.Collections.Specialized.NameValueCollection',
             ContentType::JSON => 'object',
-            ContentType::MULTIPART => 'System.Collections.Generic.Dictionary<string, string>',
+            ContentType::MULTIPART => 'Sdkgen.Client.Multipart',
             ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
