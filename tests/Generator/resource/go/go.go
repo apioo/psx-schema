@@ -38,8 +38,8 @@ type News struct {
     Source any `json:"source"`
     Author *Author `json:"author"`
     Meta *Meta `json:"meta"`
-    SendDate time.Time `json:"sendDate"`
-    ReadDate time.Time `json:"readDate"`
+    SendDate string `json:"sendDate"`
+    ReadDate string `json:"readDate"`
     Expires string `json:"expires"`
     Range string `json:"range"`
     Price float64 `json:"price"`
@@ -47,7 +47,7 @@ type News struct {
     Content string `json:"content"`
     Question string `json:"question"`
     Version string `json:"version"`
-    CoffeeTime time.Time `json:"coffeeTime"`
+    CoffeeTime string `json:"coffeeTime"`
     ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
     MediaFields string `json:"media.fields"`

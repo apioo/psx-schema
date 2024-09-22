@@ -48,16 +48,6 @@ class Go extends GeneratorAbstract
         return 'string';
     }
 
-    protected function getStringFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::DATE => 'time.Time',
-            Format::DATETIME => 'time.Time',
-            Format::TIME => 'time.Time',
-            default => $this->getString(),
-        };
-    }
-
     protected function getInteger(): string
     {
         return 'int';
