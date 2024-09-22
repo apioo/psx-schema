@@ -72,8 +72,8 @@ class Php extends GeneratorAbstract
         return match ($contentType->getShape()) {
             ContentType::BINARY => '\\' . StreamInterface::class,
             ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Body\\Form',
-            ContentType::JSON => $context & self::CONTEXT_CLIENT ? '\\' . \stdClass::class : '\\PSX\\Data\\Body\\Json',
-            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Body\\Multipart',
+            ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'mixed' : '\\PSX\\Data\\Body\\Json',
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? '\\Sdkgen\\Client\\Multipart' : '\\PSX\\Data\\Body\\Multipart',
             ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
