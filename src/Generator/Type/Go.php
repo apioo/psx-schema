@@ -38,7 +38,7 @@ class Go extends GeneratorAbstract
             ContentType::BINARY => '[]byte',
             ContentType::FORM => 'url.Values',
             ContentType::JSON => 'any',
-            ContentType::MULTIPART => 'map[string]any',
+            ContentType::MULTIPART => '*sdkgen.Multipart',
             ContentType::TEXT, ContentType::XML => $this->getString(),
         };
     }
