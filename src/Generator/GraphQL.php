@@ -21,7 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * GraphQL
@@ -42,7 +42,7 @@ class GraphQL extends CodeGeneratorAbstract
         return new Type\GraphQL($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $code = 'type ' . $name->getClass() . ' {' . "\n";
 

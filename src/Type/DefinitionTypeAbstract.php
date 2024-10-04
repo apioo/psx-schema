@@ -23,35 +23,20 @@ namespace PSX\Schema\Type;
 use PSX\Schema\TypeInterface;
 
 /**
- * TypeAbstract
+ * DefinitionTypeAbstract
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-abstract class TypeAbstract implements TypeInterface, \JsonSerializable
+abstract class DefinitionTypeAbstract implements TypeInterface
 {
     public const ATTR_CLASS = 'class';
     public const ATTR_MAPPING = 'mapping';
 
-    protected ?string $title = null;
     protected ?string $description = null;
-    protected ?bool $nullable = null;
     protected ?bool $deprecated = null;
-    protected ?bool $readonly = null;
     protected array $attributes = [];
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
@@ -61,18 +46,6 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function isNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setNullable(bool $nullable): self
-    {
-        $this->nullable = $nullable;
 
         return $this;
     }
@@ -89,17 +62,7 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
         return $this;
     }
 
-    public function isReadonly(): ?bool
-    {
-        return $this->readonly;
-    }
-
-    public function setReadonly(bool $readonly): self
-    {
-        $this->readonly = $readonly;
-
-        return $this;
-    }
+    abstract protected function getType(): string;
 
     public function setAttribute(string $key, mixed $value): self
     {
@@ -121,11 +84,9 @@ abstract class TypeAbstract implements TypeInterface, \JsonSerializable
     public function toArray(): array
     {
         return array_filter([
-            'title' => $this->title,
             'description' => $this->description,
-            'nullable' => $this->nullable,
             'deprecated' => $this->deprecated,
-            'readonly' => $this->readonly,
+            'type' => $this->getType(),
         ], function($value){
             return $value !== null;
         });

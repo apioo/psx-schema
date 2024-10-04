@@ -27,7 +27,7 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface TypeInterface
+interface TypeInterface extends \JsonSerializable
 {
     /**
      * @return array

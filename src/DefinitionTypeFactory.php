@@ -18,21 +18,32 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
+namespace PSX\Schema;
 
-use Attribute;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
- * MinLength
+ * DefinitionTypeFactory
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class MinLength
+class DefinitionTypeFactory
 {
-    public function __construct(public int $minLength)
+    public static function getStruct(): StructDefinitionType
     {
+        return new StructDefinitionType();
+    }
+
+    public static function getMap(?PropertyTypeAbstract $schema = null): MapDefinitionType
+    {
+        $map = new MapDefinitionType();
+        if ($schema !== null) {
+            $map->setSchema($schema);
+        }
+        return $map;
     }
 }

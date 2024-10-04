@@ -20,33 +20,35 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\Format;
+
 /**
- * GenericType
+ * ScalarType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class GenericType extends TypeAbstract
+abstract class ScalarPropertyType extends PropertyTypeAbstract
 {
-    protected ?string $generic = null;
+    protected ?Format $format = null;
 
-    public function getGeneric(): ?string
+    public function getFormat(): ?Format
     {
-        return $this->generic;
+        return $this->format;
     }
 
-    public function setGeneric(string $generic): self
+    public function setFormat(Format $format): self
     {
-        $this->generic = $generic;
-        
+        $this->format = $format;
+
         return $this;
     }
 
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
-            '$generic' => $this->generic,
+            'format' => $this->format,
         ], function($value){
             return $value !== null;
         }));

@@ -27,10 +27,10 @@ use PSX\DateTime\LocalTime;
 use PSX\Record\Record;
 use PSX\Schema\ContentType;
 use PSX\Schema\Format;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -44,23 +44,23 @@ class Php extends GeneratorAbstract
 {
     public function getDocType(TypeInterface $type): string
     {
-        if ($type instanceof ArrayType) {
+        if ($type instanceof ArrayPropertyType) {
             $items = $type->getItems();
             if ($items instanceof TypeInterface) {
                 return 'array<' . $this->getDocType($items) . '>';
             } else {
                 return 'array';
             }
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             $additionalProperties = $type->getAdditionalProperties();
             if ($additionalProperties instanceof TypeInterface) {
                 return '\\' . Record::class . '<' . $this->getDocType($additionalProperties) . '>';
             } else {
                 return '\\' . Record::class;
             }
-        } elseif ($type instanceof StringType && $type->getFormat() === Format::BINARY) {
+        } elseif ($type instanceof StringPropertyType && $type->getFormat() === Format::BINARY) {
             return 'resource';
-        } elseif ($type instanceof GenericType) {
+        } elseif ($type instanceof GenericPropertyType) {
             return $type->getGeneric() ?? '';
         } else {
             return $this->getType($type);

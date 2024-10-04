@@ -30,14 +30,14 @@ use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
@@ -81,7 +81,7 @@ class Php extends CodeGeneratorAbstract
         return new Normalizer\Php();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $tags = [];
         if ($generics !== null) {
@@ -215,7 +215,7 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         $subType = $this->generator->getDocType($origin->getAdditionalProperties());
 
@@ -233,14 +233,14 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
     {
         $tags = [];
         $template = $origin->getTemplate();
         if (!empty($template)) {
             $types = [];
             foreach ($template as $value) {
-                $types[] = $this->generator->getDocType((new ReferenceType())->setRef($value));
+                $types[] = $this->generator->getDocType((new ReferencePropertyType())->setRef($value));
             }
 
             $tags['extends'] = $type . '<' . implode(', ', $types) . '>';
@@ -298,7 +298,7 @@ class Php extends CodeGeneratorAbstract
             $result[] = $this->newAttribute('Key', [$this->newScalar($key)], $uses);
         }
 
-        if ($type instanceof TypeAbstract) {
+        if ($type instanceof PropertyTypeAbstract) {
             if ($type->getTitle() !== null) {
                 $result[] = $this->newAttribute('Title', [$this->newScalar($type->getTitle())], $uses);
             }
@@ -316,38 +316,38 @@ class Php extends CodeGeneratorAbstract
             }
         }
 
-        if ($type instanceof ScalarType) {
+        if ($type instanceof ScalarPropertyType) {
             if ($type->getEnum() !== null) {
                 $result[] = $this->newAttribute('Enum', [$this->newArray($type->getEnum())], $uses);
             }
         }
 
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             if ($type->getRequired() !== null) {
                 $result[] = $this->newAttribute('Required', [$this->newArray($type->getRequired())], $uses);
             }
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             if ($type->getMinProperties() !== null) {
                 $result[] = $this->newAttribute('MinProperties', [$this->newScalar($type->getMinProperties())], $uses);
             }
             if ($type->getMaxProperties() !== null) {
                 $result[] = $this->newAttribute('MaxProperties', [$this->newScalar($type->getMaxProperties())], $uses);
             }
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             if ($type->getMinItems() !== null) {
                 $result[] = $this->newAttribute('MinItems', [$this->newScalar($type->getMinItems())], $uses);
             }
             if ($type->getMaxItems() !== null) {
                 $result[] = $this->newAttribute('MaxItems', [$this->newScalar($type->getMaxItems())], $uses);
             }
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             if ($type->getMinimum() !== null) {
                 $result[] = $this->newAttribute('Minimum', [$this->newScalar($type->getMinimum())], $uses);
             }
             if ($type->getMaximum() !== null) {
                 $result[] = $this->newAttribute('Maximum', [$this->newScalar($type->getMaximum())], $uses);
             }
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             if ($type->getPattern() !== null) {
                 $result[] = $this->newAttribute('Pattern', [$this->newScalar($type->getPattern())], $uses);
             }
@@ -406,7 +406,7 @@ class Php extends CodeGeneratorAbstract
 
     private function getDefault(TypeInterface $type)
     {
-        if (!$type instanceof ScalarType) {
+        if (!$type instanceof ScalarPropertyType) {
             return null;
         }
 

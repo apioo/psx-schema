@@ -27,8 +27,8 @@ use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Schema\SchemaA;
 use PSX\Schema\Tests\Schema\SchemaB;
 use PSX\Schema\Tests\Schema\SchemaCommon;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * SchemaAbstractTest
@@ -55,21 +55,21 @@ class SchemaAbstractTest extends TestCase
         $schemaA = $this->schemaManager->getSchema(SchemaA::class);
         $schemaB = $this->schemaManager->getSchema(SchemaB::class);
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaC->getType());
+        $this->assertInstanceOf(ReferencePropertyType::class, $schemaC->getType());
         $type = $schemaC->getDefinitions()->getType($schemaC->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $this->assertNull($type->getProperty('lat')->getTitle());
         $this->assertNull($type->getProperty('long')->getTitle());
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaA->getType());
+        $this->assertInstanceOf(ReferencePropertyType::class, $schemaA->getType());
         $type = $schemaA->getDefinitions()->getType($schemaA->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $this->assertEquals('foo', $type->getProperty('lat')->getTitle());
         $this->assertEquals(null, $type->getProperty('long')->getTitle());
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaB->getType());
+        $this->assertInstanceOf(ReferencePropertyType::class, $schemaB->getType());
         $type = $schemaB->getDefinitions()->getType($schemaB->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $this->assertEquals(null, $type->getProperty('lat')->getTitle());
         $this->assertEquals('bar', $type->getProperty('long')->getTitle());
     }
@@ -84,9 +84,9 @@ class SchemaAbstractTest extends TestCase
         $schema = unserialize($data);
 
         $this->assertInstanceOf(Schema::class, $schema);
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Entry'));
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Author'));
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Location'));
-        $this->assertInstanceOf(ReferenceType::class, $schema->getType());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Entry'));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Author'));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Location'));
+        $this->assertInstanceOf(ReferencePropertyType::class, $schema->getType());
     }
 }

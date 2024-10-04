@@ -18,21 +18,19 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * UniqueItems
+ * ArrayPropertyType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class UniqueItems
+class ArrayPropertyType extends CollectionPropertyType
 {
-    public function __construct(public bool $uniqueItems)
+    protected function getType(): string
     {
+        return 'array';
     }
 }

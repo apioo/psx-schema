@@ -20,17 +20,16 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Builder to create a struct type with specific properties
@@ -41,11 +40,11 @@ use PSX\Schema\Type\UnionType;
  */
 class Builder
 {
-    private StructType $type;
+    private StructDefinitionType $type;
 
     public function __construct()
     {
-        $this->type = TypeFactory::getStruct();
+        $this->type = DefinitionTypeFactory::getStruct();
     }
 
     public function setDescription(string $description): Builder
@@ -55,23 +54,44 @@ class Builder
         return $this;
     }
 
-    public function setRequired(array $required): Builder
+    public function setParent(string $parent): Builder
     {
-        $this->type->setRequired($required);
+        $this->type->setParent($parent);
 
         return $this;
     }
 
-    public function setExtends(string $ref): Builder
+    public function setBase(bool $base): Builder
     {
-        $this->type->setExtends($ref);
+        $this->type->setBase($base);
+
+        return $this;
+    }
+
+    public function setDiscriminator(string $discriminator): Builder
+    {
+        $this->type->setDiscriminator($discriminator);
+
+        return $this;
+    }
+
+    public function setMapping(array $mapping): Builder
+    {
+        $this->type->setMapping($mapping);
+
+        return $this;
+    }
+
+    public function setTemplate(array $template): Builder
+    {
+        $this->type->setTemplate($template);
 
         return $this;
     }
 
     public function setClass(string $class): Builder
     {
-        $this->type->setAttribute(TypeAbstract::ATTR_CLASS, $class);
+        $this->type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, $class);
 
         return $this;
     }
@@ -84,148 +104,69 @@ class Builder
     }
 
     /**
-     * @template T of TypeInterface
+     * @template T of PropertyTypeAbstract
      * @param string $name
      * @param T $type
      * @return T
-     * @throws Exception\InvalidSchemaException
      */
-    public function add(string $name, TypeInterface $type): TypeInterface
+    public function add(string $name, PropertyTypeAbstract $type): PropertyTypeAbstract
     {
         $this->type->addProperty($name, $type);
 
         return $type;
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addArray(string $name, TypeInterface $items): ArrayType
+    public function addArray(string $name, PropertyTypeAbstract $schema): ArrayPropertyType
     {
-        return $this->add($name, TypeFactory::getArray($items));
+        return $this->add($name, PropertyTypeFactory::getArray($schema));
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addMap(string $name, TypeInterface $additionalProperty): MapType
+    public function addMap(string $name, PropertyTypeAbstract $schema): MapDefinitionType
     {
-        return $this->add($name, TypeFactory::getMap($additionalProperty));
+        return $this->add($name, PropertyTypeFactory::getMap($schema));
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addBoolean(string $name): BooleanType
+    public function addBoolean(string $name): BooleanPropertyType
     {
-        return $this->add($name, TypeFactory::getBoolean());
+        return $this->add($name, PropertyTypeFactory::getBoolean());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addInteger(string $name): IntegerType
+    public function addInteger(string $name): IntegerPropertyType
     {
-        return $this->add($name, TypeFactory::getInteger());
+        return $this->add($name, PropertyTypeFactory::getInteger());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addIntersection(string $name, array $types): IntersectionType
+    public function addNumber(string $name): NumberPropertyType
     {
-        return $this->add($name, TypeFactory::getIntersection($types));
+        return $this->add($name, PropertyTypeFactory::getNumber());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addNumber(string $name): NumberType
+    public function addReference(string $name, string $target): ReferencePropertyType
     {
-        return $this->add($name, TypeFactory::getNumber());
+        return $this->add($name, PropertyTypeFactory::getReference($target));
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addReference(string $name, string $ref): ReferenceType
+    public function addString(string $name): StringPropertyType
     {
-        return $this->add($name, TypeFactory::getReference($ref));
+        return $this->add($name, PropertyTypeFactory::getString());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addString(string $name): StringType
+    public function addDateTime(string $name): StringPropertyType
     {
-        return $this->add($name, TypeFactory::getString());
+        return $this->add($name, PropertyTypeFactory::getDateTime());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addUnion(string $name, array $types): UnionType
+    public function addDate(string $name): StringPropertyType
     {
-        return $this->add($name, TypeFactory::getUnion($types));
+        return $this->add($name, PropertyTypeFactory::getDate());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addBinary(string $name): StringType
+    public function addTime(string $name): StringPropertyType
     {
-        return $this->add($name, TypeFactory::getBinary());
+        return $this->add($name, PropertyTypeFactory::getTime());
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addDateTime(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getDateTime());
-    }
-
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addDate(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getDate());
-    }
-
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addPeriod(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getPeriod());
-    }
-
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addDuration(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getDuration());
-    }
-
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addTime(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getTime());
-    }
-
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    public function addUri(string $name): StringType
-    {
-        return $this->add($name, TypeFactory::getUri());
-    }
-
-    public function getType(): StructType
+    public function getType(): StructDefinitionType
     {
         return $this->type;
     }

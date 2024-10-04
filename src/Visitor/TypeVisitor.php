@@ -26,14 +26,15 @@ use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\Record;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Exception\TraverserException;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use PSX\Uri\Uri;
@@ -54,17 +55,27 @@ class TypeVisitor implements VisitorInterface
         $this->validator = $validator;
     }
 
-    public function visitStruct(\stdClass $data, StructType $type, string $path)
+    public function visitStruct(\stdClass $data, StructDefinitionType $type, string $path): object
     {
-        $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
-        if (!empty($className)) {
-            $class  = new \ReflectionClass($className);
+        $discriminator = $type->getDiscriminator();
+        $mapping = $type->getMapping();
+
+        if (!empty($discriminator)) {
+            $type = $data->{$discriminator} ?? throw new TraverserException('Configured discriminator property is not available');
+            $className = $mapping[$type] ?? throw new TraverserException('Provided discriminator type is not available');
+        } else {
+            $className = $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS);
+        }
+
+        if (!empty($className) && class_exists($className)) {
+            $class = new \ReflectionClass($className);
             $record = $class->newInstance();
 
-            $mapping = $type->getAttribute(TypeAbstract::ATTR_MAPPING) ?: [];
+            $mapping = $type->getAttribute(DefinitionTypeAbstract::ATTR_MAPPING) ?: [];
             foreach ($data as $key => $value) {
                 try {
-                    $name   = $mapping[$key] ?? $key;
+                    $name = $mapping[$key] ?? $key;
+
                     $method = $class->getMethod('set' . ucfirst($name));
                     $method->invokeArgs($record, [$value]);
                 } catch (\ReflectionException $e) {
@@ -82,11 +93,11 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitMap(\stdClass $data, MapType $type, string $path)
+    public function visitMap(\stdClass $data, MapTypeInterface $type, string $path): object
     {
-        $className = $type->getAttribute(TypeAbstract::ATTR_CLASS);
+        $className = $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS);
         if (!empty($className)) {
-            $class  = new \ReflectionClass($className);
+            $class = new \ReflectionClass($className);
             $record = $class->newInstance();
 
             // allows to use other map implementations
@@ -108,7 +119,7 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitArray(array $data, ArrayType $type, string $path)
+    public function visitArray(array $data, ArrayPropertyType $type, string $path): array
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -117,22 +128,7 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitBinary($data, StringType $type, string $path)
-    {
-        $binary   = base64_decode($data);
-        $resource = fopen('php://temp', 'r+');
-
-        fwrite($resource, $binary);
-        rewind($resource);
-
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $resource);
-        }
-
-        return $resource;
-    }
-
-    public function visitBoolean($data, BooleanType $type, string $path)
+    public function visitBoolean(bool $data, BooleanPropertyType $type, string $path): bool
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);
@@ -141,18 +137,34 @@ class TypeVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitDateTime($data, StringType $type, string $path)
+    public function visitNumber(float|int $data, NumberPropertyType $type, string $path): float|int
     {
-        $result = LocalDateTime::parse($data);
-
         if ($this->validator !== null) {
-            $this->validator->validate($path, $result);
+            $this->validator->validate($path, $data);
         }
 
-        return $result;
+        return $data;
     }
 
-    public function visitDate($data, StringType $type, string $path)
+    public function visitInteger(int $data, IntegerPropertyType $type, string $path): int
+    {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
+        return $data;
+    }
+
+    public function visitString(string $data, StringPropertyType $type, string $path): string
+    {
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $data);
+        }
+
+        return $data;
+    }
+
+    public function visitDate(string $data, StringPropertyType $type, string $path): LocalDate
     {
         $result = LocalDate::parse($data);
 
@@ -163,9 +175,9 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitPeriod($data, StringType $type, string $path)
+    public function visitDateTime(string $data, StringPropertyType $type, string $path): LocalDateTime
     {
-        $result = Period::parse($data);
+        $result = LocalDateTime::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);
@@ -174,58 +186,9 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
-    public function visitDuration($data, StringType $type, string $path)
-    {
-        $result = Duration::parse($data);
-
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $result);
-        }
-
-        return $result;
-    }
-
-    public function visitNumber($data, NumberType $type, string $path)
-    {
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $data);
-        }
-
-        return $data;
-    }
-
-    public function visitInteger($data, IntegerType $type, string $path)
-    {
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $data);
-        }
-
-        return $data;
-    }
-
-    public function visitString($data, StringType $type, string $path)
-    {
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $data);
-        }
-
-        return $data;
-    }
-
-    public function visitTime($data, StringType $type, string $path)
+    public function visitTime(string $data, StringPropertyType $type, string $path): LocalTime
     {
         $result = LocalTime::parse($data);
-
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $result);
-        }
-
-        return $result;
-    }
-
-    public function visitUri($data, StringType $type, string $path)
-    {
-        $result = Uri::parse($data);
 
         if ($this->validator !== null) {
             $this->validator->validate($path, $result);

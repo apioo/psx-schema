@@ -21,16 +21,16 @@
 namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
@@ -69,13 +69,13 @@ class Hash
 
     private function getValuesByType(TypeInterface $type): \Generator
     {
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             yield 'struct';
             foreach ($type->getProperties() as $name => $value) {
                 yield $name;
                 yield from $this->getValuesByType($value);
             }
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             yield 'map';
             $additionalProperties = $type->getAdditionalProperties();
             if ($additionalProperties instanceof TypeInterface) {
@@ -83,7 +83,7 @@ class Hash
             } elseif (is_bool($additionalProperties)) {
                 yield $additionalProperties ? '1' : '0';
             }
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             yield 'array';
             $items = $type->getItems();
             if ($items instanceof TypeInterface) {
@@ -101,18 +101,18 @@ class Hash
             foreach ($items as $item) {
                 yield from $this->getValuesByType($item);
             }
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             yield 'reference';
             yield $type->getRef();
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             yield 'string';
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             yield 'integer';
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             yield 'number';
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             yield 'boolean';
-        } elseif ($type instanceof AnyType) {
+        } elseif ($type instanceof AnyPropertyType) {
             yield 'any';
         }
     }

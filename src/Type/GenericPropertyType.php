@@ -18,21 +18,33 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * Immutable
+ * GenericType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY)]
-class Immutable
+class GenericPropertyType extends PropertyTypeAbstract
 {
-    public function __construct(public bool $readonly)
+    protected ?string $name = null;
+
+    protected function getType(): string
     {
+        return 'generic';
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        
+        return $this;
     }
 }

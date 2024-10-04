@@ -20,10 +20,10 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -52,7 +52,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
     {
         $constraints = [];
 
-        if ($type instanceof ArrayType) {
+        if ($type instanceof ArrayPropertyType) {
             $minItems = $type->getMinItems();
             if ($minItems !== null) {
                 $constraints['minItems'] = $minItems;
@@ -62,7 +62,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
             if ($maxItems !== null) {
                 $constraints['maxItems'] = $maxItems;
             }
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             $minimum = $type->getMinimum();
             if ($minimum !== null) {
                 $constraints['minimum'] = $minimum;
@@ -77,7 +77,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
             if ($multipleOf !== null) {
                 $constraints['multipleOf'] = $multipleOf;
             }
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             $minLength = $type->getMinLength();
             if ($minLength !== null) {
                 $constraints['minLength'] = $minLength;
@@ -94,7 +94,7 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
             }
         }
 
-        if ($type instanceof ScalarType) {
+        if ($type instanceof ScalarPropertyType) {
             $enum = $type->getEnum();
             if ($enum !== null) {
                 $constraints['enum'] = $enum;

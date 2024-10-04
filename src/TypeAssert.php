@@ -21,14 +21,14 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -47,7 +47,7 @@ class TypeAssert
      */
     public static function assertProperty(TypeInterface $type): void
     {
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             throw new InvalidSchemaException('Property must not contain a nested struct, got ' . get_class($type));
         }
     }
@@ -59,14 +59,14 @@ class TypeAssert
      */
     public static function assertItem(TypeInterface $type): void
     {
-        if (!($type instanceof BooleanType
-            || $type instanceof NumberType
-            || $type instanceof StringType
+        if (!($type instanceof BooleanPropertyType
+            || $type instanceof NumberPropertyType
+            || $type instanceof StringPropertyType
             || $type instanceof IntersectionType
             || $type instanceof UnionType
-            || $type instanceof ReferenceType
-            || $type instanceof GenericType
-            || $type instanceof AnyType)) {
+            || $type instanceof ReferencePropertyType
+            || $type instanceof GenericPropertyType
+            || $type instanceof AnyPropertyType)) {
             throw new InvalidSchemaException('Item must be of type boolean, number, string, intersection, union, reference, generic or any type, got ' . get_class($type));
         }
     }
@@ -79,7 +79,7 @@ class TypeAssert
     public static function assertIntersection(array $items): void
     {
         foreach ($items as $index => $item) {
-            if (!($item instanceof ReferenceType)) {
+            if (!($item instanceof ReferencePropertyType)) {
                 throw new InvalidSchemaException('All of item must be of type reference, at index ' . $index . ' we got ' . get_class($item));
             }
         }
@@ -93,10 +93,10 @@ class TypeAssert
     public static function assertUnion(array $items): void
     {
         foreach ($items as $index => $item) {
-            if (!($item instanceof NumberType
-                || $item instanceof StringType
-                || $item instanceof BooleanType
-                || $item instanceof ReferenceType)) {
+            if (!($item instanceof NumberPropertyType
+                || $item instanceof StringPropertyType
+                || $item instanceof BooleanPropertyType
+                || $item instanceof ReferencePropertyType)) {
                 throw new InvalidSchemaException('One of item must be of type string, number, boolean or reference, at index ' . $index . ' we got ' . get_class($item));
             }
         }

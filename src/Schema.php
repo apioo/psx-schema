@@ -29,18 +29,18 @@ namespace PSX\Schema;
  */
 class Schema implements SchemaInterface
 {
-    protected TypeInterface $type;
+    protected ?string $root;
     protected DefinitionsInterface $definitions;
 
-    public function __construct(TypeInterface $type, DefinitionsInterface $definitions)
+    public function __construct(DefinitionsInterface $definitions, ?string $root)
     {
-        $this->type = $type;
         $this->definitions = $definitions;
+        $this->root = $root;
     }
 
-    public function getType(): TypeInterface
+    public function getRoot(): ?string
     {
-        return $this->type;
+        return $this->root;
     }
 
     public function getDefinitions(): DefinitionsInterface

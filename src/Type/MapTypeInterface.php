@@ -18,21 +18,16 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * Required
+ * MapTypeInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_CLASS)]
-class Required
+interface MapTypeInterface
 {
-    public function __construct(public array $required)
-    {
-    }
+    public function getSchema(): ?PropertyTypeAbstract;
 }

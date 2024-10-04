@@ -20,64 +20,73 @@
 
 namespace PSX\Schema\Type;
 
+use PSX\Schema\TypeInterface;
+
 /**
- * StringType
+ * PropertyTypeAbstract
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class StringType extends ScalarType
+abstract class PropertyTypeAbstract implements TypeInterface
 {
-    protected ?string $pattern = null;
-    protected ?int $minLength = null;
-    protected ?int $maxLength = null;
+    protected ?string $description = null;
+    protected ?bool $deprecated = null;
+    protected ?bool $nullable = null;
 
-    public function getPattern(): ?string
+    public function getDescription(): ?string
     {
-        return $this->pattern;
+        return $this->description;
     }
 
-    public function setPattern(string $pattern): self
+    public function setDescription(string $description): self
     {
-        $this->pattern = $pattern;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function getMinLength(): ?int
+    public function isDeprecated(): ?bool
     {
-        return $this->minLength;
+        return $this->deprecated;
     }
 
-    public function setMinLength(int $minLength): self
+    public function setDeprecated(bool $deprecated): self
     {
-        $this->minLength = $minLength;
+        $this->deprecated = $deprecated;
 
         return $this;
     }
 
-    public function getMaxLength(): ?int
+    abstract protected function getType(): string;
+
+    public function isNullable(): ?bool
     {
-        return $this->maxLength;
+        return $this->nullable;
     }
 
-    public function setMaxLength(int $maxLength): self
+    public function setNullable(bool $nullable): self
     {
-        $this->maxLength = $maxLength;
+        $this->nullable = $nullable;
 
         return $this;
     }
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), array_filter([
-            'type' => 'string',
-            'pattern' => $this->pattern,
-            'minLength' => $this->minLength,
-            'maxLength' => $this->maxLength,
+        return array_filter([
+            'description' => $this->description,
+            'deprecated' => $this->deprecated,
+            'type' => $this->getType(),
+            'nullable' => $this->nullable,
         ], function($value){
             return $value !== null;
-        }));
+        });
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

@@ -21,8 +21,8 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * IntersectionResolver
@@ -47,14 +47,14 @@ class IntersectionResolver
      * @throws Exception\InvalidSchemaException
      * @throws Exception\TypeNotFoundException
      */
-    public function resolve(IntersectionType $type): ?StructType
+    public function resolve(IntersectionType $type): ?StructDefinitionType
     {
         $items = $type->getAllOf();
         if (empty($items)) {
             return null;
         }
 
-        $newType = new StructType();
+        $newType = new StructDefinitionType();
         foreach ($items as $item) {
             $this->merge($newType, $item);
         }
@@ -66,13 +66,13 @@ class IntersectionResolver
      * @throws Exception\InvalidSchemaException
      * @throws Exception\TypeNotFoundException
      */
-    private function merge(StructType $left, TypeInterface $right): void
+    private function merge(StructDefinitionType $left, TypeInterface $right): void
     {
-        if ($right instanceof ReferenceType) {
+        if ($right instanceof ReferencePropertyType) {
             $right = $this->definitions->getType($right->getRef());
         }
 
-        if (!$right instanceof StructType) {
+        if (!$right instanceof StructDefinitionType) {
             throw new \InvalidArgumentException('All of must contain only struct types');
         }
 

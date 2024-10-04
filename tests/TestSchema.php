@@ -22,7 +22,7 @@ namespace PSX\Schema\Tests;
 
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\Tests\Parser\Popo;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeFactory;
 
 /**
@@ -41,14 +41,14 @@ class TestSchema extends SchemaAbstract
         $location->addNumber('lat');
         $location->addNumber('long');
         $location->setRequired(['lat', 'long']);
-        $location->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Location::class);
+        $location->setAttribute(PropertyTypeAbstract::ATTR_CLASS, Popo\Location::class);
 
         $web = $this->newStruct('Web');
         $web->setDescription('An application');
         $web->addString('name');
         $web->addString('url');
         $web->setRequired(['name', 'url']);
-        $web->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Web::class);
+        $web->setAttribute(PropertyTypeAbstract::ATTR_CLASS, Popo\Web::class);
 
         $author = $this->newStruct('Author');
         $author->setDescription('An simple author element with some description');
@@ -63,13 +63,13 @@ class TestSchema extends SchemaAbstract
             ->setDescription('Array of locations');
         $author->addReference('origin', 'Location');
         $author->setRequired(['title']);
-        $author->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Author::class);
+        $author->setAttribute(PropertyTypeAbstract::ATTR_CLASS, Popo\Author::class);
 
         $meta = $this->newMap('Meta');
         $meta->setAdditionalProperties(TypeFactory::getString());
         $meta->setMinProperties(1);
         $meta->setMaxProperties(6);
-        $meta->setAttribute(TypeAbstract::ATTR_CLASS, Popo\Meta::class);
+        $meta->setAttribute(PropertyTypeAbstract::ATTR_CLASS, Popo\Meta::class);
 
         $news = $this->newStruct('News');
         $news->setDescription('An general news entry');
@@ -125,7 +125,7 @@ class TestSchema extends SchemaAbstract
         $news->addString('media.fields');
         $news->add('payload', TypeFactory::getAny());
         $news->setRequired(['receiver', 'price', 'content']);
-        $news->setAttribute(TypeAbstract::ATTR_CLASS, Popo\News::class);
-        $news->setAttribute(TypeAbstract::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
+        $news->setAttribute(PropertyTypeAbstract::ATTR_CLASS, Popo\News::class);
+        $news->setAttribute(PropertyTypeAbstract::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
     }
 }

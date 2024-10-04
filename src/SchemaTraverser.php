@@ -20,28 +20,28 @@
 
 namespace PSX\Schema;
 
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
+use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Exception\ValidationException;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Visitor\NullVisitor;
 
 /**
@@ -67,11 +67,11 @@ class SchemaTraverser
      * Traverses through the data and validates it according to the provided
      * schema. Calls also the visitor methods for each type
      *
-     * @return mixed
      * @throws ValidationException
      * @throws TraverserException
+     * @throws TypeNotFoundException
      */
-    public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null)
+    public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null): mixed
     {
         $this->pathStack = [];
 
@@ -79,133 +79,52 @@ class SchemaTraverser
             $visitor = new NullVisitor();
         }
 
-        return $this->recTraverse($data, $schema->getType(), $schema->getDefinitions(), $visitor);
+        $type = $schema->getDefinitions()->getType($schema->getRoot());
+
+        return $this->traverseDefinition($data, $type, $schema->getDefinitions(), $visitor, []);
     }
 
     /**
-     * @throws TypeNotFoundException
      * @throws ValidationException
-     * @throws TraverserException
+     * @throws TypeNotFoundException
      */
-    protected function recTraverse($data, TypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context = [])
+    protected function traverseDefinition(\stdClass $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): ?object
     {
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             if ($this->assertConstraints) {
-                $this->assertStructConstraints($data, $type);
+                $this->assertObject($data);
             }
 
-            if ($data instanceof \stdClass) {
-                $result = $this->traverseStruct($data, $type, $definitions, $visitor, $context);
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof MapType) {
+            return $this->traverseStruct($data, $type, $definitions, $visitor, $context);
+        } elseif ($type instanceof MapDefinitionType) {
             if ($this->assertConstraints) {
-                $this->assertMapConstraints($data, $type);
+                $this->assertObject($data);
             }
 
-            if ($data instanceof \stdClass) {
-                $result = $this->traverseMap($data, $type, $definitions, $visitor, $context);
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof ArrayType) {
-            if ($this->assertConstraints) {
-                $this->assertArrayConstraints($data, $type);
-            }
-
-            if (is_array($data)) {
-                $result = $this->traverseArray($data, $type, $definitions, $visitor, $context);
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof StringType) {
-            if ($this->assertConstraints) {
-                $this->assertStringConstraints($data, $type);
-                $this->assertScalarConstraints($data, $type);
-            }
-
-            if (is_string($data)) {
-                $result = $this->traverseString($data, $type, $visitor);
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof IntegerType) {
-            if ($this->assertConstraints) {
-                $this->assertNumberConstraints($data, $type);
-                $this->assertScalarConstraints($data, $type);
-            }
-
-            if (is_int($data)) {
-                $result = $visitor->visitInteger($data, $type, $this->getCurrentPath());
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof NumberType) {
-            if ($this->assertConstraints) {
-                $this->assertNumberConstraints($data, $type);
-                $this->assertScalarConstraints($data, $type);
-            }
-
-            if (is_int($data) || is_float($data)) {
-                $result = $visitor->visitNumber($data, $type, $this->getCurrentPath());
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof BooleanType) {
-            if ($this->assertConstraints) {
-                $this->assertBooleanConstraints($data, $type);
-            }
-
-            if (is_bool($data)) {
-                $result = $visitor->visitBoolean($data, $type, $this->getCurrentPath());
-            } else {
-                $result = null;
-            }
-        } elseif ($type instanceof IntersectionType) {
-            $result = $this->traverseIntersection($data, $type, $definitions, $visitor, $context);
-        } elseif ($type instanceof UnionType) {
-            $result = $this->traverseUnion($data, $type, $definitions, $visitor, $context);
-        } elseif ($type instanceof ReferenceType) {
-            $subType = $definitions->getType($type->getRef());
-
-            // in case a reference has a concrete class we inherit this class to the sub type
-            $class = $type->getAttribute(TypeAbstract::ATTR_CLASS);
-            if ($subType instanceof TypeAbstract && !empty($class)) {
-                $subType->setAttribute(TypeAbstract::ATTR_CLASS, $class);
-            }
-
-            $result = $this->recTraverse($data, $subType, $definitions, $visitor, $type->getTemplate() ?: []);
-        } elseif ($type instanceof GenericType) {
-            if (!isset($context[$type->getGeneric()])) {
-                throw new TraverserException('Could not resolve generic type from context');
-            }
-
-            $subType = $definitions->getType($context[$type->getGeneric()]);
-            $result = $this->recTraverse($data, $subType, $definitions, $visitor, $context);
-        } elseif ($type instanceof AnyType) {
-            $result = $data;
+            return $this->traverseMap($data, $type, $definitions, $visitor, $context);
         } else {
-            $result = null;
+            return null;
         }
-
-        return $result;
     }
 
-    protected function traverseStruct(\stdClass $data, StructType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     */
+    protected function traverseStruct(\stdClass $data, StructDefinitionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
     {
         $result = new \stdClass();
         $properties = [];
 
-        $extends = $type->getExtends();
+        $extends = $type->getParent();
         while (!empty($extends)) {
             $parent = $definitions->getType($extends);
-            if (!$parent instanceof StructType) {
+            if (!$parent instanceof StructDefinitionType) {
                 break;
             }
 
             $properties = array_merge($properties, $parent->getProperties() ?? []);
-            $extends = $parent->getExtends();
+            $extends = $parent->getParent();
         }
 
         $properties = array_merge($properties, $type->getProperties() ?? []);
@@ -215,7 +134,7 @@ class SchemaTraverser
                 array_push($this->pathStack, $key);
 
                 if (array_key_exists($key, $data)) {
-                    $result->{$key} = $this->recTraverse($data[$key], $subType, $definitions, $visitor, $context);
+                    $result->{$key} = $this->traverseProperty($data[$key], $subType, $definitions, $visitor, $context);
                 }
 
                 array_pop($this->pathStack);
@@ -233,21 +152,21 @@ class SchemaTraverser
         return $visitor->visitStruct($result, $type, $this->getCurrentPath());
     }
 
-    protected function traverseMap(\stdClass $data, MapType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     */
+    protected function traverseMap(\stdClass $data, MapTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
     {
-        $data   = (array) $data;
+        $data = (array) $data;
         $result = new \stdClass();
 
-        $additionalProperties = $type->getAdditionalProperties();
-        if (is_bool($additionalProperties)) {
-            if ($additionalProperties === true) {
-                $result = (object) $data;
-            }
-        } elseif ($additionalProperties instanceof TypeInterface) {
+        $schema = $type->getSchema();
+        if ($schema instanceof PropertyTypeAbstract) {
             foreach ($data as $key => $value) {
                 array_push($this->pathStack, $key);
 
-                $result->{$key} = $this->recTraverse($data[$key], $additionalProperties, $definitions, $visitor, $context);
+                $result->{$key} = $this->traverseProperty($data[$key], $schema, $definitions, $visitor, $context);
 
                 array_pop($this->pathStack);
             }
@@ -256,122 +175,66 @@ class SchemaTraverser
         return $visitor->visitMap($result, $type, $this->getCurrentPath());
     }
 
-    protected function traverseArray(array $data, ArrayType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    /**
+     * @throws ValidationException
+     * @throws TypeNotFoundException
+     */
+    protected function traverseProperty(mixed $data, PropertyTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
     {
-        $result = [];
-
-        $items = $type->getItems();
-        if ($items instanceof TypeInterface) {
-            foreach ($data as $index => $value) {
-                array_push($this->pathStack, $index);
-
-                $result[] = $this->recTraverse($value, $items, $definitions, $visitor, $context);
-
-                array_pop($this->pathStack);
+        if ($type instanceof MapPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertObject($data);
             }
-        }
 
-        return $visitor->visitArray($result, $type, $this->getCurrentPath());
-    }
+            return $data instanceof \stdClass ? $this->traverseMap($data, $type, $definitions, $visitor, $context) : null;
+        } elseif ($type instanceof ArrayPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertArray($data);
+            }
 
-    protected function traverseString($data, StringType $type, VisitorInterface $visitor)
-    {
-        $format = $type->getFormat();
-        if ($format === Format::BINARY) {
-            return $visitor->visitBinary($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::DATETIME) {
-            return $visitor->visitDateTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::DATE) {
-            return $visitor->visitDate($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::DURATION) {
-            return $visitor->visitDuration($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::PERIOD) {
-            return $visitor->visitPeriod($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::TIME) {
-            return $visitor->visitTime($data, $type, $this->getCurrentPath());
-        } elseif ($format === Format::URI) {
-            return $visitor->visitUri($data, $type, $this->getCurrentPath());
+            return is_array($data) ? $this->traverseArray($data, $type, $definitions, $visitor, $context) : null;
+        } elseif ($type instanceof StringPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertString($data);
+                $this->assertScalarConstraints($data, $type);
+            }
+
+            return is_string($data) ? $this->traverseString($data, $type, $visitor) : null;
+        } elseif ($type instanceof IntegerPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertNumber($data, $type);
+                $this->assertScalarConstraints($data, $type);
+            }
+
+            return is_int($data) ? $visitor->visitInteger($data, $type, $this->getCurrentPath()) : null;
+        } elseif ($type instanceof NumberPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertNumber($data, $type);
+                $this->assertScalarConstraints($data, $type);
+            }
+
+            return is_int($data) || is_float($data) ? $visitor->visitNumber($data, $type, $this->getCurrentPath()) : null;
+        } elseif ($type instanceof BooleanPropertyType) {
+            if ($this->assertConstraints) {
+                $this->assertBoolean($data);
+            }
+
+            return is_bool($data) ? $visitor->visitBoolean($data, $type, $this->getCurrentPath()) : null;
+        } elseif ($type instanceof ReferencePropertyType) {
+            $targetType = $definitions->getType($type->getTarget());
+
+            $result = $this->traverseDefinition($data, $targetType, $definitions, $visitor, $context);
+        } elseif ($type instanceof GenericPropertyType) {
+            if (!isset($context[$type->getName()])) {
+                throw new TraverserException('Could not resolve generic type from context');
+            }
+
+            $subType = $definitions->getType($context[$type->getName()]);
+            $result = $this->traverseDefinition($data, $subType, $definitions, $visitor, $context);
+        } elseif ($type instanceof AnyPropertyType) {
+            $result = $data;
         } else {
-            return $visitor->visitString($data, $type, $this->getCurrentPath());
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws TypeNotFoundException
-     * @throws Exception\InvalidSchemaException
-     */
-    protected function traverseIntersection($data, IntersectionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
-    {
-        $items = $type->getAllOf();
-        $count = count($items);
-        $match = 0;
-
-        $newType = new StructType();
-        foreach ($items as $index => $item) {
-            $assertConstraints = $this->assertConstraints;
-
-            try {
-                $this->assertConstraints = true;
-
-                if ($item instanceof ReferenceType) {
-                    $item = $definitions->getType($item->getRef());
-                }
-
-                if ($item instanceof StructType) {
-                    foreach ($item->getProperties() as $name => $subType) {
-                        $newType->addProperty($name, $subType);
-                    }
-                } else {
-                    throw new ValidationException($this->getCurrentPath() . ' must only contain struct types', 'allOf', $this->pathStack);
-                }
-
-                $match++;
-            } catch (ValidationException $e) {
-            } finally {
-                $this->assertConstraints = $assertConstraints;
-            }
-        }
-
-        if ($this->assertConstraints && $count !== $match) {
-            throw new ValidationException($this->getCurrentPath() . ' must match all required schemas (matched only ' . $match . ' out of ' . $count . ')', 'allOf', $this->pathStack);
-        }
-
-        return $this->recTraverse($data, $newType, $definitions, $visitor, $context);
-    }
-
-    /**
-     * @throws ValidationException
-     * @throws TypeNotFoundException
-     */
-    protected function traverseUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
-    {
-        $propertyName = $type->getPropertyName();
-        if (!empty($propertyName)) {
-            return $this->traverseDiscriminatedUnion($data, $type, $definitions, $visitor, $context);
-        }
-
-        $items = $type->getOneOf();
-        $match = 0;
-
-        $result = null;
-        foreach ($items as $index => $item) {
-            $assertConstraints = $this->assertConstraints;
-
-            try {
-                $this->assertConstraints = true;
-
-                $result = $this->recTraverse($data, $item, $definitions, $visitor, $context);
-
-                $match++;
-            } catch (ValidationException $e) {
-            } finally {
-                $this->assertConstraints = $assertConstraints;
-            }
-        }
-
-        if ($this->assertConstraints && $match !== 1) {
-            throw new ValidationException($this->getCurrentPath() . ' must match one required schema', 'oneOf', $this->pathStack);
+            $result = null;
         }
 
         return $result;
@@ -381,47 +244,42 @@ class SchemaTraverser
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    private function traverseDiscriminatedUnion($data, UnionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    protected function traverseArray(array $data, ArrayPropertyType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): array
     {
-        if (!$data instanceof \stdClass) {
-            throw new ValidationException($this->getCurrentPath() . ' discriminated union provided value must be an object', 'oneOf', $this->pathStack);
-        }
+        $result = [];
 
-        $key = $type->getPropertyName();
-        if (!isset($data->{$key})) {
-            throw new ValidationException($this->getCurrentPath() . ' discriminated union object must have the property "' . $key . '"', 'oneOf', $this->pathStack);
-        }
+        $schema = $type->getSchema();
+        if ($schema instanceof PropertyTypeAbstract) {
+            foreach ($data as $index => $value) {
+                array_push($this->pathStack, $index);
 
-        $mapping = $type->getMapping();
-        if (!empty($mapping)) {
-            if (!isset($mapping[$data->{$key}])) {
-                throw new ValidationException($this->getCurrentPath() . ' discriminated union provided type "' . $data->{$key} . '" not available, use one of ' . implode(', ', array_keys($mapping)), 'oneOf', $this->pathStack);
+                $result[] = $this->traverseProperty($value, $schema, $definitions, $visitor, $context);
+
+                array_pop($this->pathStack);
             }
+        }
 
-            $ref = $mapping[$data->{$key}];
+        return $visitor->visitArray($result, $type, $this->getCurrentPath());
+    }
+
+    protected function traverseString(string $data, StringPropertyType $type, VisitorInterface $visitor): mixed
+    {
+        $format = $type->getFormat();
+        if ($format === Format::DATE) {
+            return $visitor->visitDate($data, $type, $this->getCurrentPath());
+        } elseif ($format === Format::DATETIME) {
+            return $visitor->visitDateTime($data, $type, $this->getCurrentPath());
+        } elseif ($format === Format::TIME) {
+            return $visitor->visitTime($data, $type, $this->getCurrentPath());
         } else {
-            $ref = $data->{$key};
+            return $visitor->visitString($data, $type, $this->getCurrentPath());
         }
-
-        $items = $type->getOneOf();
-        foreach ($items as $item) {
-            if (!$item instanceof ReferenceType) {
-                // must be a reference type
-                continue;
-            }
-
-            if ($item->getRef() === $ref) {
-                return $this->recTraverse($data, $item, $definitions, $visitor, $context);
-            }
-        }
-
-        throw new ValidationException($this->getCurrentPath() . ' discriminated union could not match fitting type', 'oneOf', $this->pathStack);
     }
 
     /**
      * @throws ValidationException
      */
-    protected function assertScalarConstraints($data, ScalarType $type): void
+    protected function assertScalarConstraints($data, ScalarPropertyType $type): void
     {
         if (!is_scalar($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type scalar', 'type', $this->pathStack);
@@ -429,104 +287,40 @@ class SchemaTraverser
 
         $format = $type->getFormat();
         if ($format !== null) {
-            if ($type instanceof StringType && is_string($data)) {
+            if ($type instanceof StringPropertyType && is_string($data)) {
                 $this->validateFormatString($format, $data);
-            } elseif ($type instanceof NumberType && (is_int($data) || is_float($data))) {
+            } elseif ($type instanceof NumberPropertyType && (is_int($data) || is_float($data))) {
                 $this->validateFormatNumber($format, $data);
             }
         }
-
-        $enum = $type->getEnum();
-        if ($enum !== null) {
-            if (!in_array($data, $enum, true)) {
-                throw new ValidationException($this->getCurrentPath() . ' is not in enumeration ' . json_encode($enum), 'enum', $this->pathStack);
-            }
-        }
-
-        $const = $type->getConst();
-        if ($const !== null) {
-            if ($const !== $data) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain the constant value ' . json_encode($const), 'const', $this->pathStack);
-            }
-        }
     }
 
     /**
      * @throws ValidationException
      */
-    protected function assertStructConstraints($data, StructType $type): void
+    protected function assertObject($data): void
     {
         if (!$data instanceof \stdClass) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type object', 'type', $this->pathStack);
         }
-
-        $keys = array_keys(get_object_vars($data));
-
-        $required = $type->getRequired();
-        if ($required !== null) {
-            $diff = array_diff($required, $keys);
-            if (count($diff) > 0) {
-                throw new ValidationException($this->getCurrentPath() . ' the following properties are required: ' . implode(', ', $diff), 'required', $this->pathStack);
-            }
-        }
     }
 
     /**
      * @throws ValidationException
      */
-    protected function assertMapConstraints($data, MapType $type): void
-    {
-        if (!$data instanceof \stdClass) {
-            throw new ValidationException($this->getCurrentPath() . ' must be of type object', 'type', $this->pathStack);
-        }
-
-        $keys = array_keys(get_object_vars($data));
-
-        $minProperties = $type->getMinProperties();
-        if ($minProperties !== null) {
-            if (count($keys) < $minProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minProperties . ' properties', 'minProperties', $this->pathStack);
-            }
-        }
-
-        $maxProperties = $type->getMaxProperties();
-        if ($maxProperties !== null) {
-            if (count($keys) > $maxProperties) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxProperties . ' properties', 'maxProperties', $this->pathStack);
-            }
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function assertArrayConstraints($data, ArrayType $type): void
+    protected function assertArray($data): void
     {
         if (!is_array($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type array', 'type', $this->pathStack);
         }
-
-        $minItems = $type->getMinItems();
-        if ($minItems !== null) {
-            if (count($data) < $minItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minItems . ' items', 'minItems', $this->pathStack);
-            }
-        }
-
-        $maxItems = $type->getMaxItems();
-        if ($maxItems !== null) {
-            if (count($data) > $maxItems) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxItems . ' items', 'maxItems', $this->pathStack);
-            }
-        }
     }
 
     /**
      * @throws ValidationException
      */
-    protected function assertNumberConstraints($data, NumberType $property): void
+    protected function assertNumber($data, NumberPropertyType $property): void
     {
-        if ($property instanceof IntegerType) {
+        if ($property instanceof IntegerPropertyType) {
             if (!is_int($data)) {
                 throw new ValidationException($this->getCurrentPath() . ' must be of type integer', 'type', $this->pathStack);
             }
@@ -535,49 +329,12 @@ class SchemaTraverser
                 throw new ValidationException($this->getCurrentPath() . ' must be of type float', 'type', $this->pathStack);
             }
         }
-
-        $maximum = $property->getMaximum();
-        if ($maximum !== null) {
-            if ($property->getExclusiveMaximum()) {
-                if ($data >= $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower than ' . $maximum, 'maximum', $this->pathStack);
-                }
-            } else {
-                if ($data > $maximum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be lower or equal than ' . $maximum, 'maximum', $this->pathStack);
-                }
-            }
-        }
-
-        $minimum = $property->getMinimum();
-        if ($minimum !== null) {
-            if ($property->getExclusiveMinimum()) {
-                if ($data <= $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater than ' . $minimum, 'minimum', $this->pathStack);
-                }
-            } else {
-                if ($data < $minimum) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be greater or equal than ' . $minimum, 'minimum', $this->pathStack);
-                }
-            }
-        }
-
-        $multipleOf = $property->getMultipleOf();
-        if ($multipleOf !== null) {
-            $result = $data / $multipleOf;
-            $base   = (int) $result;
-
-            // its important to make a loose comparison
-            if ($data > 0 && $result - $base != 0) {
-                throw new ValidationException($this->getCurrentPath() . ' must be a multiple of ' . $multipleOf, 'multipleOf', $this->pathStack);
-            }
-        }
     }
 
     /**
      * @throws ValidationException
      */
-    protected function assertBooleanConstraints($data, BooleanType $type): void
+    protected function assertBoolean($data): void
     {
         if (!is_bool($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type boolean', 'type', $this->pathStack);
@@ -587,32 +344,10 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertStringConstraints($data, StringType $property): void
+    protected function assertString($data): void
     {
         if (!is_string($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type string', 'type', $this->pathStack);
-        }
-
-        $minLength = $property->getMinLength();
-        if ($minLength !== null) {
-            if (strlen($data) < $minLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain more or equal than ' . $minLength . ' characters', 'minLength', $this->pathStack);
-            }
-        }
-
-        $maxLength = $property->getMaxLength();
-        if ($maxLength !== null) {
-            if (strlen($data) > $maxLength) {
-                throw new ValidationException($this->getCurrentPath() . ' must contain less or equal than ' . $maxLength . ' characters', 'maxLength', $this->pathStack);
-            }
-        }
-
-        $pattern = $property->getPattern();
-        if ($pattern !== null) {
-            $result = preg_match('/' . $pattern . '/', $data);
-            if (!$result) {
-                throw new ValidationException($this->getCurrentPath() . ' does not match pattern [' . $pattern . ']', 'pattern', $this->pathStack);
-            }
         }
     }
 
@@ -624,11 +359,6 @@ class SchemaTraverser
     private function validateFormatString(Format $format, string $data): void
     {
         switch ($format) {
-            case Format::BINARY:
-                if (!preg_match('~^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$~', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid Base64 encoded string [RFC4648]', 'format', $this->pathStack);
-                }
-                break;
             case Format::DATE:
                 if (!preg_match('/^' . LocalDate::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-date format [RFC3339]', 'format', $this->pathStack);
@@ -639,48 +369,11 @@ class SchemaTraverser
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid date-time format [RFC3339]', 'format', $this->pathStack);
                 }
                 break;
-            case Format::DOMAIN:
-                if (!filter_var($data, FILTER_VALIDATE_DOMAIN)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid domain', 'format', $this->pathStack);
-                }
-                break;
-            case Format::DURATION:
-                if (!preg_match('/^' . Duration::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid duration format [ISO8601]', 'format', $this->pathStack);
-                }
-                break;
-            case Format::EMAIL:
-                if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid email address', 'format', $this->pathStack);
-                }
-                break;
-            case Format::IPV4:
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv4 address', 'format', $this->pathStack);
-                }
-                break;
-            case Format::IPV6:
-                if (!filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid IPv6 address', 'format', $this->pathStack);
-                }
-                break;
-            case Format::PERIOD:
-                if (!preg_match('/^' . Period::getPattern() . '$/', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid period format [ISO8601]', 'format', $this->pathStack);
-                }
-                break;
             case Format::TIME:
                 if (!preg_match('/^' . LocalTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
                 }
                 break;
-            case Format::URI:
-                // no validation needed
-                break;
-            case Format::UUID:
-                if (!preg_match('~^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$~', $data)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must be a valid UUID string [RFC4122]', 'format', $this->pathStack);
-                }
         }
     }
 

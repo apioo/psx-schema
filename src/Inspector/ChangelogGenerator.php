@@ -21,17 +21,17 @@
 namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
@@ -70,36 +70,36 @@ class ChangelogGenerator
             return;
         }
 
-        if ($leftType instanceof TypeAbstract && $rightType instanceof TypeAbstract) {
+        if ($leftType instanceof PropertyTypeAbstract && $rightType instanceof PropertyTypeAbstract) {
             yield from $this->generateCommon($leftType, $rightType, $typeName, $propertyName);
         }
 
-        if ($leftType instanceof StructType && $rightType instanceof StructType) {
+        if ($leftType instanceof StructDefinitionType && $rightType instanceof StructDefinitionType) {
             yield from $this->generateStruct($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof MapType && $rightType instanceof MapType) {
+        } elseif ($leftType instanceof MapDefinitionType && $rightType instanceof MapDefinitionType) {
             yield from $this->generateMap($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof ArrayType && $rightType instanceof ArrayType) {
+        } elseif ($leftType instanceof ArrayPropertyType && $rightType instanceof ArrayPropertyType) {
             yield from $this->generateArray($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof NumberType && $rightType instanceof NumberType) {
+        } elseif ($leftType instanceof NumberPropertyType && $rightType instanceof NumberPropertyType) {
             yield from $this->generateNumber($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof BooleanType && $rightType instanceof BooleanType) {
+        } elseif ($leftType instanceof BooleanPropertyType && $rightType instanceof BooleanPropertyType) {
             // nothing to diff here
-        } elseif ($leftType instanceof StringType && $rightType instanceof StringType) {
+        } elseif ($leftType instanceof StringPropertyType && $rightType instanceof StringPropertyType) {
             yield from $this->generateString($leftType, $rightType, $typeName, $propertyName);
         } elseif ($leftType instanceof IntersectionType && $rightType instanceof IntersectionType) {
             yield from $this->generateIntersection($leftType, $rightType, $typeName, $propertyName);
         } elseif ($leftType instanceof UnionType && $rightType instanceof UnionType) {
             yield from $this->generateUnion($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof ReferenceType && $rightType instanceof ReferenceType) {
+        } elseif ($leftType instanceof ReferencePropertyType && $rightType instanceof ReferencePropertyType) {
             yield from $this->generateReference($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof AnyType && $rightType instanceof AnyType) {
+        } elseif ($leftType instanceof AnyPropertyType && $rightType instanceof AnyPropertyType) {
             // nothing to diff here
-        } elseif ($leftType instanceof GenericType && $rightType instanceof GenericType) {
+        } elseif ($leftType instanceof GenericPropertyType && $rightType instanceof GenericPropertyType) {
             // nothing to diff here
         }
     }
 
-    private function generateCommon(TypeAbstract $leftType, TypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateCommon(PropertyTypeAbstract $leftType, PropertyTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getDescription() !== $rightType->getDescription()) {
             yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
@@ -118,7 +118,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateStruct(StructType $leftType, StructType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         $left = $leftType->getProperties() ?? [];
         $right = $rightType->getProperties() ?? [];
@@ -138,7 +138,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateMap(MapType $leftType, MapType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateMap(MapDefinitionType $leftType, MapDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         $left = $leftType->getAdditionalProperties();
         $right = $rightType->getAdditionalProperties();
@@ -148,7 +148,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateArray(ArrayType $leftType, ArrayType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateArray(ArrayPropertyType $leftType, ArrayPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         $left = $leftType->getItems();
         $right = $rightType->getItems();
@@ -198,14 +198,14 @@ class ChangelogGenerator
         }
     }
 
-    private function generateReference(ReferenceType $leftType, ReferenceType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateReference(ReferencePropertyType $leftType, ReferencePropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getRef() !== $rightType->getRef()) {
             yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'ref', $leftType->getRef(), $rightType->getRef());
         }
     }
 
-    private function generateString(StringType $leftType, StringType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateString(StringPropertyType $leftType, StringPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getPattern() !== $rightType->getPattern()) {
             yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'pattern', $leftType->getPattern(), $rightType->getPattern());
@@ -220,7 +220,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateNumber(NumberType $leftType, NumberType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateNumber(NumberPropertyType $leftType, NumberPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getMinimum() !== $rightType->getMinimum()) {
             yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'minimum', $leftType->getMinimum(), $rightType->getMinimum());

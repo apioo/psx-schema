@@ -22,13 +22,13 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Format;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeFactory;
 
 /**
@@ -42,72 +42,72 @@ class TypeFactoryTest extends TestCase
 {
     public function testArrayType()
     {
-        $this->assertInstanceOf(ArrayType::class, TypeFactory::getArray());
+        $this->assertInstanceOf(ArrayPropertyType::class, TypeFactory::getArray());
     }
 
     public function testBinaryType()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getBinary());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getBinary());
         $this->assertEquals(Format::BINARY, TypeFactory::getBinary()->getFormat());
     }
     
     public function testBoolean()
     {
-        $this->assertInstanceOf(BooleanType::class, TypeFactory::getBoolean());
+        $this->assertInstanceOf(BooleanPropertyType::class, TypeFactory::getBoolean());
     }
 
     public function testDateTime()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getDateTime());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getDateTime());
         $this->assertEquals(Format::DATETIME, TypeFactory::getDateTime()->getFormat());
     }
 
     public function testDate()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getDate());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getDate());
         $this->assertEquals(Format::DATE, TypeFactory::getDate()->getFormat());
     }
 
     public function testDuration()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getDuration());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getDuration());
         $this->assertEquals(Format::DURATION, TypeFactory::getDuration()->getFormat());
     }
 
     public function testIntegerType()
     {
-        $this->assertInstanceOf(IntegerType::class, TypeFactory::getInteger());
+        $this->assertInstanceOf(IntegerPropertyType::class, TypeFactory::getInteger());
     }
 
     public function testNumberType()
     {
-        $this->assertInstanceOf(NumberType::class, TypeFactory::getNumber());
+        $this->assertInstanceOf(NumberPropertyType::class, TypeFactory::getNumber());
     }
 
     public function testStructType()
     {
-        $this->assertInstanceOf(StructType::class, TypeFactory::getStruct());
+        $this->assertInstanceOf(StructDefinitionType::class, TypeFactory::getStruct());
     }
 
     public function testMapType()
     {
-        $this->assertInstanceOf(MapType::class, TypeFactory::getMap());
+        $this->assertInstanceOf(MapDefinitionType::class, TypeFactory::getMap());
     }
 
     public function testStringType()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getString());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getString());
     }
 
     public function testTime()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getTime());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getTime());
         $this->assertEquals(Format::TIME, TypeFactory::getTime()->getFormat());
     }
 
     public function testUri()
     {
-        $this->assertInstanceOf(StringType::class, TypeFactory::getUri());
+        $this->assertInstanceOf(StringPropertyType::class, TypeFactory::getUri());
         $this->assertEquals(Format::URI, TypeFactory::getUri()->getFormat());
     }
 }

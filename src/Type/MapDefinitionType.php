@@ -18,21 +18,52 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * MultipleOf
+ * MapDefinitionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class MultipleOf
+class MapDefinitionType extends DefinitionTypeAbstract implements MapTypeInterface
 {
-    public function __construct(public int $multipleOf)
+    protected ?PropertyTypeAbstract $schema = null;
+
+    protected function getType(): string
     {
+        return 'map';
+    }
+
+    public function getSchema(): ?PropertyTypeAbstract
+    {
+        return $this->schema;
+    }
+
+    public function setSchema(PropertyTypeAbstract $schema): self
+    {
+        $this->schema = $schema;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'schema' => $this->schema,
+        ], function($value){
+            return $value !== null;
+        }));
+    }
+
+    public function __clone()
+    {
+        if ($this->schema !== null) {
+            $schema = $this->schema;
+            if ($schema instanceof PropertyTypeAbstract) {
+                $this->schema = clone $schema;
+            }
+        }
     }
 }

@@ -18,21 +18,17 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema;
 
 /**
- * Minimum
+ * DefinitionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class Minimum
+enum DefinitionType : string
 {
-    public function __construct(public int $minimum)
-    {
-    }
+    case STRUCT = 'struct';
+    case MAP = 'map';
 }

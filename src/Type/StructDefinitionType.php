@@ -20,31 +20,49 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\TypeAssert;
-use PSX\Schema\TypeInterface;
-
 /**
- * StructType
+ * StructDefinitionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class StructType extends ObjectType
+class StructDefinitionType extends DefinitionTypeAbstract
 {
-    protected ?string $extends = null;
+    protected ?string $parent = null;
+    protected ?bool $base = null;
     protected ?array $properties = null;
-    protected ?array $required = null;
+    protected ?string $discriminator = null;
+    protected ?array $mapping = null;
+    protected ?array $template = null;
 
-    public function getExtends(): ?string
+    protected function getType(): string
     {
-        return $this->extends;
+        return 'struct';
     }
 
-    public function setExtends(string $extends): void
+    public function getParent(): ?string
     {
-        $this->extends = $extends;
+        return $this->parent;
+    }
+
+    public function setParent(string $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getBase(): ?bool
+    {
+        return $this->base;
+    }
+
+    public function setBase(?bool $base): self
+    {
+        $this->base = $base;
+
+        return $this;
     }
 
     public function getProperties(): ?array
@@ -52,9 +70,6 @@ class StructType extends ObjectType
         return $this->properties;
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
     public function setProperties(array $properties): self
     {
         $this->properties = [];
@@ -65,19 +80,14 @@ class StructType extends ObjectType
         return $this;
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
-    public function addProperty(string $name, TypeInterface $property): self
+    public function addProperty(string $name, PropertyTypeAbstract $property): self
     {
-        TypeAssert::assertProperty($property);
-
         $this->properties[$name] = $property;
 
         return $this;
     }
 
-    public function getProperty(string $name): ?TypeInterface
+    public function getProperty(string $name): ?PropertyTypeAbstract
     {
         return $this->properties[$name] ?? null;
     }
@@ -96,14 +106,38 @@ class StructType extends ObjectType
         return $this;
     }
 
-    public function getRequired(): ?array
+    public function getDiscriminator(): ?string
     {
-        return $this->required;
+        return $this->discriminator;
     }
 
-    public function setRequired(array $required): self
+    public function setDiscriminator(?string $discriminator): self
     {
-        $this->required = $required;
+        $this->discriminator = $discriminator;
+
+        return $this;
+    }
+
+    public function getMapping(): ?array
+    {
+        return $this->mapping;
+    }
+
+    public function setMapping(?array $mapping): self
+    {
+        $this->mapping = $mapping;
+
+        return $this;
+    }
+
+    public function getTemplate(): ?array
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(?array $template): self
+    {
+        $this->template = $template;
 
         return $this;
     }
@@ -111,10 +145,12 @@ class StructType extends ObjectType
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
-            '$extends' => $this->extends,
-            'type' => 'object',
+            'parent' => $this->parent,
+            'base' => $this->base,
             'properties' => $this->properties,
-            'required' => $this->required,
+            'discriminator' => $this->discriminator,
+            'mapping' => $this->mapping,
+            'template' => $this->template,
         ], function($value){
             return $value !== null;
         }));

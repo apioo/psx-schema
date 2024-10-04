@@ -21,11 +21,11 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -47,7 +47,7 @@ class Html extends MarkupAbstract
         return new Type\Html($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $title = '<a class="psx-type-link" data-name="' . $name->getClass() . '">' . htmlspecialchars($name->getClass()) . '</a>';
         if (!empty($generics)) {
@@ -83,7 +83,7 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-map">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
@@ -99,7 +99,7 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-array">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
@@ -147,7 +147,7 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
     {
         $generics = '';
         $template = $origin->getTemplate();

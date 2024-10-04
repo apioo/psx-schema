@@ -32,7 +32,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Discriminator
 {
-    public function __construct(public string $propertyName, public ?array $mapping = null)
+    public function __construct()
     {
     }
 }

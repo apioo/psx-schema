@@ -18,21 +18,38 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * MaxLength
+ * CollectionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class MaxLength
+abstract class CollectionPropertyType extends PropertyTypeAbstract
 {
-    public function __construct(public int $maxLength)
+    protected ?PropertyTypeAbstract $schema = null;
+
+    public function getSchema(): ?PropertyTypeAbstract
     {
+        return $this->schema;
+    }
+
+    public function setSchema(PropertyTypeAbstract $schema): self
+    {
+        $this->schema = $schema;
+
+        return $this;
+    }
+
+    public function __clone()
+    {
+        if ($this->schema !== null) {
+            $schema = $this->schema;
+            if ($schema instanceof PropertyTypeAbstract) {
+                $this->schema = clone $schema;
+            }
+        }
     }
 }

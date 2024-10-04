@@ -20,7 +20,7 @@
 
 namespace PSX\Schema\Generator\Code;
 
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -69,22 +69,22 @@ class Property
 
     public function getComment(): ?string
     {
-        return $this->origin instanceof TypeAbstract ? $this->origin->getDescription() : null;
+        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->getDescription() : null;
     }
 
     public function isNullable(): ?bool
     {
-        return $this->origin instanceof TypeAbstract ? $this->origin->isNullable() : null;
+        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isNullable() : null;
     }
 
     public function isDeprecated(): ?bool
     {
-        return $this->origin instanceof TypeAbstract ? $this->origin->isDeprecated() : null;
+        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isDeprecated() : null;
     }
 
     public function isReadonly(): ?bool
     {
-        return $this->origin instanceof TypeAbstract ? $this->origin->isReadonly() : null;
+        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isReadonly() : null;
     }
 
     public function getOrigin(): TypeInterface

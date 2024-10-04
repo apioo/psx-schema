@@ -32,7 +32,7 @@ interface SchemaInterface
     /**
      * Returns the root type for this schema
      */
-    public function getType(): TypeInterface;
+    public function getRoot(): ?string;
 
     /**
      * Returns the definitions for this schema which can be used to resolve referenced types

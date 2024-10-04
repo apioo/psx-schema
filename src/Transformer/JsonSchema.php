@@ -59,7 +59,7 @@ class JsonSchema implements TransformerInterface
             // in case we have an array at the top level we transform it to an object
             if (isset($keywords['type']) && $keywords['type'] === 'array') {
                 $keywords = [
-                    'type' => 'object',
+                    'type' => 'struct',
                     'properties' => (object) [
                         'entries' => (object) $keywords,
                     ]
@@ -85,7 +85,7 @@ class JsonSchema implements TransformerInterface
 
     private function convertSchema(\stdClass $schema, array &$definitions): \stdClass
     {
-        $schema = BCLayer::transform($schema);
+        $schema = BCLayer::transformDefinition($schema);
 
         $result = [];
         if (isset($schema->description)) {

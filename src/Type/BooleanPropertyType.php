@@ -18,21 +18,19 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * Enum
+ * BooleanType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class Enum
+class BooleanPropertyType extends PropertyTypeAbstract
 {
-    public function __construct(public array $enum)
+    protected function getType(): string
     {
+        return 'boolean';
     }
 }

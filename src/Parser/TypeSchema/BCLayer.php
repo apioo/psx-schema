@@ -29,13 +29,7 @@ namespace PSX\Schema\Parser\TypeSchema;
  */
 class BCLayer
 {
-    /**
-     * This method takes a look at the schema and adds missing properties
-     *
-     * @param \stdClass $data
-     * @return \stdClass
-     */
-    public static function transform(\stdClass $data): \stdClass
+    public static function transformDefinition(\stdClass $data): \stdClass
     {
         if (isset($data->patternProperties) && !isset($data->properties) && !isset($data->additionalProperties)) {
             // in this case we have a schema with only pattern properties
@@ -47,18 +41,38 @@ class BCLayer
             }
         }
 
-        if (isset($data->{'$extends'})) {
-            if (!isset($data->type)) {
-                $data->type = 'object';
+        if (!isset($data->type)) {
+            if (isset($data->additionalProperties) || isset($data->schema)) {
+                $data->type = 'map';
+            } else {
+                $data->type = 'struct';
+
+                if (!isset($data->properties)) {
+                    $data->properties = new \stdClass();
+                }
             }
-            if (!isset($data->properties)) {
-                $data->properties = new \stdClass();
+        } else {
+            if ($data->type === 'object' && isset($data->properties)) {
+                $data->type = 'struct';
+            } elseif ($data->type === 'object' && isset($data->additionalProperties)) {
+                $data->type = 'map';
             }
         }
 
+        return $data;
+    }
+
+    public static function transformProperty(\stdClass $data): \stdClass
+    {
+        if (isset($data->{'$ref'})) {
+            $data->type = 'reference';
+        } elseif (isset($data->{'$generic'})) {
+            $data->type = 'generic';
+        }
+
         if (!isset($data->type)) {
-            if (isset($data->properties) || isset($data->additionalProperties)) {
-                $data->type = 'object';
+            if (isset($data->additionalProperties)) {
+                $data->type = 'map';
             } elseif (isset($data->items)) {
                 $data->type = 'array';
             } elseif (isset($data->pattern) || isset($data->minLength) || isset($data->maxLength)) {
@@ -66,15 +80,11 @@ class BCLayer
             } elseif (isset($data->minimum) || isset($data->maximum)) {
                 $data->type = 'number';
             }
-        }
-
-        if (isset($data->type) && $data->type === 'int') {
-            $data->type = 'integer';
-        }
-
-        if (isset($data->type) && $data->type === 'object') {
-            if (!isset($data->properties) && !isset($data->additionalProperties)) {
-                $data->properties = new \stdClass();
+        } else {
+            if ($data->type === 'object' && isset($data->additionalProperties)) {
+                $data->type = 'map';
+            } elseif ($data->type === 'int') {
+                $data->type = 'integer';
             }
         }
 

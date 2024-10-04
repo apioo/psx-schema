@@ -20,7 +20,7 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\ReferencePropertyType;
 
 /**
  * SchemaResolver
@@ -56,7 +56,7 @@ class SchemaResolver
     private function lookupTypes(TypeInterface $type, array &$types)
     {
         TypeUtil::walk($type, function(TypeInterface $type) use (&$types){
-            if (!$type instanceof ReferenceType) {
+            if (!$type instanceof ReferencePropertyType) {
                 return;
             }
 

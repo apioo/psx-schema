@@ -21,18 +21,39 @@
 namespace PSX\Schema\Type;
 
 /**
- * AnyType
+ * ReferenceType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class AnyType extends TypeAbstract
+class ReferencePropertyType extends PropertyTypeAbstract
 {
+    protected ?string $target = null;
+
+    protected function getType(): string
+    {
+        return 'reference';
+    }
+
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
-            'type' => 'any',
-        ]);
+        return array_merge(parent::toArray(), array_filter([
+            'target' => $this->target,
+        ], function($value){
+            return $value !== null;
+        }));
     }
 }

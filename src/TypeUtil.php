@@ -20,19 +20,19 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * TypeUtil
@@ -50,40 +50,26 @@ class TypeUtil
      * @param TypeInterface $type
      * @param \Closure $visitor
      */
-    public static function walk(TypeInterface $type, \Closure $visitor)
+    public static function walk(TypeInterface $type, \Closure $visitor): void
     {
         $visitor($type);
 
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             $properties = $type->getProperties();
             if (is_iterable($properties)) {
                 foreach ($properties as $property) {
                     self::walk($property, $visitor);
                 }
             }
-        } elseif ($type instanceof MapType) {
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                self::walk($additionalProperties, $visitor);
+        } elseif ($type instanceof MapDefinitionType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                self::walk($schema, $visitor);
             }
-        } elseif ($type instanceof ArrayType) {
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                self::walk($items, $visitor);
-            }
-        } elseif ($type instanceof UnionType) {
-            $oneOf = $type->getOneOf();
-            if (is_iterable($oneOf)) {
-                foreach ($oneOf as $property) {
-                    self::walk($property, $visitor);
-                }
-            }
-        } elseif ($type instanceof IntersectionType) {
-            $allOf = $type->getAllOf();
-            if (is_iterable($allOf)) {
-                foreach ($allOf as $property) {
-                    self::walk($property, $visitor);
-                }
+        } elseif ($type instanceof CollectionPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                self::walk($schema, $visitor);
             }
         }
     }
@@ -103,7 +89,7 @@ class TypeUtil
                 return;
             }
 
-            if ($format !== null && $type instanceof ScalarType) {
+            if ($format !== null && $type instanceof ScalarPropertyType) {
                 $found = $type->getFormat() === $format;
             } else {
                 $found = true;
@@ -133,7 +119,7 @@ class TypeUtil
     public static function refs(TypeInterface $type, \Closure $callback): void
     {
         self::walk($type, function(TypeInterface $type) use ($callback){
-            if ($type instanceof ReferenceType) {
+            if ($type instanceof ReferencePropertyType) {
                 [$ns, $name] = self::split($type->getRef());
                 $type->setRef($callback($ns, $name));
 
@@ -146,11 +132,11 @@ class TypeUtil
                     }
                     $type->setTemplate($result);
                 }
-            } elseif ($type instanceof StructType) {
-                $extends = $type->getExtends();
+            } elseif ($type instanceof StructDefinitionType) {
+                $extends = $type->getParent();
                 if (!empty($extends)) {
                     [$ns, $name] = self::split($extends);
-                    $type->setExtends($callback($ns, $name));
+                    $type->setParent($callback($ns, $name));
                 }
             }
         });
@@ -188,30 +174,26 @@ class TypeUtil
 
     public static function getTypeName(TypeInterface $type): string
     {
-        if ($type instanceof AnyType) {
+        if ($type instanceof AnyPropertyType) {
             return 'any';
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             return 'array';
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return 'boolean';
-        } elseif ($type instanceof GenericType) {
+        } elseif ($type instanceof GenericPropertyType) {
             return 'generic';
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return 'integer';
-        } elseif ($type instanceof IntersectionType) {
-            return 'intersection';
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             return 'map';
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return 'number';
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             return 'reference';
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             return 'string';
-        } elseif ($type instanceof StructType) {
+        } elseif ($type instanceof StructDefinitionType) {
             return 'struct';
-        } elseif ($type instanceof UnionType) {
-            return 'union';
         } else {
             return 'unknown';
         }

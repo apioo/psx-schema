@@ -18,22 +18,21 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Type;
+namespace PSX\Schema\Attribute;
+
+use Attribute;
 
 /**
- * IntegerType
+ * DerivedType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class IntegerType extends NumberType
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+class DerivedType
 {
-    public function toArray(): array
+    public function __construct(public string $class, public string $type)
     {
-        $return = parent::toArray();
-        $return['type'] = 'integer';
-
-        return $return;
     }
 }

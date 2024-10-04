@@ -30,16 +30,16 @@ use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\Popo;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
@@ -83,9 +83,9 @@ class Dumper
     private function dumpObject(mixed $data, string $class): mixed
     {
         $type = $this->resolver->resolveClass(new \ReflectionClass($class));
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             return $this->dumpStruct($data);
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             return $this->dumpMap($data, $type);
         } else {
             throw new ParserException('Could not determine object type');
@@ -128,7 +128,7 @@ class Dumper
         return $result;
     }
 
-    private function dumpMap($data, MapType $type): RecordInterface
+    private function dumpMap($data, MapDefinitionType $type): RecordInterface
     {
         if (!$data instanceof \Traversable) {
             throw new ParserException('Map must be traversable');
@@ -142,7 +142,7 @@ class Dumper
         return $result;
     }
 
-    private function dumpArray($data, ArrayType $type): array
+    private function dumpArray($data, ArrayPropertyType $type): array
     {
         if (!is_iterable($data)) {
             throw new ParserException('Array must be iterable');
@@ -162,19 +162,19 @@ class Dumper
             return null;
         }
 
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             return $this->dumpStruct($value);
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             return $this->dumpMap($value, $type);
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             return $this->dumpArray($value, $type);
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return (bool) $value;
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return (int) $value;
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return (float) $value;
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             $format = $type->getFormat();
             if ($format === Format::BINARY && is_resource($value)) {
                 return base64_encode(stream_get_contents($value, -1, 0));
@@ -215,16 +215,16 @@ class Dumper
             return $this->dump($value);
         } elseif ($type instanceof UnionType) {
             return $this->dump($value);
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             return $this->dumpReference($value, $type);
-        } elseif ($type instanceof AnyType) {
+        } elseif ($type instanceof AnyPropertyType) {
             return $value;
         }
 
         return null;
     }
 
-    private function dumpReference($data, ReferenceType $type)
+    private function dumpReference($data, ReferencePropertyType $type)
     {
         return $this->dumpObject($data, $type->getRef());
     }

@@ -22,8 +22,8 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeFactory;
 
 /**
@@ -58,9 +58,9 @@ class BuilderTest extends TestCase
 
         $type = $builder->getType();
 
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $this->assertEquals(null, $type->getTitle());
         $this->assertEquals('bar', $type->getDescription());
-        $this->assertEquals('stdClass', $type->getAttribute(TypeAbstract::ATTR_CLASS));
+        $this->assertEquals('stdClass', $type->getAttribute(PropertyTypeAbstract::ATTR_CLASS));
     }
 }

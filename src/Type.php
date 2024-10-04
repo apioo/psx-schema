@@ -27,13 +27,19 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum Type : string
+enum PropertyType : string
 {
     case BOOLEAN = 'boolean';
+    /**
+     * @deprecated
+     */
     case OBJECT = 'object';
+    case MAP = 'map';
     case ARRAY = 'array';
     case NUMBER = 'number';
     case INTEGER = 'integer';
     case STRING = 'string';
     case ANY = 'any';
+    case GENERIC = 'generic';
+    case REFERENCE = 'reference';
 }

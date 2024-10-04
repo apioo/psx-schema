@@ -22,10 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -52,7 +52,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return new Normalizer\VisualBasic();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $code = 'Public Class ' . $name->getClass();
 
@@ -77,7 +77,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
@@ -88,7 +88,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
     {
         $code = 'Public Class ' . $name->getClass() . ' : ' . $type . "\n";
         $code.= $this->indent . 'Inherits ' . $type . "\n";
@@ -97,7 +97,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -122,7 +122,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         if (!empty($this->namespace)) {
             return 'End Namespace' . "\n";
@@ -131,12 +131,12 @@ class VisualBasic extends CodeGeneratorAbstract
         }
     }
 
-    private function getImports(TypeAbstract $origin): array
+    private function getImports(PropertyTypeAbstract $origin): array
     {
         $imports = [];
         $imports[] = 'Imports System.Text.Json.Serialization';
 
-        if (TypeUtil::contains($origin, MapType::class)) {
+        if (TypeUtil::contains($origin, MapDefinitionType::class)) {
             $imports[] = 'Imports System.Collections.Generic';
         }
 

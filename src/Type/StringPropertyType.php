@@ -18,21 +18,19 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Attribute;
-
-use Attribute;
+namespace PSX\Schema\Type;
 
 /**
- * MaxItems
+ * StringPropertyType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class MaxItems
+class StringPropertyType extends ScalarPropertyType
 {
-    public function __construct(public int $maxItems)
+    protected function getType(): string
     {
+        return 'string';
     }
 }

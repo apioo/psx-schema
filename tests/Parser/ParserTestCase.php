@@ -22,8 +22,8 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\SchemaTestCase;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -37,13 +37,13 @@ abstract class ParserTestCase extends SchemaTestCase
 {
     protected function assertDiscriminator(SchemaInterface $schema)
     {
-        /** @var StructType $container */
+        /** @var StructDefinitionType $container */
         $container = $schema->getDefinitions()->getType('Form_Container');
-        $this->assertInstanceOf(StructType::class, $container);
+        $this->assertInstanceOf(StructDefinitionType::class, $container);
 
-        /** @var ArrayType $elements */
+        /** @var ArrayPropertyType $elements */
         $elements = $container->getProperty('elements');
-        $this->assertInstanceOf(ArrayType::class, $elements);
+        $this->assertInstanceOf(ArrayPropertyType::class, $elements);
 
         /** @var UnionType $items */
         $expect = [

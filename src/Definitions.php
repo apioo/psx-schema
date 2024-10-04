@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 
 /**
  * Definitions
@@ -41,7 +42,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     /**
      * @inheritDoc
      */
-    public function addType(string $name, TypeInterface $type): void
+    public function addType(string $name, DefinitionTypeAbstract $type): void
     {
         [$ns, $alias] = TypeUtil::split($name);
 
@@ -69,7 +70,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     /**
      * @inheritDoc
      */
-    public function getType(string $name): TypeInterface
+    public function getType(string $name): DefinitionTypeAbstract
     {
         [$ns, $alias] = TypeUtil::split($name);
 

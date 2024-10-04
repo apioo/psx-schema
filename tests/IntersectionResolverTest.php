@@ -23,9 +23,9 @@ namespace PSX\Schema\Tests;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Definitions;
 use PSX\Schema\IntersectionResolver;
-use PSX\Schema\Type\BooleanType;
+use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeFactory;
 
 /**
@@ -39,12 +39,12 @@ class IntersectionResolverTest extends TestCase
 {
     public function testResolve()
     {
-        $a = new StructType();
+        $a = new StructDefinitionType();
         $a->setProperties([
             'foo' => TypeFactory::getString()
         ]);
 
-        $b = new StructType();
+        $b = new StructDefinitionType();
         $b->setProperties([
             'bar' => TypeFactory::getString()
         ]);
@@ -70,12 +70,12 @@ class IntersectionResolverTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('All of must contain only struct types');
 
-        $a = new StructType();
+        $a = new StructDefinitionType();
         $a->setProperties([
             'foo' => TypeFactory::getString()
         ]);
 
-        $b = new BooleanType();
+        $b = new BooleanPropertyType();
 
         $definitions = new Definitions();
         $definitions->addType('Foo', $a);

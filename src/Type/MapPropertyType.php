@@ -20,43 +20,17 @@
 
 namespace PSX\Schema\Type;
 
-use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\TypeAssert;
-
 /**
- * IntersectionType
+ * MapPropertyType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class IntersectionType extends TypeAbstract
+class MapPropertyType extends CollectionPropertyType implements MapTypeInterface
 {
-    protected ?array $allOf = null;
-
-    public function getAllOf(): ?array
+    protected function getType(): string
     {
-        return $this->allOf;
-    }
-
-    /**
-     * @throws InvalidSchemaException
-     */
-    public function setAllOf(array $allOf): self
-    {
-        TypeAssert::assertIntersection($allOf);
-
-        $this->allOf = $allOf;
-
-        return $this;
-    }
-
-    public function toArray(): array
-    {
-        return array_merge(parent::toArray(), array_filter([
-            'allOf' => $this->allOf,
-        ], function($value){
-            return $value !== null;
-        }));
+        return 'map';
     }
 }

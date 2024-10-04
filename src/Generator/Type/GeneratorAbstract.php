@@ -24,16 +24,16 @@ use PSX\Schema\ContentType;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
@@ -58,25 +58,25 @@ abstract class GeneratorAbstract implements GeneratorInterface
 
     public function getType(TypeInterface $type): string
     {
-        if ($type instanceof StringType) {
+        if ($type instanceof StringPropertyType) {
             return $this->getStringType($type);
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return $this->getIntegerType($type);
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return $this->getNumber();
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return $this->getBoolean();
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             return $this->getArray($this->getType($type->getItems()));
-        } elseif ($type instanceof StructType) {
+        } elseif ($type instanceof StructDefinitionType) {
             throw new GeneratorException('Could not determine name of anonymous struct, use a reference to the definitions instead');
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             return $this->getMap($this->getType($type->getAdditionalProperties()));
         } elseif ($type instanceof UnionType) {
             return $this->getUnion($this->getCombinationType($type->getOneOf()));
         } elseif ($type instanceof IntersectionType) {
             return $this->getIntersection($this->getCombinationType($type->getAllOf()));
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             $template = $type->getTemplate();
             if (!empty($template)) {
                 $types = [];
@@ -87,7 +87,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
             } else {
                 return $this->getReference($type->getRef());
             }
-        } elseif ($type instanceof GenericType) {
+        } elseif ($type instanceof GenericPropertyType) {
             return $type->getGeneric() ?? '';
         }
 
@@ -151,7 +151,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
 
     abstract protected function getNamespaced(string $namespace, string $name): string;
 
-    private function getStringType(StringType $type): string
+    private function getStringType(StringPropertyType $type): string
     {
         $format = $type->getFormat();
         if ($format !== null) {
@@ -161,7 +161,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
         }
     }
 
-    private function getIntegerType(IntegerType $type): string
+    private function getIntegerType(IntegerPropertyType $type): string
     {
         $format = $type->getFormat();
         if ($format !== null) {

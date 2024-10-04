@@ -31,7 +31,7 @@ use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
@@ -121,12 +121,12 @@ class TypeVisitorTest extends TestCase
     public function testVisitStruct()
     {
         $type = TypeFactory::getStruct()
-            ->setAttribute(TypeAbstract::ATTR_CLASS, PopoClass::class)
+            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class)
             ->addProperty('foo', TypeFactory::getString())
             ->addProperty('bar', TypeFactory::getString());
 
         // popo class
-        $type->setAttribute(TypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
 
@@ -138,13 +138,13 @@ class TypeVisitorTest extends TestCase
     public function testVisitStructMapping()
     {
         $type = TypeFactory::getStruct()
-            ->setAttribute(TypeAbstract::ATTR_CLASS, PopoClass::class)
-            ->setAttribute(TypeAbstract::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
+            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class)
+            ->setAttribute(PropertyTypeAbstract::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
             ->addProperty('foo', TypeFactory::getString())
             ->addProperty('bar', TypeFactory::getString());
 
         // popo class
-        $type->setAttribute(TypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $type, '');
 
@@ -179,7 +179,7 @@ class TypeVisitorTest extends TestCase
         ]);
 
         $type = TypeFactory::getStruct();
-        $type->setAttribute(TypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         (new TypeVisitor($validator))->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '/foo/bar');
     }
@@ -187,7 +187,7 @@ class TypeVisitorTest extends TestCase
     public function testVisitMap()
     {
         $type = TypeFactory::getMap()
-            ->setAttribute(TypeAbstract::ATTR_CLASS, ArrayAccessClass::class)
+            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, ArrayAccessClass::class)
             ->setAdditionalProperties(TypeFactory::getString());
 
         // array access class
@@ -197,7 +197,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getArrayCopy());
 
         // record class
-        $type->setAttribute(TypeAbstract::ATTR_CLASS, RecordClass::class);
+        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, RecordClass::class);
 
         $record = (new TypeVisitor())->visitMap((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
 

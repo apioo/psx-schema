@@ -22,9 +22,9 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * Ruby
@@ -50,7 +50,7 @@ class Ruby extends CodeGeneratorAbstract
         return new Normalizer\Ruby();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $code = 'class ' . $name->getClass() . "\n";
 
@@ -83,7 +83,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
     {
         $code = 'class ' . $name->getClass() . "\n";
         $code.= $this->indent . 'extend ' . $type . "\n";
@@ -92,7 +92,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -109,7 +109,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

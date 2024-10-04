@@ -27,8 +27,8 @@ use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -82,14 +82,14 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_external.json');
 
-        /** @var StructType $type */
+        /** @var StructDefinitionType $type */
         $type = $schema->getType();
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $reference = $type->getProperty('user');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
         $type = $schema->getDefinitions()->getType($reference->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
 
         $this->assertEquals(1, count($container));
         $transaction = array_shift($container);
@@ -104,14 +104,14 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_typehub.json');
 
-        /** @var StructType $type */
+        /** @var StructDefinitionType $type */
         $type = $schema->getType();
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $reference = $type->getProperty('software');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
         $type = $schema->getDefinitions()->getType($reference->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
     }
 
     public function testParseNestedImport()
@@ -119,19 +119,19 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_import.json', new Parser\Context\FilesystemContext(__DIR__ . '/TypeSchema'));
 
-        /** @var StructType $type */
+        /** @var StructDefinitionType $type */
         $type = $schema->getDefinitions()->getType('Test');
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
 
         $reference = $type->getProperty('foo');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
         $this->assertEquals('foo:Import', $reference->getRef());
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getRef()));
 
         $reference = $type->getProperty('bar');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
         $this->assertEquals('my_import:Student', $reference->getRef());
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getRef()));
     }
 
     public function testParseInvalidFile()

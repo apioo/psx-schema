@@ -21,12 +21,16 @@
 namespace PSX\Schema\Type;
 
 /**
- * ObjectType
+ * IntegerType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ObjectType extends TypeAbstract
+class IntegerPropertyType extends NumberPropertyType
 {
+    protected function getType(): string
+    {
+        return 'integer';
+    }
 }

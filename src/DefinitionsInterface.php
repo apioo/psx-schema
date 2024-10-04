@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 
 /**
  * DefinitionsInterface
@@ -40,10 +41,10 @@ interface DefinitionsInterface
      * the "self" namespace
      * 
      * @param string $name
-     * @param TypeInterface $type
+     * @param DefinitionTypeAbstract $type
      * @return void
      */
-    public function addType(string $name, TypeInterface $type): void;
+    public function addType(string $name, DefinitionTypeAbstract $type): void;
 
     /**
      * @param string $name
@@ -58,24 +59,23 @@ interface DefinitionsInterface
      * namespace is used
      *
      * @param string $name
-     * @return TypeInterface
      * @throws TypeNotFoundException
      */
-    public function getType(string $name): TypeInterface;
+    public function getType(string $name): DefinitionTypeAbstract;
 
     /**
      * Returns all available types for a specific namespace. The key contains
      * the name of the type
      *
      * @param string $namespace
-     * @return array<TypeInterface>
+     * @return array<DefinitionType>
      */
     public function getTypes(string $namespace): iterable;
 
     /**
      * Returns all types registered at this container
      *
-     * @return array<TypeInterface>
+     * @return array<DefinitionType>
      */
     public function getAllTypes(): iterable;
 

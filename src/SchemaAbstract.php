@@ -21,8 +21,8 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
 
 /**
  * SchemaAbstract
@@ -34,7 +34,6 @@ use PSX\Schema\Type\ReferenceType;
 abstract class SchemaAbstract implements SchemaInterface
 {
     private SchemaManagerInterface $schemaManager;
-    private TypeInterface $type;
     private DefinitionsInterface $definitions;
     private ?string $rootName;
 
@@ -49,13 +48,11 @@ abstract class SchemaAbstract implements SchemaInterface
         if (!$this->definitions->hasType($type)) {
             throw new InvalidSchemaException('Root schema does not exist at ' . get_class($this) . ', have you added a type via the newType method?');
         }
-
-        $this->type = TypeFactory::getReference($type);
     }
 
-    public function getType(): TypeInterface
+    public function getRoot(): ?string
     {
-        return $this->type;
+        return $this->rootName;
     }
 
     public function getDefinitions(): DefinitionsInterface
@@ -63,7 +60,7 @@ abstract class SchemaAbstract implements SchemaInterface
         return $this->definitions;
     }
 
-    protected function add(string $name, TypeInterface $type): void
+    protected function add(string $name, DefinitionTypeAbstract $type): void
     {
         $this->definitions->addType($name, $type);
     }
@@ -89,7 +86,7 @@ abstract class SchemaAbstract implements SchemaInterface
     /**
      * @throws Exception\InvalidSchemaException
      */
-    protected function newMap(string $name): MapType
+    protected function newMap(string $name): MapDefinitionType
     {
         $map = TypeFactory::getMap();
         $this->definitions->addType($name, $map);
@@ -101,19 +98,20 @@ abstract class SchemaAbstract implements SchemaInterface
      * Loads a remote schema and returns a reference to the root type
      *
      * @throws Exception\InvalidSchemaException
+     * @throws Exception\TypeNotFoundException
      */
-    protected function get(string $name): ReferenceType
+    protected function get(string $name): DefinitionTypeAbstract
     {
         $schema = $this->schemaManager->getSchema($name);
 
         $this->definitions->merge($schema->getDefinitions());
 
-        $type = $schema->getType();
-        if (!$type instanceof ReferenceType) {
-            throw new InvalidSchemaException('Loaded schema ' . $name . ' contains not a reference');
+        $root = $schema->getRoot();
+        if (empty($root)) {
+            throw new Exception\InvalidSchemaException('Loaded schema ' . $name . ' contains not a reference');
         }
 
-        return clone $type;
+        return clone $this->definitions->getType($root);
     }
 
     /**

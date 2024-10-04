@@ -24,12 +24,12 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
+use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
@@ -58,7 +58,7 @@ class TypeScript extends CodeGeneratorAbstract
         return new Normalizer\TypeScript();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
         $code = 'export interface ' . $name->getClass();
 
@@ -97,12 +97,12 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
     {
         return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
@@ -117,12 +117,12 @@ class TypeScript extends CodeGeneratorAbstract
         return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
     {
         return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -149,15 +149,15 @@ class TypeScript extends CodeGeneratorAbstract
     {
         $refs = [];
         TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs, $className){
-            if ($type instanceof ReferenceType) {
+            if ($type instanceof ReferencePropertyType) {
                 $refs[$type->getRef()] = $type->getRef();
                 if ($type->getTemplate()) {
                     foreach ($type->getTemplate() as $ref) {
                         $refs[$ref] = $ref;
                     }
                 }
-            } elseif ($type instanceof StructType && $type->getExtends()) {
-                $refs[$type->getExtends()] = $type->getExtends();
+            } elseif ($type instanceof StructDefinitionType && $type->getParent()) {
+                $refs[$type->getParent()] = $type->getParent();
             }
         });
 
