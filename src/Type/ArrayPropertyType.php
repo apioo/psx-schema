@@ -27,7 +27,7 @@ namespace PSX\Schema\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ArrayPropertyType extends CollectionPropertyType
+class ArrayPropertyType extends CollectionPropertyType implements ArrayTypeInterface
 {
     protected function getType(): string
     {

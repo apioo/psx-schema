@@ -52,11 +52,6 @@ class Native implements ResolverInterface
 
     public function resolveProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
-        if (!method_exists($reflection, 'getType')) {
-            // for everything < PHP 7.4 
-            return null;
-        }
-
         $type = null;
         $reflectionType = $reflection->getType();
         if ($reflectionType instanceof \ReflectionNamedType) {

@@ -27,7 +27,7 @@ namespace PSX\Schema\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class BooleanPropertyType extends PropertyTypeAbstract
+class BooleanPropertyType extends ScalarPropertyType
 {
     protected function getType(): string
     {

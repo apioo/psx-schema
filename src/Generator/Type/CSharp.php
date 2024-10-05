@@ -92,16 +92,6 @@ class CSharp extends GeneratorAbstract
         return 'System.Collections.Generic.Dictionary<string, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'object';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'object';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

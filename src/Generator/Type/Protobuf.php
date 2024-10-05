@@ -39,7 +39,6 @@ class Protobuf extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'bytes',
             Format::DATE => 'Timestamp',
             Format::DATETIME => 'Timestamp',
             default => $this->getString(),

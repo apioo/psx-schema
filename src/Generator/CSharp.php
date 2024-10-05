@@ -22,10 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
-use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -54,7 +54,7 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
-        $code = 'public class ' . $name->getClass();
+        $code = 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -80,7 +80,7 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
+        $subType = $this->generator->getType($origin->getSchema());
 
         $code = 'public class ' . $name->getClass() . ' : Dictionary<string, ' . $subType . '>' . "\n";
         $code.= '{' . "\n";
@@ -89,9 +89,11 @@ class CSharp extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'public class ' . $name->getClass() . ' : ' . $type . "\n";
+        $subType = $this->generator->getType($origin->getSchema());
+
+        $code = 'public class ' . $name->getClass() . ' : List<string, ' . $subType . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 

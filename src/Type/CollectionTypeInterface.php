@@ -18,18 +18,16 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
 
 /**
- * DefinitionType
+ * CollectionTypeInterface
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+interface CollectionTypeInterface
 {
-    case STRUCT = 'struct';
-    case MAP = 'map';
-    case ARRAY = 'array';
+    public function getSchema(): ?PropertyTypeAbstract;
 }

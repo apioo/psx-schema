@@ -23,7 +23,6 @@ namespace PSX\Schema;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Exception\ValidationException;
@@ -67,9 +66,7 @@ class SchemaTraverser
      * Traverses through the data and validates it according to the provided
      * schema. Calls also the visitor methods for each type
      *
-     * @throws ValidationException
      * @throws TraverserException
-     * @throws TypeNotFoundException
      */
     public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null): mixed
     {
@@ -79,16 +76,20 @@ class SchemaTraverser
             $visitor = new NullVisitor();
         }
 
-        $type = $schema->getDefinitions()->getType($schema->getRoot());
+        try {
+            $type = $schema->getDefinitions()->getType($schema->getRoot() ?? throw new TraverserException('Provided schema has no root configured'));
 
-        return $this->traverseDefinition($data, $type, $schema->getDefinitions(), $visitor, []);
+            return $this->traverseDefinition($data, $type, $schema->getDefinitions(), $visitor, []);
+        } catch (TypeNotFoundException|ValidationException $e) {
+            throw new TraverserException($e->getMessage(), previous: $e);
+        }
     }
 
     /**
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseDefinition(\stdClass $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): ?object
+    protected function traverseDefinition(mixed $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): ?object
     {
         if ($type instanceof StructDefinitionType) {
             if ($this->assertConstraints) {
@@ -115,6 +116,22 @@ class SchemaTraverser
     {
         $result = new \stdClass();
         $properties = [];
+
+        $discriminator = $type->getDiscriminator();
+        if (!empty($discriminator)) {
+            $discriminatorValue = $data->{$discriminator} ?? null;
+            if (empty($discriminatorValue) || !is_string($discriminatorValue)) {
+                throw new TraverserException('Configured discriminator property "' . $discriminator . '" is invalid');
+            }
+
+            $mapping = $type->getMapping() ?? [];
+            $mappingType = array_search($discriminatorValue, $mapping);
+            if ($mappingType === false) {
+                throw new TraverserException('Provided discriminator type is invalid, possible values are: ' . implode(', ', $mapping));
+            }
+
+            return $this->traverseDefinition($data, $definitions->getType($mappingType), $definitions, $visitor, $context);
+        }
 
         $extends = $type->getParent();
         while (!empty($extends)) {

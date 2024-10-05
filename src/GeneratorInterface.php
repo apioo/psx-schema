@@ -35,9 +35,7 @@ interface GeneratorInterface
     /**
      * Generates a representation of this schema in another schema format
      *
-     * @param SchemaInterface $schema
-     * @return string|Chunks
      * @throws GeneratorException
      */
-    public function generate(SchemaInterface $schema);
+    public function generate(SchemaInterface $schema): Chunks|string;
 }

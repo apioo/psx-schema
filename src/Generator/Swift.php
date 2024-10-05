@@ -22,13 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayPropertyType;
-use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
-use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Swift
@@ -92,22 +89,7 @@ class Swift extends CodeGeneratorAbstract
         return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
         return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }

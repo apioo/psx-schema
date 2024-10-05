@@ -18,18 +18,47 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type;
 
 /**
- * DefinitionType
+ * ArrayDefinitionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+abstract class CollectionDefinitionType extends DefinitionTypeAbstract implements CollectionTypeInterface
 {
-    case STRUCT = 'struct';
-    case MAP = 'map';
-    case ARRAY = 'array';
+    protected ?PropertyTypeAbstract $schema = null;
+
+    public function getSchema(): ?PropertyTypeAbstract
+    {
+        return $this->schema;
+    }
+
+    public function setSchema(PropertyTypeAbstract $schema): self
+    {
+        $this->schema = $schema;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'schema' => $this->schema,
+        ], function($value){
+            return $value !== null;
+        }));
+    }
+
+    public function __clone()
+    {
+        if ($this->schema !== null) {
+            $schema = $this->schema;
+            if ($schema instanceof PropertyTypeAbstract) {
+                $this->schema = clone $schema;
+            }
+        }
+    }
 }

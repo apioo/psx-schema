@@ -27,6 +27,6 @@ class SchemaA extends SchemaAbstract
     public function build(): void
     {
         $location = $this->modify(SchemaCommon::class, 'LocationA');
-        $location->getProperty('lat')->setTitle('foo');
+        $location->getProperty('lat')->setDescription('foo');
     }
 }

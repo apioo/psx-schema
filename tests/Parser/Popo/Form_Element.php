@@ -2,10 +2,15 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
-use PSX\Schema\Attribute\Required;
+use PSX\Schema\Attribute\DerivedType;
+use PSX\Schema\Attribute\Discriminator;
 
-#[Required(['element'])]
-class Form_Element
+#[Discriminator('element')]
+#[DerivedType(Form_Element_Input::class, 'http://fusio-project.org/ns/2015/form/input')]
+#[DerivedType(Form_Element_Select::class, 'http://fusio-project.org/ns/2015/form/select')]
+#[DerivedType(Form_Element_Tag::class, 'http://fusio-project.org/ns/2015/form/tag')]
+#[DerivedType(Form_Element_TextArea::class, 'http://fusio-project.org/ns/2015/form/textarea')]
+abstract class Form_Element
 {
     private ?string $element;
     private ?string $name;

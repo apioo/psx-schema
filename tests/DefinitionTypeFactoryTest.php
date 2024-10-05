@@ -18,18 +18,35 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Tests;
+
+use PHPUnit\Framework\TestCase;
+use PSX\Schema\DefinitionTypeFactory;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
- * DefinitionType
+ * DefinitionTypeFactoryTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+class DefinitionTypeFactoryTest extends TestCase
 {
-    case STRUCT = 'struct';
-    case MAP = 'map';
-    case ARRAY = 'array';
+    public function testStructType()
+    {
+        $this->assertInstanceOf(StructDefinitionType::class, DefinitionTypeFactory::getStruct());
+    }
+
+    public function testMapType()
+    {
+        $this->assertInstanceOf(MapDefinitionType::class, DefinitionTypeFactory::getMap());
+    }
+
+    public function testArrayType()
+    {
+        $this->assertInstanceOf(ArrayDefinitionType::class, DefinitionTypeFactory::getArray());
+    }
 }

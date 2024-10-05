@@ -126,10 +126,6 @@ abstract class GeneratorAbstract implements GeneratorInterface
 
     abstract protected function getMap(string $type): string;
 
-    abstract protected function getUnion(array $types): string;
-
-    abstract protected function getIntersection(array $types): string;
-
     abstract protected function getGroup(string $type): string;
 
     protected function getReference(string $ref): string

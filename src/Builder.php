@@ -25,6 +25,7 @@ use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
@@ -105,7 +106,6 @@ class Builder
 
     /**
      * @template T of PropertyTypeAbstract
-     * @param string $name
      * @param T $type
      * @return T
      */
@@ -121,7 +121,7 @@ class Builder
         return $this->add($name, PropertyTypeFactory::getArray($schema));
     }
 
-    public function addMap(string $name, PropertyTypeAbstract $schema): MapDefinitionType
+    public function addMap(string $name, PropertyTypeAbstract $schema): MapPropertyType
     {
         return $this->add($name, PropertyTypeFactory::getMap($schema));
     }

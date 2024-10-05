@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
@@ -78,7 +79,7 @@ class SchemaTraverserTest extends SchemaTestCase
 
     public function testInvalidAdditionalPropertyType()
     {
-        $this->expectException(ValidationException::class);
+        $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/config/test must be of type string');
 
         $data = $this->getData();
@@ -88,62 +89,9 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testInvalidMaxArrayItems()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/tags must contain less or equal than 6 items');
-
-        $data = $this->getData();
-        for ($i = 0; $i < 5; $i++) {
-            $data->tags[] = 'tag-' . $i;
-        }
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMinArrayItems()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/tags must contain more or equal than 1 items');
-
-        $data = $this->getData();
-        $data->tags = [];
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMaxObjectItems()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/config must contain less or equal than 6 properties');
-
-        $data = $this->getData();
-        for ($i = 0; $i < 6; $i++) {
-            $data->config->{$i . '-foo'} = 'foo-' . $i;
-        }
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMinObjectItems()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/config must contain more or equal than 1 properties');
-
-        $data = $this->getData();
-        $data->config = (object) [
-        ];
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
     public function testInvalidArrayPrototypeType()
     {
-        $this->expectException(ValidationException::class);
+        $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/receiver/1 must be of type object');
 
         $data = $this->getData();
@@ -153,143 +101,9 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testInvalidArrayPrototypeChoiceType()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/resources/3 must match one required schema');
-
-        $data = $this->getData();
-        $data->resources[] = [
-            'baz' => 'foo'
-        ];
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidBinary()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/profileImage must be a valid Base64 encoded string [RFC4648]');
-
-        $data = $this->getData();
-        $data->profileImage = 'foo';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMinFloat()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/price must be greater or equal than 1');
-
-        $data = $this->getData();
-        $data->price = 0;
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMaxFloat()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/price must be lower or equal than 100');
-
-        $data = $this->getData();
-        $data->price = 101;
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMinInteger()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/rating must be greater or equal than 1');
-
-        $data = $this->getData();
-        $data->rating = 0;
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMaxInteger()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/rating must be lower or equal than 5');
-
-        $data = $this->getData();
-        $data->rating = 6;
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMinString()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/content must contain more or equal than 3 characters');
-
-        $data = $this->getData();
-        $data->content = 'a';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidMaxString()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/content must contain less or equal than 512 characters');
-
-        $data = $this->getData();
-        $data->content = str_repeat('a', 513);
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidEnumeration()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/question is not in enumeration ["foo","bar"]');
-
-        $data = $this->getData();
-        $data->question = 'baz';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidConst()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/version must contain the constant value "http:\/\/foo.bar"');
-
-        $data = $this->getData();
-        $data->version = 'baz';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
-    public function testInvalidPattern()
-    {
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/author/title does not match pattern [[A-z]{3,16}]');
-
-        $data = $this->getData();
-        $data->author->title = '1234';
-
-        $traverser = new SchemaTraverser();
-        $traverser->traverse($data, $this->getSchema());
-    }
-
     public function testInvalidMapProperty()
     {
-        $this->expectException(ValidationException::class);
+        $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/meta/tags_0 must be of type string');
 
         $data = $this->getData();
@@ -301,10 +115,6 @@ class SchemaTraverserTest extends SchemaTestCase
 
     public function testTraverseDiscriminator()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
 {
@@ -326,12 +136,8 @@ JSON;
 
     public function testTraverseDiscriminatorInvalidType()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/elements/0 discriminated union provided type "foo" not available, use one of http://fusio-project.org/ns/2015/form/input, http://fusio-project.org/ns/2015/form/select, http://fusio-project.org/ns/2015/form/tag, http://fusio-project.org/ns/2015/form/textarea');
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('Provided discriminator type is invalid, possible values are: http://fusio-project.org/ns/2015/form/input, http://fusio-project.org/ns/2015/form/select, http://fusio-project.org/ns/2015/form/tag, http://fusio-project.org/ns/2015/form/textarea');
 
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
@@ -350,12 +156,8 @@ JSON;
 
     public function testTraverseDiscriminatorInvalidDataType()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/elements/0 discriminated union provided value must be an object');
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('/elements/0 must be of type object');
 
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
@@ -370,12 +172,8 @@ JSON;
 
     public function testTraverseDiscriminatorNoType()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('/elements/0 discriminated union object must have the property "element"');
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('Configured discriminator property "element" is invalid');
 
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
@@ -426,7 +224,7 @@ JSON;
 
     public function testTraverseUnknownProperties()
     {
-        $this->expectException(ValidationException::class);
+        $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/ property "foo" is unknown');
 
         $schema = $this->schemaManager->getSchema(Form_Element_Input::class);

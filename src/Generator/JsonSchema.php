@@ -51,7 +51,7 @@ class JsonSchema implements GeneratorInterface
         $this->refBase = $config?->get('ref_base') ?? '#/definitions/';
     }
 
-    public function generate(SchemaInterface $schema)
+    public function generate(SchemaInterface $schema): Code\Chunks|string
     {
         $data = $this->toArray(
             $schema->getType(),

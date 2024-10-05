@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
@@ -45,5 +46,14 @@ class DefinitionTypeFactory
             $map->setSchema($schema);
         }
         return $map;
+    }
+
+    public static function getArray(?PropertyTypeAbstract $schema = null): ArrayDefinitionType
+    {
+        $array = new ArrayDefinitionType();
+        if ($schema !== null) {
+            $array->setSchema($schema);
+        }
+        return $array;
     }
 }

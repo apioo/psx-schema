@@ -21,16 +21,22 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\DefinitionType;
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Exception\UnknownRootException;
 use PSX\Schema\Generator\Normalizer\DefaultNormalizer;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
@@ -66,17 +72,15 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         $this->indent     = str_repeat(' ', $this->getIndent());
     }
 
-    public function generate(SchemaInterface $schema)
+    public function generate(SchemaInterface $schema): Code\Chunks|string
     {
-        $this->chunks      = new Code\Chunks($this->namespace);
+        $this->chunks = new Code\Chunks($this->namespace);
         $this->definitions = $schema->getDefinitions();
 
         $types = $this->definitions->getTypes(DefinitionsInterface::SELF_NAMESPACE);
         foreach ($types as $name => $type) {
             $this->generateDefinition($name, $type);
         }
-
-        $this->generateRoot($schema->getType());
 
         return $this->chunks;
     }
@@ -96,28 +100,14 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->normalizer;
     }
 
-    private function generateRoot(TypeInterface $type)
-    {
-        if ($type instanceof StructDefinitionType) {
-            // for the root schema we need to use the title as class name
-            $this->generateStruct($type->getTitle() ?: 'RootSchema', $type);
-        }
-    }
-
-    private function generateDefinition(string $name, TypeInterface $type)
+    private function generateDefinition(string $name, DefinitionTypeAbstract $type): void
     {
         if ($type instanceof StructDefinitionType) {
             $this->generateStruct($name, $type);
         } elseif ($type instanceof MapDefinitionType) {
             $this->generateMap($name, $type);
-        } elseif ($type instanceof ArrayPropertyType) {
+        } elseif ($type instanceof ArrayDefinitionType) {
             $this->generateArray($name, $type);
-        } elseif ($type instanceof UnionType) {
-            $this->generateUnion($name, $type);
-        } elseif ($type instanceof IntersectionType) {
-            $this->generateIntersection($name, $type);
-        } elseif ($type instanceof ReferencePropertyType) {
-            $this->generateReference($name, $type);
         }
     }
 
@@ -139,7 +129,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                     }
                 } else {
                     // in case we have an extern namespace we dont need to generate the type
-                    $extends = $this->generator->getType((new ReferencePropertyType())->setRef($extends));
+                    $extends = $this->generator->getType((new ReferencePropertyType())->setTarget($extends));
                 }
             } else {
                 do {
@@ -147,43 +137,31 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                     if (!$parent instanceof StructDefinitionType) {
                         throw new GeneratorException('Extends must be of type struct');
                     }
+
                     $properties = array_merge($properties, $parent->getProperties());
                 } while($extends = $parent->getParent());
             }
         }
 
-        $className  = new Code\Name($className, $className, $this->normalizer);
+        $className = new Code\Name($className, $className, $this->normalizer);
         $properties = array_merge($properties, $type->getProperties() ?? []);
-        $generics   = [];
-        $required   = $type->getRequired() ?: [];
-        $mapping    = $type->getAttribute(PropertyTypeAbstract::ATTR_MAPPING) ?: [];
+        $generics = [];
+        $mapping = $type->getAttribute(DefinitionTypeAbstract::ATTR_MAPPING) ?: [];
 
         $props = [];
         foreach ($properties as $raw => $property) {
             $mapped = $mapping[$raw] ?? $raw;
             $name = new Code\Name($raw, $mapped, $this->normalizer);
 
-            /** @var TypeInterface $property */
-            if ($property instanceof ReferencePropertyType) {
-                $resolved = $this->definitions->getType($property->getRef());
-                if (!$this->supportsWrite($name, $resolved)) {
-                    // in case the generator produces output for this type we
-                    // can also reference the type otherwise we need to define
-                    // the type inline
-                    $property = $resolved;
-                }
-            }
-
             $generic = $this->getGeneric($property);
             if ($generic instanceof GenericPropertyType) {
-                $generics[] = $generic->getGeneric();
+                $generics[] = $generic->getName();
             }
 
             $props[] = new Code\Property(
                 $name,
                 $this->generator->getType($property),
                 $this->generator->getDocType($property),
-                in_array($name->getRaw(), $required),
                 $property
             );
         }
@@ -209,7 +187,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
-    private function generateArray(string $className, ArrayPropertyType $type): void
+    private function generateArray(string $className, ArrayDefinitionType $type): void
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
@@ -219,72 +197,17 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
-    private function generateUnion(string $className, UnionType $type): void
+    private function getGeneric(PropertyTypeAbstract $type): ?GenericPropertyType
     {
-        $className = new Code\Name($className, $className, $this->normalizer);
-
-        $code = $this->writeUnion($className, $this->generator->getType($type), $type);
-        if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
+        $schema = $type;
+        if ($type instanceof CollectionPropertyType) {
+            $schema = $type->getSchema();
         }
+
+        return $schema instanceof GenericPropertyType ? $schema : null;
     }
 
-    private function generateIntersection(string $className, IntersectionType $type): void
-    {
-        $className = new Code\Name($className, $className, $this->normalizer);
-
-        $code = $this->writeIntersection($className, $this->generator->getType($type), $type);
-        if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
-        }
-    }
-
-    private function generateReference(string $className, ReferencePropertyType $type): void
-    {
-        $className = new Code\Name($className, $className, $this->normalizer);
-
-        $code = $this->writeReference($className, $this->generator->getType($type), $type);
-        if (!empty($code)) {
-            $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
-        }
-    }
-
-    private function supportsWrite(Code\Name $name, TypeInterface $type): bool
-    {
-        if ($type instanceof StructDefinitionType) {
-            return true;
-        } elseif ($type instanceof MapDefinitionType) {
-            return !!$this->writeMap($name, $this->generator->getType($type), $type);
-        } elseif ($type instanceof ArrayPropertyType) {
-            return !!$this->writeArray($name, $this->generator->getType($type), $type);
-        } elseif ($type instanceof UnionType) {
-            return !!$this->writeUnion($name, $this->generator->getType($type), $type);
-        } elseif ($type instanceof IntersectionType) {
-            return !!$this->writeIntersection($name, $this->generator->getType($type), $type);
-        } elseif ($type instanceof ReferencePropertyType) {
-            return !!$this->writeReference($name, $this->generator->getType($type), $type);
-        }
-
-        return false;
-    }
-
-    private function getGeneric(TypeInterface $type): ?GenericPropertyType
-    {
-        $item = $type;
-        if ($type instanceof MapDefinitionType) {
-            $item = $type->getAdditionalProperties();
-        } elseif ($type instanceof ArrayPropertyType) {
-            $item = $type->getItems();
-        }
-
-        if ($item instanceof GenericPropertyType) {
-            return $item;
-        } else {
-            return null;
-        }
-    }
-
-    private function wrap(string $code, PropertyTypeAbstract $type, Code\Name $className): string
+    private function wrap(string $code, DefinitionTypeAbstract $type, Code\Name $className): string
     {
         return implode("\n", array_filter(array_map('trim', [
             $this->writeHeader($type, $className),
@@ -317,32 +240,17 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return '';
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
         return '';
     }
 
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         return '';
     }
 
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        return '';
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
-    {
-        return '';
-    }
-
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
-    {
-        return '';
-    }
-
-    protected function writeFooter(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         return '';
     }

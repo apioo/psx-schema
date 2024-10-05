@@ -83,16 +83,6 @@ class VisualBasic extends GeneratorAbstract
         return 'Dictionary(Of String, ' . $type . ')';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'Object';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'Object';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

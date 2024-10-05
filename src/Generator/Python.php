@@ -23,6 +23,7 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -95,9 +96,9 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
+        $subType = $this->generator->getType($origin->getSchema());
 
-        $code = 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(UserDict[str, ' . $subType . ']):' . "\n";
         $code.= '    @classmethod' . "\n";
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
         $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $subType . '))' . "\n";
@@ -107,10 +108,14 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
-        $code.= '    pass' . "\n";
+        $subType = $this->generator->getType($origin->getSchema());
+
+        $code = 'class ' . $name->getClass() . '(UserList[' . $subType . ']):' . "\n";
+        $code.= '    @classmethod' . "\n";
+        $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
+        $code.= '        return core_schema.list_schema(handler.generate_schema(str), handler.generate_schema(' . $subType . '))' . "\n";
         $code.= "\n";
         $code.= "\n";
 
@@ -149,7 +154,7 @@ class Python extends CodeGeneratorAbstract
 
         $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Union';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict';
 
         if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
             $imports[] = 'import datetime';

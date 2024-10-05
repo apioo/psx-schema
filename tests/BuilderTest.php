@@ -22,6 +22,8 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
+use PSX\Schema\PropertyTypeFactory;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeFactory;
@@ -39,28 +41,21 @@ class BuilderTest extends TestCase
     {
         $builder = new Builder('foo');
         $builder->setDescription('bar');
-        $builder->setRequired(['foo', 'bar']);
         $builder->setClass('stdClass');
-        $builder->addArray('array', TypeFactory::getString());
+        $builder->addArray('array', PropertyTypeFactory::getString());
         $builder->addBoolean('boolean');
         $builder->addInteger('integer');
-        $builder->addIntersection('intersection', []);
         $builder->addNumber('number');
         $builder->addString('string');
-        $builder->addUnion('union', []);
 
-        $builder->addBinary('binary');
         $builder->addDateTime('datetime');
         $builder->addDate('date');
-        $builder->addDuration('duration');
         $builder->addTime('time');
-        $builder->addUri('uri');
 
         $type = $builder->getType();
 
         $this->assertInstanceOf(StructDefinitionType::class, $type);
-        $this->assertEquals(null, $type->getTitle());
         $this->assertEquals('bar', $type->getDescription());
-        $this->assertEquals('stdClass', $type->getAttribute(PropertyTypeAbstract::ATTR_CLASS));
+        $this->assertEquals('stdClass', $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS));
     }
 }

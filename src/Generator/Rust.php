@@ -23,6 +23,7 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -78,14 +79,16 @@ class Rust extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
+        $subType = $this->generator->getType($origin->getSchema());
 
         return 'pub type ' . $name->getClass() . ' = HashMap<String, ' . $subType . '>;' . "\n";
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        return 'pub type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
+        $subType = $this->generator->getType($origin->getSchema());
+
+        return 'pub type ' . $name->getClass() . ' = LinkedList<' . $subType . '>;' . "\n";
     }
 
     protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string

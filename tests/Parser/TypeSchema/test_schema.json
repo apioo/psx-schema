@@ -5,8 +5,7 @@
       "type": "object",
       "properties": {
         "title": {
-          "type": "string",
-          "pattern": "[A-z]{3,16}"
+          "type": "string"
         },
         "email": {
           "description": "We will send no spam to this address",
@@ -17,8 +16,7 @@
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "maxItems": 8
+          }
         },
         "locations": {
           "description": "Array of locations",
@@ -30,10 +28,7 @@
         "origin": {
           "$ref": "Location"
         }
-      },
-      "required": [
-        "title"
-      ]
+      }
     },
     "Location": {
       "description": "Location of the person",
@@ -45,19 +40,13 @@
         "long": {
           "type": "number"
         }
-      },
-      "required": [
-        "lat",
-        "long"
-      ]
+      }
     },
     "Meta": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
-      },
-      "minProperties": 1,
-      "maxProperties": 6
+      }
     },
     "Web": {
       "description": "An application",
@@ -69,11 +58,7 @@
         "url": {
           "type": "string"
         }
-      },
-      "required": [
-        "name",
-        "url"
-      ]
+      }
     },
     "News": {
       "description": "An general news entry",
@@ -94,19 +79,6 @@
           },
           "type": "object"
         },
-        "mapResources": {
-          "additionalProperties": {
-            "oneOf": [
-              {
-                "$ref": "Location"
-              },
-              {
-                "$ref": "Web"
-              }
-            ]
-          },
-          "type": "object"
-        },
         "mapTags": {
           "additionalProperties": {
             "type": "string"
@@ -117,28 +89,12 @@
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "minItems": 1,
-          "maxItems": 6
+          }
         },
         "receiver": {
           "type": "array",
           "items": {
             "$ref": "Author"
-          },
-          "minItems": 1
-        },
-        "resources": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "$ref": "Location"
-              },
-              {
-                "$ref": "Web"
-              }
-            ]
           }
         },
         "profileImage": {
@@ -147,16 +103,6 @@
         },
         "read": {
           "type": "boolean"
-        },
-        "source": {
-          "oneOf": [
-            {
-              "$ref": "Author"
-            },
-            {
-              "$ref": "Web"
-            }
-          ]
         },
         "author": {
           "$ref": "Author"
@@ -172,47 +118,24 @@
           "format": "date-time",
           "type": "string"
         },
-        "expires": {
-          "format": "period",
-          "type": "string"
-        },
-        "range": {
-          "format": "duration",
-          "type": "string"
-        },
         "price": {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 100
+          "type": "number"
         },
         "rating": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 5
+          "type": "integer"
         },
         "content": {
           "description": "Contains the main content of the news entry",
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 512
+          "type": "string"
         },
         "question": {
-          "enum": [
-            "foo",
-            "bar"
-          ],
           "type": "string"
         },
         "version": {
-          "const": "http:\/\/foo.bar",
           "type": "string"
         },
         "coffeeTime": {
           "format": "time",
-          "type": "string"
-        },
-        "profileUri": {
-          "format": "uri",
           "type": "string"
         },
         "g-recaptcha-response": {
@@ -224,12 +147,7 @@
         "payload": {
           "type": "any"
         }
-      },
-      "required": [
-        "receiver",
-        "price",
-        "content"
-      ]
+      }
     }
   },
   "$ref": "News"

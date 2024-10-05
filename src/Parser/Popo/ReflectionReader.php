@@ -20,29 +20,50 @@
 
 namespace PSX\Schema\Parser\Popo;
 
+use Psr\Cache\CacheItemPoolInterface;
 use PSX\Schema\Attribute;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use ReflectionClass;
 
 /**
- * ObjectReader
+ * ReflectionReader
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ObjectReader
+class ReflectionReader
 {
-    /**
-     * Returns all available properties of an object
-     *
-     * @return \ReflectionProperty[]
-     */
-    public static function getProperties(ReflectionClass $class): array
-    {
-        $props  = $class->getProperties();
-        $result = [];
+    private ResolverInterface $resolver;
 
-        foreach ($props as $property) {
+    public function __construct()
+    {
+        $this->resolver = new Resolver\Composite(
+            new Resolver\Native(),
+            new Resolver\Documentor()
+        );
+    }
+
+    public function buildDefinition(\ReflectionClass $reflection): ?DefinitionTypeAbstract
+    {
+        return $this->resolver->resolveClass($reflection);
+    }
+
+    public function buildProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
+    {
+        return $this->resolver->resolveProperty($reflection);
+    }
+
+    /**
+     * Returns an array where the key is name of the property and the value is the reflection property
+     *
+     * @return array<string, \ReflectionProperty>
+     */
+    public function getProperties(\ReflectionClass $reflection): array
+    {
+        $result = [];
+        foreach ($reflection->getProperties() as $property) {
             // skip statics
             if ($property->isStatic()) {
                 continue;
@@ -54,12 +75,12 @@ class ObjectReader
             }
 
             // check whether we have an exclude annotation
-            if (self::hasExcludeAttribute($attributes)) {
+            if ($this->hasExcludeAttribute($attributes)) {
                 continue;
             }
 
             // get the property name
-            $key  = self::getAttributeKey($attributes);
+            $key = $this->getAttributeKey($attributes);
             $name = null;
 
             if ($key !== null) {
@@ -76,7 +97,24 @@ class ObjectReader
         return $result;
     }
 
-    private static function hasExcludeAttribute(array $attributes): bool
+    public function findGetter(\ReflectionProperty $reflection): ?\ReflectionMethod
+    {
+        $getters = [
+            'get' . ucfirst($reflection->getName()),
+            'is' . ucfirst($reflection->getName())
+        ];
+
+        $class = $reflection->getDeclaringClass();
+        foreach ($getters as $getter) {
+            if ($class->hasMethod($getter)) {
+                return $class->getMethod($getter);
+            }
+        }
+
+        return null;
+    }
+
+    private function hasExcludeAttribute(array $attributes): bool
     {
         foreach ($attributes as $attribute) {
             if ($attribute instanceof Attribute\Exclude) {
@@ -87,7 +125,7 @@ class ObjectReader
         return false;
     }
 
-    private static function getAttributeKey(array $attributes): ?string
+    private function getAttributeKey(array $attributes): ?string
     {
         foreach ($attributes as $attribute) {
             if ($attribute instanceof Attribute\Key) {

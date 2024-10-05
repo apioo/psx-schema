@@ -20,8 +20,9 @@
 
 namespace PSX\Schema\Tests;
 
+use PSX\Schema\DefinitionTypeFactory;
+use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\SchemaResolver;
-use PSX\Schema\TypeFactory;
 
 /**
  * SchemaResolverTest
@@ -36,14 +37,14 @@ class SchemaResolverTest extends SchemaTestCase
     {
         $schema = $this->getSchema();
 
-        $foo = TypeFactory::getStruct();
-        $foo->addProperty('bar', TypeFactory::getString());
+        $foo = DefinitionTypeFactory::getStruct();
+        $foo->addProperty('bar', PropertyTypeFactory::getString());
         $schema->getDefinitions()->addType('foo', $foo);
 
         $resolver = new SchemaResolver();
         $resolver->resolve($schema);
 
         $types = $schema->getDefinitions()->getAllTypes();
-        $this->assertEquals(['self:Location', 'self:Web', 'self:Author', 'self:Meta', 'self:News'], array_keys($types));
+        $this->assertEquals(['self:Location', 'self:Author', 'self:Meta', 'self:News'], array_keys($types));
     }
 }

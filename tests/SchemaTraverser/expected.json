@@ -27,40 +27,7 @@
       }
     }
   ],
-  "resources": [
-    {
-      "lat": 51.2984641,
-      "long": 6.9227502
-    },
-    {
-      "name": "web",
-      "url": "http:\/\/google.com"
-    },
-    {
-      "lat": 51.2984641,
-      "long": 6.9227502
-    }
-  ],
-  "profileImage": "Zm9vYmFy",
   "read": true,
-  "source": {
-    "title": "foo",
-    "email": "foo@bar.com",
-    "categories": [
-      "admin",
-      "user"
-    ],
-    "locations": [
-      {
-        "lat": 51.2984641,
-        "long": 6.9227502
-      }
-    ],
-    "origin": {
-      "lat": 51.2984641,
-      "long": 6.9227502
-    }
-  },
   "author": {
     "title": "foo",
     "email": "foo@bar.com",
@@ -85,11 +52,9 @@
   },
   "sendDate": "2016-05-28",
   "readDate": "2016-05-28T12:12:00",
-  "expires": "P1D",
   "price": 20.45,
   "rating": 2,
   "content": "lorem ipsum",
   "question": "foo",
-  "coffeeTime": "12:12:00",
-  "profileUri": "urn:news:1"
+  "coffeeTime": "12:12:00"
 }

@@ -21,8 +21,10 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * SchemaAbstract
@@ -83,15 +85,20 @@ abstract class SchemaAbstract implements SchemaInterface
         return $builder;
     }
 
-    /**
-     * @throws Exception\InvalidSchemaException
-     */
-    protected function newMap(string $name): MapDefinitionType
+    protected function newMap(string $name, PropertyTypeAbstract $schema): MapDefinitionType
     {
-        $map = TypeFactory::getMap();
+        $map = DefinitionTypeFactory::getMap($schema);
         $this->definitions->addType($name, $map);
 
         return $map;
+    }
+
+    protected function newArray(string $name, PropertyTypeAbstract $schema): ArrayDefinitionType
+    {
+        $array = DefinitionTypeFactory::getArray($schema);
+        $this->definitions->addType($name, $array);
+
+        return $array;
     }
 
     /**
@@ -135,7 +142,9 @@ abstract class SchemaAbstract implements SchemaInterface
      */
     protected function modify(string $existingName, string $newName): TypeInterface
     {
-        $type = clone $this->definitions->getType($this->get($existingName)->getRef());
+        $existing = $this->get($existingName);
+
+        $type = clone $existing;
         $this->definitions->addType($newName, $type);
 
         $this->rootName = $newName;

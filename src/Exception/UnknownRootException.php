@@ -18,18 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Exception;
 
 /**
- * DefinitionType
+ * UnknownRootException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+class UnknownRootException extends SchemaException
 {
-    case STRUCT = 'struct';
-    case MAP = 'map';
-    case ARRAY = 'array';
 }

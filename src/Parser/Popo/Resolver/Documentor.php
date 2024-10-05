@@ -27,6 +27,8 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
+use PSX\Record\ArrayList;
+use PSX\Record\HashMap;
 use PSX\Record\RecordInterface;
 use PSX\Schema\DefinitionTypeFactory;
 use PSX\Schema\Exception\ParserException;
@@ -34,8 +36,6 @@ use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\ScalarPropertyType;
-use PSX\Schema\TypeInterface;
 
 /**
  * Documentor
@@ -57,61 +57,88 @@ class Documentor implements ResolverInterface
 
     public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
-        if ($reflection->implementsInterface(RecordInterface::class)) {
+        if ($reflection->implementsInterface(RecordInterface::class) /*|| $reflection->implementsInterface(HashMap::class) || $reflection->implementsInterface(ArrayList::class)*/) {
             $tag = $this->getTag('extends', $reflection->getDocComment());
-            if (!empty($tag)) {
-                $context = $this->contextFactory->createFromReflector($reflection);
-                $type = $this->buildType($this->typeResolver->resolve($tag, $context));
-
-                return $type;
-            } else {
+            if (empty($tag)) {
                 throw new ParserException('Could not determine type of map');
             }
+
+            $context = $this->contextFactory->createFromReflector($reflection);
+
+            return $this->buildDefinitionType($this->typeResolver->resolve($tag, $context));
         } else {
-            $tag = $this->getTag('extends', $reflection->getDocComment());
-            if (!empty($tag)) {
-                $parent = $reflection->getParentClass();
-                if (!$parent instanceof \ReflectionClass) {
-                    // we have no parent class
-                    return DefinitionTypeFactory::getStruct();
-                }
+            $struct = DefinitionTypeFactory::getStruct();
 
-                $values = $this->getTemplateValues($reflection, $tag);
-                $keys = $this->getTemplateKeys($parent);
-                $template = array_combine($keys, $values);
-
-                $struct = DefinitionTypeFactory::getStruct();
-                $struct->setParent($parent->getName());
-                if (!empty($template)) {
-                    $struct->setTemplate($template);
-                }
-                return $struct;
-            } else {
-                return DefinitionTypeFactory::getStruct();
+            if ($reflection->isAbstract()) {
+                $struct->setBase(true);
             }
+
+            $tag = $this->getTag('extends', $reflection->getDocComment());
+            if (empty($tag)) {
+                return $struct;
+            }
+
+            $parent = $reflection->getParentClass();
+            if (!$parent instanceof \ReflectionClass) {
+                // we have no parent class
+                return $struct;
+            }
+
+            $values = $this->getTemplateValues($reflection, $tag);
+            $keys = $this->getTemplateKeys($parent);
+            $template = array_combine($keys, $values);
+
+            $struct->setParent($parent->getName());
+            if (!empty($template)) {
+                $struct->setTemplate($template);
+            }
+
+            return $struct;
         }
     }
 
     public function resolveProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
         $tag = $this->getTag('var', $reflection->getDocComment());
-        if (!empty($tag)) {
-            $context = $this->contextFactory->createFromReflector($reflection);
-            $type = $this->buildType($this->typeResolver->resolve($tag, $context));
+        if (empty($tag)) {
+            return null;
+        }
 
-            return $type;
+        $context = $this->contextFactory->createFromReflector($reflection);
+
+        return $this->buildPropertyType($this->typeResolver->resolve($tag, $context));
+    }
+
+    private function buildDefinitionType(Type $type): ?DefinitionTypeAbstract
+    {
+        if ($type instanceof Types\Collection) {
+            $value = $type->getValueType();
+            $schema = $this->buildPropertyType($value);
+            if ($schema instanceof PropertyTypeAbstract) {
+                return DefinitionTypeFactory::getMap($schema);
+            } else {
+                throw new ParserException('Map without type hint');
+            }
+        } elseif ($type instanceof Types\AbstractList) {
+            $value = $type->getValueType();
+            $schema = $this->buildPropertyType($value);
+            if ($schema instanceof PropertyTypeAbstract) {
+                return DefinitionTypeFactory::getArray($schema);
+            } else {
+                throw new ParserException('Array without type hint');
+            }
         }
 
         return null;
     }
 
-    private function buildType(Type $type): ?TypeInterface
+    private function buildPropertyType(Type $type): ?PropertyTypeAbstract
     {
         if ($type instanceof Types\Object_) {
             $fqsen = (string) $type->getFqsen();
             if ($fqsen === '\\' . LocalDate::class) {
                 return PropertyTypeFactory::getDate();
-            } elseif ($fqsen === '\\' . LocalDateTime::class || $fqsen === '\\' . \DateTime::class) {
+            } elseif ($fqsen === '\\' . LocalDateTime::class || $fqsen === '\\' . \DateTime::class || $fqsen === '\\' . \DateTimeInterface::class) {
                 return PropertyTypeFactory::getDateTime();
             } elseif ($fqsen === '\\' . LocalTime::class) {
                 return PropertyTypeFactory::getTime();
@@ -124,17 +151,17 @@ class Documentor implements ResolverInterface
             }
         } elseif ($type instanceof Types\Collection) {
             $value = $type->getValueType();
-            $additionalProperties = $this->buildType($value);
-            if ($additionalProperties instanceof TypeInterface) {
-                return PropertyTypeFactory::getMap($additionalProperties);
+            $schema = $this->buildPropertyType($value);
+            if ($schema instanceof PropertyTypeAbstract) {
+                return PropertyTypeFactory::getMap($schema);
             } else {
                 throw new ParserException('Map without type hint');
             }
         } elseif ($type instanceof Types\AbstractList) {
             $value = $type->getValueType();
-            $items = $this->buildType($value);
-            if ($items instanceof TypeInterface) {
-                return PropertyTypeFactory::getArray($items);
+            $schema = $this->buildPropertyType($value);
+            if ($schema instanceof PropertyTypeAbstract) {
+                return PropertyTypeFactory::getArray($schema);
             } else {
                 throw new ParserException('Array without type hint');
             }
@@ -149,7 +176,7 @@ class Documentor implements ResolverInterface
         } elseif ($type instanceof Types\Mixed_) {
             return PropertyTypeFactory::getAny();
         } elseif ($type instanceof Types\Nullable) {
-            return $this->buildType($type->getActualType());
+            return $this->buildPropertyType($type->getActualType());
         }
 
         return null;

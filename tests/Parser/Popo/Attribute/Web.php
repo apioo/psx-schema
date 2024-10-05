@@ -3,10 +3,8 @@
 namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An application')]
-#[Required(['name', 'url'])]
 class Web
 {
     protected ?string $name = null;

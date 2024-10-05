@@ -59,16 +59,6 @@ class Ruby extends GeneratorAbstract
         return '';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return '';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return '';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

@@ -35,15 +35,13 @@ class Property
     private Name $name;
     private string $type;
     private string $docType;
-    private bool $required;
     private TypeInterface $origin;
 
-    public function __construct(Name $name, string $type, string $docType, bool $required, TypeInterface $origin)
+    public function __construct(Name $name, string $type, string $docType, TypeInterface $origin)
     {
         $this->name = $name;
         $this->type = $type;
         $this->docType = $docType;
-        $this->required = $required;
         $this->origin = $origin;
     }
 
@@ -62,19 +60,9 @@ class Property
         return $this->docType;
     }
 
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
-
     public function getComment(): ?string
     {
         return $this->origin instanceof PropertyTypeAbstract ? $this->origin->getDescription() : null;
-    }
-
-    public function isNullable(): ?bool
-    {
-        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isNullable() : null;
     }
 
     public function isDeprecated(): ?bool
@@ -82,9 +70,9 @@ class Property
         return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isDeprecated() : null;
     }
 
-    public function isReadonly(): ?bool
+    public function isNullable(): ?bool
     {
-        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isReadonly() : null;
+        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isNullable() : null;
     }
 
     public function getOrigin(): TypeInterface

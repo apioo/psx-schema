@@ -96,7 +96,7 @@ class SchemaManager implements SchemaManagerInterface
         }
 
         if (!$this->debug && $item !== null) {
-            $schema = new Schema($schema->getType(), $schema->getDefinitions());
+            $schema = new Schema($schema->getDefinitions(), $schema->getRoot());
             $item->set($schema);
             $this->cache->save($item);
         }

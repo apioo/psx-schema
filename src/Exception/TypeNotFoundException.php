@@ -29,7 +29,7 @@ use Throwable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class TypeNotFoundException extends \Exception
+class TypeNotFoundException extends SchemaException
 {
     private string $namespace;
     private string $name;

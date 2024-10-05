@@ -118,16 +118,6 @@ class Php extends GeneratorAbstract
         return '\\' . Record::class;
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode('|', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode('&', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

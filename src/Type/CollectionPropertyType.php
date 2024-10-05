@@ -27,7 +27,7 @@ namespace PSX\Schema\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-abstract class CollectionPropertyType extends PropertyTypeAbstract
+abstract class CollectionPropertyType extends PropertyTypeAbstract implements CollectionTypeInterface
 {
     protected ?PropertyTypeAbstract $schema = null;
 
@@ -41,6 +41,15 @@ abstract class CollectionPropertyType extends PropertyTypeAbstract
         $this->schema = $schema;
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'schema' => $this->schema,
+        ], function($value){
+            return $value !== null;
+        }));
     }
 
     public function __clone()

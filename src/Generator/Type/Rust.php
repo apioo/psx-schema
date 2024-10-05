@@ -92,16 +92,6 @@ class Rust extends GeneratorAbstract
         return 'HashMap<String, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'serde_json::Value';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'serde_json::Value';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

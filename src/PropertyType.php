@@ -27,9 +27,15 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+enum PropertyType : string
 {
-    case STRUCT = 'struct';
     case MAP = 'map';
     case ARRAY = 'array';
+    case BOOLEAN = 'boolean';
+    case NUMBER = 'number';
+    case INTEGER = 'integer';
+    case STRING = 'string';
+    case ANY = 'any';
+    case GENERIC = 'generic';
+    case REFERENCE = 'reference';
 }

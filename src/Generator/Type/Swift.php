@@ -82,16 +82,6 @@ class Swift extends GeneratorAbstract
         return 'Dictionary<String, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode(' | ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode(' & ', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

@@ -92,16 +92,6 @@ class Java extends GeneratorAbstract
         return 'java.util.Map<String, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'Object';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'Object';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

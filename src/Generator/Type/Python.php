@@ -83,16 +83,6 @@ class Python extends GeneratorAbstract
         return 'Dict[str, ' . $type . ']';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'Union[' . implode(', ', $types) . ']';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'Any';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

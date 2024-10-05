@@ -83,15 +83,6 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
-    {
-        $code = 'class ' . $name->getClass() . "\n";
-        $code.= $this->indent . 'extend ' . $type . "\n";
-        $code.= 'end' . "\n";
-
-        return $code;
-    }
-
     protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';

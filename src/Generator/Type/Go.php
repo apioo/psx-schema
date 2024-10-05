@@ -82,16 +82,6 @@ class Go extends GeneratorAbstract
         return 'map[string]' . $type;
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'any';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'any';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

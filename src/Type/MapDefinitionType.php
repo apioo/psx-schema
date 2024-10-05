@@ -27,43 +27,10 @@ namespace PSX\Schema\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class MapDefinitionType extends DefinitionTypeAbstract implements MapTypeInterface
+class MapDefinitionType extends CollectionDefinitionType implements MapTypeInterface
 {
-    protected ?PropertyTypeAbstract $schema = null;
-
     protected function getType(): string
     {
         return 'map';
-    }
-
-    public function getSchema(): ?PropertyTypeAbstract
-    {
-        return $this->schema;
-    }
-
-    public function setSchema(PropertyTypeAbstract $schema): self
-    {
-        $this->schema = $schema;
-
-        return $this;
-    }
-
-    public function toArray(): array
-    {
-        return array_merge(parent::toArray(), array_filter([
-            'schema' => $this->schema,
-        ], function($value){
-            return $value !== null;
-        }));
-    }
-
-    public function __clone()
-    {
-        if ($this->schema !== null) {
-            $schema = $this->schema;
-            if ($schema instanceof PropertyTypeAbstract) {
-                $this->schema = clone $schema;
-            }
-        }
     }
 }

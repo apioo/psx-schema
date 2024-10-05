@@ -69,17 +69,7 @@ class TypeScript extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'Record<string, ' . $type . '>';
-    }
-
-    protected function getUnion(array $types): string
-    {
-        return implode(' | ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode(' & ', $types);
+        return 'Map<string, ' . $type . '>';
     }
 
     protected function getGroup(string $type): string

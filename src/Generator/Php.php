@@ -25,12 +25,17 @@ use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
+use PSX\Record\ArrayList;
+use PSX\Record\HashMap;
 use PSX\Record\Record;
 use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
+use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\ReferencePropertyType;
@@ -94,9 +99,13 @@ class Php extends CodeGeneratorAbstract
         $class->implement('\\' . \JsonSerializable::class, '\\' . RecordableInterface::class);
         $class->setDocComment($this->buildComment($tags));
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
+        }
+
+        if ($origin->getBase() === true) {
+            $class->makeAbstract();
         }
 
         if (!empty($extends)) {
@@ -140,7 +149,7 @@ class Php extends CodeGeneratorAbstract
                 $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
             }
 
-            $attributes = $this->getAttributesForType($property->getOrigin(), $uses, $realKey);
+            $attributes = $this->getAttributesForProperty($property->getOrigin(), $uses, $realKey);
             foreach ($attributes as $attribute) {
                 $prop->addAttribute($attribute);
             }
@@ -217,15 +226,15 @@ class Php extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getAdditionalProperties());
+        $subType = $this->generator->getDocType($origin->getSchema());
 
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\Record<' . $subType . '>']));
-        $class->extend('\\' . Record::class);
+        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\HashMap<' . $subType . '>']));
+        $class->extend('\\PSX\\Record\\HashMap');
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
         }
@@ -233,26 +242,17 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $tags = [];
-        $template = $origin->getTemplate();
-        if (!empty($template)) {
-            $types = [];
-            foreach ($template as $value) {
-                $types[] = $this->generator->getDocType((new ReferencePropertyType())->setRef($value));
-            }
-
-            $tags['extends'] = $type . '<' . implode(', ', $types) . '>';
-        }
+        $subType = $this->generator->getDocType($origin->getSchema());
 
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment($tags));
-        $class->extend($type);
+        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\ArrayList<' . $subType . '>']));
+        $class->extend('\\PSX\\Record\\ArrayList');
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
         }
@@ -285,12 +285,43 @@ class Php extends CodeGeneratorAbstract
     }
 
     /**
-     * @param TypeInterface $type
-     * @param array $uses
-     * @param string|null $key
      * @return Node\Attribute[]
      */
-    private function getAttributesForType(TypeInterface $type, array &$uses, ?string $key = null): array
+    private function getAttributesForDefinition(DefinitionTypeAbstract $type, array &$uses): array
+    {
+        $result = [];
+
+        $description = $type->getDescription();
+        if ($description !== null) {
+            $result[] = $this->newAttribute('Description', [$this->newScalar($description)], $uses);
+        }
+
+        $deprecated = $type->isDeprecated();
+        if ($deprecated !== null) {
+            $result[] = $this->newAttribute('Deprecated', [$this->newScalar($deprecated)], $uses);
+        }
+
+        if ($type instanceof StructDefinitionType) {
+            $discriminator = $type->getDiscriminator();
+            if ($discriminator !== null) {
+                $result[] = $this->newAttribute('Discriminator', [$this->newScalar($discriminator)], $uses);
+            }
+
+            $mapping = $type->getMapping();
+            if ($mapping !== null) {
+                foreach ($mapping as $class => $value) {
+                    $result[] = $this->newAttribute('DerivedType', [$this->newScalar($class), $this->newScalar($value)], $uses);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Node\Attribute[]
+     */
+    private function getAttributesForProperty(PropertyTypeAbstract $type, array &$uses, ?string $key = null): array
     {
         $result = [];
 
@@ -299,71 +330,22 @@ class Php extends CodeGeneratorAbstract
         }
 
         if ($type instanceof PropertyTypeAbstract) {
-            if ($type->getTitle() !== null) {
-                $result[] = $this->newAttribute('Title', [$this->newScalar($type->getTitle())], $uses);
-            }
             if ($type->getDescription() !== null) {
                 $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
-            }
-            if ($type->isNullable() !== null) {
-                $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
             }
             if ($type->isDeprecated() !== null) {
                 $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
             }
-            if ($type->isReadonly() !== null) {
-                $result[] = $this->newAttribute('Readonly', [$this->newScalar($type->isReadonly())], $uses);
+            if ($type->isNullable() !== null) {
+                $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
             }
         }
 
         if ($type instanceof ScalarPropertyType) {
-            if ($type->getEnum() !== null) {
-                $result[] = $this->newAttribute('Enum', [$this->newArray($type->getEnum())], $uses);
+            $format = $type->getFormat();
+            if ($format instanceof Format) {
+                $result[] = $this->newAttribute('Format', [$this->newScalar($format->value)], $uses);
             }
-        }
-
-        if ($type instanceof StructDefinitionType) {
-            if ($type->getRequired() !== null) {
-                $result[] = $this->newAttribute('Required', [$this->newArray($type->getRequired())], $uses);
-            }
-        } elseif ($type instanceof MapDefinitionType) {
-            if ($type->getMinProperties() !== null) {
-                $result[] = $this->newAttribute('MinProperties', [$this->newScalar($type->getMinProperties())], $uses);
-            }
-            if ($type->getMaxProperties() !== null) {
-                $result[] = $this->newAttribute('MaxProperties', [$this->newScalar($type->getMaxProperties())], $uses);
-            }
-        } elseif ($type instanceof ArrayPropertyType) {
-            if ($type->getMinItems() !== null) {
-                $result[] = $this->newAttribute('MinItems', [$this->newScalar($type->getMinItems())], $uses);
-            }
-            if ($type->getMaxItems() !== null) {
-                $result[] = $this->newAttribute('MaxItems', [$this->newScalar($type->getMaxItems())], $uses);
-            }
-        } elseif ($type instanceof NumberPropertyType) {
-            if ($type->getMinimum() !== null) {
-                $result[] = $this->newAttribute('Minimum', [$this->newScalar($type->getMinimum())], $uses);
-            }
-            if ($type->getMaximum() !== null) {
-                $result[] = $this->newAttribute('Maximum', [$this->newScalar($type->getMaximum())], $uses);
-            }
-        } elseif ($type instanceof StringPropertyType) {
-            if ($type->getPattern() !== null) {
-                $result[] = $this->newAttribute('Pattern', [$this->newScalar($type->getPattern())], $uses);
-            }
-            if ($type->getMinLength() !== null) {
-                $result[] = $this->newAttribute('MinLength', [$this->newScalar($type->getMinLength())], $uses);
-            }
-            if ($type->getMaxLength() !== null) {
-                $result[] = $this->newAttribute('MaxLength', [$this->newScalar($type->getMaxLength())], $uses);
-            }
-        } elseif ($type instanceof UnionType && !empty($type->getPropertyName())) {
-            $args = [$this->newScalar($type->getPropertyName())];
-            if (!empty($type->getMapping())) {
-                $args[] = $this->newArray($type->getMapping());
-            }
-
-            $result[] = $this->newAttribute('Discriminator', $args, $uses);
         }
 
         return $result;

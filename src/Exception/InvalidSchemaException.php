@@ -27,6 +27,6 @@ namespace PSX\Schema\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class InvalidSchemaException extends \Exception
+class InvalidSchemaException extends SchemaException
 {
 }

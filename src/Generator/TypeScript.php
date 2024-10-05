@@ -24,6 +24,7 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapDefinitionType;
@@ -60,7 +61,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
-        $code = 'export interface ' . $name->getClass();
+        $code = 'export ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -99,27 +100,22 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
+        $subType = $this->generator->getDocType($origin->getSchema());
+
+        $code ='export class ' . $name->getClass() . ' extends Map<string, ' . $subType . '> {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
+        $subType = $this->generator->getDocType($origin->getSchema());
 
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
+        $code ='export class ' . $name->getClass() . ' extends Array<' . $subType . '> {' . "\n";
+        $code.= '}' . "\n";
 
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
+        return $code;
     }
 
     protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string

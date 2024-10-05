@@ -23,7 +23,9 @@ namespace PSX\Schema;
 use PSX\Schema\Type\AnyPropertyType;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\CollectionDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
@@ -46,22 +48,17 @@ class TypeUtil
     /**
      * Walks through every nested element of the type and calls the visitor 
      * callback for each type
-     * 
-     * @param TypeInterface $type
-     * @param \Closure $visitor
      */
     public static function walk(TypeInterface $type, \Closure $visitor): void
     {
         $visitor($type);
 
         if ($type instanceof StructDefinitionType) {
-            $properties = $type->getProperties();
-            if (is_iterable($properties)) {
-                foreach ($properties as $property) {
-                    self::walk($property, $visitor);
-                }
+            $properties = $type->getProperties() ?? [];
+            foreach ($properties as $property) {
+                self::walk($property, $visitor);
             }
-        } elseif ($type instanceof MapDefinitionType) {
+        } elseif ($type instanceof CollectionDefinitionType) {
             $schema = $type->getSchema();
             if ($schema instanceof PropertyTypeAbstract) {
                 self::walk($schema, $visitor);

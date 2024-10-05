@@ -37,7 +37,7 @@ use PSX\Schema\TypeUtil;
  */
 class TypeSchema implements GeneratorInterface
 {
-    public function generate(SchemaInterface $schema)
+    public function generate(SchemaInterface $schema): Code\Chunks|string
     {
         $data = $this->toArray(
             $schema->getType(),

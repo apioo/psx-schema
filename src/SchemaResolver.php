@@ -41,7 +41,11 @@ class SchemaResolver
     {
         $types = [];
 
-        $this->lookupTypes($schema->getType(), $types);
+        $root = $schema->getRoot();
+        if (!empty($root)) {
+            $types[] = 'self:' . $root;
+        }
+
         foreach ($schema->getDefinitions()->getAllTypes() as $name => $type) {
             $this->lookupTypes($type, $types);
         }
@@ -53,14 +57,14 @@ class SchemaResolver
         }
     }
 
-    private function lookupTypes(TypeInterface $type, array &$types)
+    private function lookupTypes(TypeInterface $type, array &$types): void
     {
         TypeUtil::walk($type, function(TypeInterface $type) use (&$types){
             if (!$type instanceof ReferencePropertyType) {
                 return;
             }
 
-            $name = TypeUtil::getFullyQualifiedName($type->getRef());
+            $name = TypeUtil::getFullyQualifiedName($type->getTarget());
 
             if (in_array($name, $types)) {
                 // we have the type already

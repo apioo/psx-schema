@@ -4,18 +4,9 @@ namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Record\Record;
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Key;
-use PSX\Schema\Attribute\Maximum;
-use PSX\Schema\Attribute\MaxItems;
-use PSX\Schema\Attribute\MaxLength;
-use PSX\Schema\Attribute\Minimum;
-use PSX\Schema\Attribute\MinItems;
-use PSX\Schema\Attribute\MinLength;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An general news entry')]
-#[Required(['receiver', 'price', 'content'])]
 class News
 {
     protected ?Meta $config = null;
@@ -43,55 +34,25 @@ class News
     /**
      * @var array<string>
      */
-    #[MinItems(1)]
-    #[MaxItems(6)]
     protected ?array $tags = null;
 
     /**
      * @var array<Author>
      */
-    #[MinItems(1)]
     protected ?array $receiver = null;
 
-    /**
-     * @var array<Location|Web>
-     */
-    protected ?array $resources = null;
-
-    /**
-     * @var resource
-     */
-    protected $profileImage;
-
     protected ?bool $read;
-    protected Author|Web $source;
     protected ?Author $author;
     protected ?Meta $meta;
     protected ?\PSX\DateTime\LocalDate $sendDate;
     protected ?\PSX\DateTime\LocalDateTime $readDate;
-    protected ?\PSX\DateTime\Period $expires;
-    protected ?\PSX\DateTime\Duration $range;
-
-    #[Minimum(1)]
-    #[Maximum(100)]
     protected ?float $price = null;
-
-    #[Minimum(1)]
-    #[Maximum(5)]
     protected ?int $rating = null;
-
     #[Description('Contains the main content of the news entry')]
-    #[MinLength(3)]
-    #[MaxLength(512)]
     protected ?string $content = null;
-
-    #[Enum(['foo', 'bar'])]
     protected ?string $question = null;
-
     protected ?string $version = 'http://foo.bar';
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
-    protected ?\PSX\Uri\Uri $profileUri = null;
-
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
     #[Key('media.fields')]

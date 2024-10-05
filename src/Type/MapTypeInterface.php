@@ -27,7 +27,6 @@ namespace PSX\Schema\Type;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface MapTypeInterface
+interface MapTypeInterface extends CollectionTypeInterface
 {
-    public function getSchema(): ?PropertyTypeAbstract;
 }

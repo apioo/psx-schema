@@ -31,7 +31,7 @@ use Throwable;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ValidationException extends \Exception
+class ValidationException extends SchemaException
 {
     protected string $keyword;
     protected array $path;
