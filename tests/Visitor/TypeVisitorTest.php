@@ -31,6 +31,9 @@ use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeFactory;
 use PSX\Schema\Validation\Field;
@@ -50,7 +53,7 @@ class TypeVisitorTest extends TestCase
 {
     public function testVisitArray()
     {
-        $type = TypeFactory::getArray();
+        $type = DefinitionTypeFactory::getArray();
         $data = (new TypeVisitor())->visitArray([10], $type, '');
 
         $this->assertIsArray($data);
@@ -67,38 +70,14 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getArray();
+        $type = DefinitionTypeFactory::getArray();
 
         (new TypeVisitor($validator))->visitArray([10, 8, 6], $type, '/foo/bar');
     }
 
-    public function testVisitBinary()
-    {
-        $type = TypeFactory::getBinary();
-        $data = (new TypeVisitor())->visitBinary(base64_encode('foo'), $type, '');
-
-        $this->assertIsResource($data);
-        $this->assertSame('foo', stream_get_contents($data));
-    }
-
-    public function testVisitBinaryValidate()
-    {
-        $this->expectException(ValidationException::class);
-
-        $validator = new Validator([
-            new Field('/foo/bar', [function ($data) {
-                return fstat($data)['size'] < 2;
-            }])
-        ]);
-
-        $type = TypeFactory::getBinary();
-
-        (new TypeVisitor($validator))->visitBinary(base64_encode('foo'), $type, '/foo/bar');
-    }
-
     public function testVisitBoolean()
     {
-        $type = TypeFactory::getBoolean();
+        $type = PropertyTypeFactory::getBoolean();
 
         $this->assertSame(true, (new TypeVisitor())->visitBoolean(true, $type, ''));
     }
@@ -113,20 +92,20 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getBoolean();
+        $type = PropertyTypeFactory::getBoolean();
 
         (new TypeVisitor($validator))->visitBoolean(false, $type, '/foo/bar');
     }
 
     public function testVisitStruct()
     {
-        $type = TypeFactory::getStruct()
-            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class)
-            ->addProperty('foo', TypeFactory::getString())
-            ->addProperty('bar', TypeFactory::getString());
+        $type = DefinitionTypeFactory::getStruct()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class)
+            ->addProperty('foo', PropertyTypeFactory::getString())
+            ->addProperty('bar', PropertyTypeFactory::getString());
 
         // popo class
-        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
 
@@ -137,14 +116,14 @@ class TypeVisitorTest extends TestCase
 
     public function testVisitStructMapping()
     {
-        $type = TypeFactory::getStruct()
-            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class)
-            ->setAttribute(PropertyTypeAbstract::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
-            ->addProperty('foo', TypeFactory::getString())
-            ->addProperty('bar', TypeFactory::getString());
+        $type = DefinitionTypeFactory::getStruct()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class)
+            ->setAttribute(DefinitionTypeAbstract::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
+            ->addProperty('foo', PropertyTypeFactory::getString())
+            ->addProperty('bar', PropertyTypeFactory::getString());
 
         // popo class
-        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $type, '');
 
@@ -163,7 +142,7 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getStruct();
+        $type = DefinitionTypeFactory::getStruct();
 
         (new TypeVisitor($validator))->visitStruct((object) ['bar' => 'foo'], $type, '/foo/bar');
     }
@@ -178,17 +157,17 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getStruct();
-        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, PopoClass::class);
+        $type = DefinitionTypeFactory::getStruct();
+        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class);
 
         (new TypeVisitor($validator))->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '/foo/bar');
     }
 
     public function testVisitMap()
     {
-        $type = TypeFactory::getMap()
-            ->setAttribute(PropertyTypeAbstract::ATTR_CLASS, ArrayAccessClass::class)
-            ->setAdditionalProperties(TypeFactory::getString());
+        $type = DefinitionTypeFactory::getMap()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, ArrayAccessClass::class)
+            ->setSchema(PropertyTypeFactory::getString());
 
         // array access class
         $record = (new TypeVisitor())->visitMap((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
@@ -197,7 +176,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getArrayCopy());
 
         // record class
-        $type->setAttribute(PropertyTypeAbstract::ATTR_CLASS, RecordClass::class);
+        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, RecordClass::class);
 
         $record = (new TypeVisitor())->visitMap((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
 
@@ -207,7 +186,7 @@ class TypeVisitorTest extends TestCase
 
     public function testVisitDateTime()
     {
-        $type = TypeFactory::getDateTime();
+        $type = PropertyTypeFactory::getDateTime();
 
         $this->assertInstanceOf(LocalDateTime::class, (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00Z', $type, ''));
         $this->assertInstanceOf(LocalDateTime::class, (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00+01:00', $type, ''));
@@ -218,7 +197,7 @@ class TypeVisitorTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid date time format');
 
-        $type = TypeFactory::getDateTime();
+        $type = PropertyTypeFactory::getDateTime();
 
         (new TypeVisitor())->visitDateTime('foo', $type, '');
     }
@@ -233,14 +212,14 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getDateTime();
+        $type = PropertyTypeFactory::getDateTime();
 
         (new TypeVisitor($validator))->visitDateTime('2002-10-10T17:00:00Z', $type, '/foo/bar');
     }
 
     public function testVisitDate()
     {
-        $type = TypeFactory::getDate();
+        $type = PropertyTypeFactory::getDate();
 
         $this->assertInstanceOf(LocalDate::class, (new TypeVisitor())->visitDate('2000-01-01', $type, ''));
         $this->assertInstanceOf(LocalDate::class, (new TypeVisitor())->visitDate('2000-01-01+13:00', $type, ''));
@@ -251,7 +230,7 @@ class TypeVisitorTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid date format');
 
-        $type = TypeFactory::getDate();
+        $type = PropertyTypeFactory::getDate();
 
         (new TypeVisitor())->visitDate('foo', $type, '');
     }
@@ -266,62 +245,14 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getDate();
+        $type = PropertyTypeFactory::getDate();
 
         (new TypeVisitor($validator))->visitDate('2002-10-10', $type, '/foo/bar');
     }
 
-    public function testVisitDuration()
-    {
-        $type = TypeFactory::getDuration();
-
-        $this->assertInstanceOf(Duration::class, (new TypeVisitor())->visitDuration('P1D', $type, ''));
-        $this->assertInstanceOf(Duration::class, (new TypeVisitor())->visitDuration('P1DT12H', $type, ''));
-    }
-
-    public function testVisitDurationInvalidFormat()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Must be valid interval format');
-
-        $type = TypeFactory::getDuration();
-
-        (new TypeVisitor())->visitDuration('foo', $type, '');
-    }
-
-    public function testVisitPeriodValidate()
-    {
-        $this->expectException(ValidationException::class);
-
-        $validator = new Validator([
-            new Field('/foo/bar', [function (Period $data) {
-                return $data->getDays() == 2;
-            }])
-        ]);
-
-        $type = TypeFactory::getDuration();
-
-        (new TypeVisitor($validator))->visitPeriod('P1D', $type, '/foo/bar');
-    }
-
-    public function testVisitDurationValidate()
-    {
-        $this->expectException(ValidationException::class);
-
-        $validator = new Validator([
-            new Field('/foo/bar', [function (Duration $data) {
-                return $data->getHours() == 2;
-            }])
-        ]);
-
-        $type = TypeFactory::getDuration();
-
-        (new TypeVisitor($validator))->visitDuration('PT1H', $type, '/foo/bar');
-    }
-
     public function testVisitNumber()
     {
-        $type = TypeFactory::getNumber();
+        $type = PropertyTypeFactory::getNumber();
 
         $this->assertSame(1.1, (new TypeVisitor())->visitNumber(1.1, $type, ''));
     }
@@ -336,14 +267,14 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getNumber();
+        $type = PropertyTypeFactory::getNumber();
 
         (new TypeVisitor($validator))->visitNumber(12.34, $type, '/foo/bar');
     }
 
     public function testVisitInteger()
     {
-        $type = TypeFactory::getInteger();
+        $type = PropertyTypeFactory::getInteger();
 
         $this->assertSame(1, (new TypeVisitor())->visitNumber(1, $type, ''));
     }
@@ -358,14 +289,14 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getInteger();
+        $type = PropertyTypeFactory::getInteger();
 
         (new TypeVisitor($validator))->visitInteger(12, $type, '/foo/bar');
     }
 
     public function testVisitString()
     {
-        $type = TypeFactory::getString();
+        $type = PropertyTypeFactory::getString();
 
         $this->assertSame('foo', (new TypeVisitor())->visitString('foo', $type, ''));
     }
@@ -379,14 +310,14 @@ class TypeVisitorTest extends TestCase
             new Field('/foo/bar', [new Filter\Length(8, 16)])
         ]);
 
-        $type = TypeFactory::getString();
+        $type = PropertyTypeFactory::getString();
 
         (new TypeVisitor($validator))->visitString('foo', $type, '/foo/bar');
     }
 
     public function testVisitTime()
     {
-        $type = TypeFactory::getTime();
+        $type = PropertyTypeFactory::getTime();
 
         $this->assertInstanceOf(LocalTime::class, (new TypeVisitor())->visitTime('10:00:00', $type, ''));
         $this->assertInstanceOf(LocalTime::class, (new TypeVisitor())->visitTime('10:00:00+02:00', $type, ''));
@@ -397,7 +328,7 @@ class TypeVisitorTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid time format');
 
-        $type = TypeFactory::getTime();
+        $type = PropertyTypeFactory::getTime();
 
         (new TypeVisitor())->visitTime('foo', $type, '');
     }
@@ -412,31 +343,8 @@ class TypeVisitorTest extends TestCase
             }])
         ]);
 
-        $type = TypeFactory::getTime();
+        $type = PropertyTypeFactory::getTime();
 
         (new TypeVisitor($validator))->visitTime('10:00:00', $type, '/foo/bar');
-    }
-
-    public function testVisitUri()
-    {
-        $type = TypeFactory::getUri();
-
-        $this->assertInstanceOf(Uri::class, (new TypeVisitor())->visitUri('/foo', $type, ''));
-        $this->assertInstanceOf(Uri::class, (new TypeVisitor())->visitUri('http://foo.com?foo=bar', $type, ''));
-    }
-
-    public function testVisitUriValidate()
-    {
-        $this->expectException(ValidationException::class);
-
-        $validator = new Validator([
-            new Field('/foo/bar', [function (Uri $data) {
-                return $data->getAuthority() == 'bar.com';
-            }])
-        ]);
-
-        $type = TypeFactory::getUri();
-
-        (new TypeVisitor($validator))->visitUri('http://foo.com?foo=bar', $type, '/foo/bar');
     }
 }
