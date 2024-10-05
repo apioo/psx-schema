@@ -21,27 +21,20 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\DefinitionType;
 use PSX\Schema\Exception\GeneratorException;
-use PSX\Schema\Exception\UnknownRootException;
 use PSX\Schema\Generator\Normalizer\DefaultNormalizer;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
-use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -181,7 +174,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
-        $code = $this->writeMap($className, $this->generator->getType($type), $type);
+        $code = $this->writeMap($className, $this->generator->getType($type->getSchema()), $type);
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
@@ -191,7 +184,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
-        $code = $this->writeArray($className, $this->generator->getType($type), $type);
+        $code = $this->writeArray($className, $this->generator->getType($type->getSchema()), $type);
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }

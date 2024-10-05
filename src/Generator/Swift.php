@@ -23,6 +23,7 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
@@ -94,7 +95,7 @@ class Swift extends CodeGeneratorAbstract
         return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

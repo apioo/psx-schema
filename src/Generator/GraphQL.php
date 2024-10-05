@@ -48,7 +48,7 @@ class GraphQL extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ($property->isRequired() ? '!' : '') . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 
         $code.= '}' . "\n";

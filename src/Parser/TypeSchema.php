@@ -134,9 +134,6 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
     public function parseDefinitionType(\stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
     {
         $data = BCLayer::transformDefinition($data);
@@ -167,12 +164,47 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
     private function parseDefinitionStruct(StructDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        $parent = $this->getStringValue($data, ['parent', '$extends']);
+        $base = $this->getStringValue($data, ['base']);
+        if ($base !== null) {
+            $type->setBase($base);
+        }
+
+        $discriminator = $this->getStringValue($data, ['discriminator']);
+        if (!empty($discriminator)) {
+            $type->setDiscriminator($discriminator);
+        }
+
+        $mapping = $this->getObjectValue($data, ['mapping']);
+        if ($mapping instanceof \stdClass) {
+            $result = [];
+            foreach ($mapping as $mappingType => $mappingValue) {
+                if ($namespace !== null) {
+                    $result[$namespace . ':' . $mappingType] = $mappingValue;
+                } else {
+                    $result[$mappingType] = $mappingValue;
+                }
+            }
+
+            $type->setMapping($result);
+        }
+
+        $template = $this->getObjectValue($data, ['template', '$template']);
+        if ($template instanceof \stdClass) {
+            $result = [];
+            foreach ($template as $templateName => $templateType) {
+                if ($namespace !== null) {
+                    $result[$templateName] = $namespace . ':' . $templateType;
+                } else {
+                    $result[$templateName] = $templateType;
+                }
+            }
+
+            $type->setTemplate($result);
+        }
+
+        $parent = $this->getStringValue($data, ['parent', '$extends', '$ref']);
         if (!empty($parent)) {
             if ($namespace !== null) {
                 $type->setParent($namespace . ':' . $parent);
@@ -181,8 +213,9 @@ class TypeSchema implements ParserInterface
             }
         }
 
-        if (isset($data->properties) && $data->properties instanceof \stdClass) {
-            foreach ($data->properties as $name => $row) {
+        $properties = $this->getObjectValue($data, ['properties']);
+        if ($properties instanceof \stdClass) {
+            foreach ($properties as $name => $row) {
                 if ($row instanceof \stdClass) {
                     $type->addProperty($name, $this->parsePropertyType($row, $namespace));
                 }
@@ -190,48 +223,48 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
     private function parseDefinitionMap(Type\MapDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        if (isset($data->schema) && $data->schema instanceof \stdClass) {
-            $type->setSchema($this->parsePropertyType($data->schema, $namespace));
+        $schema = $this->getObjectValue($data, ['schema']);
+        if ($schema instanceof \stdClass) {
+            $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
     private function newDefinitionType(\stdClass $data): Type\DefinitionTypeAbstract
     {
-        $type = isset($data->type) && is_string($data->type) ? DefinitionType::tryFrom($data->type) : null;
+        $rawType = $this->getStringValue($data, ['type']);
+        $type = is_string($rawType) ? DefinitionType::tryFrom($rawType) : null;
+
         if ($type === DefinitionType::STRUCT) {
             return DefinitionTypeFactory::getStruct();
         } elseif ($type === DefinitionType::MAP) {
             return DefinitionTypeFactory::getMap();
+        } elseif ($type === DefinitionType::ARRAY) {
+            return DefinitionTypeFactory::getArray();
         }
 
         throw new UnknownTypeException('Could not assign schema to a definition type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
     }
 
-    /**
-     * @throws InvalidSchemaException
-     * @throws ParserException
-     * @throws UnknownTypeException
-     */
     public function parsePropertyType(\stdClass $data, ?string $namespace = null): Type\PropertyTypeAbstract
     {
         $data = BCLayer::transformProperty($data);
         $type = $this->newPropertyType($data);
 
-        if (isset($data->description)) {
-            $type->setDescription($data->description);
+        $description = $this->getStringValue($data, ['description']);
+        if ($description !== null) {
+            $type->setDescription($description);
         }
 
-        if (isset($data->deprecated)) {
-            $type->setDeprecated($data->deprecated);
+        $deprecated = $this->getBooleanValue($data, ['deprecated']);
+        if ($deprecated !== null) {
+            $type->setDeprecated($deprecated);
         }
 
-        if (isset($data->nullable)) {
-            $type->setNullable($data->nullable);
+        $nullable = $this->getBooleanValue($data, ['nullable']);
+        if ($nullable !== null) {
+            $type->setNullable($nullable);
         }
 
         if ($type instanceof Type\CollectionPropertyType) {
@@ -247,9 +280,6 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
     protected function parseCollection(Type\CollectionPropertyType $type, \stdClass $data, ?string $namespace): void
     {
         $schema = null;
@@ -266,11 +296,11 @@ class TypeSchema implements ParserInterface
 
     protected function parseString(StringPropertyType $property, \stdClass $data): void
     {
-        if (isset($data->format) && is_string($data->format)) {
-            $format = Format::tryFrom($data->format);
-            if ($format !== null) {
-                $property->setFormat($format);
-            }
+        $rawFormat = $this->getStringValue($data, ['format']);
+        $format = is_string($rawFormat) ? Format::tryFrom($rawFormat) : null;
+
+        if ($format instanceof Format) {
+            $property->setFormat($format);
         }
     }
 
@@ -309,7 +339,9 @@ class TypeSchema implements ParserInterface
 
     private function newPropertyType(\stdClass $data): PropertyTypeAbstract
     {
-        $type = isset($data->type) && is_string($data->type) ? PropertyType::tryFrom($data->type) : null;
+        $rawType = $this->getStringValue($data, ['type']);
+        $type = is_string($rawType) ? PropertyType::tryFrom($rawType) : null;
+
         if ($type === PropertyType::MAP) {
             return PropertyTypeFactory::getMap();
         } elseif ($type === PropertyType::ARRAY) {
@@ -337,6 +369,17 @@ class TypeSchema implements ParserInterface
     {
         foreach ($keywords as $keyword) {
             if (isset($data->{$keyword}) && is_string($data->{$keyword})) {
+                return $data->{$keyword};
+            }
+        }
+
+        return null;
+    }
+
+    private function getBooleanValue(\stdClass $data, array $keywords): ?bool
+    {
+        foreach ($keywords as $keyword) {
+            if (isset($data->{$keyword}) && is_bool($data->{$keyword})) {
                 return $data->{$keyword};
             }
         }

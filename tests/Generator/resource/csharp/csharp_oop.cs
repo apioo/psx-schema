@@ -15,7 +15,7 @@ public class Student : Human
 }
 
 using System.Text.Json.Serialization;
-public class StudentMap : Map<Student>
+public class StudentMap
 {
 }
 

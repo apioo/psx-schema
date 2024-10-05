@@ -24,6 +24,7 @@ use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -96,12 +97,10 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'class ' . $name->getClass() . '(UserDict[str, ' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(UserDict[str, ' . $type . ']):' . "\n";
         $code.= '    @classmethod' . "\n";
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
-        $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $subType . '))' . "\n";
+        $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
         $code.= "\n";
         $code.= "\n";
 
@@ -110,19 +109,17 @@ class Python extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'class ' . $name->getClass() . '(UserList[' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(UserList[' . $type . ']):' . "\n";
         $code.= '    @classmethod' . "\n";
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
-        $code.= '        return core_schema.list_schema(handler.generate_schema(str), handler.generate_schema(' . $subType . '))' . "\n";
+        $code.= '        return core_schema.list_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
         $code.= "\n";
         $code.= "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -148,7 +145,7 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
 

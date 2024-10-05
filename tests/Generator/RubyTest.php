@@ -68,18 +68,6 @@ class RubyTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateUnion()
-    {
-        $generator = new Ruby();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_union.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
     public function testGenerateImport()
     {
         $generator = new Ruby();

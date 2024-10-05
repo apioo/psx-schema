@@ -24,6 +24,7 @@ use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -79,19 +80,15 @@ class Rust extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        return 'pub type ' . $name->getClass() . ' = HashMap<String, ' . $subType . '>;' . "\n";
+        return 'pub type ' . $name->getClass() . ' = HashMap<String, ' . $type . '>;' . "\n";
     }
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        return 'pub type ' . $name->getClass() . ' = LinkedList<' . $subType . '>;' . "\n";
+        return 'pub type ' . $name->getClass() . ' = LinkedList<' . $type . '>;' . "\n";
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -116,7 +113,7 @@ class Rust extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
 

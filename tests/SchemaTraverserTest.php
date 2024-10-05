@@ -23,8 +23,10 @@ namespace PSX\Schema\Tests;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\SchemaTraverser;
+use PSX\Schema\Tests\Parser\Popo\ArrayList;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\Tests\Parser\Popo\Form_Element_Input;
+use PSX\Schema\Tests\Parser\Popo\HashMap;
 use PSX\Schema\Visitor\IncomingVisitor;
 use PSX\Schema\Visitor\OutgoingVisitor;
 use PSX\Schema\Visitor\TypeVisitor;
@@ -239,6 +241,42 @@ JSON;
 
         $traverser = new SchemaTraverser(ignoreUnknown: false);
         $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
+    }
+
+    public function testTraverseArray()
+    {
+        $schema = $this->schemaManager->getSchema(ArrayList::class);
+        $data = <<<JSON
+[
+  "foo",
+  "bar"
+]
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $result = $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
+
+        $actual = json_encode($result, JSON_PRETTY_PRINT);
+
+        $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
+    }
+
+    public function testTraverseMap()
+    {
+        $schema = $this->schemaManager->getSchema(HashMap::class);
+        $data = <<<JSON
+{
+  "foo": "foo",
+  "bar": "bar"
+}
+JSON;
+
+        $traverser = new SchemaTraverser();
+        $result = $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
+
+        $actual = json_encode($result, JSON_PRETTY_PRINT);
+
+        $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
     }
 
     protected function getData()

@@ -40,24 +40,23 @@ class ParseCommandTest extends TestCase
         $command = $this->getParseCommand();
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'source'   => News::class,
             'target'   => __DIR__ . '/resource',
             '--format' => 'php',
-        ));
+        ]);
 
         $actual = $commandTester->getDisplay();
-        $expect = 'Generated 5 files';
+        $expect = 'Generated 4 files';
 
         $this->assertStringContainsString($expect, $actual, $actual);
         $this->assertFileExists(__DIR__ . '/resource/Author.php');
         $this->assertFileExists(__DIR__ . '/resource/Location.php');
         $this->assertFileExists(__DIR__ . '/resource/Meta.php');
         $this->assertFileExists(__DIR__ . '/resource/News.php');
-        $this->assertFileExists(__DIR__ . '/resource/Web.php');
     }
 
-    protected function getParseCommand()
+    private function getParseCommand(): ParseCommand
     {
         return new ParseCommand(new SchemaManager());
     }

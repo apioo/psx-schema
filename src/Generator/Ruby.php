@@ -22,9 +22,8 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * Ruby
@@ -83,7 +82,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -100,7 +99,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

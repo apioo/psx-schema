@@ -122,26 +122,19 @@ public class News {
     private java.util.Map<String, String> inlineConfig;
     private java.util.Map<String, String> mapTags;
     private java.util.Map<String, Author> mapReceiver;
-    private java.util.Map<String, Object> mapResources;
     private java.util.List<String> tags;
     private java.util.List<Author> receiver;
-    private java.util.List<Object> resources;
-    private String profileImage;
     private Boolean read;
-    private Object source;
     private Author author;
     private Meta meta;
     private java.time.LocalDate sendDate;
     private java.time.LocalDateTime readDate;
-    private String expires;
-    private String range;
     private Double price;
     private Integer rating;
     private String content;
     private String question;
     private String version;
     private java.time.LocalTime coffeeTime;
-    private String profileUri;
     private String captcha;
     private String mediaFields;
     private Object payload;
@@ -177,14 +170,6 @@ public class News {
     public java.util.Map<String, Author> getMapReceiver() {
         return this.mapReceiver;
     }
-    @JsonSetter("mapResources")
-    public void setMapResources(java.util.Map<String, Object> mapResources) {
-        this.mapResources = mapResources;
-    }
-    @JsonGetter("mapResources")
-    public java.util.Map<String, Object> getMapResources() {
-        return this.mapResources;
-    }
     @JsonSetter("tags")
     public void setTags(java.util.List<String> tags) {
         this.tags = tags;
@@ -201,22 +186,6 @@ public class News {
     public java.util.List<Author> getReceiver() {
         return this.receiver;
     }
-    @JsonSetter("resources")
-    public void setResources(java.util.List<Object> resources) {
-        this.resources = resources;
-    }
-    @JsonGetter("resources")
-    public java.util.List<Object> getResources() {
-        return this.resources;
-    }
-    @JsonSetter("profileImage")
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-    @JsonGetter("profileImage")
-    public String getProfileImage() {
-        return this.profileImage;
-    }
     @JsonSetter("read")
     public void setRead(Boolean read) {
         this.read = read;
@@ -224,14 +193,6 @@ public class News {
     @JsonGetter("read")
     public Boolean getRead() {
         return this.read;
-    }
-    @JsonSetter("source")
-    public void setSource(Object source) {
-        this.source = source;
-    }
-    @JsonGetter("source")
-    public Object getSource() {
-        return this.source;
     }
     @JsonSetter("author")
     public void setAuthor(Author author) {
@@ -264,22 +225,6 @@ public class News {
     @JsonGetter("readDate")
     public java.time.LocalDateTime getReadDate() {
         return this.readDate;
-    }
-    @JsonSetter("expires")
-    public void setExpires(String expires) {
-        this.expires = expires;
-    }
-    @JsonGetter("expires")
-    public String getExpires() {
-        return this.expires;
-    }
-    @JsonSetter("range")
-    public void setRange(String range) {
-        this.range = range;
-    }
-    @JsonGetter("range")
-    public String getRange() {
-        return this.range;
     }
     @JsonSetter("price")
     public void setPrice(Double price) {
@@ -328,14 +273,6 @@ public class News {
     @JsonGetter("coffeeTime")
     public java.time.LocalTime getCoffeeTime() {
         return this.coffeeTime;
-    }
-    @JsonSetter("profileUri")
-    public void setProfileUri(String profileUri) {
-        this.profileUri = profileUri;
-    }
-    @JsonGetter("profileUri")
-    public String getProfileUri() {
-        return this.profileUri;
     }
     @JsonSetter("g-recaptcha-response")
     public void setCaptcha(String captcha) {

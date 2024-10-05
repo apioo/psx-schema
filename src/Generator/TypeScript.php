@@ -25,13 +25,10 @@ use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
-use PSX\Schema\Type\ArrayPropertyType;
-use PSX\Schema\Type\IntersectionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
@@ -90,7 +87,7 @@ class TypeScript extends CodeGeneratorAbstract
                 $type = $this->appendGlobalThis($type, $reservedClassNames);
             }
 
-            $code.= $this->indent . $propertyName . ($property->isRequired() ? '' : '?') . ': ' . $type . "\n";
+            $code.= $this->indent . $propertyName . '?: ' . $type . "\n";
         }
 
         $code.= '}' . "\n";
@@ -100,9 +97,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getSchema());
-
-        $code ='export class ' . $name->getClass() . ' extends Map<string, ' . $subType . '> {' . "\n";
+        $code ='export class ' . $name->getClass() . ' extends Map<string, ' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -110,15 +105,13 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getSchema());
-
-        $code ='export class ' . $name->getClass() . ' extends Array<' . $subType . '> {' . "\n";
+        $code ='export class ' . $name->getClass() . ' extends Array<' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -141,17 +134,12 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(TypeInterface $origin, Code\Name $className): array
+    private function getImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
         $refs = [];
         TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs, $className){
             if ($type instanceof ReferencePropertyType) {
-                $refs[$type->getRef()] = $type->getRef();
-                if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $ref) {
-                        $refs[$ref] = $ref;
-                    }
-                }
+                $refs[$type->getTarget()] = $type->getTarget();
             } elseif ($type instanceof StructDefinitionType && $type->getParent()) {
                 $refs[$type->getParent()] = $type->getParent();
             }

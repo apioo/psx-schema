@@ -21,12 +21,11 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
-use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\UnionType;
 
 /**
  * Html
@@ -99,7 +98,7 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayPropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
         $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-array">';
         $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
@@ -115,72 +114,6 @@ class Html extends MarkupAbstract
         return $return . "\n";
     }
 
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
-    {
-        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-union">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
-
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
-        }
-
-        $return.= '<pre class="psx-object-json">OneOf: ' . $type . '</pre>';
-        $return.= '</div>';
-
-        return $return . "\n";
-    }
-
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-intersection">';
-        $return.= '<h' . $this->heading . '><a class="psx-type-link" data-name="' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
-
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
-        }
-
-        $return.= '<pre class="psx-object-json">AllOf: ' . $type . '</pre>';
-        $return.= '</div>';
-
-        return $return . "\n";
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
-    {
-        $generics = '';
-        $template = $origin->getTemplate();
-        if (!empty($template)) {
-            foreach ($template as $key => $value) {
-                $generics.= "\n";
-                $generics.= '<span class="psx-object-json-key">"' . htmlspecialchars($key) . '"</span>';
-                $generics.= '<span class="psx-object-json-pun"> = </span>';
-                $generics.= '<span class="psx-property-type"><a href="#' . $value . '">' . $value . '</a></span>';
-            }
-        }
-
-        $return = '<div id="' . htmlspecialchars($name->getClass()) . '" class="psx-object psx-reference">';
-        $return.= '<h' . $this->heading . '><a href="#' . $name->getClass() . '">' . $name->getClass() . '</a></h' . $this->heading . '>';
-
-        $comment = $origin->getDescription();
-        if (!empty($comment)) {
-            $return.= '<div class="psx-object-description">' . htmlspecialchars($comment) . '</div>';
-        }
-
-        $return.= '<pre class="psx-object-json">';
-        $return.= 'Reference: ' . $type;
-        $return.= $generics;
-        $return.= '</pre>';
-        $return.= '</div>';
-
-        return $return . "\n";
-    }
-
-    /**
-     * @param array $constraints
-     * @return string
-     */
     protected function writeConstraints(array $constraints): string
     {
         $html = '<dl class="psx-property-constraint">';
@@ -273,7 +206,6 @@ class Html extends MarkupAbstract
     private function getPropertyCssClasses(Code\Property $property): array
     {
         $classes = [];
-        $classes[] = $property->isRequired() ? 'psx-property-required' : 'psx-property-optional';
 
         if ($property->isDeprecated()) {
             $classes[] = 'psx-property-deprecated';
@@ -281,10 +213,6 @@ class Html extends MarkupAbstract
 
         if ($property->isNullable()) {
             $classes[] = 'psx-property-nullable';
-        }
-
-        if ($property->isReadonly()) {
-            $classes[] = 'psx-property-readonly';
         }
 
         return $classes;

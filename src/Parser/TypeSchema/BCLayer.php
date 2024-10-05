@@ -41,9 +41,15 @@ class BCLayer
             }
         }
 
+        if (isset($data->{'$ref'}) && is_string($data->{'$ref'})) {
+            $data->type = 'struct';
+        }
+
         if (!isset($data->type)) {
             if (isset($data->additionalProperties) || isset($data->schema)) {
                 $data->type = 'map';
+            } elseif (isset($data->items)) {
+                $data->type = 'array';
             } else {
                 $data->type = 'struct';
 
@@ -52,10 +58,12 @@ class BCLayer
                 }
             }
         } else {
-            if ($data->type === 'object' && isset($data->properties)) {
-                $data->type = 'struct';
-            } elseif ($data->type === 'object' && isset($data->additionalProperties)) {
+            if ($data->type === 'object' && isset($data->additionalProperties)) {
                 $data->type = 'map';
+            } elseif ($data->type === 'array' && isset($data->items)) {
+                $data->type = 'array';
+            } else {
+                $data->type = 'struct';
             }
         }
 

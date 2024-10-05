@@ -22,10 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -79,25 +79,23 @@ class VisualBasic extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
-
         $code = 'Public Class ' . $name->getClass() . "\n";
-        $code.= $this->indent . 'Inherits Dictionary(Of String, ' . $subType . ')' . "\n";
+        $code.= $this->indent . 'Inherits Dictionary(Of String, ' . $type . ')' . "\n";
         $code.= 'End Class' . "\n";
 
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferencePropertyType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'Public Class ' . $name->getClass() . ' : ' . $type . "\n";
-        $code.= $this->indent . 'Inherits ' . $type . "\n";
+        $code = 'Public Class ' . $name->getClass() . "\n";
+        $code.= $this->indent . 'Inherits List(Of ' . $type . ')' . "\n";
         $code.= 'End Class' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -122,7 +120,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         if (!empty($this->namespace)) {
             return 'End Namespace' . "\n";
@@ -131,7 +129,7 @@ class VisualBasic extends CodeGeneratorAbstract
         }
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
         $imports[] = 'Imports System.Text.Json.Serialization';

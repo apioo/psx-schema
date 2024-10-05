@@ -117,23 +117,33 @@ class TypeUtil
     {
         self::walk($type, function(TypeInterface $type) use ($callback){
             if ($type instanceof ReferencePropertyType) {
-                [$ns, $name] = self::split($type->getRef());
-                $type->setRef($callback($ns, $name));
-
-                $template = $type->getTemplate();
-                if (!empty($template)) {
-                    $result = [];
-                    foreach ($template as $key => $ref) {
-                        [$ns, $name] = self::split($ref);
-                        $result[$key] = $callback($ns, $name);
-                    }
-                    $type->setTemplate($result);
-                }
+                [$ns, $name] = self::split($type->getTarget());
+                $type->setTarget($callback($ns, $name));
             } elseif ($type instanceof StructDefinitionType) {
                 $extends = $type->getParent();
                 if (!empty($extends)) {
                     [$ns, $name] = self::split($extends);
                     $type->setParent($callback($ns, $name));
+                }
+
+                $template = $type->getTemplate();
+                if (!empty($template)) {
+                    $result = [];
+                    foreach ($template as $key => $templateType) {
+                        [$ns, $name] = self::split($templateType);
+                        $result[$key] = $callback($ns, $name);
+                    }
+                    $type->setTemplate($result);
+                }
+
+                $mapping = $type->getMapping();
+                if (!empty($mapping)) {
+                    $result = [];
+                    foreach ($mapping as $mappingType => $mappingValue) {
+                        [$ns, $name] = self::split($mappingType);
+                        $result[$callback($ns, $name)] = $mappingValue;
+                    }
+                    $type->setMapping($result);
                 }
             }
         });

@@ -21,21 +21,17 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
-use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
-use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -56,7 +52,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
         $this->normalizer = $normalizer;
     }
 
-    public function getType(TypeInterface $type): string
+    public function getType(PropertyTypeAbstract $type): string
     {
         if ($type instanceof StringPropertyType) {
             return $this->getStringType($type);
@@ -67,34 +63,19 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof BooleanPropertyType) {
             return $this->getBoolean();
         } elseif ($type instanceof ArrayPropertyType) {
-            return $this->getArray($this->getType($type->getItems()));
-        } elseif ($type instanceof StructDefinitionType) {
-            throw new GeneratorException('Could not determine name of anonymous struct, use a reference to the definitions instead');
-        } elseif ($type instanceof MapDefinitionType) {
-            return $this->getMap($this->getType($type->getAdditionalProperties()));
-        } elseif ($type instanceof UnionType) {
-            return $this->getUnion($this->getCombinationType($type->getOneOf()));
-        } elseif ($type instanceof IntersectionType) {
-            return $this->getIntersection($this->getCombinationType($type->getAllOf()));
+            return $this->getArray($this->getType($type->getSchema()));
+        } elseif ($type instanceof MapPropertyType) {
+            return $this->getMap($this->getType($type->getSchema()));
         } elseif ($type instanceof ReferencePropertyType) {
-            $template = $type->getTemplate();
-            if (!empty($template)) {
-                $types = [];
-                foreach ($template as $value) {
-                    $types[] = $this->getReference($value);
-                }
-                return $this->getReference($type->getRef()) . $this->getGeneric($types);
-            } else {
-                return $this->getReference($type->getRef());
-            }
+            return $this->getReference($type->getTarget());
         } elseif ($type instanceof GenericPropertyType) {
-            return $type->getGeneric() ?? '';
+            return $type->getName() ?? '';
         }
 
         return $this->getAny();
     }
 
-    public function getDocType(TypeInterface $type): string
+    public function getDocType(PropertyTypeAbstract $type): string
     {
         return $this->getType($type);
     }
@@ -165,20 +146,5 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } else {
             return $this->getInteger();
         }
-    }
-
-    private function getCombinationType(array $properties): array
-    {
-        $types = [];
-        foreach ($properties as $property) {
-            $type = $this->getType($property);
-            if ($property instanceof UnionType || $property instanceof IntersectionType) {
-                $types[] = $this->getGroup($type);
-            } else {
-                $types[] = $type;
-            }
-        }
-
-        return $types;
     }
 }

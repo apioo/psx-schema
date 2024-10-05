@@ -154,8 +154,6 @@ class Php extends CodeGeneratorAbstract
                 $prop->addAttribute($attribute);
             }
 
-            $prop->setDefault($this->getDefault($property->getOrigin()));
-
             $class->addStmt($prop);
 
             $setter = $this->factory->method($property->getName()->getMethod(prefix: ['set']));
@@ -226,13 +224,11 @@ class Php extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getSchema());
-
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\HashMap<' . $subType . '>']));
-        $class->extend('\\PSX\\Record\\HashMap');
+        $class->setDocComment($this->buildComment(['extends' => '\\ArrayObject<string, ' . $type . '>']));
+        $class->extend('\\ArrayObject');
 
         $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
@@ -244,13 +240,11 @@ class Php extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getSchema());
-
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\ArrayList<' . $subType . '>']));
-        $class->extend('\\PSX\\Record\\ArrayList');
+        $class->setDocComment($this->buildComment(['extends' => '\\ArrayIterator<' . $type . '>']));
+        $class->extend('\\ArrayIterator');
 
         $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
@@ -375,24 +369,6 @@ class Php extends CodeGeneratorAbstract
         } else {
             throw new \InvalidArgumentException('Provided a non scalar value');
         }
-    }
-
-    private function newArray(array $values): Node
-    {
-        $result = [];
-        foreach ($values as $index => $value) {
-            $result[$index] = $this->newScalar($value);
-        }
-        return new Node\Expr\Array_($result);
-    }
-
-    private function getDefault(TypeInterface $type)
-    {
-        if (!$type instanceof ScalarPropertyType) {
-            return null;
-        }
-
-        return $type->getConst();
     }
 
     private function prettyPrint($class, array $uses): string

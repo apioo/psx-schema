@@ -68,18 +68,6 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateUnion()
-    {
-        $generator = new TypeScript();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_union.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
     public function testGenerateImport()
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));

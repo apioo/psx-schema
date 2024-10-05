@@ -45,23 +45,21 @@ class Php extends GeneratorAbstract
     public function getDocType(TypeInterface $type): string
     {
         if ($type instanceof ArrayPropertyType) {
-            $items = $type->getItems();
+            $items = $type->getSchema();
             if ($items instanceof TypeInterface) {
                 return 'array<' . $this->getDocType($items) . '>';
             } else {
                 return 'array';
             }
         } elseif ($type instanceof MapDefinitionType) {
-            $additionalProperties = $type->getAdditionalProperties();
+            $additionalProperties = $type->getSchema();
             if ($additionalProperties instanceof TypeInterface) {
                 return '\\' . Record::class . '<' . $this->getDocType($additionalProperties) . '>';
             } else {
                 return '\\' . Record::class;
             }
-        } elseif ($type instanceof StringPropertyType && $type->getFormat() === Format::BINARY) {
-            return 'resource';
         } elseif ($type instanceof GenericPropertyType) {
-            return $type->getGeneric() ?? '';
+            return $type->getName() ?? '';
         } else {
             return $this->getType($type);
         }

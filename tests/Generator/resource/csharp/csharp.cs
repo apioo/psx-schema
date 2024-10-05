@@ -50,7 +50,6 @@ public class Meta : Dictionary<string, string>
 }
 
 using System.Text.Json.Serialization;
-using System.Collections.Generic;
 
 /// <summary>
 /// An general news entry
@@ -65,20 +64,12 @@ public class News
     public System.Collections.Generic.Dictionary<string, string>? MapTags { get; set; }
     [JsonPropertyName("mapReceiver")]
     public System.Collections.Generic.Dictionary<string, Author>? MapReceiver { get; set; }
-    [JsonPropertyName("mapResources")]
-    public System.Collections.Generic.Dictionary<string, object>? MapResources { get; set; }
     [JsonPropertyName("tags")]
     public System.Collections.Generic.List<string>? Tags { get; set; }
     [JsonPropertyName("receiver")]
     public System.Collections.Generic.List<Author>? Receiver { get; set; }
-    [JsonPropertyName("resources")]
-    public System.Collections.Generic.List<object>? Resources { get; set; }
-    [JsonPropertyName("profileImage")]
-    public string? ProfileImage { get; set; }
     [JsonPropertyName("read")]
     public bool? Read { get; set; }
-    [JsonPropertyName("source")]
-    public object? Source { get; set; }
     [JsonPropertyName("author")]
     public Author? Author { get; set; }
     [JsonPropertyName("meta")]
@@ -87,10 +78,6 @@ public class News
     public System.DateOnly? SendDate { get; set; }
     [JsonPropertyName("readDate")]
     public System.DateTime? ReadDate { get; set; }
-    [JsonPropertyName("expires")]
-    public string? Expires { get; set; }
-    [JsonPropertyName("range")]
-    public string? Range { get; set; }
     [JsonPropertyName("price")]
     public double? Price { get; set; }
     [JsonPropertyName("rating")]
@@ -103,8 +90,6 @@ public class News
     public string? Version { get; set; }
     [JsonPropertyName("coffeeTime")]
     public System.TimeOnly? CoffeeTime { get; set; }
-    [JsonPropertyName("profileUri")]
-    public string? ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
     public string? Captcha { get; set; }
     [JsonPropertyName("media.fields")]

@@ -68,18 +68,6 @@ class JavaTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateUnion()
-    {
-        $generator = new Java();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/java/java_union.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
     public function testGenerateImport()
     {
         $generator = new Java();

@@ -23,10 +23,9 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * Java
@@ -54,7 +53,23 @@ class Java extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
-        $code = 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
+        $code = '';
+
+        $discriminator = $origin->getDiscriminator();
+        if ($discriminator !== null) {
+            $code.= '@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "' . $discriminator . '")' . "\n";
+        }
+
+        $mapping = $origin->getMapping();
+        if ($mapping !== null) {
+            $code.= '@JsonSubTypes({' . "\n";
+            foreach ($mapping as $class => $value) {
+                $code.= $this->indent . '@JsonSubTypes.Type(value = ' . $class . '.class, name = "' . $value . '"),' . "\n";
+            }
+            $code.= '})' . "\n";
+        }
+
+        $code.= 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -91,9 +106,7 @@ class Java extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'public class ' . $name->getClass() . ' extends java.util.HashMap<String, ' . $subType . '> {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends java.util.HashMap<String, ' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -101,15 +114,13 @@ class Java extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'public class ' . $name->getClass() . ' extends java.util.ArrayList<' . $subType . '> {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends java.util.ArrayList<' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -136,7 +147,7 @@ class Java extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
         $imports[] = 'import com.fasterxml.jackson.annotation.JsonGetter;';

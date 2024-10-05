@@ -27,7 +27,9 @@ use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
@@ -68,7 +70,7 @@ class SchemaTraverser
      *
      * @throws TraverserException
      */
-    public function traverse($data, SchemaInterface $schema, VisitorInterface $visitor = null): mixed
+    public function traverse(mixed $data, SchemaInterface $schema, VisitorInterface $visitor = null): mixed
     {
         $this->pathStack = [];
 
@@ -89,7 +91,7 @@ class SchemaTraverser
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseDefinition(mixed $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): ?object
+    protected function traverseDefinition(mixed $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): mixed
     {
         if ($type instanceof StructDefinitionType) {
             if ($this->assertConstraints) {
@@ -103,6 +105,12 @@ class SchemaTraverser
             }
 
             return $this->traverseMap($data, $type, $definitions, $visitor, $context);
+        } elseif ($type instanceof ArrayDefinitionType) {
+            if ($this->assertConstraints) {
+                $this->assertArray($data);
+            }
+
+            return $this->traverseArray($data, $type, $definitions, $visitor, $context);
         } else {
             return null;
         }
@@ -261,7 +269,7 @@ class SchemaTraverser
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseArray(array $data, ArrayPropertyType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): array
+    protected function traverseArray(array $data, ArrayTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): array
     {
         $result = [];
 

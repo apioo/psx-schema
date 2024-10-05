@@ -28,6 +28,7 @@ use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\IntegerPropertyType;
@@ -119,7 +120,7 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitArray(array $data, ArrayPropertyType $type, string $path): array
+    public function visitArray(array $data, ArrayTypeInterface $type, string $path): array
     {
         if ($this->validator !== null) {
             $this->validator->validate($path, $data);

@@ -61,16 +61,6 @@ class TypeSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateUnion()
-    {
-        $generator = new TypeSchema();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-        $expect = file_get_contents(__DIR__ . '/resource/typeschema/typeschema_union.json');
-
-        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
-    }
-
     public function testGenerateImport()
     {
         $generator = new TypeSchema();

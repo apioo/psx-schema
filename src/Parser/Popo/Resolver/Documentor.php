@@ -34,7 +34,10 @@ use PSX\Schema\DefinitionTypeFactory;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\PropertyTypeFactory;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
@@ -57,15 +60,34 @@ class Documentor implements ResolverInterface
 
     public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
-        if ($reflection->implementsInterface(RecordInterface::class) /*|| $reflection->implementsInterface(HashMap::class) || $reflection->implementsInterface(ArrayList::class)*/) {
+        if ($this->hasParent($reflection, \ArrayObject::class) || $reflection->implementsInterface(RecordInterface::class)) {
             $tag = $this->getTag('extends', $reflection->getDocComment());
             if (empty($tag)) {
                 throw new ParserException('Could not determine type of map');
             }
 
             $context = $this->contextFactory->createFromReflector($reflection);
+            $schema = $this->buildPropertyType($this->typeResolver->resolve($tag, $context));
 
-            return $this->buildDefinitionType($this->typeResolver->resolve($tag, $context));
+            if ($schema instanceof CollectionPropertyType) {
+                return DefinitionTypeFactory::getMap($schema->getSchema());
+            } else {
+                return DefinitionTypeFactory::getMap($schema);
+            }
+        } elseif ($this->hasParent($reflection, \ArrayIterator::class)) {
+            $tag = $this->getTag('extends', $reflection->getDocComment());
+            if (empty($tag)) {
+                throw new ParserException('Could not determine type of map');
+            }
+
+            $context = $this->contextFactory->createFromReflector($reflection);
+            $schema = $this->buildPropertyType($this->typeResolver->resolve($tag, $context));
+
+            if ($schema instanceof CollectionPropertyType) {
+                return DefinitionTypeFactory::getArray($schema->getSchema());
+            } else {
+                return DefinitionTypeFactory::getArray($schema);
+            }
         } else {
             $struct = DefinitionTypeFactory::getStruct();
 
@@ -107,29 +129,6 @@ class Documentor implements ResolverInterface
         $context = $this->contextFactory->createFromReflector($reflection);
 
         return $this->buildPropertyType($this->typeResolver->resolve($tag, $context));
-    }
-
-    private function buildDefinitionType(Type $type): ?DefinitionTypeAbstract
-    {
-        if ($type instanceof Types\Collection) {
-            $value = $type->getValueType();
-            $schema = $this->buildPropertyType($value);
-            if ($schema instanceof PropertyTypeAbstract) {
-                return DefinitionTypeFactory::getMap($schema);
-            } else {
-                throw new ParserException('Map without type hint');
-            }
-        } elseif ($type instanceof Types\AbstractList) {
-            $value = $type->getValueType();
-            $schema = $this->buildPropertyType($value);
-            if ($schema instanceof PropertyTypeAbstract) {
-                return DefinitionTypeFactory::getArray($schema);
-            } else {
-                throw new ParserException('Array without type hint');
-            }
-        }
-
-        return null;
     }
 
     private function buildPropertyType(Type $type): ?PropertyTypeAbstract
@@ -211,5 +210,15 @@ class Documentor implements ResolverInterface
 
         // currently we can handle only one type, since we pare also only one value
         return array_slice($keys, 0, 1);
+    }
+
+    private function hasParent(\ReflectionClass $reflection, string $class): bool
+    {
+        $parent = $reflection->getParentClass();
+        if (!$parent instanceof \ReflectionClass) {
+            return false;
+        }
+
+        return $parent->getName() === $class;
     }
 }

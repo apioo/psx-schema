@@ -41,11 +41,6 @@ abstract class GeneratorTestCase extends SchemaTestCase
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_oop.json');
     }
 
-    protected function getUnionSchema()
-    {
-        return $this->schemaManager->getSchema(__DIR__ . '/resource/source_union.json');
-    }
-
     protected function getImportSchema()
     {
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_import.json');

@@ -52,60 +52,6 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
     {
         $constraints = [];
 
-        if ($type instanceof ArrayPropertyType) {
-            $minItems = $type->getMinItems();
-            if ($minItems !== null) {
-                $constraints['minItems'] = $minItems;
-            }
-
-            $maxItems = $type->getMaxItems();
-            if ($maxItems !== null) {
-                $constraints['maxItems'] = $maxItems;
-            }
-        } elseif ($type instanceof NumberPropertyType) {
-            $minimum = $type->getMinimum();
-            if ($minimum !== null) {
-                $constraints['minimum'] = $minimum;
-            }
-
-            $maximum = $type->getMaximum();
-            if ($maximum !== null) {
-                $constraints['maximum'] = $maximum;
-            }
-
-            $multipleOf = $type->getMultipleOf();
-            if ($multipleOf !== null) {
-                $constraints['multipleOf'] = $multipleOf;
-            }
-        } elseif ($type instanceof StringPropertyType) {
-            $minLength = $type->getMinLength();
-            if ($minLength !== null) {
-                $constraints['minLength'] = $minLength;
-            }
-
-            $maxLength = $type->getMaxLength();
-            if ($maxLength !== null) {
-                $constraints['maxLength'] = $maxLength;
-            }
-
-            $pattern = $type->getPattern();
-            if ($pattern !== null) {
-                $constraints['pattern'] = $pattern;
-            }
-        }
-
-        if ($type instanceof ScalarPropertyType) {
-            $enum = $type->getEnum();
-            if ($enum !== null) {
-                $constraints['enum'] = $enum;
-            }
-
-            $const = $type->getConst();
-            if ($const !== null) {
-                $constraints['const'] = $const;
-            }
-        }
-
         return $constraints;
     }
 }

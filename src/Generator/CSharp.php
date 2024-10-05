@@ -23,8 +23,8 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
@@ -54,7 +54,21 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
     {
-        $code = 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
+        $code = '';
+
+        $discriminator = $origin->getDiscriminator();
+        if ($discriminator !== null) {
+            $code.= '[JsonPolymorphic(TypeDiscriminatorPropertyName = "' . $discriminator . '")]' . "\n";
+        }
+
+        $mapping = $origin->getMapping();
+        if ($mapping !== null) {
+            foreach ($mapping as $class => $value) {
+                $code.= '[JsonDerivedType(typeof(' . $class . '), typeDiscriminator: "' . $value . '")]' . "\n";
+            }
+        }
+
+        $code.= 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= '<' . implode(', ', $generics) . '>';
@@ -80,9 +94,7 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'public class ' . $name->getClass() . ' : Dictionary<string, ' . $subType . '>' . "\n";
+        $code = 'public class ' . $name->getClass() . ' : Dictionary<string, ' . $type . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 
@@ -91,16 +103,14 @@ class CSharp extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'public class ' . $name->getClass() . ' : List<string, ' . $subType . '>' . "\n";
+        $code = 'public class ' . $name->getClass() . ' : List<string, ' . $type . '>' . "\n";
         $code.= '{' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -127,7 +137,7 @@ class CSharp extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
         $imports[] = 'using System.Text.Json.Serialization;';

@@ -68,18 +68,6 @@ class PhpTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateUnion()
-    {
-        $generator = new Php();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/php/php_union.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
     public function testGenerateImport()
     {
         $generator = new Php();

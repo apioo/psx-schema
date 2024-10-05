@@ -27,11 +27,6 @@ class News
     protected ?Record $mapReceiver = null;
 
     /**
-     * @var Record<Location|Web>
-     */
-    protected ?Record $mapResources = null;
-
-    /**
      * @var array<string>
      */
     protected ?array $tags = null;
@@ -87,16 +82,6 @@ class News
     public function getReceiver() : ?array
     {
         return $this->receiver;
-    }
-
-    public function setResources(?array $resources)
-    {
-        $this->resources = $resources;
-    }
-
-    public function getResources() : ?array
-    {
-        return $this->resources;
     }
 
     public function setProfileImage($profileImage)

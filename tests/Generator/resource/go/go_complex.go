@@ -1,147 +1,151 @@
-// Represents an any type
-type AnyType struct {
+// Base definition type
+type DefinitionType struct {
     Description string `json:"description"`
-    Type string `json:"type"`
-    Nullable bool `json:"nullable"`
     Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
+    Type string `json:"type"`
 }
 
-// Represents an array type. An array type contains an ordered list of a specific type
-type ArrayType struct {
+// Represents a struct which contains a fixed set of defined properties
+type StructDefinitionType struct {
     Description string `json:"description"`
-    Type string `json:"type"`
-    Nullable bool `json:"nullable"`
     Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    Items any `json:"items"`
-    MaxItems int `json:"maxItems"`
-    MinItems int `json:"minItems"`
-}
-
-// Represents a boolean type
-type BooleanType struct {
-    Format string `json:"format"`
-    Enum []any `json:"enum"`
-    Default any `json:"default"`
-    Description string `json:"description"`
     Type string `json:"type"`
-    Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-}
-
-// Represents a base type. Every type extends from this common type and shares the defined properties
-type CommonType struct {
-    Description string `json:"description"`
-    Type string `json:"type"`
-    Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-}
-
-// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
-type Discriminator struct {
-    PropertyName string `json:"propertyName"`
+    Parent string `json:"parent"`
+    Base bool `json:"base"`
+    Properties map[string]PropertyType `json:"properties"`
+    Discriminator string `json:"discriminator"`
     Mapping map[string]string `json:"mapping"`
+    Template map[string]string `json:"template"`
 }
 
-// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
-type GenericType struct {
-    Generic string `json:"$generic"`
-}
-
-// Represents an intersection type
-type IntersectionType struct {
+// Base type for the map and array collection type
+type CollectionDefinitionType struct {
     Description string `json:"description"`
-    AllOf []ReferenceType `json:"allOf"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Schema *PropertyType `json:"schema"`
 }
 
-// Represents a map type. A map type contains variable key value entries of a specific type
-type MapType struct {
+// Represents a map which contains a dynamic set of key value entries
+type MapDefinitionType struct {
     Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Schema *PropertyType `json:"schema"`
+}
+
+// Represents an array which contains a dynamic list of values
+type ArrayDefinitionType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Schema *PropertyType `json:"schema"`
+}
+
+// Base property type
+type PropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    AdditionalProperties any `json:"additionalProperties"`
-    MaxProperties int `json:"maxProperties"`
-    MinProperties int `json:"minProperties"`
 }
 
-// Represents a number type (contains also integer)
-type NumberType struct {
+// Base scalar property type
+type ScalarPropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+}
+
+// Represents an integer value
+type IntegerPropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+}
+
+// Represents a float value
+type NumberPropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+}
+
+// Represents a string value
+type StringPropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
     Format string `json:"format"`
-    Enum []any `json:"enum"`
-    Default any `json:"default"`
+}
+
+// Represents a boolean value
+type BooleanPropertyType struct {
     Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    MultipleOf float64 `json:"multipleOf"`
-    Maximum float64 `json:"maximum"`
-    ExclusiveMaximum bool `json:"exclusiveMaximum"`
-    Minimum float64 `json:"minimum"`
-    ExclusiveMinimum bool `json:"exclusiveMinimum"`
 }
 
-// Represents a reference type. A reference type points to a specific type at the definitions map
-type ReferenceType struct {
-    Ref string `json:"$ref"`
-    Template map[string]string `json:"$template"`
-}
-
-// Represents a scalar type
-type ScalarType struct {
+// Base collection property type
+type CollectionPropertyType struct {
     Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    Format string `json:"format"`
-    Enum []any `json:"enum"`
-    Default any `json:"default"`
+    Schema *PropertyType `json:"schema"`
 }
 
-// Represents a string type
-type StringType struct {
+// Represents a map which contains a dynamic set of key value entries
+type MapPropertyType struct {
     Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    Format string `json:"format"`
-    Enum []any `json:"enum"`
-    Default any `json:"default"`
-    MaxLength int `json:"maxLength"`
-    MinLength int `json:"minLength"`
-    Pattern string `json:"pattern"`
+    Schema *PropertyType `json:"schema"`
 }
 
-// Represents a struct type. A struct type contains a fix set of defined properties
-type StructType struct {
+// Represents an array which contains a dynamic list of values
+type ArrayPropertyType struct {
     Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
     Nullable bool `json:"nullable"`
-    Deprecated bool `json:"deprecated"`
-    Readonly bool `json:"readonly"`
-    Final bool `json:"$final"`
-    Extends string `json:"$extends"`
-    Properties map[string]any `json:"properties"`
-    Required []string `json:"required"`
+    Schema *PropertyType `json:"schema"`
 }
 
-// The root TypeSchema
-type TypeSchema struct {
-    Import map[string]string `json:"$import"`
-    Definitions map[string]any `json:"definitions"`
-    Ref string `json:"$ref"`
-}
-
-// Represents an union type. An union type can contain one of the provided types
-type UnionType struct {
+// Represents an any value which allows any kind of value
+type AnyPropertyType struct {
     Description string `json:"description"`
-    Discriminator *Discriminator `json:"discriminator"`
-    OneOf []any `json:"oneOf"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+}
+
+// Represents a generic value which can be replaced with a dynamic type
+type GenericPropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+    Name string `json:"name"`
+}
+
+// Represents a reference to a definition type
+type ReferencePropertyType struct {
+    Description string `json:"description"`
+    Deprecated bool `json:"deprecated"`
+    Type string `json:"type"`
+    Nullable bool `json:"nullable"`
+    Target string `json:"target"`
+}
+
+type Specification struct {
+    Import map[string]string `json:"import"`
+    Definitions map[string]DefinitionType `json:"definitions"`
+    Root string `json:"root"`
 }

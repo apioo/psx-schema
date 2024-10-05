@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -43,12 +44,12 @@ interface GeneratorInterface
     /**
      * Returns a type string
      */
-    public function getType(TypeInterface $type): string;
+    public function getType(PropertyTypeAbstract $type): string;
 
     /**
      * Returns a doc type string
      */
-    public function getDocType(TypeInterface $type): string;
+    public function getDocType(PropertyTypeAbstract $type): string;
 
     /**
      * Returns a fitting type for the provided content type. If the programming language has a native type for the provided content

@@ -22,10 +22,9 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * Kotlin
@@ -72,9 +71,7 @@ class Kotlin extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'open class ' . $name->getClass() . ' : HashMap<String, ' . $subType . '> {' . "\n";
+        $code = 'open class ' . $name->getClass() . ' : HashMap<String, ' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -82,15 +79,13 @@ class Kotlin extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getSchema());
-
-        $code = 'open class ' . $name->getClass() . ' : ArrayList<' . $subType . '> {' . "\n";
+        $code = 'open class ' . $name->getClass() . ' : ArrayList<' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(PropertyTypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -117,7 +112,7 @@ class Kotlin extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(PropertyTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         return [];
     }

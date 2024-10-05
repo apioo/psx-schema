@@ -33,6 +33,7 @@ use PSX\Schema\ParserInterface;
 use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
@@ -136,6 +137,8 @@ class Popo implements ParserInterface
 
             $this->parseProperties($class, $type, $definitions, $context);
         } elseif ($type instanceof MapDefinitionType) {
+            // noop
+        } elseif ($type instanceof ArrayDefinitionType) {
             // noop
         } else {
             throw new ParserException('Could not determine class type');
