@@ -71,7 +71,6 @@ class Html extends MarkupAbstract
             $rows[] = [
                 $property->getName()->getRaw(),
                 $property,
-                $this->getConstraints($property->getOrigin()),
             ];
         }
 

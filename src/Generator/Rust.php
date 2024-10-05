@@ -125,23 +125,20 @@ class Rust extends CodeGeneratorAbstract
             $imports[] = 'use std::collections::HashMap;';
         }
 
-        if (TypeUtil::contains($origin, StringPropertyType::class, Format::DURATION)) {
-            $imports[] = 'use std::time::Duration;';
-        }
-
         if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
             $imports[] = 'use chrono::NaiveDate;';
-        }
-
-        if (TypeUtil::contains($origin, StringPropertyType::class, Format::TIME)) {
-            $imports[] = 'use chrono::NaiveTime;';
         }
 
         if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATETIME)) {
             $imports[] = 'use chrono::NaiveDateTime;';
         }
 
+        if (TypeUtil::contains($origin, StringPropertyType::class, Format::TIME)) {
+            $imports[] = 'use chrono::NaiveTime;';
+        }
+
         $refs = [];
+        /*
         TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
             if ($type instanceof ReferencePropertyType) {
                 $refs[$type->getRef()] = $type->getRef();
@@ -154,6 +151,7 @@ class Rust extends CodeGeneratorAbstract
                 $refs[$type->getParent()] = $type->getParent();
             }
         });
+        */
 
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);

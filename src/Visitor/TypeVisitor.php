@@ -27,11 +27,13 @@ use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Schema\Exception\TraverserException;
+use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -96,18 +98,17 @@ class TypeVisitor implements VisitorInterface
 
     public function visitMap(\stdClass $data, MapTypeInterface $type, string $path): object
     {
-        $className = $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS);
+        $className = $type instanceof MapDefinitionType ? $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS) : null;
         if (!empty($className)) {
             $class = new \ReflectionClass($className);
             $record = $class->newInstance();
 
-            // allows to use other map implementations
-            if ($record instanceof \ArrayAccess) {
-                foreach ($data as $key => $value) {
-                    $record->offsetSet($key, $value);
-                }
-            } else {
+            if (!$record instanceof \ArrayAccess) {
                 throw new \RuntimeException('Map implementation must implement the ArrayAccess interface');
+            }
+
+            foreach ($data as $key => $value) {
+                $record->offsetSet($key, $value);
             }
         } else {
             $record = Record::fromObject($data);
@@ -120,13 +121,29 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitArray(array $data, ArrayTypeInterface $type, string $path): array
+    public function visitArray(array $data, ArrayTypeInterface $type, string $path): mixed
     {
-        if ($this->validator !== null) {
-            $this->validator->validate($path, $data);
+        $className = $type instanceof ArrayDefinitionType ? $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS) : null;
+        if (!empty($className)) {
+            $class = new \ReflectionClass($className);
+            $record = $class->newInstance();
+
+            if (!$record instanceof \ArrayIterator) {
+                throw new \RuntimeException('Array implementation must extend the ArrayIterator class');
+            }
+
+            foreach ($data as $value) {
+                $record->append($value);
+            }
+        } else {
+            $record = $data;
         }
 
-        return $data;
+        if ($this->validator !== null) {
+            $this->validator->validate($path, $record);
+        }
+
+        return $record;
     }
 
     public function visitBoolean(bool $data, BooleanPropertyType $type, string $path): bool

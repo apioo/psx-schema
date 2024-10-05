@@ -323,16 +323,14 @@ class Php extends CodeGeneratorAbstract
             $result[] = $this->newAttribute('Key', [$this->newScalar($key)], $uses);
         }
 
-        if ($type instanceof PropertyTypeAbstract) {
-            if ($type->getDescription() !== null) {
-                $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
-            }
-            if ($type->isDeprecated() !== null) {
-                $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
-            }
-            if ($type->isNullable() !== null) {
-                $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
-            }
+        if ($type->getDescription() !== null) {
+            $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
+        }
+        if ($type->isDeprecated() !== null) {
+            $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
+        }
+        if ($type->isNullable() !== null) {
+            $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
         }
 
         if ($type instanceof ScalarPropertyType) {

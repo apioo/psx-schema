@@ -269,7 +269,7 @@ class SchemaTraverser
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseArray(array $data, ArrayTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): array
+    protected function traverseArray(array $data, ArrayTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): mixed
     {
         $result = [];
 
@@ -314,8 +314,6 @@ class SchemaTraverser
         if ($format !== null) {
             if ($type instanceof StringPropertyType && is_string($data)) {
                 $this->validateFormatString($format, $data);
-            } elseif ($type instanceof NumberPropertyType && (is_int($data) || is_float($data))) {
-                $this->validateFormatNumber($format, $data);
             }
         }
     }
@@ -397,22 +395,6 @@ class SchemaTraverser
             case Format::TIME:
                 if (!preg_match('/^' . LocalTime::getPattern() . '$/', $data)) {
                     throw new ValidationException($this->getCurrentPath() . ' must be a valid full-time format [RFC3339]', 'format', $this->pathStack);
-                }
-                break;
-        }
-    }
-
-    private function validateFormatNumber(Format $format, int|float $data): void
-    {
-        switch ($format) {
-            case Format::INT32:
-                if (!filter_var($data, FILTER_VALIDATE_INT, ['min_range' => 0x80000000, 'max_range' => 0x7FFFFFFF])) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid 32bit integer', 'format', $this->pathStack);
-                }
-                break;
-            case Format::INT64:
-                if (!filter_var($data, FILTER_VALIDATE_INT)) {
-                    throw new ValidationException($this->getCurrentPath() . ' must contain a valid 64bit integer', 'format', $this->pathStack);
                 }
                 break;
         }

@@ -63,15 +63,6 @@ class CSharp extends GeneratorAbstract
         return 'int';
     }
 
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'int',
-            Format::INT64 => 'long',
-            default => $this->getInteger(),
-        };
-    }
-
     protected function getNumber(): string
     {
         return 'double';

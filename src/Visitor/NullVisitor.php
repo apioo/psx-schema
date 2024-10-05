@@ -21,6 +21,7 @@
 namespace PSX\Schema\Visitor;
 
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
@@ -49,7 +50,7 @@ class NullVisitor implements VisitorInterface
         return $data;
     }
 
-    public function visitArray(array $data, ArrayPropertyType $type, string $path): array
+    public function visitArray(array $data, ArrayTypeInterface $type, string $path): array
     {
         return $data;
     }

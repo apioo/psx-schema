@@ -56,9 +56,7 @@ abstract class CollectionDefinitionType extends DefinitionTypeAbstract implement
     {
         if ($this->schema !== null) {
             $schema = $this->schema;
-            if ($schema instanceof PropertyTypeAbstract) {
-                $this->schema = clone $schema;
-            }
+            $this->schema = clone $schema;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\DefinitionTypeAbstract;
-use PSX\Schema\Type\Enum\DefinitionType;
+use PSX\Schema\Type\DefinitionType;
 
 /**
  * DefinitionsInterface
@@ -69,14 +69,14 @@ interface DefinitionsInterface
      * the name of the type
      *
      * @param string $namespace
-     * @return array<DefinitionType>
+     * @return array<DefinitionTypeAbstract>
      */
     public function getTypes(string $namespace): iterable;
 
     /**
      * Returns all types registered at this container
      *
-     * @return array<DefinitionType>
+     * @return array<DefinitionTypeAbstract>
      */
     public function getAllTypes(): iterable;
 

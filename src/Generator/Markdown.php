@@ -54,18 +54,15 @@ class Markdown extends MarkupAbstract
             $return.= '' . "\n";
         }
 
-        $return.= 'Field | Type | Description | Constraints' . "\n";
-        $return.= '----- | ---- | ----------- | -----------' . "\n";
+        $return.= 'Field | Type | Description' . "\n";
+        $return.= '----- | ---- | -----------' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getOrigin());
-
             $row = [
                 $property->getName()->getProperty(),
                 $property->getType(),
-                ($property->isRequired() ? '**REQUIRED**. ' : '') . $property->getComment(),
-                !empty($constraints) ? $this->writeConstraints($constraints) : '',
+                $property->getComment(),
             ];
 
             $return.= implode(' | ', $row);

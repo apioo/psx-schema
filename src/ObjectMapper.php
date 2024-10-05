@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Json\Parser;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\MappingException;
 use PSX\Schema\Exception\ParserException;
@@ -55,7 +56,11 @@ class ObjectMapper
      */
     public function readJson(string $json, string $class): mixed
     {
-        return $this->read(json_decode($json), $class);
+        try {
+            return $this->read(Parser::decode($json), $class);
+        } catch (\JsonException $e) {
+            throw new MappingException($e->getMessage(), previous: $e);
+        }
     }
 
     /**
@@ -80,7 +85,11 @@ class ObjectMapper
      */
     public function writeJson(mixed $model): string
     {
-        return \json_encode($this->write($model), JSON_PRETTY_PRINT);
+        try {
+            return Parser::encode($this->write($model));
+        } catch (\JsonException $e) {
+            throw new MappingException($e->getMessage(), previous: $e);
+        }
     }
 
     /**

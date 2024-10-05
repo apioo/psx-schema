@@ -100,9 +100,7 @@ class Popo implements ParserInterface
 
         $definitions->addType($typeName, $type);
 
-        if ($type instanceof DefinitionTypeAbstract) {
-            $this->parseDefinitionAnnotations($annotations, $type);
-        }
+        $this->parseDefinitionAnnotations($annotations, $type);
 
         if ($type instanceof StructDefinitionType) {
             $parent = $class->getParentClass();

@@ -162,6 +162,7 @@ class Python extends CodeGeneratorAbstract
         }
 
         $refs = [];
+        /*
         TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
             if ($type instanceof ReferencePropertyType) {
                 $refs[$type->getRef()] = $type->getRef();
@@ -174,6 +175,7 @@ class Python extends CodeGeneratorAbstract
                 $refs[$type->getParent()] = $type->getParent();
             }
         });
+        */
 
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);

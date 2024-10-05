@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 
 /**
@@ -46,7 +47,7 @@ class SchemaResolver
             $types[] = 'self:' . $root;
         }
 
-        foreach ($schema->getDefinitions()->getAllTypes() as $name => $type) {
+        foreach ($schema->getDefinitions()->getAllTypes() as $type) {
             $this->lookupTypes($type, $types);
         }
 
@@ -57,7 +58,7 @@ class SchemaResolver
         }
     }
 
-    private function lookupTypes(TypeInterface $type, array &$types): void
+    private function lookupTypes(DefinitionTypeAbstract $type, array &$types): void
     {
         TypeUtil::walk($type, function(TypeInterface $type) use (&$types){
             if (!$type instanceof ReferencePropertyType) {

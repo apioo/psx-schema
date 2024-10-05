@@ -51,7 +51,7 @@ interface VisitorInterface
     /**
      * Visits an array value
      */
-    public function visitArray(array $data, ArrayTypeInterface $type, string $path): array;
+    public function visitArray(array $data, ArrayTypeInterface $type, string $path): mixed;
 
     /**
      * Visits a boolean value

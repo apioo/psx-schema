@@ -47,11 +47,4 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
         $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
         $this->prefix  = $config?->get('prefix') ?? 'psx_model_';
     }
-
-    protected function getConstraints(TypeInterface $type): array
-    {
-        $constraints = [];
-
-        return $constraints;
-    }
 }

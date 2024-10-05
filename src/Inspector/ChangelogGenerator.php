@@ -22,22 +22,19 @@ namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Type\AnyPropertyType;
-use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
-use PSX\Schema\Type\IntersectionType;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -54,7 +51,7 @@ class ChangelogGenerator
     {
         foreach ($left->getAllTypes() as $leftName => $leftType) {
             if ($right->hasType($leftName)) {
-                yield from $this->generateType($leftType, $right->getType($leftName), $leftName);
+                yield from $this->generateDefinitionType($leftType, $right->getType($leftName), $leftName);
             } else {
                 yield SemVer::MAJOR => $this->getMessageRemoved($leftName, null);
             }
@@ -69,14 +66,65 @@ class ChangelogGenerator
 
     public function generateDefinitionType(DefinitionTypeAbstract $leftType, DefinitionTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        if ($leftType instanceof DefinitionTypeAbstract && $rightType instanceof DefinitionTypeAbstract) {
-            yield from $this->generateCommon($leftType, $rightType, $typeName, $propertyName);
-        }
+        yield from $this->generateDefinition($leftType, $rightType, $typeName, $propertyName);
 
         if ($leftType instanceof StructDefinitionType && $rightType instanceof StructDefinitionType) {
             yield from $this->generateStruct($leftType, $rightType, $typeName, $propertyName);
         } elseif ($leftType instanceof MapDefinitionType && $rightType instanceof MapDefinitionType) {
             yield from $this->generateMap($leftType, $rightType, $typeName, $propertyName);
+        } elseif ($leftType instanceof ArrayDefinitionType && $rightType instanceof ArrayDefinitionType) {
+            yield from $this->generateArray($leftType, $rightType, $typeName, $propertyName);
+        }
+    }
+
+    private function generateDefinition(DefinitionTypeAbstract $leftType, DefinitionTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        if ($leftType->getDescription() !== $rightType->getDescription()) {
+            yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
+        }
+
+        if ($leftType->isDeprecated() !== $rightType->isDeprecated()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'deprecated', $leftType->isDeprecated(), $rightType->isDeprecated());
+        }
+    }
+
+    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        $left = $leftType->getProperties() ?? [];
+        $right = $rightType->getProperties() ?? [];
+
+        foreach ($left as $key => $property) {
+            if (isset($right[$key])) {
+                yield from $this->generatePropertyType($property, $right[$key], $typeName, $key);
+            } else {
+                yield SemVer::MAJOR => $this->getMessageRemoved($typeName, $key);
+            }
+        }
+
+        foreach ($right as $key => $value) {
+            if (!isset($left[$key])) {
+                yield SemVer::PATCH => $this->getMessageAdded($typeName, $key);
+            }
+        }
+    }
+
+    private function generateMap(MapTypeInterface $leftType, MapTypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        $left = $leftType->getSchema();
+        $right = $rightType->getSchema();
+
+        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
+            yield from $this->generatePropertyType($left, $right, $typeName, $propertyName);
+        }
+    }
+
+    private function generateArray(ArrayTypeInterface $leftType, ArrayTypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        $left = $leftType->getSchema();
+        $right = $rightType->getSchema();
+
+        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
+            yield from $this->generatePropertyType($left, $right, $typeName, $propertyName);
         }
     }
 
@@ -87,9 +135,7 @@ class ChangelogGenerator
             return;
         }
 
-        if ($leftType instanceof PropertyTypeAbstract && $rightType instanceof PropertyTypeAbstract) {
-            yield from $this->generateType($leftType, $rightType, $typeName, $propertyName);
-        }
+        yield from $this->generateType($leftType, $rightType, $typeName, $propertyName);
 
         if ($leftType instanceof CollectionPropertyType && $rightType instanceof CollectionPropertyType) {
             yield from $this->generateCollection($leftType, $rightType, $typeName, $propertyName);
@@ -105,36 +151,6 @@ class ChangelogGenerator
             // nothing to diff here
         } elseif ($leftType instanceof GenericPropertyType && $rightType instanceof GenericPropertyType) {
             yield from $this->generateGeneric($leftType, $rightType, $typeName, $propertyName);
-        }
-    }
-
-    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
-    {
-        $left = $leftType->getProperties() ?? [];
-        $right = $rightType->getProperties() ?? [];
-
-        foreach ($left as $key => $property) {
-            if (isset($right[$key])) {
-                yield from $this->generateType($property, $right[$key], $typeName, $key);
-            } else {
-                yield SemVer::MAJOR => $this->getMessageRemoved($typeName, $key);
-            }
-        }
-
-        foreach ($right as $key => $value) {
-            if (!isset($left[$key])) {
-                yield SemVer::PATCH => $this->getMessageAdded($typeName, $key);
-            }
-        }
-    }
-
-    private function generateMap(MapDefinitionType $leftType, MapDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
-    {
-        $left = $leftType->getSchema();
-        $right = $rightType->getSchema();
-
-        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
-            yield from $this->generateType($left, $right, $typeName, $propertyName);
         }
     }
 

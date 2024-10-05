@@ -22,16 +22,16 @@ namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Type\AnyPropertyType;
-use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\IntegerPropertyType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\UnionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -51,7 +51,7 @@ class Hash
         return hash('sha256', implode('', $values));
     }
 
-    public function generateByType(TypeInterface $type): string
+    public function generateByType(DefinitionTypeAbstract $type): string
     {
         $values = iterator_to_array($this->getValuesByType($type), false);
 
@@ -75,35 +75,21 @@ class Hash
                 yield $name;
                 yield from $this->getValuesByType($value);
             }
-        } elseif ($type instanceof MapDefinitionType) {
+        } elseif ($type instanceof MapTypeInterface) {
             yield 'map';
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                yield from $this->getValuesByType($additionalProperties);
-            } elseif (is_bool($additionalProperties)) {
-                yield $additionalProperties ? '1' : '0';
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                yield from $this->getValuesByType($schema);
             }
-        } elseif ($type instanceof ArrayPropertyType) {
+        } elseif ($type instanceof ArrayTypeInterface) {
             yield 'array';
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                yield from $this->getValuesByType($items);
-            }
-        } elseif ($type instanceof UnionType) {
-            yield 'union';
-            $items = $type->getOneOf() ?? [];
-            foreach ($items as $item) {
-                yield from $this->getValuesByType($item);
-            }
-        } elseif ($type instanceof IntersectionType) {
-            yield 'intersection';
-            $items = $type->getAllOf() ?? [];
-            foreach ($items as $item) {
-                yield from $this->getValuesByType($item);
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                yield from $this->getValuesByType($schema);
             }
         } elseif ($type instanceof ReferencePropertyType) {
             yield 'reference';
-            yield $type->getRef();
+            yield $type->getTarget();
         } elseif ($type instanceof StringPropertyType) {
             yield 'string';
         } elseif ($type instanceof IntegerPropertyType) {

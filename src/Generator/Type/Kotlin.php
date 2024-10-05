@@ -63,15 +63,6 @@ class Kotlin extends GeneratorAbstract
         return 'Int';
     }
 
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'Int',
-            Format::INT64 => 'Long',
-            default => $this->getInteger(),
-        };
-    }
-
     protected function getNumber(): string
     {
         return 'Float';

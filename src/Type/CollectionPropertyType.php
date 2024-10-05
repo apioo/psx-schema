@@ -56,9 +56,7 @@ abstract class CollectionPropertyType extends PropertyTypeAbstract implements Co
     {
         if ($this->schema !== null) {
             $schema = $this->schema;
-            if ($schema instanceof PropertyTypeAbstract) {
-                $this->schema = clone $schema;
-            }
+            $this->schema = clone $schema;
         }
     }
 }

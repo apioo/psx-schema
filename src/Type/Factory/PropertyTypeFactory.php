@@ -102,10 +102,10 @@ class PropertyTypeFactory
         return new StringPropertyType();
     }
 
-    public static function getBinary(): StringPropertyType
+    public static function getDate(): StringPropertyType
     {
         return self::getString()
-            ->setFormat(Format::BINARY);
+            ->setFormat(Format::DATE);
     }
 
     public static function getDateTime(): StringPropertyType
@@ -114,33 +114,9 @@ class PropertyTypeFactory
             ->setFormat(Format::DATETIME);
     }
 
-    public static function getDate(): StringPropertyType
-    {
-        return self::getString()
-            ->setFormat(Format::DATE);
-    }
-
-    public static function getPeriod(): StringPropertyType
-    {
-        return self::getString()
-            ->setFormat(Format::PERIOD);
-    }
-
-    public static function getDuration(): StringPropertyType
-    {
-        return self::getString()
-            ->setFormat(Format::DURATION);
-    }
-
     public static function getTime(): StringPropertyType
     {
         return self::getString()
             ->setFormat(Format::TIME);
-    }
-
-    public static function getUri(): StringPropertyType
-    {
-        return self::getString()
-            ->setFormat(Format::URI);
     }
 }

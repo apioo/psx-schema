@@ -40,21 +40,20 @@ class TypeSchema implements GeneratorInterface
     public function generate(SchemaInterface $schema): Code\Chunks|string
     {
         $data = $this->toArray(
-            $schema->getType(),
-            $schema->getDefinitions()
+            $schema->getDefinitions(),
+            $schema->getRoot()
         );
 
         return Parser::encode($data);
     }
 
-    /**
-     * @param \PSX\Schema\TypeInterface $type
-     * @param \PSX\Schema\DefinitionsInterface $definitions
-     * @return array
-     */
-    public function toArray(TypeInterface $type, DefinitionsInterface $definitions)
+    public function toArray(DefinitionsInterface $definitions, ?string $root): array
     {
-        $object = $this->generateType($type);
+        if ($root !== null) {
+            $object = $this->generateType($definitions->getType($root));
+        } else {
+            $object = [];
+        }
 
         $result = [
             'definitions' => $this->generateDefinitions($definitions),
@@ -65,7 +64,7 @@ class TypeSchema implements GeneratorInterface
         return $result;
     }
 
-    protected function generateDefinitions(DefinitionsInterface $definitions)
+    protected function generateDefinitions(DefinitionsInterface $definitions): array
     {
         $result = [];
         $types  = $definitions->getAllTypes();
@@ -85,7 +84,7 @@ class TypeSchema implements GeneratorInterface
         return $result;
     }
 
-    protected function generateType(TypeInterface $type)
+    protected function generateType(TypeInterface $type): array
     {
         TypeUtil::normalize($type);
 

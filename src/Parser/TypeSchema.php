@@ -164,7 +164,7 @@ class TypeSchema implements ParserInterface
 
     private function parseDefinitionStruct(StructDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        $base = $this->getStringValue($data, ['base']);
+        $base = $this->getBooleanValue($data, ['base']);
         if ($base !== null) {
             $type->setBase($base);
         }
@@ -305,7 +305,7 @@ class TypeSchema implements ParserInterface
     protected function parseReference(ReferencePropertyType $type, \stdClass $data, ?string $namespace): void
     {
         $target = $this->getStringValue($data, ['target', '$ref']);
-        if (empty($target) || !is_string($target)) {
+        if (empty($target)) {
             throw new ParserException('Provided reference target must be of type string');
         }
 

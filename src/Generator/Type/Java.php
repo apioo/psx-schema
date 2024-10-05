@@ -63,15 +63,6 @@ class Java extends GeneratorAbstract
         return 'Integer';
     }
 
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'Integer',
-            Format::INT64 => 'Long',
-            default => $this->getInteger(),
-        };
-    }
-
     protected function getNumber(): string
     {
         return 'Double';

@@ -63,15 +63,6 @@ class Rust extends GeneratorAbstract
         return 'u64';
     }
 
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'u32',
-            Format::INT64 => 'u64',
-            default => $this->getInteger(),
-        };
-    }
-
     protected function getNumber(): string
     {
         return 'f64';

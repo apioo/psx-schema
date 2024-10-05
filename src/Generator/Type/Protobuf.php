@@ -50,15 +50,6 @@ class Protobuf extends GeneratorAbstract
         return 'int64';
     }
 
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'int32',
-            Format::INT64 => 'int64',
-            default => $this->getInteger(),
-        };
-    }
-
     protected function getNumber(): string
     {
         return 'float';
