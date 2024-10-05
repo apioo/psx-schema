@@ -22,11 +22,10 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Format;
-use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\IntegerPropertyType;
-use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\StringPropertyType;

@@ -22,6 +22,7 @@ namespace PSX\Schema;
 
 use PSX\Schema\Type\AnyPropertyType;
 use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\CollectionDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
@@ -29,6 +30,7 @@ use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\ScalarPropertyType;
@@ -151,9 +153,6 @@ class TypeUtil
 
     /**
      * Splits a type name into the namespace and name
-     * 
-     * @param string $ref
-     * @return array
      */
     public static function split(string $ref): array
     {
@@ -169,10 +168,6 @@ class TypeUtil
         return [$ns, $name];
     }
 
-    /**
-     * @param string $ref
-     * @return string
-     */
     public static function getFullyQualifiedName(string $ref): string
     {
         [$ns, $name] = self::split($ref);
@@ -183,7 +178,7 @@ class TypeUtil
     {
         if ($type instanceof AnyPropertyType) {
             return 'any';
-        } elseif ($type instanceof ArrayPropertyType) {
+        } elseif ($type instanceof ArrayTypeInterface) {
             return 'array';
         } elseif ($type instanceof BooleanPropertyType) {
             return 'boolean';
@@ -191,7 +186,7 @@ class TypeUtil
             return 'generic';
         } elseif ($type instanceof IntegerPropertyType) {
             return 'integer';
-        } elseif ($type instanceof MapDefinitionType) {
+        } elseif ($type instanceof MapTypeInterface) {
             return 'map';
         } elseif ($type instanceof NumberPropertyType) {
             return 'number';

@@ -18,33 +18,18 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests;
-
-use PSX\Schema\SchemaResolver;
-use PSX\Schema\Type\Factory\DefinitionTypeFactory;
-use PSX\Schema\Type\Factory\PropertyTypeFactory;
+namespace PSX\Schema\Type\Enum;
 
 /**
- * SchemaResolverTest
+ * DefinitionType
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class SchemaResolverTest extends SchemaTestCase
+enum DefinitionType : string
 {
-    public function testResolve()
-    {
-        $schema = $this->getSchema();
-
-        $foo = DefinitionTypeFactory::getStruct();
-        $foo->addProperty('bar', PropertyTypeFactory::getString());
-        $schema->getDefinitions()->addType('foo', $foo);
-
-        $resolver = new SchemaResolver();
-        $resolver->resolve($schema);
-
-        $types = $schema->getDefinitions()->getAllTypes();
-        $this->assertEquals(['self:Location', 'self:Author', 'self:Meta', 'self:News'], array_keys($types));
-    }
+    case STRUCT = 'struct';
+    case MAP = 'map';
+    case ARRAY = 'array';
 }

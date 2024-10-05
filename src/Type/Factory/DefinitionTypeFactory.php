@@ -18,18 +18,42 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type\Factory;
+
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
- * DefinitionType
+ * DefinitionTypeFactory
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum DefinitionType : string
+class DefinitionTypeFactory
 {
-    case STRUCT = 'struct';
-    case MAP = 'map';
-    case ARRAY = 'array';
+    public static function getStruct(): StructDefinitionType
+    {
+        return new StructDefinitionType();
+    }
+
+    public static function getMap(?PropertyTypeAbstract $schema = null): MapDefinitionType
+    {
+        $map = new MapDefinitionType();
+        if ($schema !== null) {
+            $map->setSchema($schema);
+        }
+        return $map;
+    }
+
+    public static function getArray(?PropertyTypeAbstract $schema = null): ArrayDefinitionType
+    {
+        $array = new ArrayDefinitionType();
+        if ($schema !== null) {
+            $array->setSchema($schema);
+        }
+        return $array;
+    }
 }

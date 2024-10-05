@@ -21,6 +21,8 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
+use PSX\Schema\Exception\MappingException;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Parser\Popo\Dumper;
 use PSX\Schema\Visitor\TypeVisitor;
@@ -49,36 +51,47 @@ class ObjectMapper
      * @template T
      * @psalm-param class-string<T> $class
      * @return T
-     * @throws InvalidSchemaException
-     * @throws TraverserException
+     * @throws MappingException
      */
-    public function readValue(string $json, string $class): mixed
+    public function readJson(string $json, string $class): mixed
     {
-        $data = \json_decode($json);
-        if (!$data instanceof \stdClass) {
-
-        }
-
-        return $this->readValueS($data, $class);
+        return $this->read(json_decode($json), $class);
     }
 
     /**
      * @template T
      * @psalm-param class-string<T> $class
      * @return T
-     * @throws InvalidSchemaException
-     * @throws TraverserException
+     * @throws MappingException
      */
-    public function readValueS(\stdClass $data, string $class): mixed
+    public function read(mixed $data, string $class): mixed
     {
-        $schema = $this->schemaManager->getSchema($class);
+        try {
+            $schema = $this->schemaManager->getSchema($class);
 
-        return $this->schemaTraverser->traverse($data, $schema, new TypeVisitor());
+            return $this->schemaTraverser->traverse($data, $schema, new TypeVisitor());
+        } catch (InvalidSchemaException|TraverserException $e) {
+            throw new MappingException($e->getMessage(), previous: $e);
+        }
     }
 
-    public function writeValue(object $model): string
+    /**
+     * @throws MappingException
+     */
+    public function writeJson(mixed $model): string
     {
-        return $this->dumper->dump($model);
+        return \json_encode($this->write($model), JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @throws MappingException
+     */
+    public function write(mixed $model): mixed
+    {
+        try {
+            return $this->dumper->dump($model);
+        } catch (ParserException|\ReflectionException $e) {
+            throw new MappingException($e->getMessage(), previous: $e);
+        }
+    }
 }

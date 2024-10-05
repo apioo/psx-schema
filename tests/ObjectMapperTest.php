@@ -22,38 +22,56 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
+use PSX\Schema\ObjectMapper;
+use PSX\Schema\SchemaManager;
+use PSX\Schema\Tests\Parser\Popo\Attribute\News;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
- * BuilderTest
+ * ObjectMapperTest
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class BuilderTest extends TestCase
+class ObjectMapperTest extends TestCase
 {
-    public function testBuilder()
+    public function testRead()
     {
-        $builder = new Builder('foo');
-        $builder->setDescription('bar');
-        $builder->setClass('stdClass');
-        $builder->addArray('array', PropertyTypeFactory::getString());
-        $builder->addBoolean('boolean');
-        $builder->addInteger('integer');
-        $builder->addNumber('number');
-        $builder->addString('string');
+        $json = <<<'JSON'
+{
+  "content": "foobar"
+}
+JSON;
 
-        $builder->addDateTime('datetime');
-        $builder->addDate('date');
-        $builder->addTime('time');
+        $objectMapper = $this->newObjectMapper();
+        $news = $objectMapper->readJson($json, News::class);
 
-        $type = $builder->getType();
+        $this->assertInstanceOf(News::class, $news);
+        $this->assertEquals('foobar', $news->getContent());
+    }
 
-        $this->assertInstanceOf(StructDefinitionType::class, $type);
-        $this->assertEquals('bar', $type->getDescription());
-        $this->assertEquals('stdClass', $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS));
+    public function testWrite()
+    {
+        $news = new News();
+        $news->setContent('foobar');
+
+        $objectMapper = $this->newObjectMapper();
+        $json = $objectMapper->writeJson($news);
+
+        $expect = <<<'JSON'
+{
+  "content": "foobar"
+}
+JSON;
+
+        $this->assertJsonStringEqualsJsonString($expect, $json);
+    }
+
+    private function newObjectMapper(): ObjectMapper
+    {
+        return new ObjectMapper(new SchemaManager());
     }
 }

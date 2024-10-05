@@ -22,6 +22,7 @@ namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Enum\DefinitionType;
 
 /**
  * DefinitionsInterface

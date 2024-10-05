@@ -18,24 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Exception;
 
 /**
- * DefinitionType
+ * MappingException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-enum PropertyType : string
+class MappingException extends SchemaException
 {
-    case MAP = 'map';
-    case ARRAY = 'array';
-    case BOOLEAN = 'boolean';
-    case NUMBER = 'number';
-    case INTEGER = 'integer';
-    case STRING = 'string';
-    case ANY = 'any';
-    case GENERIC = 'generic';
-    case REFERENCE = 'reference';
 }

@@ -29,10 +29,15 @@ use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Format;
 use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
@@ -55,6 +60,10 @@ class Dumper
         $this->reader = new ReflectionReader();
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     public function dump(mixed $data): mixed
     {
         if (is_iterable($data)) {
@@ -76,6 +85,10 @@ class Dumper
         }
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     private function dumpObject(object $data, string $class): mixed
     {
         $type = $this->reader->buildDefinition(new \ReflectionClass($class));
@@ -83,11 +96,17 @@ class Dumper
             return $this->dumpStruct($data);
         } elseif ($type instanceof MapDefinitionType) {
             return $this->dumpMap($data, $type);
+        } elseif ($type instanceof ArrayDefinitionType) {
+            return $this->dumpArray($data, $type);
         } else {
             throw new ParserException('Could not determine object type');
         }
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     private function dumpStruct(object $data): RecordInterface
     {
         $reflection = new \ReflectionClass(get_class($data));
@@ -115,7 +134,10 @@ class Dumper
         return $result;
     }
 
-    private function dumpMap(object $data, MapDefinitionType $type): RecordInterface
+    /**
+     * @throws ParserException
+     */
+    private function dumpMap(object $data, MapTypeInterface $type): RecordInterface
     {
         if (!$data instanceof \Traversable) {
             throw new ParserException('Map must be traversable');
@@ -129,28 +151,36 @@ class Dumper
         return $result;
     }
 
-    private function dumpCollection($data, CollectionPropertyType $type): array
+    /**
+     * @throws ParserException
+     */
+    private function dumpArray($data, ArrayTypeInterface $type): array
     {
         if (!is_iterable($data)) {
             throw new ParserException('Array must be iterable');
         }
 
         $result = [];
-        foreach ($data as $index => $value) {
+        foreach ($data as $value) {
             $result[] = $this->dumpValue($value, $type->getSchema());
         }
 
         return $result;
     }
 
-    private function dumpValue(mixed $value, PropertyTypeAbstract $type)
+    /**
+     * @throws ParserException
+     */
+    private function dumpValue(mixed $value, PropertyTypeAbstract $type): mixed
     {
         if ($value === null) {
             return null;
         }
 
-        if ($type instanceof CollectionPropertyType) {
-            return $this->dumpCollection($value, $type);
+        if ($type instanceof MapPropertyType) {
+            return $this->dumpMap($value, $type);
+        } elseif ($type instanceof ArrayPropertyType) {
+            return $this->dumpArray($value, $type);
         } elseif ($type instanceof BooleanPropertyType) {
             return (bool) $value;
         } elseif ($type instanceof IntegerPropertyType) {
@@ -189,11 +219,19 @@ class Dumper
         return null;
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     private function dumpReference($data, ReferencePropertyType $type)
     {
         return $this->dumpObject($data, $type->getTarget());
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     private function dumpIterable(iterable $data): Record|array
     {
         $values = [];

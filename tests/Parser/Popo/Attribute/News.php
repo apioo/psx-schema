@@ -36,17 +36,17 @@ class News
      */
     protected ?array $receiver = null;
 
-    protected ?bool $read;
-    protected ?Author $author;
-    protected ?Meta $meta;
-    protected ?\PSX\DateTime\LocalDate $sendDate;
-    protected ?\PSX\DateTime\LocalDateTime $readDate;
+    protected ?bool $read = null;
+    protected ?Author $author = null;
+    protected ?Meta $meta = null;
+    protected ?\PSX\DateTime\LocalDate $sendDate = null;
+    protected ?\PSX\DateTime\LocalDateTime $readDate = null;
     protected ?float $price = null;
     protected ?int $rating = null;
     #[Description('Contains the main content of the news entry')]
     protected ?string $content = null;
     protected ?string $question = null;
-    protected ?string $version = 'http://foo.bar';
+    protected ?string $version = null;
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;

@@ -77,7 +77,7 @@ class JsonSchema implements TransformerInterface
         $result = new \stdClass();
         $result->definitions = $defs;
         if ($root !== null) {
-            $result->{'$ref'} = $root;
+            $result->root = $root;
         }
 
         return $result;
@@ -97,36 +97,22 @@ class JsonSchema implements TransformerInterface
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
             if (isset($schema->properties) && $schema->properties instanceof \stdClass) {
-                $rawRequired = [];
-                if (isset($schema->required) && is_array($schema->required)) {
-                    $rawRequired = $schema->required;
-                }
-
-                $required = [];
                 $properties = [];
                 foreach ($schema->properties as $name => $value) {
                     $properties[$name] = $this->convertSchema($value, $definitions);
-
-                    if (in_array($name, $rawRequired)) {
-                        $required[] = $name;
-                    }
                 }
 
-                $result['type'] = 'object';
+                $result['type'] = 'struct';
                 $result['properties'] = $properties;
-
-                if (!empty($required)) {
-                    $result['required'] = $required;
-                }
             } elseif (isset($schema->additionalProperties) && $schema->additionalProperties instanceof \stdClass) {
-                $result['type'] = 'object';
-                $result['additionalProperties'] = $this->convertSchema($schema->additionalProperties, $definitions);
+                $result['type'] = 'map';
+                $result['schema'] = $this->convertSchema($schema->additionalProperties, $definitions);
             } else {
                 // some schemas contain only the object keyword to indicate that any objects are allowed at TypeSchema
                 // this is not possible so we use a map with any types
                 return (object) [
-                    'type' => 'object',
-                    'additionalProperties' => [
+                    'type' => 'map',
+                    'schema' => [
                         'type' => 'any'
                     ]
                 ];
@@ -141,39 +127,24 @@ class JsonSchema implements TransformerInterface
             $result['type'] = 'array';
 
             if (isset($schema->items) && $schema->items instanceof \stdClass) {
-                $result['items'] = $this->convertSchema($schema->items, $definitions);
+                $result['schema'] = $this->convertSchema($schema->items, $definitions);
             } else {
                 throw new TransformerException('Array must contain an items property');
             }
         } elseif ($type === 'string') {
             $result['type'] = 'string';
-            $result = $this->copyKeywords($schema, $result, ['maxLength', 'minLength', 'pattern']);
         } elseif ($type === 'boolean') {
             $result['type'] = 'boolean';
         } elseif ($type === 'number' || $type === 'integer') {
             $result['type'] = $type;
-            $result = $this->copyKeywords($schema, $result, ['multipleOf', 'maximum', 'exclusiveMaximum', 'minimum', 'exclusiveMinimum']);
-        } elseif (isset($schema->oneOf) && is_array($schema->oneOf)) {
-            $list = [];
-            foreach ($schema->oneOf as $subSchema) {
-                $list[] = $this->convertSchema($subSchema, $definitions);
-            }
-
-            $result['oneOf'] = $list;
-        } elseif (isset($schema->allOf) && is_array($schema->allOf)) {
-            $list = [];
-            foreach ($schema->allOf as $subSchema) {
-                $list[] = $this->convertSchema($subSchema, $definitions);
-            }
-
-            $result['allOf'] = $list;
         } elseif (isset($schema->{'$ref'})) {
             $ref = $schema->{'$ref'};
             $ref = str_replace('#/definitions/', '', $ref);
             $ref = str_replace('#/$defs/', '', $ref);
             $ref = str_replace('#/components/schemas/', '', $ref);
 
-            $result['$ref'] = $ref;
+            $result['type'] = 'reference';
+            $result['target'] = $ref;
         } else {
             $result['type'] = 'any';
         }

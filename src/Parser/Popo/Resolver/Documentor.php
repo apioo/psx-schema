@@ -30,14 +30,12 @@ use PSX\DateTime\LocalTime;
 use PSX\Record\ArrayList;
 use PSX\Record\HashMap;
 use PSX\Record\RecordInterface;
-use PSX\Schema\DefinitionTypeFactory;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\PropertyTypeFactory;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
-use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**

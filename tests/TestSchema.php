@@ -20,11 +20,10 @@
 
 namespace PSX\Schema\Tests;
 
-use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\SchemaAbstract;
 use PSX\Schema\Tests\Parser\Popo;
 use PSX\Schema\Type\DefinitionTypeAbstract;
-use PSX\Schema\TypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 
 /**
  * TestSchema

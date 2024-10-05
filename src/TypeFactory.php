@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
+
 /**
  * Factory class to access different property types
  *

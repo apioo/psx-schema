@@ -23,6 +23,7 @@ namespace PSX\Schema;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 

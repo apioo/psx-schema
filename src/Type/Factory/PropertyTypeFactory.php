@@ -18,8 +18,9 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema;
+namespace PSX\Schema\Type\Factory;
 
+use PSX\Schema\Format;
 use PSX\Schema\Type\AnyPropertyType;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\BooleanPropertyType;

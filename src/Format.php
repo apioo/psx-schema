@@ -30,23 +30,6 @@ namespace PSX\Schema;
 enum Format: string
 {
     /**
-     * A base64 encoded string
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc4648
-     */
-    case BINARY = 'base64';
-
-    /**
-     * An ISO 3166-1 alpha-2 country code
-     */
-    case COUNTRY = 'country';
-
-    /**
-     * An 3-letter ISO 4217 currency name
-     */
-    case CURRENCY = 'currency';
-
-    /**
      * A date without a time-zone in the ISO-8601 calendar system, such as '2007-12-03'
      *
      * @see https://www.rfc-editor.org/rfc/rfc3339
@@ -61,88 +44,9 @@ enum Format: string
     case DATETIME = 'date-time';
 
     /**
-     * A domain string, such as 'google.com' or 'docs.github.com'
-     */
-    case DOMAIN = 'domain';
-
-    /**
-     * A time-based amount of time, such as 'PT34S'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc3339
-     */
-    case DURATION = 'duration';
-
-    /**
-     * An email string, such as 'christoph.kappestein@gmail.com'
-     */
-    case EMAIL = 'email';
-
-    /**
-     * An integer in the 32 bit range from 0x80000000 to 0x7FFFFFFF
-     */
-    case INT32 = 'int32';
-
-    /**
-     * An integer in the 64 bit range
-     */
-    case INT64 = 'int64';
-
-    /**
-     * An ipv4 string, such as '192.168.0.1'
-     */
-    case IPV4 = 'ipv4';
-
-    /**
-     * An ipv6 string, such as '2a00:1450:4001:829::200e:'
-     */
-    case IPV6 = 'ipv6';
-
-    /**
-     * A date-based amount of time in the ISO-8601 calendar system, such as 'P2Y3M4D'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc3339
-     */
-    case PERIOD = 'period';
-
-    /**
      * A time without a time-zone in the ISO-8601 calendar system, such as '10:15:30'
      *
      * @see https://www.rfc-editor.org/rfc/rfc3339
      */
     case TIME = 'time';
-
-    /**
-     * An uri string, such as 'mailto:John.Doe@example.com'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc3986
-     */
-    case URI = 'uri';
-
-    /**
-     * An url string, such as 'https://google.com'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc1738
-     */
-    case URL = 'url';
-
-    /**
-     * An urn string, such as 'urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc8141
-     */
-    case URN = 'urn';
-
-    /**
-     * An ulid string, such as '01ARZ3NDEKTSV4RRFFQ69G5FAV'
-     *
-     * @see https://github.com/ulid/spec
-     */
-    case ULID = 'ulid';
-
-    /**
-     * An uuid string, such as 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc4122
-     */
-    case UUID = 'uuid';
 }

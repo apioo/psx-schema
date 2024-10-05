@@ -20,21 +20,14 @@
 
 namespace PSX\Schema\Parser\Popo\Resolver;
 
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
 use PSX\Record\Record;
-use PSX\Schema\Format;
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\PropertyTypeFactory;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\Type\ScalarPropertyType;
-use PSX\Schema\TypeFactory;
-use PSX\Schema\TypeInterface;
-use PSX\Uri\Uri;
 
 /**
  * Native

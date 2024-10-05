@@ -21,8 +21,8 @@
 namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
-use PSX\Schema\DefinitionTypeFactory;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\StructDefinitionType;
 
