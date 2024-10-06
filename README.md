@@ -9,8 +9,8 @@ This library helps you to work with fully typed objects, it provides the followi
 
 There is also a hosted version of this [code generator](https://typeschema.org/generator/schema)
 where you can test and play with the generated code. If you need a CLI binary to generate code you
-can also take a look at the [SDKgen](https://sdkgen.app/) project which provides several ways to directly
-integrate the code generator.
+can also take a look at the [SDKgen](https://sdkgen.app/) project which provides several ways to
+directly integrate the code generator.
 
 ## Object mapper
 
@@ -90,7 +90,7 @@ It is then possible to turn this specification into a ready-to-use PHP class s.
 $schemaManager = new SchemaManager();
 $factory = new GeneratorFactory();
 
-$schema = $schemaManager->getSchema(Person::class);
+$schema = $schemaManager->getSchema(__DIR__ . '/my_schema.json');
 
 $generator = $factory->getGenerator(GeneratorFactory::TYPE_PHP, Config::of('App\\Model'));
 
