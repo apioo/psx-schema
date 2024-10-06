@@ -1,0 +1,50 @@
+{
+  "definitions": {
+    "Inlineb4a8d52f": {
+      "type": "struct",
+      "properties": {
+        "veggieName": {
+          "description": "The name of the vegetable.",
+          "type": "string"
+        },
+        "veggieLike": {
+          "description": "Do I like this vegetable?",
+          "type": "boolean"
+        }
+      }
+    },
+    "veggie": {
+      "type": "struct",
+      "properties": {
+        "veggieName": {
+          "description": "The name of the vegetable.",
+          "type": "string"
+        },
+        "veggieLike": {
+          "description": "Do I like this vegetable?",
+          "type": "boolean"
+        }
+      }
+    },
+    "Arrays": {
+      "description": "Arrays of strings and objects",
+      "type": "struct",
+      "properties": {
+        "fruits": {
+          "type": "array",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "vegetables": {
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "veggie"
+          }
+        }
+      }
+    }
+  },
+  "root": "Arrays"
+}

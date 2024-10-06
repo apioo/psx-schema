@@ -16,6 +16,14 @@
         }
       }
     },
+    "Inlinea09d5735": {
+      "type": "struct",
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      }
+    },
     "Product": {
       "description": "A product from Acme's catalog",
       "type": "struct",
@@ -33,7 +41,8 @@
           "type": "number"
         },
         "nested": {
-          "type": "any"
+          "type": "reference",
+          "target": "Inlinea09d5735"
         },
         "group": {
           "type": "reference",

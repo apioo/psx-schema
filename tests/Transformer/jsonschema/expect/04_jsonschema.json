@@ -1,0 +1,43 @@
+{
+  "definitions": {
+    "Inline4bc0cd8e": {
+      "type": "struct",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        }
+      }
+    },
+    "Complex Object": {
+      "type": "struct",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "address": {
+          "type": "reference",
+          "target": "Inline4bc0cd8e"
+        },
+        "hobbies": {
+          "type": "array",
+          "schema": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "root": "Complex Object"
+}

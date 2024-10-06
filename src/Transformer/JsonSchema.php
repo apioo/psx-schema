@@ -76,7 +76,9 @@ class JsonSchema implements TransformerInterface
 
     private function convertSchema(\stdClass $schema, array &$definitions, bool $isProperty, ?string &$typeName = null): \stdClass
     {
-        if ($isProperty) {
+        $isObject = isset($schema->type) && $schema->type === 'object' && isset($schema->properties) && $schema->properties instanceof \stdClass;
+
+        if ($isProperty && !$isObject) {
             $schema = BCLayer::transformProperty($schema);
         } else {
             $schema = BCLayer::transformDefinition($schema);
