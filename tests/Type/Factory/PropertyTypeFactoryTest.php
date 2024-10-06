@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace PSX\Schema\Tests;
+namespace PSX\Schema\Tests\Type\Factory;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Format;
