@@ -11,6 +11,13 @@
         }
       }
     },
+    "HumanMap": {
+      "type": "object",
+      "parent": "Map",
+      "template": {
+        "T": "Human"
+      }
+    },
     "Map": {
       "type": "object",
       "properties": {

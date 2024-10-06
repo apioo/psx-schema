@@ -75,6 +75,11 @@ public class StudentMap extends Map<Student> {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+public class HumanMap extends Map<Human> {
+}
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 public class RootSchema {
     private StudentMap students;
 

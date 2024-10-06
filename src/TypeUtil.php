@@ -21,22 +21,19 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Type\AnyPropertyType;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\CollectionDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
-use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
-use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\ScalarPropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * TypeUtil

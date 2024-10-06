@@ -109,6 +109,13 @@ class StudentMap extends Map implements \JsonSerializable, \PSX\Record\Recordabl
 {
 }
 
+/**
+ * @extends Map<Human>
+ */
+class HumanMap extends Map implements \JsonSerializable, \PSX\Record\RecordableInterface
+{
+}
+
 class RootSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?StudentMap $students = null;

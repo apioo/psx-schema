@@ -28,6 +28,13 @@
         "T": "Student"
       }
     },
+    "HumanMap": {
+      "type": "struct",
+      "parent": "Map",
+      "template": {
+        "T": "Human"
+      }
+    },
     "Map": {
       "type": "object",
       "properties": {

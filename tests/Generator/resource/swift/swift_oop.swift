@@ -32,6 +32,12 @@ class StudentMap: Map {
     }
 }
 
+class HumanMap: Map {
+
+    enum CodingKeys: String, CodingKey {
+    }
+}
+
 class RootSchema: Codable {
     var students: StudentMap
 

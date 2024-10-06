@@ -34,6 +34,11 @@ public class StudentMap : Map<Student>
 }
 
 using System.Text.Json.Serialization;
+public class HumanMap : Map<Human>
+{
+}
+
+using System.Text.Json.Serialization;
 public class RootSchema
 {
     [JsonPropertyName("students")]

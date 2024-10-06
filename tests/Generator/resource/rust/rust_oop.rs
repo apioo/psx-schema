@@ -34,7 +34,20 @@ pub struct StudentMap {
     total_results: Option<u64>,
 
     #[serde(rename = "entries")]
-    entries: Option<Vec<T>>,
+    entries: Option<Vec<Student>>,
+
+}
+
+use serde::{Serialize, Deserialize};
+use map::Map;
+use human::Human;
+#[derive(Serialize, Deserialize)]
+pub struct HumanMap {
+    #[serde(rename = "totalResults")]
+    total_results: Option<u64>,
+
+    #[serde(rename = "entries")]
+    entries: Option<Vec<Human>>,
 
 }
 

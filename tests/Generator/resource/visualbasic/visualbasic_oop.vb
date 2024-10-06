@@ -32,6 +32,11 @@ Public Class StudentMap
 End Class
 
 Imports System.Text.Json.Serialization
+Public Class HumanMap
+    Inherits Map(Of Human)
+End Class
+
+Imports System.Text.Json.Serialization
 Public Class RootSchema
     <JsonPropertyName("students")>
     Public Property Students As StudentMap

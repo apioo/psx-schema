@@ -18,6 +18,11 @@ import {Student} from "./Student";
 export class StudentMap extends Map<Student> {
 }
 
+import {Map} from "./Map";
+import {Human} from "./Human";
+export class HumanMap extends Map<Human> {
+}
+
 import {StudentMap} from "./StudentMap";
 export class RootSchema {
     students?: StudentMap

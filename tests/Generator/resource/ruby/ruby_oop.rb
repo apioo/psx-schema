@@ -32,6 +32,13 @@ class StudentMap
   end
 end
 
+class HumanMap
+  extend Map
+
+  def initialize()
+  end
+end
+
 class RootSchema
   attr_accessor :students
 

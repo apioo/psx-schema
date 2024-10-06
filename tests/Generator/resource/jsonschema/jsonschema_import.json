@@ -11,6 +11,13 @@
         }
       }
     },
+    "HumanMap": {
+      "type": "object",
+      "parent": "my_import:Map",
+      "template": {
+        "T": "my_import:Human"
+      }
+    },
     "Map": {
       "type": "object",
       "properties": {

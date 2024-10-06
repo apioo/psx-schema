@@ -24,9 +24,12 @@ use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\TypeInterface;
+use PSX\Schema\TypeUtil;
 
 /**
  * Go
@@ -60,7 +63,7 @@ class Go extends CodeGeneratorAbstract
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $generic = '';
-        if (!empty($generics)) {
+        if (!empty($generics) && empty($templates)) {
             $types = [];
             foreach ($generics as $type) {
                 $types[] = $type . ' any';

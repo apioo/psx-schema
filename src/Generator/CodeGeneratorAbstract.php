@@ -22,6 +22,7 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Generator\Normalizer\DefaultNormalizer;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface as TypeGeneratorInterface;
@@ -30,6 +31,7 @@ use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
@@ -104,6 +106,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
     }
 
+    /**
+     * @throws GeneratorException
+     * @throws TypeNotFoundException
+     */
     private function generateStruct(string $className, StructDefinitionType $type): void
     {
         $properties = [];
@@ -148,9 +154,13 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             $mapped = $mapping[$raw] ?? $raw;
             $name = new Code\Name($raw, $mapped, $this->normalizer);
 
-            $generic = $this->getGeneric($property);
-            if ($generic instanceof GenericPropertyType) {
-                $generics[] = $generic->getName();
+            if ($this->supportsExtends() || empty($templates)) {
+                $generic = $this->getGeneric($property);
+                if ($generic instanceof GenericPropertyType) {
+                    $generics[] = $generic->getName();
+                }
+            } else {
+                $property = $this->replaceGeneric($property, $templates);
             }
 
             $props[] = new Code\Property(
@@ -200,6 +210,25 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
 
         return $schema instanceof GenericPropertyType ? $schema : null;
+    }
+
+    /**
+     * @throws GeneratorException
+     */
+    private function replaceGeneric(PropertyTypeAbstract $type, array $templates): ?PropertyTypeAbstract
+    {
+        if ($type instanceof GenericPropertyType) {
+            return PropertyTypeFactory::getReference($templates[$type->getName()] ?? throw new GeneratorException('Configured generic "' . $type->getName() . '" not found'));
+        } elseif ($type instanceof CollectionPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof GenericPropertyType) {
+                $newType = clone $type;
+                $newType->setSchema(PropertyTypeFactory::getReference($templates[$schema->getName()] ?? throw new GeneratorException('Configured generic "' . $schema->getName() . '" not found')));
+                return $newType;
+            }
+        }
+
+        return $type;
     }
 
     private function wrap(string $code, DefinitionTypeAbstract $type, Code\Name $className): string

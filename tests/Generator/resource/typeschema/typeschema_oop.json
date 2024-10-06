@@ -12,6 +12,13 @@
         }
       }
     },
+    "HumanMap": {
+      "type": "struct",
+      "parent": "Map",
+      "template": {
+        "T": "Human"
+      }
+    },
     "Map": {
       "type": "struct",
       "properties": {

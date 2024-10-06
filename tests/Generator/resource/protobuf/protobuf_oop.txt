@@ -11,7 +11,12 @@ message Student {
 
 message StudentMap {
     optional int64 totalResults = 1 [json_name="totalResults"];
-    optional repeated T entries = 2 [json_name="entries"];
+    optional repeated Student entries = 2 [json_name="entries"];
+}
+
+message HumanMap {
+    optional int64 totalResults = 1 [json_name="totalResults"];
+    optional repeated Human entries = 2 [json_name="entries"];
 }
 
 message Map {

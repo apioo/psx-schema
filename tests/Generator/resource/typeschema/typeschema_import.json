@@ -12,6 +12,13 @@
         }
       }
     },
+    "my_import:HumanMap": {
+      "type": "struct",
+      "parent": "my_import:Map",
+      "template": {
+        "T": "my_import:Human"
+      }
+    },
     "my_import:Map": {
       "type": "struct",
       "properties": {

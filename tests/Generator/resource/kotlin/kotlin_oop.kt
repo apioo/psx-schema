@@ -15,6 +15,9 @@ open class Map<T> {
 open class StudentMap : Map<Student> {
 }
 
+open class HumanMap : Map<Human> {
+}
+
 open class RootSchema {
     var students: StudentMap? = null
 }
