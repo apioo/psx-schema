@@ -6,14 +6,6 @@ export class Location {
     long?: number
 }
 
-/**
- * An application
- */
-export class Web {
-    name?: string
-    url?: string
-}
-
 import {Location} from "./Location";
 
 /**

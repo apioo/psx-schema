@@ -24,6 +24,7 @@ use PSX\Json\Parser;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Exception\UnknownTypeException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
@@ -76,6 +77,14 @@ class TypeSchema implements ParserInterface
         $this->parseDefinitions($data, $definitions);
 
         $root = $this->getStringValue($data, ['root', '$ref']);
+        if (empty($root)) {
+            try {
+                $type = $this->parseDefinitionType($data);
+                $root = 'RootType';
+                $definitions->addType($root, $type);
+            } catch (UnknownTypeException) {
+            }
+        }
 
         return new Schema($definitions, $root);
     }
@@ -132,6 +141,9 @@ class TypeSchema implements ParserInterface
         }
     }
 
+    /**
+     * @throws UnknownTypeException
+     */
     public function parseDefinitionType(\stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
     {
         $data = BCLayer::transformDefinition($data);
@@ -157,6 +169,8 @@ class TypeSchema implements ParserInterface
             $this->parseDefinitionStruct($type, $data, $namespace);
         } elseif ($type instanceof Type\MapDefinitionType) {
             $this->parseDefinitionMap($type, $data, $namespace);
+        } elseif ($type instanceof Type\ArrayDefinitionType) {
+            $this->parseDefinitionArray($type, $data, $namespace);
         }
 
         return $type;
@@ -223,7 +237,15 @@ class TypeSchema implements ParserInterface
 
     private function parseDefinitionMap(Type\MapDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        $schema = $this->getObjectValue($data, ['schema']);
+        $schema = $this->getObjectValue($data, ['schema', 'additionalProperties']);
+        if ($schema instanceof \stdClass) {
+            $type->setSchema($this->parsePropertyType($schema, $namespace));
+        }
+    }
+
+    private function parseDefinitionArray(Type\ArrayDefinitionType $type, \stdClass $data, ?string $namespace): void
+    {
+        $schema = $this->getObjectValue($data, ['schema', 'items']);
         if ($schema instanceof \stdClass) {
             $type->setSchema($this->parsePropertyType($schema, $namespace));
         }

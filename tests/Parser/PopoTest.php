@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\Parser;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
+use PSX\Schema\Tests\Parser\Popo\Form_Element;
 
 /**
  * PopoTest
@@ -43,7 +44,7 @@ class PopoTest extends ParserTestCase
     public function testDiscriminator()
     {
         $parser = new Parser\Popo();
-        $schema = $parser->parse(Form_Container::class);
+        $schema = $parser->parse(Form_Element::class);
 
         $this->assertDiscriminator($schema);
     }

@@ -3,11 +3,6 @@ message Location {
     optional float long = 2 [json_name="long"];
 }
 
-message Web {
-    optional string name = 1 [json_name="name"];
-    optional string url = 2 [json_name="url"];
-}
-
 message Author {
     optional string title = 1 [json_name="title"];
     optional string email = 2 [json_name="email"];

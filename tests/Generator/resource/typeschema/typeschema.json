@@ -139,18 +139,6 @@
                     "type": "any"
                 }
             }
-        },
-        "Web": {
-            "description": "An application",
-            "type": "struct",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
         }
     },
     "root": "News"

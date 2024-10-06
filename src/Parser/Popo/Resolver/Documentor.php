@@ -174,6 +174,9 @@ class Documentor implements ResolverInterface
             return PropertyTypeFactory::getAny();
         } elseif ($type instanceof Types\Nullable) {
             return $this->buildPropertyType($type->getActualType());
+        } elseif ($type instanceof Types\Compound) {
+            // compound types are only used i.e. array<string>|null so we always use the first type
+            return $this->buildPropertyType($type->get(0));
         }
 
         return null;

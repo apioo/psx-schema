@@ -14,17 +14,6 @@ from pydantic_core import CoreSchema, core_schema
 from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
 
 
-# An application
-class Web(BaseModel):
-    name: Optional[str] = Field(default=None, alias="name")
-    url: Optional[str] = Field(default=None, alias="url")
-    pass
-
-from pydantic import BaseModel, Field, GetCoreSchemaHandler
-from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
-
-
 # An simple author element with some description
 class Author(BaseModel):
     title: Optional[str] = Field(default=None, alias="title")

@@ -4,12 +4,6 @@ type Location struct {
     Long float64 `json:"long"`
 }
 
-// An application
-type Web struct {
-    Name string `json:"name"`
-    Url string `json:"url"`
-}
-
 // An simple author element with some description
 type Author struct {
     Title string `json:"title"`

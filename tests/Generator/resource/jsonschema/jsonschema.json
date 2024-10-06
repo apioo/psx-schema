@@ -133,18 +133,6 @@
                 },
                 "payload": []
             }
-        },
-        "Web": {
-            "description": "An application",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
         }
     },
     "description": "An general news entry",

@@ -3,11 +3,6 @@ type Location {
     long: Float
 }
 
-type Web {
-    name: String
-    url: String
-}
-
 type Author {
     title: String
     email: String

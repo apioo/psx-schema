@@ -8,16 +8,6 @@ class Location
   end
 end
 
-# An application
-class Web
-  attr_accessor :name, :url
-
-  def initialize(name, url)
-    @name = name
-    @url = url
-  end
-end
-
 # An simple author element with some description
 class Author
   attr_accessor :title, :email, :categories, :locations, :origin

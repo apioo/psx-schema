@@ -13,19 +13,6 @@ pub struct Location {
 
 use serde::{Serialize, Deserialize};
 
-// An application
-#[derive(Serialize, Deserialize)]
-pub struct Web {
-    #[serde(rename = "name")]
-    name: Option<String>,
-
-    #[serde(rename = "url")]
-    url: Option<String>,
-
-}
-
-use serde::{Serialize, Deserialize};
-
 // An simple author element with some description
 #[derive(Serialize, Deserialize)]
 pub struct Author {

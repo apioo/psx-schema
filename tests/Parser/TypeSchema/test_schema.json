@@ -2,7 +2,7 @@
   "definitions": {
     "Author": {
       "description": "An simple author element with some description",
-      "type": "object",
+      "type": "struct",
       "properties": {
         "title": {
           "type": "string"
@@ -22,17 +22,19 @@
           "description": "Array of locations",
           "type": "array",
           "items": {
-            "$ref": "Location"
+            "type": "reference",
+            "target": "Location"
           }
         },
         "origin": {
-          "$ref": "Location"
+          "type": "reference",
+          "target": "Location"
         }
       }
     },
     "Location": {
       "description": "Location of the person",
-      "type": "object",
+      "type": "struct",
       "properties": {
         "lat": {
           "type": "number"
@@ -46,18 +48,6 @@
       "type": "object",
       "additionalProperties": {
         "type": "string"
-      }
-    },
-    "Web": {
-      "description": "An application",
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
       }
     },
     "News": {
@@ -96,10 +86,6 @@
           "items": {
             "$ref": "Author"
           }
-        },
-        "profileImage": {
-          "format": "base64",
-          "type": "string"
         },
         "read": {
           "type": "boolean"

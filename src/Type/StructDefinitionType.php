@@ -149,8 +149,8 @@ class StructDefinitionType extends DefinitionTypeAbstract
             'base' => $this->base,
             'properties' => $this->properties,
             'discriminator' => $this->discriminator,
-            'mapping' => $this->mapping,
-            'template' => $this->template,
+            'mapping' => !empty($this->mapping) ? $this->mapping : null,
+            'template' => !empty($this->template) ? $this->template : null,
         ], function($value){
             return $value !== null;
         }));

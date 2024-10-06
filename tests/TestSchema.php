@@ -42,12 +42,6 @@ class TestSchema extends SchemaAbstract
         $location->addNumber('long');
         $location->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\Location::class);
 
-        $web = $this->newStruct('Web');
-        $web->setDescription('An application');
-        $web->addString('name');
-        $web->addString('url');
-        $web->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\Web::class);
-
         $author = $this->newStruct('Author');
         $author->setDescription('An simple author element with some description');
         $author->addString('title');

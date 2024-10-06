@@ -7,15 +7,6 @@ Field | Type | Description
 lat | Number | 
 long | Number |
 
-# Web
-
-An application
-
-Field | Type | Description
------ | ---- | -----------
-name | String | 
-url | String |
-
 # Author
 
 An simple author element with some description

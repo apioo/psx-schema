@@ -17,22 +17,22 @@ class News
     protected ?Record $inlineConfig = null;
 
     /**
-     * @var Record<string>
+     * @var Record<string>|null
      */
     protected ?array $mapTags = null;
 
     /**
-     * @var Record<Author>
+     * @var Record<Author>|null
      */
     protected ?Record $mapReceiver = null;
 
     /**
-     * @var array<string>
+     * @var array<string>|null
      */
     protected ?array $tags = null;
 
     /**
-     * @var array<Author>
+     * @var array<Author>|null
      */
     protected ?array $receiver = null;
 

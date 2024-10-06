@@ -7,14 +7,6 @@ open class Location {
 }
 
 /**
- * An application
- */
-open class Web {
-    var name: String? = null
-    var url: String? = null
-}
-
-/**
  * An simple author element with some description
  */
 open class Author {

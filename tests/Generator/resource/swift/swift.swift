@@ -9,17 +9,6 @@ class Location: Codable {
     }
 }
 
-// An application
-class Web: Codable {
-    var name: String
-    var url: String
-
-    enum CodingKeys: String, CodingKey {
-        case name = "name"
-        case url = "url"
-    }
-}
-
 // An simple author element with some description
 class Author: Codable {
     var title: String

@@ -25,6 +25,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
 use PSX\Schema\Type\ReferencePropertyType;
@@ -52,9 +53,8 @@ class TypeSchemaTest extends ParserTestCase
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/typeschema.json');
-        $type   = $schema->getType();
 
-        $this->assertInstanceOf(TypeInterface::class, $type);
+        $this->assertEquals('Specification', $schema->getRoot());
     }
 
     public function testDiscriminator()
@@ -82,13 +82,11 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_external.json');
 
-        /** @var StructDefinitionType $type */
-        $type = $schema->getType();
-        $this->assertInstanceOf(StructDefinitionType::class, $type);
-        $reference = $type->getProperty('user');
+        $this->assertEquals('RootType', $schema->getRoot());
+        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('user');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
-        $type = $schema->getDefinitions()->getType($reference->getRef());
+        $type = $schema->getDefinitions()->getType($reference->getTarget());
         $this->assertInstanceOf(StructDefinitionType::class, $type);
 
         $this->assertEquals(1, count($container));
@@ -104,13 +102,11 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_typehub.json');
 
-        /** @var StructDefinitionType $type */
-        $type = $schema->getType();
-        $this->assertInstanceOf(StructDefinitionType::class, $type);
-        $reference = $type->getProperty('software');
+        $this->assertEquals('RootType', $schema->getRoot());
+        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('software');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
-        $type = $schema->getDefinitions()->getType($reference->getRef());
+        $type = $schema->getDefinitions()->getType($reference->getTarget());
         $this->assertInstanceOf(StructDefinitionType::class, $type);
     }
 
@@ -125,18 +121,18 @@ class TypeSchemaTest extends ParserTestCase
 
         $reference = $type->getProperty('foo');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
-        $this->assertEquals('foo:Import', $reference->getRef());
-        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertEquals('foo:Import', $reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getTarget()));
 
         $reference = $type->getProperty('bar');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
-        $this->assertEquals('my_import:Student', $reference->getRef());
-        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertEquals('my_import:Student', $reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getTarget()));
     }
 
     public function testParseInvalidFile()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ParserException::class);
         $this->expectExceptionMessageMatches('/^Could not load external schema (.*)$/');
 
         $parser = new Parser\File(new SchemaManager());

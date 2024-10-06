@@ -12,18 +12,6 @@ End Class
 
 Imports System.Text.Json.Serialization
 
-' An application
-Public Class Web
-    <JsonPropertyName("name")>
-    Public Property Name As String
-
-    <JsonPropertyName("url")>
-    Public Property Url As String
-
-End Class
-
-Imports System.Text.Json.Serialization
-
 ' An simple author element with some description
 Public Class Author
     <JsonPropertyName("title")>
