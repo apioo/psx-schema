@@ -1,17 +1,17 @@
 /**
  * Location of the person
  */
-export interface Location {
-    lat: number
-    long: number
+export class Location {
+    lat?: number
+    long?: number
 }
 
 /**
  * An application
  */
-export interface Web {
-    name: string
-    url: string
+export class Web {
+    name?: string
+    url?: string
 }
 
 import {Location} from "./Location";
@@ -19,49 +19,41 @@ import {Location} from "./Location";
 /**
  * An simple author element with some description
  */
-export interface Author {
-    title: string
+export class Author {
+    title?: string
     email?: string
     categories?: Array<string>
     locations?: Array<Location>
     origin?: Location
 }
 
-export type Meta = Record<string, string>;
+export class Meta extends Map<string, string> {
+}
 
 import {Meta} from "./Meta";
 import {Author} from "./Author";
-import {Location} from "./Location";
-import {Web} from "./Web";
 
 /**
  * An general news entry
  */
-export interface News {
+export class News {
     config?: Meta
-    inlineConfig?: Record<string, string>
-    mapTags?: Record<string, string>
-    mapReceiver?: Record<string, Author>
-    mapResources?: Record<string, Location | Web>
+    inlineConfig?: Map<string, string>
+    mapTags?: Map<string, string>
+    mapReceiver?: Map<string, Author>
     tags?: Array<string>
-    receiver: Array<Author>
-    resources?: Array<Location | Web>
-    profileImage?: string
+    receiver?: Array<Author>
     read?: boolean
-    source?: Author | Web
     author?: Author
     meta?: Meta
     sendDate?: string
     readDate?: string
-    expires?: string
-    range?: string
-    price: number
+    price?: number
     rating?: number
-    content: string
+    content?: string
     question?: string
     version?: string
     coffeeTime?: string
-    profileUri?: string
     "g-recaptcha-response"?: string
     "media.fields"?: string
     payload?: any

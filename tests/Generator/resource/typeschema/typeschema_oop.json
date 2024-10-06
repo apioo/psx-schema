@@ -1,41 +1,43 @@
 {
   "definitions": {
     "Human": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "firstName": {
           "type": "string"
         },
         "parent": {
-          "$ref": "Human"
+          "type": "reference",
+          "target": "Human"
         }
       }
     },
     "Map": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "totalResults": {
           "type": "integer"
         },
         "entries": {
           "type": "array",
-          "items": {
-            "$generic": "T"
+          "schema": {
+            "type": "generic"
           }
         }
       }
     },
     "RootSchema": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "students": {
-          "$ref": "StudentMap"
+          "type": "reference",
+          "target": "StudentMap"
         }
       }
     },
     "Student": {
-      "$extends": "Human",
-      "type": "object",
+      "type": "struct",
+      "parent": "Human",
       "properties": {
         "matricleNumber": {
           "type": "string"
@@ -43,11 +45,12 @@
       }
     },
     "StudentMap": {
-      "$ref": "Map",
-      "$template": {
+      "type": "struct",
+      "parent": "Map",
+      "template": {
         "T": "Student"
       }
     }
   },
-  "$ref": "RootSchema"
+  "root": "RootSchema"
 }

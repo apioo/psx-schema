@@ -1,19 +1,76 @@
-# Represents a base type. Every type extends from this common type and shares the defined properties
-class CommonType
-  attr_accessor :description, :type, :nullable, :deprecated, :readonly
+# Base definition type
+class DefinitionType
+  attr_accessor :description, :deprecated, :type
 
-  def initialize(description, type, nullable, deprecated, readonly)
+  def initialize(description, deprecated, type)
     @description = description
+    @deprecated = deprecated
+    @type = type
+  end
+end
+
+# Represents a struct which contains a fixed set of defined properties
+class StructDefinitionType
+  extend DefinitionType
+  attr_accessor :type, :parent, :base, :properties, :discriminator, :mapping, :template
+
+  def initialize(type, parent, base, properties, discriminator, mapping, template)
+    @type = type
+    @parent = parent
+    @base = base
+    @properties = properties
+    @discriminator = discriminator
+    @mapping = mapping
+    @template = template
+  end
+end
+
+# Base type for the map and array collection type
+class CollectionDefinitionType
+  extend DefinitionType
+  attr_accessor :type, :schema
+
+  def initialize(type, schema)
+    @type = type
+    @schema = schema
+  end
+end
+
+# Represents a map which contains a dynamic set of key value entries
+class MapDefinitionType
+  extend CollectionDefinitionType
+  attr_accessor :type
+
+  def initialize(type)
+    @type = type
+  end
+end
+
+# Represents an array which contains a dynamic list of values
+class ArrayDefinitionType
+  extend CollectionDefinitionType
+  attr_accessor :type
+
+  def initialize(type)
+    @type = type
+  end
+end
+
+# Base property type
+class PropertyType
+  attr_accessor :description, :deprecated, :type, :nullable
+
+  def initialize(description, deprecated, type, nullable)
+    @description = description
+    @deprecated = deprecated
     @type = type
     @nullable = nullable
-    @deprecated = deprecated
-    @readonly = readonly
   end
 end
 
-# Represents an any type
-class AnyType
-  extend CommonType
+# Base scalar property type
+class ScalarPropertyType
+  extend PropertyType
   attr_accessor :type
 
   def initialize(type)
@@ -21,34 +78,40 @@ class AnyType
   end
 end
 
-# Represents an array type. An array type contains an ordered list of a specific type
-class ArrayType
-  extend CommonType
-  attr_accessor :type, :items, :max_items, :min_items
+# Represents an integer value
+class IntegerPropertyType
+  extend ScalarPropertyType
+  attr_accessor :type
 
-  def initialize(type, items, max_items, min_items)
+  def initialize(type)
     @type = type
-    @items = items
-    @max_items = max_items
-    @min_items = min_items
   end
 end
 
-# Represents a scalar type
-class ScalarType
-  extend CommonType
-  attr_accessor :format, :enum, :default
+# Represents a float value
+class NumberPropertyType
+  extend ScalarPropertyType
+  attr_accessor :type
 
-  def initialize(format, enum, default)
+  def initialize(type)
+    @type = type
+  end
+end
+
+# Represents a string value
+class StringPropertyType
+  extend ScalarPropertyType
+  attr_accessor :type, :format
+
+  def initialize(type, format)
+    @type = type
     @format = format
-    @enum = enum
-    @default = default
   end
 end
 
-# Represents a boolean type
-class BooleanType
-  extend ScalarType
+# Represents a boolean value
+class BooleanPropertyType
+  extend ScalarPropertyType
   attr_accessor :type
 
   def initialize(type)
@@ -56,118 +119,75 @@ class BooleanType
   end
 end
 
-# Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
-class Discriminator
-  attr_accessor :property_name, :mapping
+# Base collection property type
+class CollectionPropertyType
+  extend PropertyType
+  attr_accessor :type, :schema
 
-  def initialize(property_name, mapping)
-    @property_name = property_name
-    @mapping = mapping
-  end
-end
-
-# Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
-class GenericType
-  attr_accessor :_generic
-
-  def initialize(_generic)
-    @_generic = _generic
-  end
-end
-
-# Represents an intersection type
-class IntersectionType
-  attr_accessor :description, :all_of
-
-  def initialize(description, all_of)
-    @description = description
-    @all_of = all_of
-  end
-end
-
-# Represents a map type. A map type contains variable key value entries of a specific type
-class MapType
-  extend CommonType
-  attr_accessor :type, :additional_properties, :max_properties, :min_properties
-
-  def initialize(type, additional_properties, max_properties, min_properties)
+  def initialize(type, schema)
     @type = type
-    @additional_properties = additional_properties
-    @max_properties = max_properties
-    @min_properties = min_properties
+    @schema = schema
   end
 end
 
-# Represents a number type (contains also integer)
-class NumberType
-  extend ScalarType
-  attr_accessor :type, :multiple_of, :maximum, :exclusive_maximum, :minimum, :exclusive_minimum
+# Represents a map which contains a dynamic set of key value entries
+class MapPropertyType
+  extend CollectionPropertyType
+  attr_accessor :type
 
-  def initialize(type, multiple_of, maximum, exclusive_maximum, minimum, exclusive_minimum)
+  def initialize(type)
     @type = type
-    @multiple_of = multiple_of
-    @maximum = maximum
-    @exclusive_maximum = exclusive_maximum
-    @minimum = minimum
-    @exclusive_minimum = exclusive_minimum
   end
 end
 
-# Represents a reference type. A reference type points to a specific type at the definitions map
-class ReferenceType
-  attr_accessor :_ref, :_template
+# Represents an array which contains a dynamic list of values
+class ArrayPropertyType
+  extend CollectionPropertyType
+  attr_accessor :type
 
-  def initialize(_ref, _template)
-    @_ref = _ref
-    @_template = _template
-  end
-end
-
-# Represents a string type
-class StringType
-  extend ScalarType
-  attr_accessor :type, :max_length, :min_length, :pattern
-
-  def initialize(type, max_length, min_length, pattern)
+  def initialize(type)
     @type = type
-    @max_length = max_length
-    @min_length = min_length
-    @pattern = pattern
   end
 end
 
-# Represents a struct type. A struct type contains a fix set of defined properties
-class StructType
-  extend CommonType
-  attr_accessor :_final, :_extends, :type, :properties, :required
+# Represents an any value which allows any kind of value
+class AnyPropertyType
+  extend PropertyType
+  attr_accessor :type
 
-  def initialize(_final, _extends, type, properties, required)
-    @_final = _final
-    @_extends = _extends
+  def initialize(type)
     @type = type
-    @properties = properties
-    @required = required
   end
 end
 
-# The root TypeSchema
-class TypeSchema
-  attr_accessor :_import, :definitions, :_ref
+# Represents a generic value which can be replaced with a dynamic type
+class GenericPropertyType
+  extend PropertyType
+  attr_accessor :type, :name
 
-  def initialize(_import, definitions, _ref)
-    @_import = _import
+  def initialize(type, name)
+    @type = type
+    @name = name
+  end
+end
+
+# Represents a reference to a definition type
+class ReferencePropertyType
+  extend PropertyType
+  attr_accessor :type, :target
+
+  def initialize(type, target)
+    @type = type
+    @target = target
+  end
+end
+
+class Specification
+  attr_accessor :import, :definitions, :root
+
+  def initialize(import, definitions, root)
+    @import = import
     @definitions = definitions
-    @_ref = _ref
-  end
-end
-
-# Represents an union type. An union type can contain one of the provided types
-class UnionType
-  attr_accessor :description, :discriminator, :one_of
-
-  def initialize(description, discriminator, one_of)
-    @description = description
-    @discriminator = discriminator
-    @one_of = one_of
+    @root = root
   end
 end

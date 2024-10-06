@@ -49,17 +49,13 @@ class TypeSchema implements GeneratorInterface
 
     public function toArray(DefinitionsInterface $definitions, ?string $root): array
     {
-        if ($root !== null) {
-            $object = $this->generateType($definitions->getType($root));
-        } else {
-            $object = [];
-        }
-
         $result = [
             'definitions' => $this->generateDefinitions($definitions),
         ];
 
-        $result = array_merge($result, $object);
+        if ($root !== null) {
+            $result['root'] = $root;
+        }
 
         return $result;
     }

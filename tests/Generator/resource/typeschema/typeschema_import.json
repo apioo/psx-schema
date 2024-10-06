@@ -1,41 +1,43 @@
 {
   "definitions": {
     "my_import:Human": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "firstName": {
           "type": "string"
         },
         "parent": {
-          "$ref": "my_import:Human"
+          "type": "reference",
+          "target": "my_import:Human"
         }
       }
     },
     "my_import:Map": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "totalResults": {
           "type": "integer"
         },
         "entries": {
           "type": "array",
-          "items": {
-            "$generic": "T"
+          "schema": {
+            "type": "generic"
           }
         }
       }
     },
     "my_import:RootSchema": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "students": {
-          "$ref": "my_import:StudentMap"
+          "type": "reference",
+          "target": "my_import:StudentMap"
         }
       }
     },
     "my_import:Student": {
-      "$extends": "my_import:Human",
-      "type": "object",
+      "type": "struct",
+      "parent": "my_import:Human",
       "properties": {
         "matricleNumber": {
           "type": "string"
@@ -43,26 +45,29 @@
       }
     },
     "my_import:StudentMap": {
-      "$ref": "my_import:Map",
-      "$template": {
+      "type": "struct",
+      "parent": "my_import:Map",
+      "template": {
         "T": "my_import:Student"
       }
     },
     "Import": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "students": {
-          "$ref": "my_import:StudentMap"
+          "type": "reference",
+          "target": "my_import:StudentMap"
         },
         "student": {
-          "$ref": "my_import:Student"
+          "type": "reference",
+          "target": "my_import:Student"
         }
       }
     },
     "MyMap": {
-      "$extends": "my_import:Student",
-      "type": "object"
+      "type": "struct",
+      "parent": "my_import:Student"
     }
   },
-  "$ref": "Import"
+  "root": "Import"
 }

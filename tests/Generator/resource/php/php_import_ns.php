@@ -3,8 +3,8 @@ namespace Foo\Bar;
 
 class Import implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?\My\Import\StudentMap $students = null;
-    protected ?\My\Import\Student $student = null;
+    protected ?\My\Import\StudentMap $students;
+    protected ?\My\Import\Student $student;
     public function setStudents(?\My\Import\StudentMap $students) : void
     {
         $this->students = $students;

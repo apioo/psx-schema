@@ -7,11 +7,12 @@ open class Student : Human {
     var matricleNumber: String? = null
 }
 
-typealias StudentMap = Map<Student>
-
 open class Map<T> {
     var totalResults: Int? = null
     var entries: Array<T>? = null
+}
+
+open class StudentMap : Map {
 }
 
 open class RootSchema {

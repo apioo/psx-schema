@@ -1,15 +1,15 @@
 type Location {
-    lat: Float!
-    long: Float!
+    lat: Float
+    long: Float
 }
 
 type Web {
-    name: String!
-    url: String!
+    name: String
+    url: String
 }
 
 type Author {
-    title: String!
+    title: String
     email: String
     categories: [String]
     locations: [Location]
@@ -17,30 +17,23 @@ type Author {
 }
 
 type News {
-    config: [String]
+    config: Meta
     inlineConfig: [String]
     mapTags: [String]
     mapReceiver: [Author]
-    mapResources: [Location | Web]
     tags: [String]
-    receiver: [Author]!
-    resources: [Location | Web]
-    profileImage: String
+    receiver: [Author]
     read: Boolean
-    source: Author | Web
     author: Author
-    meta: [String]
+    meta: Meta
     sendDate: String
     readDate: String
-    expires: String
-    range: String
-    price: Float!
+    price: Float
     rating: Int
-    content: String!
+    content: String
     question: String
     version: String
     coffeeTime: String
-    profileUri: String
     captcha: String
     mediaFields: String
     payload: Any

@@ -16,8 +16,6 @@ class Student: Human {
     }
 }
 
-typealias StudentMap = Map<Student>;
-
 class Map: Codable {
     var totalResults: Int
     var entries: Array<T>
@@ -25,6 +23,12 @@ class Map: Codable {
     enum CodingKeys: String, CodingKey {
         case totalResults = "totalResults"
         case entries = "entries"
+    }
+}
+
+class StudentMap: Map {
+
+    enum CodingKeys: String, CodingKey {
     }
 }
 

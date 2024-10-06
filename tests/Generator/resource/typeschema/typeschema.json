@@ -2,42 +2,39 @@
     "definitions": {
         "Author": {
             "description": "An simple author element with some description",
-            "type": "object",
+            "type": "struct",
             "properties": {
                 "title": {
-                    "type": "string",
-                    "pattern": "[A-z]{3,16}"
+                    "type": "string"
                 },
                 "email": {
                     "description": "We will send no spam to this address",
-                    "nullable": true,
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                 },
                 "categories": {
                     "type": "array",
-                    "items": {
+                    "schema": {
                         "type": "string"
-                    },
-                    "maxItems": 8
+                    }
                 },
                 "locations": {
                     "description": "Array of locations",
                     "type": "array",
-                    "items": {
-                        "$ref": "Location"
+                    "schema": {
+                        "type": "reference",
+                        "target": "Location"
                     }
                 },
                 "origin": {
-                    "$ref": "Location"
+                    "type": "reference",
+                    "target": "Location"
                 }
-            },
-            "required": [
-                "title"
-            ]
+            }
         },
         "Location": {
             "description": "Location of the person",
-            "type": "object",
+            "type": "struct",
             "properties": {
                 "lat": {
                     "type": "number"
@@ -45,159 +42,92 @@
                 "long": {
                     "type": "number"
                 }
-            },
-            "required": [
-                "lat",
-                "long"
-            ]
+            }
         },
         "Meta": {
-            "type": "object",
-            "additionalProperties": {
+            "type": "map",
+            "schema": {
                 "type": "string"
-            },
-            "minProperties": 1,
-            "maxProperties": 6
+            }
         },
         "News": {
             "description": "An general news entry",
-            "type": "object",
+            "type": "struct",
             "properties": {
                 "config": {
-                    "$ref": "Meta"
+                    "type": "reference",
+                    "target": "Meta"
                 },
                 "inlineConfig": {
-                    "type": "object",
-                    "additionalProperties": {
+                    "type": "map",
+                    "schema": {
                         "type": "string"
                     }
                 },
                 "mapTags": {
-                    "type": "object",
-                    "additionalProperties": {
+                    "type": "map",
+                    "schema": {
                         "type": "string"
                     }
                 },
                 "mapReceiver": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "Author"
-                    }
-                },
-                "mapResources": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "oneOf": [
-                            {
-                                "$ref": "Location"
-                            },
-                            {
-                                "$ref": "Web"
-                            }
-                        ]
+                    "type": "map",
+                    "schema": {
+                        "type": "reference",
+                        "target": "Author"
                     }
                 },
                 "tags": {
                     "type": "array",
-                    "items": {
+                    "schema": {
                         "type": "string"
-                    },
-                    "minItems": 1,
-                    "maxItems": 6
+                    }
                 },
                 "receiver": {
                     "type": "array",
-                    "items": {
-                        "$ref": "Author"
-                    },
-                    "minItems": 1
-                },
-                "resources": {
-                    "type": "array",
-                    "items": {
-                        "oneOf": [
-                            {
-                                "$ref": "Location"
-                            },
-                            {
-                                "$ref": "Web"
-                            }
-                        ]
+                    "schema": {
+                        "type": "reference",
+                        "target": "Author"
                     }
-                },
-                "profileImage": {
-                    "format": "base64",
-                    "type": "string"
                 },
                 "read": {
                     "type": "boolean"
                 },
-                "source": {
-                    "oneOf": [
-                        {
-                            "$ref": "Author"
-                        },
-                        {
-                            "$ref": "Web"
-                        }
-                    ]
-                },
                 "author": {
-                    "$ref": "Author"
+                    "type": "reference",
+                    "target": "Author"
                 },
                 "meta": {
-                    "$ref": "Meta"
+                    "type": "reference",
+                    "target": "Meta"
                 },
                 "sendDate": {
-                    "format": "date",
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 },
                 "readDate": {
-                    "format": "date-time",
-                    "type": "string"
-                },
-                "expires": {
-                    "format": "period",
-                    "type": "string"
-                },
-                "range": {
-                    "format": "duration",
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "price": {
-                    "type": "number",
-                    "minimum": 1,
-                    "maximum": 100
+                    "type": "number"
                 },
                 "rating": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 5
+                    "type": "integer"
                 },
                 "content": {
                     "description": "Contains the main content of the news entry",
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 512
+                    "type": "string"
                 },
                 "question": {
-                    "enum": [
-                        "foo",
-                        "bar"
-                    ],
                     "type": "string"
                 },
                 "version": {
-                    "const": "http://foo.bar",
                     "type": "string"
                 },
                 "coffeeTime": {
-                    "format": "time",
-                    "type": "string"
-                },
-                "profileUri": {
-                    "format": "uri",
-                    "type": "string"
+                    "type": "string",
+                    "format": "time"
                 },
                 "g-recaptcha-response": {
                     "type": "string"
@@ -208,16 +138,11 @@
                 "payload": {
                     "type": "any"
                 }
-            },
-            "required": [
-                "receiver",
-                "price",
-                "content"
-            ]
+            }
         },
         "Web": {
             "description": "An application",
-            "type": "object",
+            "type": "struct",
             "properties": {
                 "name": {
                     "type": "string"
@@ -225,12 +150,8 @@
                 "url": {
                     "type": "string"
                 }
-            },
-            "required": [
-                "name",
-                "url"
-            ]
+            }
         }
     },
-    "$ref": "News"
+    "root": "News"
 }

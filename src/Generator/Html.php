@@ -162,7 +162,7 @@ class Html extends MarkupAbstract
         $html.= '<tbody>';
 
         foreach ($rows as $row) {
-            [$name, $property, $constraints] = $row;
+            [$name, $property] = $row;
 
             $classes = $this->getPropertyCssClasses($property);
 

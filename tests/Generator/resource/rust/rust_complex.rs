@@ -1,326 +1,366 @@
 use serde::{Serialize, Deserialize};
-use common_type::CommonType;
 
-// Represents an any type
+// Base definition type
 #[derive(Serialize, Deserialize)]
-pub struct AnyType {
+pub struct DefinitionType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-}
 
-use serde::{Serialize, Deserialize};
-use common_type::CommonType;
-use boolean_type::BooleanType;
-use number_type::NumberType;
-use string_type::StringType;
-use reference_type::ReferenceType;
-use generic_type::GenericType;
-use any_type::AnyType;
-
-// Represents an array type. An array type contains an ordered list of a specific type
-#[derive(Serialize, Deserialize)]
-pub struct ArrayType {
-    #[serde(rename = "description")]
-    description: Option<String>,
     #[serde(rename = "type")]
     _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
-    #[serde(rename = "deprecated")]
-    deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "items")]
-    items: Option<serde_json::Value>,
-    #[serde(rename = "maxItems")]
-    max_items: Option<u64>,
-    #[serde(rename = "minItems")]
-    min_items: Option<u64>,
-}
 
-use serde::{Serialize, Deserialize};
-use scalar_type::ScalarType;
-
-// Represents a boolean type
-#[derive(Serialize, Deserialize)]
-pub struct BooleanType {
-    #[serde(rename = "format")]
-    format: Option<String>,
-    #[serde(rename = "enum")]
-    _enum: Option<Vec<serde_json::Value>>,
-    #[serde(rename = "default")]
-    default: Option<serde_json::Value>,
-    #[serde(rename = "description")]
-    description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
-    #[serde(rename = "deprecated")]
-    deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
 }
 
 use serde::{Serialize, Deserialize};
 
-// Represents a base type. Every type extends from this common type and shares the defined properties
+// Represents a struct which contains a fixed set of defined properties
 #[derive(Serialize, Deserialize)]
-pub struct CommonType {
+pub struct StructDefinitionType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-}
 
-use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+    #[serde(rename = "type")]
+    _type: Option<String>,
 
-// Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
-#[derive(Serialize, Deserialize)]
-pub struct Discriminator {
-    #[serde(rename = "propertyName")]
-    property_name: Option<String>,
+    #[serde(rename = "parent")]
+    parent: Option<String>,
+
+    #[serde(rename = "base")]
+    base: Option<bool>,
+
+    #[serde(rename = "properties")]
+    properties: Option<HashMap<String, PropertyType>>,
+
+    #[serde(rename = "discriminator")]
+    discriminator: Option<String>,
+
     #[serde(rename = "mapping")]
     mapping: Option<HashMap<String, String>>,
+
+    #[serde(rename = "template")]
+    template: Option<HashMap<String, String>>,
+
 }
 
 use serde::{Serialize, Deserialize};
 
-// Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+// Base type for the map and array collection type
 #[derive(Serialize, Deserialize)]
-pub struct GenericType {
-    #[serde(rename = "$generic")]
-    _generic: Option<String>,
-}
-
-use serde::{Serialize, Deserialize};
-use reference_type::ReferenceType;
-
-// Represents an intersection type
-#[derive(Serialize, Deserialize)]
-pub struct IntersectionType {
+pub struct CollectionDefinitionType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "allOf")]
-    all_of: Option<Vec<ReferenceType>>,
-}
 
-use serde::{Serialize, Deserialize};
-use common_type::CommonType;
-use boolean_type::BooleanType;
-use number_type::NumberType;
-use string_type::StringType;
-use array_type::ArrayType;
-use union_type::UnionType;
-use intersection_type::IntersectionType;
-use reference_type::ReferenceType;
-use generic_type::GenericType;
-use any_type::AnyType;
-
-// Represents a map type. A map type contains variable key value entries of a specific type
-#[derive(Serialize, Deserialize)]
-pub struct MapType {
-    #[serde(rename = "description")]
-    description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "additionalProperties")]
-    additional_properties: Option<serde_json::Value>,
-    #[serde(rename = "maxProperties")]
-    max_properties: Option<u64>,
-    #[serde(rename = "minProperties")]
-    min_properties: Option<u64>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
 }
 
 use serde::{Serialize, Deserialize};
-use scalar_type::ScalarType;
 
-// Represents a number type (contains also integer)
+// Represents a map which contains a dynamic set of key value entries
 #[derive(Serialize, Deserialize)]
-pub struct NumberType {
+pub struct MapDefinitionType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents an array which contains a dynamic list of values
+#[derive(Serialize, Deserialize)]
+pub struct ArrayDefinitionType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Base property type
+#[derive(Serialize, Deserialize)]
+pub struct PropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Base scalar property type
+#[derive(Serialize, Deserialize)]
+pub struct ScalarPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents an integer value
+#[derive(Serialize, Deserialize)]
+pub struct IntegerPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents a float value
+#[derive(Serialize, Deserialize)]
+pub struct NumberPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents a string value
+#[derive(Serialize, Deserialize)]
+pub struct StringPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
     #[serde(rename = "format")]
     format: Option<String>,
-    #[serde(rename = "enum")]
-    _enum: Option<Vec<serde_json::Value>>,
-    #[serde(rename = "default")]
-    default: Option<serde_json::Value>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents a boolean value
+#[derive(Serialize, Deserialize)]
+pub struct BooleanPropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "multipleOf")]
-    multiple_of: Option<f64>,
-    #[serde(rename = "maximum")]
-    maximum: Option<f64>,
-    #[serde(rename = "exclusiveMaximum")]
-    exclusive_maximum: Option<bool>,
-    #[serde(rename = "minimum")]
-    minimum: Option<f64>,
-    #[serde(rename = "exclusiveMinimum")]
-    exclusive_minimum: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
 }
 
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
 
-// Represents a reference type. A reference type points to a specific type at the definitions map
+// Base collection property type
 #[derive(Serialize, Deserialize)]
-pub struct ReferenceType {
-    #[serde(rename = "$ref")]
-    _ref: Option<String>,
-    #[serde(rename = "$template")]
-    _template: Option<HashMap<String, String>>,
-}
-
-use serde::{Serialize, Deserialize};
-use common_type::CommonType;
-
-// Represents a scalar type
-#[derive(Serialize, Deserialize)]
-pub struct ScalarType {
+pub struct CollectionPropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "format")]
-    format: Option<String>,
-    #[serde(rename = "enum")]
-    _enum: Option<Vec<serde_json::Value>>,
-    #[serde(rename = "default")]
-    default: Option<serde_json::Value>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
 }
 
 use serde::{Serialize, Deserialize};
-use scalar_type::ScalarType;
 
-// Represents a string type
+// Represents a map which contains a dynamic set of key value entries
 #[derive(Serialize, Deserialize)]
-pub struct StringType {
+pub struct MapPropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "format")]
-    format: Option<String>,
-    #[serde(rename = "enum")]
-    _enum: Option<Vec<serde_json::Value>>,
-    #[serde(rename = "default")]
-    default: Option<serde_json::Value>,
-    #[serde(rename = "maxLength")]
-    max_length: Option<u64>,
-    #[serde(rename = "minLength")]
-    min_length: Option<u64>,
-    #[serde(rename = "pattern")]
-    pattern: Option<String>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
 }
 
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
-use common_type::CommonType;
-use map_type::MapType;
-use array_type::ArrayType;
-use boolean_type::BooleanType;
-use number_type::NumberType;
-use string_type::StringType;
-use any_type::AnyType;
-use intersection_type::IntersectionType;
-use union_type::UnionType;
-use reference_type::ReferenceType;
-use generic_type::GenericType;
 
-// Represents a struct type. A struct type contains a fix set of defined properties
+// Represents an array which contains a dynamic list of values
 #[derive(Serialize, Deserialize)]
-pub struct StructType {
+pub struct ArrayPropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
-    #[serde(rename = "type")]
-    _type: Option<String>,
-    #[serde(rename = "nullable")]
-    nullable: Option<bool>,
+
     #[serde(rename = "deprecated")]
     deprecated: Option<bool>,
-    #[serde(rename = "readonly")]
-    readonly: Option<bool>,
-    #[serde(rename = "$final")]
-    _final: Option<bool>,
-    #[serde(rename = "$extends")]
-    _extends: Option<String>,
-    #[serde(rename = "properties")]
-    properties: Option<HashMap<String, serde_json::Value>>,
-    #[serde(rename = "required")]
-    required: Option<Vec<String>>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+    #[serde(rename = "schema")]
+    schema: Option<PropertyType>,
+
 }
 
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
-use struct_type::StructType;
-use map_type::MapType;
-use reference_type::ReferenceType;
 
-// The root TypeSchema
+// Represents an any value which allows any kind of value
 #[derive(Serialize, Deserialize)]
-pub struct TypeSchema {
-    #[serde(rename = "$import")]
-    _import: Option<HashMap<String, String>>,
+pub struct AnyPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents a generic value which can be replaced with a dynamic type
+#[derive(Serialize, Deserialize)]
+pub struct GenericPropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+    #[serde(rename = "name")]
+    name: Option<String>,
+
+}
+
+use serde::{Serialize, Deserialize};
+
+// Represents a reference to a definition type
+#[derive(Serialize, Deserialize)]
+pub struct ReferencePropertyType {
+    #[serde(rename = "description")]
+    description: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
+
+    #[serde(rename = "type")]
+    _type: Option<String>,
+
+    #[serde(rename = "nullable")]
+    nullable: Option<bool>,
+
+    #[serde(rename = "target")]
+    target: Option<String>,
+
+}
+
+use serde::{Serialize, Deserialize};
+#[derive(Serialize, Deserialize)]
+pub struct Specification {
+    #[serde(rename = "import")]
+    import: Option<HashMap<String, String>>,
+
     #[serde(rename = "definitions")]
-    definitions: Option<HashMap<String, serde_json::Value>>,
-    #[serde(rename = "$ref")]
-    _ref: Option<String>,
-}
+    definitions: Option<HashMap<String, DefinitionType>>,
 
-use serde::{Serialize, Deserialize};
-use discriminator::Discriminator;
-use number_type::NumberType;
-use string_type::StringType;
-use boolean_type::BooleanType;
-use reference_type::ReferenceType;
+    #[serde(rename = "root")]
+    root: Option<String>,
 
-// Represents an union type. An union type can contain one of the provided types
-#[derive(Serialize, Deserialize)]
-pub struct UnionType {
-    #[serde(rename = "description")]
-    description: Option<String>,
-    #[serde(rename = "discriminator")]
-    discriminator: Option<Discriminator>,
-    #[serde(rename = "oneOf")]
-    one_of: Option<Vec<serde_json::Value>>,
 }

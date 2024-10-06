@@ -7,14 +7,17 @@ using System.Text.Json.Serialization;
 [JsonDerivedType(typeof(StructDefinitionType), typeDiscriminator: "struct")]
 [JsonDerivedType(typeof(MapDefinitionType), typeDiscriminator: "map")]
 [JsonDerivedType(typeof(ArrayDefinitionType), typeDiscriminator: "array")]
-public class DefinitionType
+public abstract class DefinitionType
 {
     [JsonPropertyName("description")]
     public string? Description { get; set; }
+
     [JsonPropertyName("deprecated")]
     public bool? Deprecated { get; set; }
+
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -26,18 +29,25 @@ public class StructDefinitionType : DefinitionType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("parent")]
     public string? Parent { get; set; }
+
     [JsonPropertyName("base")]
     public bool? Base { get; set; }
+
     [JsonPropertyName("properties")]
     public System.Collections.Generic.Dictionary<string, PropertyType>? Properties { get; set; }
+
     [JsonPropertyName("discriminator")]
     public string? Discriminator { get; set; }
+
     [JsonPropertyName("mapping")]
     public System.Collections.Generic.Dictionary<string, string>? Mapping { get; set; }
+
     [JsonPropertyName("template")]
     public System.Collections.Generic.Dictionary<string, string>? Template { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -48,12 +58,14 @@ using System.Text.Json.Serialization;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(MapDefinitionType), typeDiscriminator: "map")]
 [JsonDerivedType(typeof(ArrayDefinitionType), typeDiscriminator: "array")]
-public class CollectionDefinitionType : DefinitionType
+public abstract class CollectionDefinitionType : DefinitionType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("schema")]
     public PropertyType? Schema { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -65,6 +77,7 @@ public class MapDefinitionType : CollectionDefinitionType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -76,6 +89,7 @@ public class ArrayDefinitionType : CollectionDefinitionType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -93,16 +107,20 @@ using System.Text.Json.Serialization;
 [JsonDerivedType(typeof(AnyPropertyType), typeDiscriminator: "any")]
 [JsonDerivedType(typeof(GenericPropertyType), typeDiscriminator: "generic")]
 [JsonDerivedType(typeof(ReferencePropertyType), typeDiscriminator: "reference")]
-public class PropertyType
+public abstract class PropertyType
 {
     [JsonPropertyName("description")]
     public string? Description { get; set; }
+
     [JsonPropertyName("deprecated")]
     public bool? Deprecated { get; set; }
+
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("nullable")]
     public bool? Nullable { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -115,10 +133,11 @@ using System.Text.Json.Serialization;
 [JsonDerivedType(typeof(NumberPropertyType), typeDiscriminator: "number")]
 [JsonDerivedType(typeof(StringPropertyType), typeDiscriminator: "string")]
 [JsonDerivedType(typeof(BooleanPropertyType), typeDiscriminator: "boolean")]
-public class ScalarPropertyType : PropertyType
+public abstract class ScalarPropertyType : PropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -130,6 +149,7 @@ public class IntegerPropertyType : ScalarPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -141,6 +161,7 @@ public class NumberPropertyType : ScalarPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -152,8 +173,10 @@ public class StringPropertyType : ScalarPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("format")]
     public string? Format { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -165,6 +188,7 @@ public class BooleanPropertyType : ScalarPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -175,12 +199,14 @@ using System.Text.Json.Serialization;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(MapPropertyType), typeDiscriminator: "map")]
 [JsonDerivedType(typeof(ArrayPropertyType), typeDiscriminator: "array")]
-public class CollectionPropertyType : PropertyType
+public abstract class CollectionPropertyType : PropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("schema")]
     public PropertyType? Schema { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -192,6 +218,7 @@ public class MapPropertyType : CollectionPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -203,6 +230,7 @@ public class ArrayPropertyType : CollectionPropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -214,6 +242,7 @@ public class AnyPropertyType : PropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -225,8 +254,10 @@ public class GenericPropertyType : PropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("name")]
     public string? Name { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -238,8 +269,10 @@ public class ReferencePropertyType : PropertyType
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
     [JsonPropertyName("target")]
     public string? Target { get; set; }
+
 }
 
 using System.Text.Json.Serialization;
@@ -247,8 +280,11 @@ public class Specification
 {
     [JsonPropertyName("import")]
     public System.Collections.Generic.Dictionary<string, string>? Import { get; set; }
+
     [JsonPropertyName("definitions")]
     public System.Collections.Generic.Dictionary<string, DefinitionType>? Definitions { get; set; }
+
     [JsonPropertyName("root")]
     public string? Root { get; set; }
+
 }

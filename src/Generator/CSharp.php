@@ -85,6 +85,7 @@ class CSharp extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $code.= $this->indent . '[JsonPropertyName("' . $property->getName()->getRaw() . '")]' . "\n";
             $code.= $this->indent . 'public ' . $property->getType() . '? ' . $property->getName()->getProperty() . ' { get; set; }' . "\n";
+            $code.= "\n";
         }
 
         $code.= '}' . "\n";

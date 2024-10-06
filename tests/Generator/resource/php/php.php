@@ -1,12 +1,10 @@
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
 
 #[Description('Location of the person')]
-#[Required(array('lat', 'long'))]
 class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?float $lat = null;
-    protected ?float $long = null;
+    protected ?float $lat;
+    protected ?float $long;
     public function setLat(?float $lat) : void
     {
         $this->lat = $lat;
@@ -38,14 +36,12 @@ class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An application')]
-#[Required(array('name', 'url'))]
 class Web implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $name = null;
-    protected ?string $url = null;
+    protected ?string $name;
+    protected ?string $url;
     public function setName(?string $name) : void
     {
         $this->name = $name;
@@ -77,31 +73,25 @@ class Web implements \JsonSerializable, \PSX\Record\RecordableInterface
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\MaxItems;
 use PSX\Schema\Attribute\Nullable;
-use PSX\Schema\Attribute\Pattern;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An simple author element with some description')]
-#[Required(array('title'))]
 class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Pattern('[A-z]{3,16}')]
-    protected ?string $title = null;
+    protected ?string $title;
     #[Description('We will send no spam to this address')]
     #[Nullable(true)]
-    protected ?string $email = null;
+    protected ?string $email;
     /**
      * @var array<string>|null
      */
-    #[MaxItems(8)]
-    protected ?array $categories = null;
+    protected ?array $categories;
     /**
      * @var array<Location>|null
      */
     #[Description('Array of locations')]
-    protected ?array $locations = null;
-    protected ?Location $origin = null;
+    protected ?array $locations;
+    protected ?Location $origin;
     public function setTitle(?string $title) : void
     {
         $this->title = $title;
@@ -171,93 +161,61 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     }
 }
 
-use PSX\Schema\Attribute\MaxProperties;
-use PSX\Schema\Attribute\MinProperties;
 /**
- * @extends \PSX\Record\Record<string>
+ * @extends \ArrayObject<string, string>
  */
-#[MinProperties(1)]
-#[MaxProperties(6)]
-class Meta extends \PSX\Record\Record
+class Meta extends \ArrayObject
 {
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Enum;
+use PSX\Schema\Attribute\Format;
 use PSX\Schema\Attribute\Key;
-use PSX\Schema\Attribute\MaxItems;
-use PSX\Schema\Attribute\MaxLength;
-use PSX\Schema\Attribute\Maximum;
-use PSX\Schema\Attribute\MinItems;
-use PSX\Schema\Attribute\MinLength;
-use PSX\Schema\Attribute\Minimum;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An general news entry')]
-#[Required(array('receiver', 'price', 'content'))]
 class News implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?Meta $config = null;
+    protected ?Meta $config;
     /**
-     * @var \PSX\Record\Record<string>|null
+     * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $inlineConfig = null;
+    protected ?\PSX\Record\Record $inlineConfig;
     /**
-     * @var \PSX\Record\Record<string>|null
+     * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $mapTags = null;
+    protected ?\PSX\Record\Record $mapTags;
     /**
-     * @var \PSX\Record\Record<Author>|null
+     * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $mapReceiver = null;
-    /**
-     * @var \PSX\Record\Record<Location|Web>|null
-     */
-    protected ?\PSX\Record\Record $mapResources = null;
+    protected ?\PSX\Record\Record $mapReceiver;
     /**
      * @var array<string>|null
      */
-    #[MinItems(1)]
-    #[MaxItems(6)]
-    protected ?array $tags = null;
+    protected ?array $tags;
     /**
      * @var array<Author>|null
      */
-    #[MinItems(1)]
-    protected ?array $receiver = null;
-    /**
-     * @var array<Location|Web>|null
-     */
-    protected ?array $resources = null;
-    protected ?string $profileImage = null;
-    protected ?bool $read = null;
-    protected Author|Web|null $source = null;
-    protected ?Author $author = null;
-    protected ?Meta $meta = null;
-    protected ?\PSX\DateTime\LocalDate $sendDate = null;
-    protected ?\PSX\DateTime\LocalDateTime $readDate = null;
-    protected ?string $expires = null;
-    protected ?string $range = null;
-    #[Minimum(1)]
-    #[Maximum(100)]
-    protected ?float $price = null;
-    #[Minimum(1)]
-    #[Maximum(5)]
-    protected ?int $rating = null;
+    protected ?array $receiver;
+    protected ?bool $read;
+    protected ?Author $author;
+    protected ?Meta $meta;
+    #[Format('date')]
+    protected ?\PSX\DateTime\LocalDate $sendDate;
+    #[Format('date-time')]
+    protected ?\PSX\DateTime\LocalDateTime $readDate;
+    protected ?float $price;
+    protected ?int $rating;
     #[Description('Contains the main content of the news entry')]
-    #[MinLength(3)]
-    #[MaxLength(512)]
-    protected ?string $content = null;
-    #[Enum(array('foo', 'bar'))]
-    protected ?string $question = null;
-    protected ?string $version = 'http://foo.bar';
-    protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
-    protected ?string $profileUri = null;
+    protected ?string $content;
+    protected ?string $question;
+    protected ?string $version;
+    #[Format('time')]
+    protected ?\PSX\DateTime\LocalTime $coffeeTime;
     #[Key('g-recaptcha-response')]
-    protected ?string $captcha = null;
+    protected ?string $captcha;
     #[Key('media.fields')]
-    protected ?string $mediaFields = null;
-    protected mixed $payload = null;
+    protected ?string $mediaFields;
+    protected mixed $payload;
     public function setConfig(?Meta $config) : void
     {
         $this->config = $config;
@@ -290,14 +248,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->mapReceiver;
     }
-    public function setMapResources(?\PSX\Record\Record $mapResources) : void
-    {
-        $this->mapResources = $mapResources;
-    }
-    public function getMapResources() : ?\PSX\Record\Record
-    {
-        return $this->mapResources;
-    }
     /**
      * @param array<string>|null $tags
      */
@@ -326,28 +276,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->receiver;
     }
-    /**
-     * @param array<Location|Web>|null $resources
-     */
-    public function setResources(?array $resources) : void
-    {
-        $this->resources = $resources;
-    }
-    /**
-     * @return array<Location|Web>|null
-     */
-    public function getResources() : ?array
-    {
-        return $this->resources;
-    }
-    public function setProfileImage(?string $profileImage) : void
-    {
-        $this->profileImage = $profileImage;
-    }
-    public function getProfileImage() : ?string
-    {
-        return $this->profileImage;
-    }
     public function setRead(?bool $read) : void
     {
         $this->read = $read;
@@ -355,14 +283,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getRead() : ?bool
     {
         return $this->read;
-    }
-    public function setSource(Author|Web|null $source) : void
-    {
-        $this->source = $source;
-    }
-    public function getSource() : Author|Web|null
-    {
-        return $this->source;
     }
     public function setAuthor(?Author $author) : void
     {
@@ -395,22 +315,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getReadDate() : ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
-    }
-    public function setExpires(?string $expires) : void
-    {
-        $this->expires = $expires;
-    }
-    public function getExpires() : ?string
-    {
-        return $this->expires;
-    }
-    public function setRange(?string $range) : void
-    {
-        $this->range = $range;
-    }
-    public function getRange() : ?string
-    {
-        return $this->range;
     }
     public function setPrice(?float $price) : void
     {
@@ -460,14 +364,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->coffeeTime;
     }
-    public function setProfileUri(?string $profileUri) : void
-    {
-        $this->profileUri = $profileUri;
-    }
-    public function getProfileUri() : ?string
-    {
-        return $this->profileUri;
-    }
     public function setCaptcha(?string $captcha) : void
     {
         $this->captcha = $captcha;
@@ -500,26 +396,19 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('inlineConfig', $this->inlineConfig);
         $record->put('mapTags', $this->mapTags);
         $record->put('mapReceiver', $this->mapReceiver);
-        $record->put('mapResources', $this->mapResources);
         $record->put('tags', $this->tags);
         $record->put('receiver', $this->receiver);
-        $record->put('resources', $this->resources);
-        $record->put('profileImage', $this->profileImage);
         $record->put('read', $this->read);
-        $record->put('source', $this->source);
         $record->put('author', $this->author);
         $record->put('meta', $this->meta);
         $record->put('sendDate', $this->sendDate);
         $record->put('readDate', $this->readDate);
-        $record->put('expires', $this->expires);
-        $record->put('range', $this->range);
         $record->put('price', $this->price);
         $record->put('rating', $this->rating);
         $record->put('content', $this->content);
         $record->put('question', $this->question);
         $record->put('version', $this->version);
         $record->put('coffeeTime', $this->coffeeTime);
-        $record->put('profileUri', $this->profileUri);
         $record->put('g-recaptcha-response', $this->captcha);
         $record->put('media.fields', $this->mediaFields);
         $record->put('payload', $this->payload);

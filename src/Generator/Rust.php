@@ -71,6 +71,7 @@ class Rust extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $code.= $this->indent . '#[serde(rename = "' . $property->getName()->getRaw() . '")]' . "\n";
             $code.= $this->indent . $property->getName()->getProperty() . ': Option<' . $property->getType() . '>,' . "\n";
+            $code.= "\n";
         }
 
         $code.= '}' . "\n";

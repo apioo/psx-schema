@@ -70,6 +70,7 @@ class VisualBasic extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $code.= $this->indent . '<JsonPropertyName("' . $property->getName()->getRaw() . '")>' . "\n";
             $code.= $this->indent . 'Public Property ' . $property->getName()->getProperty() . ' As ' . $property->getType() . "\n";
+            $code.= "\n";
         }
 
         $code.= 'End Class' . "\n";

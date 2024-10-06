@@ -1,9 +1,9 @@
 {
     "definitions": {
-        "AnyType": {
-            "description": "Represents an any type",
-            "$extends": "CommonType",
-            "type": "object",
+        "AnyPropertyType": {
+            "description": "Represents an any value which allows any kind of value",
+            "type": "struct",
+            "parent": "PropertyType",
             "properties": {
                 "type": {
                     "description": "",
@@ -11,52 +11,10 @@
                 }
             }
         },
-        "ArrayType": {
-            "description": "Represents an array type. An array type contains an ordered list of a specific type",
-            "$extends": "CommonType",
-            "type": "object",
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
-                "items": {
-                    "description": "",
-                    "oneOf": [
-                        {
-                            "$ref": "BooleanType"
-                        },
-                        {
-                            "$ref": "NumberType"
-                        },
-                        {
-                            "$ref": "StringType"
-                        },
-                        {
-                            "$ref": "ReferenceType"
-                        },
-                        {
-                            "$ref": "GenericType"
-                        },
-                        {
-                            "$ref": "AnyType"
-                        }
-                    ]
-                },
-                "maxItems": {
-                    "description": "Positive integer value",
-                    "type": "integer"
-                },
-                "minItems": {
-                    "description": "Positive integer value",
-                    "type": "integer"
-                }
-            }
-        },
-        "BooleanType": {
-            "description": "Represents a boolean type",
-            "$extends": "ScalarType",
-            "type": "object",
+        "ArrayDefinitionType": {
+            "description": "Represents an array which contains a dynamic list of values",
+            "type": "struct",
+            "parent": "CollectionDefinitionType",
             "properties": {
                 "type": {
                     "description": "",
@@ -64,372 +22,310 @@
                 }
             }
         },
-        "CommonType": {
-            "description": "Represents a base type. Every type extends from this common type and shares the defined properties",
-            "type": "object",
+        "ArrayPropertyType": {
+            "description": "Represents an array which contains a dynamic list of values",
+            "type": "struct",
+            "parent": "CollectionPropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "BooleanPropertyType": {
+            "description": "Represents a boolean value",
+            "type": "struct",
+            "parent": "ScalarPropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "CollectionDefinitionType": {
+            "description": "Base type for the map and array collection type",
+            "type": "struct",
+            "parent": "DefinitionType",
+            "base": true,
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                },
+                "schema": {
+                    "description": "",
+                    "type": "reference",
+                    "target": "PropertyType"
+                }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "MapDefinitionType": "map",
+                "ArrayDefinitionType": "array"
+            }
+        },
+        "CollectionPropertyType": {
+            "description": "Base collection property type",
+            "type": "struct",
+            "parent": "PropertyType",
+            "base": true,
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                },
+                "schema": {
+                    "description": "",
+                    "type": "reference",
+                    "target": "PropertyType"
+                }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "MapPropertyType": "map",
+                "ArrayPropertyType": "array"
+            }
+        },
+        "DefinitionType": {
+            "description": "Base definition type",
+            "type": "struct",
+            "base": true,
             "properties": {
                 "description": {
-                    "description": "General description of this type, should not contain any new lines.",
+                    "description": "",
                     "type": "string"
                 },
+                "deprecated": {
+                    "description": "",
+                    "type": "boolean"
+                },
                 "type": {
-                    "description": "Type of the property",
+                    "description": "",
+                    "type": "string"
+                }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "StructDefinitionType": "struct",
+                "MapDefinitionType": "map",
+                "ArrayDefinitionType": "array"
+            }
+        },
+        "GenericPropertyType": {
+            "description": "Represents a generic value which can be replaced with a dynamic type",
+            "type": "struct",
+            "parent": "PropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The generic name, it is recommended to use typical generics names like T or TValue",
+                    "type": "string"
+                }
+            }
+        },
+        "IntegerPropertyType": {
+            "description": "Represents an integer value",
+            "type": "struct",
+            "parent": "ScalarPropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "MapDefinitionType": {
+            "description": "Represents a map which contains a dynamic set of key value entries",
+            "type": "struct",
+            "parent": "CollectionDefinitionType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "MapPropertyType": {
+            "description": "Represents a map which contains a dynamic set of key value entries",
+            "type": "struct",
+            "parent": "CollectionPropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "NumberPropertyType": {
+            "description": "Represents a float value",
+            "type": "struct",
+            "parent": "ScalarPropertyType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
+                }
+            }
+        },
+        "PropertyType": {
+            "description": "Base property type",
+            "type": "struct",
+            "base": true,
+            "properties": {
+                "description": {
+                    "description": "",
+                    "type": "string"
+                },
+                "deprecated": {
+                    "description": "",
+                    "type": "boolean"
+                },
+                "type": {
+                    "description": "",
                     "type": "string"
                 },
                 "nullable": {
-                    "description": "Indicates whether it is possible to use a null value",
-                    "type": "boolean"
-                },
-                "deprecated": {
-                    "description": "Indicates whether this type is deprecated",
-                    "type": "boolean"
-                },
-                "readonly": {
-                    "description": "Indicates whether this type is readonly",
-                    "type": "boolean"
-                }
-            }
-        },
-        "Discriminator": {
-            "description": "Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description",
-            "type": "object",
-            "properties": {
-                "propertyName": {
-                    "description": "The name of the property in the payload that will hold the discriminator value",
-                    "type": "string"
-                },
-                "mapping": {
-                    "description": "An object to hold mappings between payload values and schema names or references",
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "GenericType": {
-            "description": "Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword",
-            "type": "object",
-            "properties": {
-                "$generic": {
                     "description": "",
-                    "type": "string"
+                    "type": "boolean"
                 }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "IntegerPropertyType": "integer",
+                "NumberPropertyType": "number",
+                "StringPropertyType": "string",
+                "BooleanPropertyType": "boolean",
+                "MapPropertyType": "map",
+                "ArrayPropertyType": "array",
+                "AnyPropertyType": "any",
+                "GenericPropertyType": "generic",
+                "ReferencePropertyType": "reference"
             }
         },
-        "IntersectionType": {
-            "description": "Represents an intersection type",
-            "type": "object",
-            "properties": {
-                "description": {
-                    "description": "",
-                    "type": "string"
-                },
-                "allOf": {
-                    "description": "Contains an array of references. The reference must only point to a struct type",
-                    "type": "array",
-                    "items": {
-                        "$ref": "ReferenceType"
-                    }
-                }
-            }
-        },
-        "MapType": {
-            "description": "Represents a map type. A map type contains variable key value entries of a specific type",
-            "$extends": "CommonType",
-            "type": "object",
+        "ReferencePropertyType": {
+            "description": "Represents a reference to a definition type",
+            "type": "struct",
+            "parent": "PropertyType",
             "properties": {
                 "type": {
                     "description": "",
                     "type": "string"
                 },
-                "additionalProperties": {
-                    "description": "",
-                    "oneOf": [
-                        {
-                            "$ref": "BooleanType"
-                        },
-                        {
-                            "$ref": "NumberType"
-                        },
-                        {
-                            "$ref": "StringType"
-                        },
-                        {
-                            "$ref": "ArrayType"
-                        },
-                        {
-                            "$ref": "UnionType"
-                        },
-                        {
-                            "$ref": "IntersectionType"
-                        },
-                        {
-                            "$ref": "ReferenceType"
-                        },
-                        {
-                            "$ref": "GenericType"
-                        },
-                        {
-                            "$ref": "AnyType"
-                        }
-                    ]
-                },
-                "maxProperties": {
-                    "description": "Positive integer value",
-                    "type": "integer"
-                },
-                "minProperties": {
-                    "description": "Positive integer value",
-                    "type": "integer"
+                "target": {
+                    "description": "Name of the target reference, must a key from the definitions map",
+                    "type": "string"
                 }
             }
         },
-        "NumberType": {
-            "description": "Represents a number type (contains also integer)",
-            "$extends": "ScalarType",
-            "type": "object",
+        "ScalarPropertyType": {
+            "description": "Base scalar property type",
+            "type": "struct",
+            "parent": "PropertyType",
+            "base": true,
             "properties": {
                 "type": {
                     "description": "",
                     "type": "string"
-                },
-                "multipleOf": {
-                    "description": "",
-                    "type": "number",
-                    "minimum": 0
-                },
-                "maximum": {
-                    "description": "",
-                    "type": "number"
-                },
-                "exclusiveMaximum": {
-                    "description": "",
-                    "type": "boolean"
-                },
-                "minimum": {
-                    "description": "",
-                    "type": "number"
-                },
-                "exclusiveMinimum": {
-                    "description": "",
-                    "type": "boolean"
                 }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "IntegerPropertyType": "integer",
+                "NumberPropertyType": "number",
+                "StringPropertyType": "string",
+                "BooleanPropertyType": "boolean"
             }
         },
-        "ReferenceType": {
-            "description": "Represents a reference type. A reference type points to a specific type at the definitions map",
-            "type": "object",
+        "Specification": {
+            "description": "",
+            "type": "struct",
             "properties": {
-                "$ref": {
-                    "description": "Reference to a type under the definitions map",
-                    "type": "string"
-                },
-                "$template": {
-                    "description": "Optional concrete type definitions which replace generic template types",
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "ScalarType": {
-            "description": "Represents a scalar type",
-            "$extends": "CommonType",
-            "type": "object",
-            "properties": {
-                "format": {
-                    "description": "Describes the specific format of this type i.e. date-time or int64",
-                    "type": "string"
-                },
-                "enum": {
+                "import": {
                     "description": "",
-                    "type": "array",
-                    "items": {
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ]
-                    }
-                },
-                "default": {
-                    "description": "",
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "number"
-                        },
-                        {
-                            "type": "boolean"
-                        }
-                    ]
-                }
-            }
-        },
-        "StringType": {
-            "description": "Represents a string type",
-            "$extends": "ScalarType",
-            "type": "object",
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
-                "maxLength": {
-                    "description": "Positive integer value",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "minLength": {
-                    "description": "Positive integer value",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "pattern": {
-                    "description": "",
-                    "type": "string"
-                }
-            }
-        },
-        "StructType": {
-            "description": "Represents a struct type. A struct type contains a fix set of defined properties",
-            "$extends": "CommonType",
-            "type": "object",
-            "properties": {
-                "$final": {
-                    "description": "Indicates that a struct is final, this means it is not possible to extend this struct",
-                    "type": "boolean"
-                },
-                "$extends": {
-                    "description": "Extends an existing type with the referenced type",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
-                "properties": {
-                    "description": "",
-                    "type": "object",
-                    "additionalProperties": {
-                        "oneOf": [
-                            {
-                                "$ref": "MapType"
-                            },
-                            {
-                                "$ref": "ArrayType"
-                            },
-                            {
-                                "$ref": "BooleanType"
-                            },
-                            {
-                                "$ref": "NumberType"
-                            },
-                            {
-                                "$ref": "StringType"
-                            },
-                            {
-                                "$ref": "AnyType"
-                            },
-                            {
-                                "$ref": "IntersectionType"
-                            },
-                            {
-                                "$ref": "UnionType"
-                            },
-                            {
-                                "$ref": "ReferenceType"
-                            },
-                            {
-                                "$ref": "GenericType"
-                            }
-                        ]
-                    }
-                },
-                "required": {
-                    "description": "",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "TypeSchema": {
-            "description": "The root TypeSchema",
-            "type": "object",
-            "properties": {
-                "$import": {
-                    "description": "Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type'",
-                    "type": "object",
-                    "additionalProperties": {
+                    "type": "map",
+                    "schema": {
                         "type": "string"
                     }
                 },
                 "definitions": {
                     "description": "",
-                    "type": "object",
-                    "additionalProperties": {
-                        "oneOf": [
-                            {
-                                "$ref": "StructType"
-                            },
-                            {
-                                "$ref": "MapType"
-                            },
-                            {
-                                "$ref": "ReferenceType"
-                            }
-                        ]
+                    "type": "map",
+                    "schema": {
+                        "type": "reference",
+                        "target": "DefinitionType"
                     }
                 },
-                "$ref": {
-                    "description": "Reference to a root schema under the definitions key",
+                "root": {
+                    "description": "",
                     "type": "string"
                 }
             }
         },
-        "UnionType": {
-            "description": "Represents an union type. An union type can contain one of the provided types",
-            "type": "object",
+        "StringPropertyType": {
+            "description": "Represents a string value",
+            "type": "struct",
+            "parent": "ScalarPropertyType",
             "properties": {
-                "description": {
+                "type": {
                     "description": "",
                     "type": "string"
                 },
-                "discriminator": {
+                "format": {
                     "description": "",
-                    "$ref": "Discriminator"
+                    "type": "string"
+                }
+            }
+        },
+        "StructDefinitionType": {
+            "description": "Represents a struct which contains a fixed set of defined properties",
+            "type": "struct",
+            "parent": "DefinitionType",
+            "properties": {
+                "type": {
+                    "description": "",
+                    "type": "string"
                 },
-                "oneOf": {
-                    "description": "Contains an array of references. The reference must only point to a struct type",
-                    "type": "array",
-                    "items": {
-                        "oneOf": [
-                            {
-                                "$ref": "NumberType"
-                            },
-                            {
-                                "$ref": "StringType"
-                            },
-                            {
-                                "$ref": "BooleanType"
-                            },
-                            {
-                                "$ref": "ReferenceType"
-                            }
-                        ]
+                "parent": {
+                    "description": "The parent type of this struct. The struct inherits all properties from the parent type",
+                    "type": "string"
+                },
+                "base": {
+                    "description": "Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent",
+                    "type": "boolean"
+                },
+                "properties": {
+                    "description": "",
+                    "type": "map",
+                    "schema": {
+                        "type": "reference",
+                        "target": "PropertyType"
+                    }
+                },
+                "discriminator": {
+                    "description": "In case this is a base type it is possible to specify a discriminator property",
+                    "type": "string"
+                },
+                "mapping": {
+                    "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
+                    "type": "map",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                "template": {
+                    "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
+                    "type": "map",
+                    "schema": {
+                        "type": "string"
                     }
                 }
             }
         }
     },
-    "type": "any"
+    "root": "Specification"
 }

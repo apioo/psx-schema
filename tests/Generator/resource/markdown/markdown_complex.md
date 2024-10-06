@@ -1,150 +1,159 @@
-# CommonType
+# DefinitionType
 
-Represents a base type. Every type extends from this common type and shares the defined properties
+Base definition type
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-description | String | General description of this type, should not contain any new lines. | 
-type | String | Type of the property | 
-nullable | Boolean | Indicates whether it is possible to use a null value | 
-deprecated | Boolean | Indicates whether this type is deprecated | 
-readonly | Boolean | Indicates whether this type is readonly |
+Field | Type | Description
+----- | ---- | -----------
+description | String | 
+deprecated | Boolean | 
+type | String |
 
-# AnyType
+# StructDefinitionType
 
-Represents an any type
+Represents a struct which contains a fixed set of defined properties
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+parent | String | The parent type of this struct. The struct inherits all properties from the parent type
+base | Boolean | Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent
+properties | Map (PropertyType) | 
+discriminator | String | In case this is a base type it is possible to specify a discriminator property
+mapping | Map (String) | In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type
+template | Map (String) | In case the parent type contains generics it is possible to set a concrete type for each generic type
 
-# ArrayType
+# CollectionDefinitionType
 
-Represents an array type. An array type contains an ordered list of a specific type
+Base type for the map and array collection type
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  | 
-items | BooleanType &#124; NumberType &#124; StringType &#124; ReferenceType &#124; GenericType &#124; AnyType |  | 
-maxItems | Integer | Positive integer value | 
-minItems | Integer | Positive integer value |
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+schema | PropertyType |
 
-# ScalarType
+# MapDefinitionType
 
-Represents a scalar type
+Represents a map which contains a dynamic set of key value entries
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-format | String | Describes the specific format of this type i.e. date-time or int64 | 
-enum | Array (String &#124; Number) |  | 
-default | String &#124; Number &#124; Boolean |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# BooleanType
+# ArrayDefinitionType
 
-Represents a boolean type
+Represents an array which contains a dynamic list of values
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# Discriminator
+# PropertyType
 
-Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
+Base property type
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-propertyName | String | The name of the property in the payload that will hold the discriminator value | 
-mapping | Map (String) | An object to hold mappings between payload values and schema names or references |
+Field | Type | Description
+----- | ---- | -----------
+description | String | 
+deprecated | Boolean | 
+type | String | 
+nullable | Boolean |
 
-# GenericType
+# ScalarPropertyType
 
-Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+Base scalar property type
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-generic | String |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# IntersectionType
+# IntegerPropertyType
 
-Represents an intersection type
+Represents an integer value
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-description | String |  | 
-allOf | Array (ReferenceType) | Contains an array of references. The reference must only point to a struct type |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# MapType
+# NumberPropertyType
 
-Represents a map type. A map type contains variable key value entries of a specific type
+Represents a float value
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  | 
-additionalProperties | BooleanType &#124; NumberType &#124; StringType &#124; ArrayType &#124; UnionType &#124; IntersectionType &#124; ReferenceType &#124; GenericType &#124; AnyType |  | 
-maxProperties | Integer | Positive integer value | 
-minProperties | Integer | Positive integer value |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# NumberType
+# StringPropertyType
 
-Represents a number type (contains also integer)
+Represents a string value
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  | 
-multipleOf | Number |  | 
-maximum | Number |  | 
-exclusiveMaximum | Boolean |  | 
-minimum | Number |  | 
-exclusiveMinimum | Boolean |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+format | String |
 
-# ReferenceType
+# BooleanPropertyType
 
-Represents a reference type. A reference type points to a specific type at the definitions map
+Represents a boolean value
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-ref | String | Reference to a type under the definitions map | 
-template | Map (String) | Optional concrete type definitions which replace generic template types |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# StringType
+# CollectionPropertyType
 
-Represents a string type
+Base collection property type
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-type | String |  | 
-maxLength | Integer | Positive integer value | 
-minLength | Integer | Positive integer value | 
-pattern | String |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+schema | PropertyType |
 
-# StructType
+# MapPropertyType
 
-Represents a struct type. A struct type contains a fix set of defined properties
+Represents a map which contains a dynamic set of key value entries
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-final | Boolean | Indicates that a struct is final, this means it is not possible to extend this struct | 
-extends | String | Extends an existing type with the referenced type | 
-type | String |  | 
-properties | Map (MapType &#124; ArrayType &#124; BooleanType &#124; NumberType &#124; StringType &#124; AnyType &#124; IntersectionType &#124; UnionType &#124; ReferenceType &#124; GenericType) |  | 
-required | Array (String) |  |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# TypeSchema
+# ArrayPropertyType
 
-The root TypeSchema
+Represents an array which contains a dynamic list of values
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-import | Map (String) | Contains external definitions which are imported. The imported schemas can be used via the namespace i.e. 'my_namespace:my_type' | 
-definitions | Map (StructType &#124; MapType &#124; ReferenceType) |  | 
-ref | String | Reference to a root schema under the definitions key |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
 
-# UnionType
+# AnyPropertyType
 
-Represents an union type. An union type can contain one of the provided types
+Represents an any value which allows any kind of value
 
-Field | Type | Description | Constraints
------ | ---- | ----------- | -----------
-description | String |  | 
-discriminator | Discriminator |  | 
-oneOf | Array (NumberType &#124; StringType &#124; BooleanType &#124; ReferenceType) | Contains an array of references. The reference must only point to a struct type |
+Field | Type | Description
+----- | ---- | -----------
+type | String |
+
+# GenericPropertyType
+
+Represents a generic value which can be replaced with a dynamic type
+
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+name | String | The generic name, it is recommended to use typical generics names like T or TValue
+
+# ReferencePropertyType
+
+Represents a reference to a definition type
+
+Field | Type | Description
+----- | ---- | -----------
+type | String | 
+target | String | Name of the target reference, must a key from the definitions map
+
+# Specification
+
+Field | Type | Description
+----- | ---- | -----------
+import | Map (String) | 
+definitions | Map (DefinitionType) | 
+root | String |

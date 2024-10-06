@@ -37,7 +37,7 @@ class Author: Codable {
     }
 }
 
-typealias Meta = Dictionary<String, String>;
+typealias Meta = String;
 
 // An general news entry
 class News: Codable {
@@ -45,26 +45,19 @@ class News: Codable {
     var inlineConfig: Dictionary<String, String>
     var mapTags: Dictionary<String, String>
     var mapReceiver: Dictionary<String, Author>
-    var mapResources: Dictionary<String, Location | Web>
     var tags: Array<String>
     var receiver: Array<Author>
-    var resources: Array<Location | Web>
-    var profileImage: String
     var read: Bool
-    var source: Author | Web
     var author: Author
     var meta: Meta
     var sendDate: Date
     var readDate: Date
-    var expires: String
-    var range: String
     var price: Float
     var rating: Int
     var content: String
     var question: String
     var version: String
     var coffeeTime: String
-    var profileUri: String
     var captcha: String
     var mediaFields: String
     var payload: Any
@@ -74,26 +67,19 @@ class News: Codable {
         case inlineConfig = "inlineConfig"
         case mapTags = "mapTags"
         case mapReceiver = "mapReceiver"
-        case mapResources = "mapResources"
         case tags = "tags"
         case receiver = "receiver"
-        case resources = "resources"
-        case profileImage = "profileImage"
         case read = "read"
-        case source = "source"
         case author = "author"
         case meta = "meta"
         case sendDate = "sendDate"
         case readDate = "readDate"
-        case expires = "expires"
-        case range = "range"
         case price = "price"
         case rating = "rating"
         case content = "content"
         case question = "question"
         case version = "version"
         case coffeeTime = "coffeeTime"
-        case profileUri = "profileUri"
         case captcha = "g-recaptcha-response"
         case mediaFields = "media.fields"
         case payload = "payload"
