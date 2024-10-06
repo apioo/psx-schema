@@ -162,7 +162,7 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): iterable
     {
         return $this->getAllTypes();
     }

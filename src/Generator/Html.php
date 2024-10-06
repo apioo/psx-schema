@@ -171,7 +171,6 @@ class Html extends MarkupAbstract
             $html.= '<td>';
             $html.= '<span class="psx-property-type"><a class="psx-type-link" data-name="' . $property->getType() . '">' . $property->getType() . '</a></span><br />';
             $html.= '<div class="psx-property-description">' . htmlspecialchars((string) $property->getComment()) . '</div>';
-            $html.= !empty($constraints) ? $this->writeConstraints($constraints) : '';
             $html.= '</td>';
             $html.= '</tr>';
         }
