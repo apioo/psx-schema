@@ -49,29 +49,20 @@ class JsonSchema implements TransformerInterface
         if ($definitions instanceof \stdClass) {
             foreach ($definitions as $name => $type) {
                 if ($type instanceof \stdClass) {
-                    $defs[$name] = $this->convertSchema($type, $defs);
+                    $defs[$name] = $this->convertSchema($type, $defs, false);
                 }
             }
         }
 
         $root = null;
         if (!empty($keywords)) {
-            // in case we have an array at the top level we transform it to an object
-            if (isset($keywords['type']) && $keywords['type'] === 'array') {
-                $keywords = [
-                    'type' => 'struct',
-                    'properties' => (object) [
-                        'entries' => (object) $keywords,
-                    ]
-                ];
-            }
-
-            $result = $this->convertSchema((object) $keywords, $defs);
-            if (!isset($result->{'$ref'})) {
+            $typeName = null;
+            $this->convertSchema((object) $keywords, $defs, false, $typeName);
+            if (empty($typeName)) {
                 throw new TransformerException('The root schema must be an object');
             }
 
-            $root = $result->{'$ref'};
+            $root = $typeName;
         }
 
         $result = new \stdClass();
@@ -83,9 +74,13 @@ class JsonSchema implements TransformerInterface
         return $result;
     }
 
-    private function convertSchema(\stdClass $schema, array &$definitions): \stdClass
+    private function convertSchema(\stdClass $schema, array &$definitions, bool $isProperty, ?string &$typeName = null): \stdClass
     {
-        $schema = BCLayer::transformDefinition($schema);
+        if ($isProperty) {
+            $schema = BCLayer::transformProperty($schema);
+        } else {
+            $schema = BCLayer::transformDefinition($schema);
+        }
 
         $result = [];
         if (isset($schema->description)) {
@@ -93,49 +88,64 @@ class JsonSchema implements TransformerInterface
         }
 
         $type = $schema->type ?? null;
-        if ($type === 'object') {
+        if ($type === 'struct') {
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
             if (isset($schema->properties) && $schema->properties instanceof \stdClass) {
                 $properties = [];
                 foreach ($schema->properties as $name => $value) {
-                    $properties[$name] = $this->convertSchema($value, $definitions);
+                    $properties[$name] = $this->convertSchema($value, $definitions, true);
                 }
 
                 $result['type'] = 'struct';
                 $result['properties'] = $properties;
-            } elseif (isset($schema->additionalProperties) && $schema->additionalProperties instanceof \stdClass) {
-                $result['type'] = 'map';
-                $result['schema'] = $this->convertSchema($schema->additionalProperties, $definitions);
             } else {
                 // some schemas contain only the object keyword to indicate that any objects are allowed at TypeSchema
                 // this is not possible so we use a map with any types
-                return (object) [
-                    'type' => 'map',
-                    'schema' => [
-                        'type' => 'any'
-                    ]
+                $result['type'] = 'map';
+                $result['schema'] = (object) [
+                    'type' => 'any'
                 ];
             }
 
             $definitions[$title] = $result;
 
-            return (object) [
-                '$ref' => $title,
-            ];
-        } elseif ($type === 'array') {
-            $result['type'] = 'array';
+            $typeName = $title;
 
+            if ($isProperty) {
+                $result = [];
+                $result['type'] = 'reference';
+                $result['target'] = $title;
+            }
+        } elseif ($type === 'map') {
+            $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
+
+            $result['type'] = 'map';
+            if (isset($schema->additionalProperties) && $schema->additionalProperties instanceof \stdClass) {
+                $result['schema'] = $this->convertSchema($schema->additionalProperties, $definitions, true);
+            } else {
+                throw new TransformerException('Map must contain an additionalProperties property');
+            }
+
+            if (!$isProperty) {
+                $definitions[$title] = $result;
+                $typeName = $title;
+            }
+        } elseif ($type === 'array') {
+            $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
+
+            $result['type'] = 'array';
             if (isset($schema->items) && $schema->items instanceof \stdClass) {
-                $result['schema'] = $this->convertSchema($schema->items, $definitions);
+                $result['schema'] = $this->convertSchema($schema->items, $definitions, true);
             } else {
                 throw new TransformerException('Array must contain an items property');
             }
-        } elseif ($type === 'string') {
-            $result['type'] = 'string';
-        } elseif ($type === 'boolean') {
-            $result['type'] = 'boolean';
-        } elseif ($type === 'number' || $type === 'integer') {
+
+            if (!$isProperty) {
+                $definitions[$title] = $result;
+                $typeName = $title;
+            }
+        } elseif ($type === 'string' || $type === 'boolean' || $type === 'number' || $type === 'integer') {
             $result['type'] = $type;
         } elseif (isset($schema->{'$ref'})) {
             $ref = $schema->{'$ref'};

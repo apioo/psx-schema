@@ -34,10 +34,13 @@ class BCLayer
         if (isset($data->patternProperties) && !isset($data->properties) && !isset($data->additionalProperties)) {
             // in this case we have a schema with only pattern properties
             $vars = get_object_vars($data->patternProperties);
-            if (count($vars) === 1) {
-                $data->additionalProperties = reset($vars);
+            $firstPattern = reset($vars);
+            if ($firstPattern instanceof \stdClass) {
+                $data->additionalProperties = $firstPattern;
             } else {
-                $data->additionalProperties = true;
+                $data->additionalProperties = (object) [
+                    'type' => 'any',
+                ];
             }
         }
 

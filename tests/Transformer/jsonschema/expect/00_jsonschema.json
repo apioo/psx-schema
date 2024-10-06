@@ -1,7 +1,7 @@
 {
   "definitions": {
-    "Inlinec51f76a8": {
-      "type": "object",
+    "Inlined61dc25a": {
+      "type": "struct",
       "properties": {
         "name": {
           "type": "string"
@@ -9,19 +9,16 @@
       }
     },
     "Group": {
-      "$ref": "Inlinec51f76a8"
-    },
-    "Inlinedc8fb1cd": {
-      "type": "object",
+      "type": "struct",
       "properties": {
-        "foo": {
+        "name": {
           "type": "string"
         }
       }
     },
     "Product": {
       "description": "A product from Acme's catalog",
-      "type": "object",
+      "type": "struct",
       "properties": {
         "productId": {
           "description": "The unique identifier for a product",
@@ -33,32 +30,20 @@
         },
         "price": {
           "description": "The price of the product",
-          "type": "number",
-          "exclusiveMinimum": 0
+          "type": "number"
         },
         "nested": {
-          "$ref": "Inlinedc8fb1cd"
+          "type": "any"
         },
         "group": {
-          "$ref": "Group"
+          "type": "reference",
+          "target": "Group"
         },
         "union": {
-          "oneOf": [
-            {
-              "$ref": "Group"
-            },
-            {
-              "$ref": "Inlinedc8fb1cd"
-            }
-          ]
+          "type": "any"
         }
-      },
-      "required": [
-        "productId",
-        "productName",
-        "price"
-      ]
+      }
     }
   },
-  "$ref": "Product"
+  "root": "Product"
 }

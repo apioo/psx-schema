@@ -1,16 +1,11 @@
 {
   "definitions": {
-    "Inline987e9293": {
-      "type": "object",
-      "properties": {
-        "entries": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
+    "Inlined98264cb": {
+      "type": "array",
+      "schema": {
+        "type": "string"
       }
     }
   },
-  "$ref": "Inline987e9293"
+  "root": "Inlined98264cb"
 }
