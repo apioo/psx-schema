@@ -60,17 +60,6 @@ class GraphQL extends GeneratorAbstract
         return '[' . $type . ']';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode(' | ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        // in GraphQL there is no intersection type
-        return implode(' | ', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

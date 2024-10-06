@@ -76,16 +76,6 @@ abstract class MarkupAbstract extends GeneratorAbstract
         return 'Map (' . $type . ')';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode(' &#124; ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode(' &#38; ', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';

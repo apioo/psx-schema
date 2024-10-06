@@ -70,16 +70,6 @@ class Protobuf extends GeneratorAbstract
         return 'map<string, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'Struct';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'Struct';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
