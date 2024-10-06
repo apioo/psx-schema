@@ -93,6 +93,10 @@ class Php extends CodeGeneratorAbstract
             $tags['template'] = $generics;
         }
 
+        if (!empty($templates)) {
+            $tags['extends'] = $extends . $this->generator->getGenericType($templates);
+        }
+
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
@@ -109,9 +113,6 @@ class Php extends CodeGeneratorAbstract
         }
 
         if (!empty($extends)) {
-            if (!empty($templates)) {
-                $extends.= $this->generator->getGenericType($templates);
-            }
             $class->extend($extends);
         }
 

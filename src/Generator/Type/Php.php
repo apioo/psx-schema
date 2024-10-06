@@ -123,7 +123,7 @@ class Php extends GeneratorAbstract
 
     protected function getGeneric(array $types): string
     {
-        return '';
+        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getAny(): string

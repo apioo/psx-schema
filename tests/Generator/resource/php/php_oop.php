@@ -102,6 +102,9 @@ class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
     }
 }
 
+/**
+ * @extends Map<Student>
+ */
 class StudentMap extends Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
 }
