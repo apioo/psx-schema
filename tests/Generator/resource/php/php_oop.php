@@ -1,7 +1,7 @@
 class Human implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $firstName;
-    protected ?Human $parent;
+    protected ?string $firstName = null;
+    protected ?Human $parent = null;
     public function setFirstName(?string $firstName) : void
     {
         $this->firstName = $firstName;
@@ -34,7 +34,7 @@ class Human implements \JsonSerializable, \PSX\Record\RecordableInterface
 
 class Student extends Human implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $matricleNumber;
+    protected ?string $matricleNumber = null;
     public function setMatricleNumber(?string $matricleNumber) : void
     {
         $this->matricleNumber = $matricleNumber;
@@ -61,11 +61,11 @@ class Student extends Human implements \JsonSerializable, \PSX\Record\Recordable
  */
 class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?int $totalResults;
+    protected ?int $totalResults = null;
     /**
      * @var array<T>|null
      */
-    protected ?array $entries;
+    protected ?array $entries = null;
     public function setTotalResults(?int $totalResults) : void
     {
         $this->totalResults = $totalResults;
@@ -111,7 +111,7 @@ class StudentMap extends Map implements \JsonSerializable, \PSX\Record\Recordabl
 
 class RootSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?StudentMap $students;
+    protected ?StudentMap $students = null;
     public function setStudents(?StudentMap $students) : void
     {
         $this->students = $students;

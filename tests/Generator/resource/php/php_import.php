@@ -1,7 +1,7 @@
 class Import implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?StudentMap $students;
-    protected ?Student $student;
+    protected ?StudentMap $students = null;
+    protected ?Student $student = null;
     public function setStudents(?StudentMap $students) : void
     {
         $this->students = $students;

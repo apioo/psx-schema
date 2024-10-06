@@ -3,8 +3,8 @@ use PSX\Schema\Attribute\Description;
 #[Description('Location of the person')]
 class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?float $lat;
-    protected ?float $long;
+    protected ?float $lat = null;
+    protected ?float $long = null;
     public function setLat(?float $lat) : void
     {
         $this->lat = $lat;
@@ -41,20 +41,20 @@ use PSX\Schema\Attribute\Nullable;
 #[Description('An simple author element with some description')]
 class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $title;
+    protected ?string $title = null;
     #[Description('We will send no spam to this address')]
     #[Nullable(true)]
-    protected ?string $email;
+    protected ?string $email = null;
     /**
      * @var array<string>|null
      */
-    protected ?array $categories;
+    protected ?array $categories = null;
     /**
      * @var array<Location>|null
      */
     #[Description('Array of locations')]
-    protected ?array $locations;
-    protected ?Location $origin;
+    protected ?array $locations = null;
+    protected ?Location $origin = null;
     public function setTitle(?string $title) : void
     {
         $this->title = $title;
@@ -138,47 +138,47 @@ use PSX\Schema\Attribute\Key;
 #[Description('An general news entry')]
 class News implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?Meta $config;
+    protected ?Meta $config = null;
     /**
      * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $inlineConfig;
+    protected ?\PSX\Record\Record $inlineConfig = null;
     /**
      * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $mapTags;
+    protected ?\PSX\Record\Record $mapTags = null;
     /**
      * @var \PSX\Record\Record|null
      */
-    protected ?\PSX\Record\Record $mapReceiver;
+    protected ?\PSX\Record\Record $mapReceiver = null;
     /**
      * @var array<string>|null
      */
-    protected ?array $tags;
+    protected ?array $tags = null;
     /**
      * @var array<Author>|null
      */
-    protected ?array $receiver;
-    protected ?bool $read;
-    protected ?Author $author;
-    protected ?Meta $meta;
+    protected ?array $receiver = null;
+    protected ?bool $read = null;
+    protected ?Author $author = null;
+    protected ?Meta $meta = null;
     #[Format('date')]
-    protected ?\PSX\DateTime\LocalDate $sendDate;
+    protected ?\PSX\DateTime\LocalDate $sendDate = null;
     #[Format('date-time')]
-    protected ?\PSX\DateTime\LocalDateTime $readDate;
-    protected ?float $price;
-    protected ?int $rating;
+    protected ?\PSX\DateTime\LocalDateTime $readDate = null;
+    protected ?float $price = null;
+    protected ?int $rating = null;
     #[Description('Contains the main content of the news entry')]
-    protected ?string $content;
-    protected ?string $question;
-    protected ?string $version;
+    protected ?string $content = null;
+    protected ?string $question = null;
+    protected ?string $version = null;
     #[Format('time')]
-    protected ?\PSX\DateTime\LocalTime $coffeeTime;
+    protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     #[Key('g-recaptcha-response')]
-    protected ?string $captcha;
+    protected ?string $captcha = null;
     #[Key('media.fields')]
-    protected ?string $mediaFields;
-    protected mixed $payload;
+    protected ?string $mediaFields = null;
+    protected mixed $payload = null;
     public function setConfig(?Meta $config) : void
     {
         $this->config = $config;

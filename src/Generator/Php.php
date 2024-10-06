@@ -158,6 +158,8 @@ class Php extends CodeGeneratorAbstract
                 $prop->addAttribute($attribute);
             }
 
+            $prop->setDefault(null);
+
             $class->addStmt($prop);
 
             $setter = $this->factory->method($property->getName()->getMethod(prefix: ['set']));

@@ -10,11 +10,11 @@ use PSX\Schema\Attribute\Discriminator;
 abstract class DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $description;
+    protected ?string $description = null;
     #[Description('')]
-    protected ?bool $deprecated;
+    protected ?bool $deprecated = null;
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
@@ -60,28 +60,28 @@ use PSX\Schema\Attribute\Description;
 class StructDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('The parent type of this struct. The struct inherits all properties from the parent type')]
-    protected ?string $parent;
+    protected ?string $parent = null;
     #[Description('Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent')]
-    protected ?bool $base;
+    protected ?bool $base = null;
     /**
      * @var \PSX\Record\Record|null
      */
     #[Description('')]
-    protected ?\PSX\Record\Record $properties;
+    protected ?\PSX\Record\Record $properties = null;
     #[Description('In case this is a base type it is possible to specify a discriminator property')]
-    protected ?string $discriminator;
+    protected ?string $discriminator = null;
     /**
      * @var \PSX\Record\Record|null
      */
     #[Description('In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type')]
-    protected ?\PSX\Record\Record $mapping;
+    protected ?\PSX\Record\Record $mapping = null;
     /**
      * @var \PSX\Record\Record|null
      */
     #[Description('In case the parent type contains generics it is possible to set a concrete type for each generic type')]
-    protected ?\PSX\Record\Record $template;
+    protected ?\PSX\Record\Record $template = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -168,9 +168,9 @@ use PSX\Schema\Attribute\Discriminator;
 abstract class CollectionDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('')]
-    protected ?PropertyType $schema;
+    protected ?PropertyType $schema = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -207,7 +207,7 @@ use PSX\Schema\Attribute\Description;
 class MapDefinitionType extends CollectionDefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -235,7 +235,7 @@ use PSX\Schema\Attribute\Description;
 class ArrayDefinitionType extends CollectionDefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -275,13 +275,13 @@ use PSX\Schema\Attribute\Discriminator;
 abstract class PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $description;
+    protected ?string $description = null;
     #[Description('')]
-    protected ?bool $deprecated;
+    protected ?bool $deprecated = null;
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('')]
-    protected ?bool $nullable;
+    protected ?bool $nullable = null;
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
@@ -343,7 +343,7 @@ use PSX\Schema\Attribute\Discriminator;
 abstract class ScalarPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -371,7 +371,7 @@ use PSX\Schema\Attribute\Description;
 class IntegerPropertyType extends ScalarPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -399,7 +399,7 @@ use PSX\Schema\Attribute\Description;
 class NumberPropertyType extends ScalarPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -427,9 +427,9 @@ use PSX\Schema\Attribute\Description;
 class StringPropertyType extends ScalarPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('')]
-    protected ?string $format;
+    protected ?string $format = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -466,7 +466,7 @@ use PSX\Schema\Attribute\Description;
 class BooleanPropertyType extends ScalarPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -499,9 +499,9 @@ use PSX\Schema\Attribute\Discriminator;
 abstract class CollectionPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('')]
-    protected ?PropertyType $schema;
+    protected ?PropertyType $schema = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -538,7 +538,7 @@ use PSX\Schema\Attribute\Description;
 class MapPropertyType extends CollectionPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -566,7 +566,7 @@ use PSX\Schema\Attribute\Description;
 class ArrayPropertyType extends CollectionPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -594,7 +594,7 @@ use PSX\Schema\Attribute\Description;
 class AnyPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -622,9 +622,9 @@ use PSX\Schema\Attribute\Description;
 class GenericPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('The generic name, it is recommended to use typical generics names like T or TValue')]
-    protected ?string $name;
+    protected ?string $name = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -661,9 +661,9 @@ use PSX\Schema\Attribute\Description;
 class ReferencePropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
-    protected ?string $type;
+    protected ?string $type = null;
     #[Description('Name of the target reference, must a key from the definitions map')]
-    protected ?string $target;
+    protected ?string $target = null;
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -703,14 +703,14 @@ class Specification implements \JsonSerializable, \PSX\Record\RecordableInterfac
      * @var \PSX\Record\Record|null
      */
     #[Description('')]
-    protected ?\PSX\Record\Record $import;
+    protected ?\PSX\Record\Record $import = null;
     /**
      * @var \PSX\Record\Record|null
      */
     #[Description('')]
-    protected ?\PSX\Record\Record $definitions;
+    protected ?\PSX\Record\Record $definitions = null;
     #[Description('')]
-    protected ?string $root;
+    protected ?string $root = null;
     public function setImport(?\PSX\Record\Record $import) : void
     {
         $this->import = $import;
