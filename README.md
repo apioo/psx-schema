@@ -83,7 +83,7 @@ For example lets take a look at the following specification, which describes a p
 }
 ```
 
-It is then possible to turn this specification into ready-to-use PHP class s.
+It is then possible to turn this specification into a ready-to-use PHP class s.
 
 ```php
 
@@ -157,12 +157,12 @@ class Person implements \JsonSerializable, \PSX\Record\RecordableInterface
 Every generated PHP class implements also the `JsonSerializable` interface so you can simply encode an object to json.
 
 ```php
-$schema = new Person();
-$schema->setFirstName('foo');
-$schema->setLastName('bar');
-$schema->setAge(32);
+$person = new Person();
+$person->setFirstName('foo');
+$person->setLastName('bar');
+$person->setAge(32);
 
-echo json_encode($schema);
+echo json_encode($person);
 
 // would result in
 // {"firstName": "foo", "lastName": "bar", "age": 32}
