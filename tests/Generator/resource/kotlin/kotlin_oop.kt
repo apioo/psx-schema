@@ -12,7 +12,7 @@ open class Map<T> {
     var entries: Array<T>? = null
 }
 
-open class StudentMap : Map {
+open class StudentMap : Map<Student> {
 }
 
 open class RootSchema {

@@ -1,3 +1,7 @@
+import {StructDefinitionType} from "./StructDefinitionType";
+import {MapDefinitionType} from "./MapDefinitionType";
+import {ArrayDefinitionType} from "./ArrayDefinitionType";
+
 /**
  * Base definition type
  */
@@ -24,6 +28,8 @@ export class StructDefinitionType extends DefinitionType {
 }
 
 import {DefinitionType} from "./DefinitionType";
+import {MapDefinitionType} from "./MapDefinitionType";
+import {ArrayDefinitionType} from "./ArrayDefinitionType";
 import {PropertyType} from "./PropertyType";
 
 /**
@@ -52,6 +58,16 @@ export class ArrayDefinitionType extends CollectionDefinitionType {
     type?: string
 }
 
+import {IntegerPropertyType} from "./IntegerPropertyType";
+import {NumberPropertyType} from "./NumberPropertyType";
+import {StringPropertyType} from "./StringPropertyType";
+import {BooleanPropertyType} from "./BooleanPropertyType";
+import {MapPropertyType} from "./MapPropertyType";
+import {ArrayPropertyType} from "./ArrayPropertyType";
+import {AnyPropertyType} from "./AnyPropertyType";
+import {GenericPropertyType} from "./GenericPropertyType";
+import {ReferencePropertyType} from "./ReferencePropertyType";
+
 /**
  * Base property type
  */
@@ -63,6 +79,10 @@ export abstract class PropertyType {
 }
 
 import {PropertyType} from "./PropertyType";
+import {IntegerPropertyType} from "./IntegerPropertyType";
+import {NumberPropertyType} from "./NumberPropertyType";
+import {StringPropertyType} from "./StringPropertyType";
+import {BooleanPropertyType} from "./BooleanPropertyType";
 
 /**
  * Base scalar property type
@@ -109,6 +129,8 @@ export class BooleanPropertyType extends ScalarPropertyType {
 }
 
 import {PropertyType} from "./PropertyType";
+import {MapPropertyType} from "./MapPropertyType";
+import {ArrayPropertyType} from "./ArrayPropertyType";
 
 /**
  * Base collection property type

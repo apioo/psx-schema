@@ -29,7 +29,7 @@ public class Map<T>
 }
 
 using System.Text.Json.Serialization;
-public class StudentMap : Map
+public class StudentMap : Map<Student>
 {
 }
 

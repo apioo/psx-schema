@@ -62,7 +62,7 @@ class Rust extends CodeGeneratorAbstract
         return false;
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = '#[derive(Serialize, Deserialize)]' . "\n";
         $code.= 'pub struct ' . $name->getClass() . ' {' . "\n";
@@ -138,22 +138,7 @@ class Rust extends CodeGeneratorAbstract
             $imports[] = 'use chrono::NaiveTime;';
         }
 
-        $refs = [];
-        /*
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
-            if ($type instanceof ReferencePropertyType) {
-                $refs[$type->getRef()] = $type->getRef();
-                if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $ref) {
-                        $refs[$ref] = $ref;
-                    }
-                }
-            } elseif ($type instanceof StructDefinitionType && $type->getParent()) {
-                $refs[$type->getParent()] = $type->getParent();
-            }
-        });
-        */
-
+        $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
             $imports[] = 'use ' . $this->normalizer->file($name) . '::' . $this->normalizer->class($name) . ';';

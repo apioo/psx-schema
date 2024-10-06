@@ -57,7 +57,7 @@ class Python extends CodeGeneratorAbstract
         return new Normalizer\Python();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = '';
         if (!empty($generics)) {
@@ -151,7 +151,7 @@ class Python extends CodeGeneratorAbstract
 
         $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict';
 
         if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
             $imports[] = 'import datetime';
@@ -161,22 +161,7 @@ class Python extends CodeGeneratorAbstract
             $imports[] = 'import datetime';
         }
 
-        $refs = [];
-        /*
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
-            if ($type instanceof ReferencePropertyType) {
-                $refs[$type->getRef()] = $type->getRef();
-                if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $ref) {
-                        $refs[$ref] = $ref;
-                    }
-                }
-            } elseif ($type instanceof StructDefinitionType && $type->getParent()) {
-                $refs[$type->getParent()] = $type->getParent();
-            }
-        });
-        */
-
+        $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
             $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);

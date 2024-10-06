@@ -70,7 +70,7 @@ public class Map<T> {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class StudentMap extends Map {
+public class StudentMap extends Map<Student> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;

@@ -56,16 +56,19 @@ class TypeScript extends CodeGeneratorAbstract
         return new Normalizer\TypeScript();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'export ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '<' . implode(', ', $generics) . '>';
+            $code.= $this->generator->getGenericType($generics);
         }
 
         if (!empty($extends)) {
             $code.= ' extends ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericType($templates);
+            }
         }
 
         $code.= ' {' . "\n";
@@ -136,16 +139,8 @@ class TypeScript extends CodeGeneratorAbstract
 
     private function getImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
-        $refs = [];
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs, $className){
-            if ($type instanceof ReferencePropertyType) {
-                $refs[$type->getTarget()] = $type->getTarget();
-            } elseif ($type instanceof StructDefinitionType && $type->getParent()) {
-                $refs[$type->getParent()] = $type->getParent();
-            }
-        });
-
         $imports = [];
+        $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
 

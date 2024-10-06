@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use human::Human;
 #[derive(Serialize, Deserialize)]
 pub struct Human {
     #[serde(rename = "firstName")]
@@ -10,6 +11,7 @@ pub struct Human {
 }
 
 use serde::{Serialize, Deserialize};
+use human::Human;
 #[derive(Serialize, Deserialize)]
 pub struct Student {
     #[serde(rename = "firstName")]
@@ -24,6 +26,8 @@ pub struct Student {
 }
 
 use serde::{Serialize, Deserialize};
+use map::Map;
+use student::Student;
 #[derive(Serialize, Deserialize)]
 pub struct StudentMap {
     #[serde(rename = "totalResults")]
@@ -46,6 +50,7 @@ pub struct Map {
 }
 
 use serde::{Serialize, Deserialize};
+use student_map::StudentMap;
 #[derive(Serialize, Deserialize)]
 pub struct RootSchema {
     #[serde(rename = "students")]

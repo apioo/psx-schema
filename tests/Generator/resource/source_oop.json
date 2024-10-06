@@ -7,12 +7,13 @@
           "type": "string"
         },
         "parent": {
-          "$ref": "Human"
+          "type": "reference",
+          "target": "Human"
         }
       }
     },
     "Student": {
-      "$extends": "Human",
+      "parent": "Human",
       "type": "object",
       "properties": {
         "matricleNumber": {
@@ -21,8 +22,9 @@
       }
     },
     "StudentMap": {
-      "$ref": "Map",
-      "$template": {
+      "type": "struct",
+      "parent": "Map",
+      "template": {
         "T": "Student"
       }
     },
@@ -35,7 +37,8 @@
         "entries": {
           "type": "array",
           "items": {
-            "$generic": "T"
+            "type": "generic",
+            "name": "T"
           }
         }
       }
@@ -44,7 +47,8 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "StudentMap"
+          "type": "reference",
+          "target": "StudentMap"
         }
       }
     }

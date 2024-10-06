@@ -52,7 +52,7 @@ class CSharp extends CodeGeneratorAbstract
         return new Normalizer\CSharp();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = '';
 
@@ -71,11 +71,14 @@ class CSharp extends CodeGeneratorAbstract
         $code.= 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '<' . implode(', ', $generics) . '>';
+            $code.= $this->generator->getGenericType($generics);
         }
 
         if (!empty($extends)) {
             $code.= ' : ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericType($templates);
+            }
         }
 
         $code.= "\n";

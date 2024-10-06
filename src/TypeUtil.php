@@ -113,6 +113,20 @@ class TypeUtil
     }
 
     /**
+     * Collects and returns all refs
+     */
+    public static function findRefs(TypeInterface $type): array
+    {
+        $refs = [];
+        self::refs($type, function(string $ns, string $name) use (&$refs){
+            $refs[$ns . ':' . $name] = $ns . ':' . $name;
+            return null;
+        });
+
+        return $refs;
+    }
+
+    /**
      * Goes through all refs and replaces the ref using a specific callback
      */
     public static function refs(TypeInterface $type, \Closure $callback): void
@@ -120,22 +134,33 @@ class TypeUtil
         self::walk($type, function(TypeInterface $type) use ($callback){
             if ($type instanceof ReferencePropertyType) {
                 [$ns, $name] = self::split($type->getTarget());
-                $type->setTarget($callback($ns, $name));
+                $return = $callback($ns, $name);
+                if ($return !== null) {
+                    $type->setTarget($return);
+                }
             } elseif ($type instanceof StructDefinitionType) {
-                $extends = $type->getParent();
-                if (!empty($extends)) {
-                    [$ns, $name] = self::split($extends);
-                    $type->setParent($callback($ns, $name));
+                $parent = $type->getParent();
+                if (!empty($parent)) {
+                    [$ns, $name] = self::split($parent);
+                    $result = $callback($ns, $name);
+                    if ($result !== null) {
+                        $type->setParent($result);
+                    }
                 }
 
                 $template = $type->getTemplate();
                 if (!empty($template)) {
                     $result = [];
-                    foreach ($template as $key => $templateType) {
+                    foreach ($template as $templateName => $templateType) {
                         [$ns, $name] = self::split($templateType);
-                        $result[$key] = $callback($ns, $name);
+                        $return = $callback($ns, $name);
+                        if ($return !== null) {
+                            $result[$templateName] = $return;
+                        }
                     }
-                    $type->setTemplate($result);
+                    if (!empty($result)) {
+                        $type->setTemplate($result);
+                    }
                 }
 
                 $mapping = $type->getMapping();
@@ -143,9 +168,14 @@ class TypeUtil
                     $result = [];
                     foreach ($mapping as $mappingType => $mappingValue) {
                         [$ns, $name] = self::split($mappingType);
-                        $result[$callback($ns, $name)] = $mappingValue;
+                        $return = $callback($ns, $name);
+                        if ($return !== null) {
+                            $result[$return] = $mappingValue;
+                        }
                     }
-                    $type->setMapping($result);
+                    if (!empty($result)) {
+                        $type->setMapping($result);
+                    }
                 }
             }
         });

@@ -1,4 +1,7 @@
 use serde::{Serialize, Deserialize};
+use struct_definition_type::StructDefinitionType;
+use map_definition_type::MapDefinitionType;
+use array_definition_type::ArrayDefinitionType;
 
 // Base definition type
 #[derive(Serialize, Deserialize)]
@@ -15,6 +18,8 @@ pub struct DefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
+use definition_type::DefinitionType;
+use property_type::PropertyType;
 
 // Represents a struct which contains a fixed set of defined properties
 #[derive(Serialize, Deserialize)]
@@ -49,6 +54,10 @@ pub struct StructDefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
+use definition_type::DefinitionType;
+use map_definition_type::MapDefinitionType;
+use array_definition_type::ArrayDefinitionType;
+use property_type::PropertyType;
 
 // Base type for the map and array collection type
 #[derive(Serialize, Deserialize)]
@@ -68,6 +77,8 @@ pub struct CollectionDefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
+use collection_definition_type::CollectionDefinitionType;
+use property_type::PropertyType;
 
 // Represents a map which contains a dynamic set of key value entries
 #[derive(Serialize, Deserialize)]
@@ -87,6 +98,8 @@ pub struct MapDefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
+use collection_definition_type::CollectionDefinitionType;
+use property_type::PropertyType;
 
 // Represents an array which contains a dynamic list of values
 #[derive(Serialize, Deserialize)]
@@ -106,6 +119,15 @@ pub struct ArrayDefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
+use integer_property_type::IntegerPropertyType;
+use number_property_type::NumberPropertyType;
+use string_property_type::StringPropertyType;
+use boolean_property_type::BooleanPropertyType;
+use map_property_type::MapPropertyType;
+use array_property_type::ArrayPropertyType;
+use any_property_type::AnyPropertyType;
+use generic_property_type::GenericPropertyType;
+use reference_property_type::ReferencePropertyType;
 
 // Base property type
 #[derive(Serialize, Deserialize)]
@@ -125,6 +147,11 @@ pub struct PropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use property_type::PropertyType;
+use integer_property_type::IntegerPropertyType;
+use number_property_type::NumberPropertyType;
+use string_property_type::StringPropertyType;
+use boolean_property_type::BooleanPropertyType;
 
 // Base scalar property type
 #[derive(Serialize, Deserialize)]
@@ -144,6 +171,7 @@ pub struct ScalarPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_property_type::ScalarPropertyType;
 
 // Represents an integer value
 #[derive(Serialize, Deserialize)]
@@ -163,6 +191,7 @@ pub struct IntegerPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_property_type::ScalarPropertyType;
 
 // Represents a float value
 #[derive(Serialize, Deserialize)]
@@ -182,6 +211,7 @@ pub struct NumberPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_property_type::ScalarPropertyType;
 
 // Represents a string value
 #[derive(Serialize, Deserialize)]
@@ -204,6 +234,7 @@ pub struct StringPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use scalar_property_type::ScalarPropertyType;
 
 // Represents a boolean value
 #[derive(Serialize, Deserialize)]
@@ -223,6 +254,9 @@ pub struct BooleanPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use property_type::PropertyType;
+use map_property_type::MapPropertyType;
+use array_property_type::ArrayPropertyType;
 
 // Base collection property type
 #[derive(Serialize, Deserialize)]
@@ -245,6 +279,8 @@ pub struct CollectionPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use collection_property_type::CollectionPropertyType;
+use property_type::PropertyType;
 
 // Represents a map which contains a dynamic set of key value entries
 #[derive(Serialize, Deserialize)]
@@ -267,6 +303,8 @@ pub struct MapPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use collection_property_type::CollectionPropertyType;
+use property_type::PropertyType;
 
 // Represents an array which contains a dynamic list of values
 #[derive(Serialize, Deserialize)]
@@ -289,6 +327,7 @@ pub struct ArrayPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use property_type::PropertyType;
 
 // Represents an any value which allows any kind of value
 #[derive(Serialize, Deserialize)]
@@ -308,6 +347,7 @@ pub struct AnyPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use property_type::PropertyType;
 
 // Represents a generic value which can be replaced with a dynamic type
 #[derive(Serialize, Deserialize)]
@@ -330,6 +370,7 @@ pub struct GenericPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use property_type::PropertyType;
 
 // Represents a reference to a definition type
 #[derive(Serialize, Deserialize)]
@@ -352,6 +393,7 @@ pub struct ReferencePropertyType {
 }
 
 use serde::{Serialize, Deserialize};
+use definition_type::DefinitionType;
 #[derive(Serialize, Deserialize)]
 pub struct Specification {
     #[serde(rename = "import")]

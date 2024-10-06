@@ -43,7 +43,7 @@ class Markdown extends MarkupAbstract
         return new Type\Markdown($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name->getClass()) . "\n";
         $return.= '' . "\n";

@@ -52,6 +52,11 @@ interface GeneratorInterface
     public function getDocType(PropertyTypeAbstract $type): string;
 
     /**
+     * Returns generic types
+     */
+    public function getGenericType(array $types): string;
+
+    /**
      * Returns a fitting type for the provided content type. If the programming language has a native type for the provided content
      * type it should return it, i.e. for "application/xml" Java could return "org.w3c.dom.Document" and PHP "DOMDocument".
      * As default the method should simply return a string type

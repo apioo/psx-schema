@@ -14,7 +14,8 @@ export class Map<T> {
 }
 
 import {Map} from "./Map";
-export class StudentMap extends Map {
+import {Student} from "./Student";
+export class StudentMap extends Map<Student> {
 }
 
 import {StudentMap} from "./StudentMap";

@@ -28,7 +28,7 @@ End Class
 
 Imports System.Text.Json.Serialization
 Public Class StudentMap
-    Inherits Map
+    Inherits Map(Of Student)
 End Class
 
 Imports System.Text.Json.Serialization

@@ -45,16 +45,19 @@ class Kotlin extends CodeGeneratorAbstract
         return new Type\Kotlin($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'open ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '<' . implode(', ', $generics) . '>';
+            $code.= $this->generator->getGenericType($generics);
         }
 
         if (!empty($extends)) {
             $code.= ' : ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericType($templates);
+            }
         }
 
         $code.= ' {' . "\n";

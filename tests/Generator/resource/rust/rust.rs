@@ -12,6 +12,7 @@ pub struct Location {
 }
 
 use serde::{Serialize, Deserialize};
+use location::Location;
 
 // An simple author element with some description
 #[derive(Serialize, Deserialize)]
@@ -40,6 +41,8 @@ use serde::{Serialize, Deserialize};
 use chrono::NaiveDate;
 use chrono::NaiveDateTime;
 use chrono::NaiveTime;
+use meta::Meta;
+use author::Author;
 
 // An general news entry
 #[derive(Serialize, Deserialize)]

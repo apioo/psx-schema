@@ -108,33 +108,35 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $properties = [];
 
-        $extends = $type->getParent();
-        if (!empty($extends)) {
+        $parent = $type->getParent();
+        if (!empty($parent)) {
             if ($this->supportsExtends()) {
-                [$ns, $name] = TypeUtil::split($extends);
+                [$ns, $name] = TypeUtil::split($parent);
                 if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                    $parent  = $this->definitions->getType($name);
-                    $extends = $this->normalizer->class($extends);
-                    if ($parent instanceof StructDefinitionType) {
-                        $this->generateStruct($extends, $parent);
+                    $parentType = $this->definitions->getType($name);
+                    $parent = $this->normalizer->class($parent);
+                    if ($parentType instanceof StructDefinitionType) {
+                        $this->generateStruct($parent, $parentType);
                     } else {
-                        throw new GeneratorException('Extends must be of type struct');
+                        throw new GeneratorException('Parent must be of type struct');
                     }
                 } else {
                     // in case we have an extern namespace we dont need to generate the type
-                    $extends = $this->generator->getType((new ReferencePropertyType())->setTarget($extends));
+                    $parent = $this->generator->getType((new ReferencePropertyType())->setTarget($parent));
                 }
             } else {
                 do {
-                    $parent = $this->definitions->getType($extends);
+                    $parent = $this->definitions->getType($parent);
                     if (!$parent instanceof StructDefinitionType) {
-                        throw new GeneratorException('Extends must be of type struct');
+                        throw new GeneratorException('Parent must be of type struct');
                     }
 
                     $properties = array_merge($properties, $parent->getProperties());
-                } while($extends = $parent->getParent());
+                } while($parent = $parent->getParent());
             }
         }
+
+        $templates = $type->getTemplate();
 
         $className = new Code\Name($className, $className, $this->normalizer);
         $properties = array_merge($properties, $type->getProperties() ?? []);
@@ -163,7 +165,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             $type->setProperties($properties);
         }
 
-        $code = $this->writeStruct($className, $props, $extends, $generics, $type);
+        $code = $this->writeStruct($className, $props, $parent, $generics, $templates, $type);
 
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
@@ -226,7 +228,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return true;
     }
 
-    abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string;
+    abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string;
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {

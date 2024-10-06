@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
+from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
 
 
 # Location of the person
@@ -11,7 +11,8 @@ class Location(BaseModel):
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
+from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
+from .location import Location
 
 
 # An simple author element with some description
@@ -25,7 +26,7 @@ class Author(BaseModel):
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
+from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
 class Meta(UserDict[str, str]):
     @classmethod
     def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
@@ -33,8 +34,10 @@ class Meta(UserDict[str, str]):
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union, UserList, UserDict
+from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
 import datetime
+from .meta import Meta
+from .author import Author
 
 
 # An general news entry

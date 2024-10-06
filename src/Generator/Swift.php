@@ -52,7 +52,7 @@ class Swift extends CodeGeneratorAbstract
         return new Normalizer\Swift();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'class ' . $name->getClass() . ': ';
 

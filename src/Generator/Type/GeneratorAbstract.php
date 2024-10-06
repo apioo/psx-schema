@@ -80,6 +80,11 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $this->getType($type);
     }
 
+    public function getGenericType(array $types): string
+    {
+        return $this->getGeneric($types);
+    }
+
     public function getContentType(ContentType $contentType, int $context): string
     {
         return $this->getString();

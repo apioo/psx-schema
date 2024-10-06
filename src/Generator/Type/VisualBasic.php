@@ -90,7 +90,7 @@ class VisualBasic extends GeneratorAbstract
 
     protected function getGeneric(array $types): string
     {
-        return '(' . implode(', ', $types) . ')';
+        return '(Of ' . implode(', ', $types) . ')';
     }
 
     protected function getAny(): string

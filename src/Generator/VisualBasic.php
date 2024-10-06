@@ -52,16 +52,19 @@ class VisualBasic extends CodeGeneratorAbstract
         return new Normalizer\VisualBasic();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'Public Class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '(Of ' . implode(', ', $generics) . ')';
+            $code.= $this->generator->getGenericType($generics);
         }
 
         if (!empty($extends)) {
             $code.= "\n" . $this->indent . 'Inherits ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericType($templates);
+            }
         }
 
         $code.= "\n";

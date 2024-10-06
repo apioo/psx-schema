@@ -46,7 +46,7 @@ class Html extends MarkupAbstract
         return new Type\Html($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $title = '<a class="psx-type-link" data-name="' . $name->getClass() . '">' . htmlspecialchars($name->getClass()) . '</a>';
         if (!empty($generics)) {

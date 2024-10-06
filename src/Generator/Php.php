@@ -86,7 +86,7 @@ class Php extends CodeGeneratorAbstract
         return new Normalizer\Php();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructDefinitionType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $tags = [];
         if ($generics !== null) {
@@ -109,6 +109,9 @@ class Php extends CodeGeneratorAbstract
         }
 
         if (!empty($extends)) {
+            if (!empty($templates)) {
+                $extends.= $this->generator->getGenericType($templates);
+            }
             $class->extend($extends);
         }
 
