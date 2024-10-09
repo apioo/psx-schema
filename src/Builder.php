@@ -56,9 +56,14 @@ class Builder
         return $this;
     }
 
-    public function setParent(string $parent): Builder
+    public function setParent(string $parent, ?array $template = null): Builder
     {
-        $this->type->setParent($parent);
+        $parentType = PropertyTypeFactory::getReference($parent);
+        if (!empty($template)) {
+            $parentType->setTemplate($template);
+        }
+
+        $this->type->setParent($parentType);
 
         return $this;
     }
