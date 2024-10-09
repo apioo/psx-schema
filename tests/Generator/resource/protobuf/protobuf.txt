@@ -12,7 +12,7 @@ message Author {
 }
 
 message News {
-    optional Meta config = 1 [json_name="config"];
+    optional map<string, string> config = 1 [json_name="config"];
     optional map<string, string> inlineConfig = 2 [json_name="inlineConfig"];
     optional map<string, string> mapTags = 3 [json_name="mapTags"];
     optional map<string, Author> mapReceiver = 4 [json_name="mapReceiver"];
@@ -20,7 +20,7 @@ message News {
     optional repeated Author receiver = 6 [json_name="receiver"];
     optional bool read = 7 [json_name="read"];
     optional Author author = 8 [json_name="author"];
-    optional Meta meta = 9 [json_name="meta"];
+    optional map<string, string> meta = 9 [json_name="meta"];
     optional Timestamp sendDate = 10 [json_name="sendDate"];
     optional Timestamp readDate = 11 [json_name="readDate"];
     optional float price = 12 [json_name="price"];

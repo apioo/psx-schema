@@ -145,6 +145,16 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
                 $property = $this->replaceGeneric($property, $templates);
             }
 
+            // in case the generator does not support custom map or array implementations we transform them to properties
+            if ($property instanceof ReferencePropertyType) {
+                $targetType = $this->definitions->getType($property->getTarget());
+                if ($targetType instanceof MapDefinitionType && !$this->supportsMap($name, $targetType)) {
+                    $property = PropertyTypeFactory::getMap($targetType->getSchema());
+                } elseif ($targetType instanceof ArrayDefinitionType && !$this->supportsArray($name, $targetType)) {
+                    $property = PropertyTypeFactory::getArray($targetType->getSchema());
+                }
+            }
+
             $props[] = new Code\Property(
                 $name,
                 $this->generator->getType($property),
@@ -267,6 +277,16 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     protected function supportsExtends(): bool
     {
         return true;
+    }
+
+    private function supportsMap(Code\Name $name, MapDefinitionType $type): bool
+    {
+        return !!$this->writeMap($name, $this->generator->getType($type->getSchema()), $type);
+    }
+
+    private function supportsArray(Code\Name $name, ArrayDefinitionType $type): bool
+    {
+        return !!$this->writeArray($name, $this->generator->getType($type->getSchema()), $type);
     }
 
     abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string;

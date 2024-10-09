@@ -12,7 +12,7 @@ type Author {
 }
 
 type News {
-    config: Meta
+    config: [String]
     inlineConfig: [String]
     mapTags: [String]
     mapReceiver: [Author]
@@ -20,7 +20,7 @@ type News {
     receiver: [Author]
     read: Boolean
     author: Author
-    meta: Meta
+    meta: [String]
     sendDate: String
     readDate: String
     price: Float
