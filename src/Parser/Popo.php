@@ -139,10 +139,12 @@ class Popo implements ParserInterface
             }
 
             $this->parseProperties($class, $type, $definitions, $context);
-        } elseif ($type instanceof MapDefinitionType) {
-            // noop
-        } elseif ($type instanceof ArrayDefinitionType) {
-            // noop
+        } elseif ($type instanceof MapDefinitionType || $type instanceof ArrayDefinitionType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof ReferencePropertyType) {
+                $this->parseClass($schema->getTarget(), $definitions, $context, $schemaTypeName);
+                $schema->setTarget($schemaTypeName);
+            }
         } else {
             throw new ParserException('Could not determine class type');
         }
