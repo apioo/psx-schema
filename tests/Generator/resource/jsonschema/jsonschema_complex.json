@@ -321,14 +321,14 @@
       "properties": {
         "import": {
           "description": "",
-          "type": "map",
+          "type": "object",
           "additionalProperties": {
             "type": "string"
           }
         },
         "definitions": {
           "description": "",
-          "type": "map",
+          "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/DefinitionType"
           }
@@ -383,7 +383,7 @@
             },
             "properties": {
               "description": "",
-              "type": "map",
+              "type": "object",
               "additionalProperties": {
                 "$ref": "#/definitions/PropertyType"
               }
@@ -394,14 +394,14 @@
             },
             "mapping": {
               "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
-              "type": "map",
+              "type": "object",
               "additionalProperties": {
                 "type": "string"
               }
             },
             "template": {
               "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
-              "type": "map",
+              "type": "object",
               "additionalProperties": {
                 "type": "string"
               }
@@ -416,14 +416,14 @@
   "properties": {
     "import": {
       "description": "",
-      "type": "map",
+      "type": "object",
       "additionalProperties": {
         "type": "string"
       }
     },
     "definitions": {
       "description": "",
-      "type": "map",
+      "type": "object",
       "additionalProperties": {
         "$ref": "#/definitions/DefinitionType"
       }

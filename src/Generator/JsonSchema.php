@@ -123,6 +123,7 @@ class JsonSchema implements GeneratorInterface
             }
         } elseif ($type instanceof MapTypeInterface) {
             $data = $type->toArray();
+            $data['type'] = 'object';
 
             if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
                 $data['additionalProperties'] = $this->generateType($data['schema'], $definitions, $template);
@@ -132,6 +133,7 @@ class JsonSchema implements GeneratorInterface
             return $data;
         } elseif ($type instanceof ArrayTypeInterface) {
             $data = $type->toArray();
+            $data['type'] = 'array';
 
             if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
                 $data['items'] = $this->generateType($data['schema'], $definitions, $template);

@@ -43,7 +43,7 @@
             }
         },
         "Meta": {
-            "type": "map",
+            "type": "object",
             "additionalProperties": {
                 "type": "string"
             }
@@ -56,19 +56,19 @@
                     "$ref": "#/definitions/Meta"
                 },
                 "inlineConfig": {
-                    "type": "map",
+                    "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
                 "mapTags": {
-                    "type": "map",
+                    "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
                 "mapReceiver": {
-                    "type": "map",
+                    "type": "object",
                     "additionalProperties": {
                         "$ref": "#/definitions/Author"
                     }
@@ -139,19 +139,19 @@
             "$ref": "#/definitions/Meta"
         },
         "inlineConfig": {
-            "type": "map",
+            "type": "object",
             "additionalProperties": {
                 "type": "string"
             }
         },
         "mapTags": {
-            "type": "map",
+            "type": "object",
             "additionalProperties": {
                 "type": "string"
             }
         },
         "mapReceiver": {
-            "type": "map",
+            "type": "object",
             "additionalProperties": {
                 "$ref": "#/definitions/Author"
             }
