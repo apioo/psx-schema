@@ -72,7 +72,7 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->email;
     }
     /**
-     * @param array<string>|null
+     * @param array<string>|null $categories
      */
     public function setCategories(?array $categories) : void
     {
@@ -86,7 +86,7 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->categories;
     }
     /**
-     * @param array<Location>|null
+     * @param array<Location>|null $locations
      */
     public function setLocations(?array $locations) : void
     {
@@ -184,7 +184,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->config;
     }
     /**
-     * @param \PSX\Record\Record<string>|null
+     * @param \PSX\Record\Record<string>|null $inlineConfig
      */
     public function setInlineConfig(?\PSX\Record\Record $inlineConfig) : void
     {
@@ -198,7 +198,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->inlineConfig;
     }
     /**
-     * @param \PSX\Record\Record<string>|null
+     * @param \PSX\Record\Record<string>|null $mapTags
      */
     public function setMapTags(?\PSX\Record\Record $mapTags) : void
     {
@@ -212,7 +212,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->mapTags;
     }
     /**
-     * @param \PSX\Record\Record<Author>|null
+     * @param \PSX\Record\Record<Author>|null $mapReceiver
      */
     public function setMapReceiver(?\PSX\Record\Record $mapReceiver) : void
     {
@@ -226,7 +226,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->mapReceiver;
     }
     /**
-     * @param array<string>|null
+     * @param array<string>|null $tags
      */
     public function setTags(?array $tags) : void
     {
@@ -240,7 +240,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->tags;
     }
     /**
-     * @param array<Author>|null
+     * @param array<Author>|null $receiver
      */
     public function setReceiver(?array $receiver) : void
     {

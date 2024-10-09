@@ -107,7 +107,7 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
         return $this->base;
     }
     /**
-     * @param \PSX\Record\Record<PropertyType>|null
+     * @param \PSX\Record\Record<PropertyType>|null $properties
      */
     public function setProperties(?\PSX\Record\Record $properties) : void
     {
@@ -129,7 +129,7 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
         return $this->discriminator;
     }
     /**
-     * @param \PSX\Record\Record<string>|null
+     * @param \PSX\Record\Record<string>|null $mapping
      */
     public function setMapping(?\PSX\Record\Record $mapping) : void
     {
@@ -143,7 +143,7 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
         return $this->mapping;
     }
     /**
-     * @param \PSX\Record\Record<string>|null
+     * @param \PSX\Record\Record<string>|null $template
      */
     public function setTemplate(?\PSX\Record\Record $template) : void
     {
@@ -730,7 +730,7 @@ class Specification implements \JsonSerializable, \PSX\Record\RecordableInterfac
     #[Description('')]
     protected ?string $root = null;
     /**
-     * @param \PSX\Record\Record<string>|null
+     * @param \PSX\Record\Record<string>|null $import
      */
     public function setImport(?\PSX\Record\Record $import) : void
     {
@@ -744,7 +744,7 @@ class Specification implements \JsonSerializable, \PSX\Record\RecordableInterfac
         return $this->import;
     }
     /**
-     * @param \PSX\Record\Record<DefinitionType>|null
+     * @param \PSX\Record\Record<DefinitionType>|null $definitions
      */
     public function setDefinitions(?\PSX\Record\Record $definitions) : void
     {

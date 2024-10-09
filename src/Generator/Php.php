@@ -152,7 +152,7 @@ class Php extends CodeGeneratorAbstract
             $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
             if (!empty($type)) {
-                $docComment = $this->getDocComment($type, 'param', $property);
+                $docComment = $this->getDocComment($type, 'param', $property, $property->getName()->getArgument());
                 if (!empty($docComment)) {
                     $setter->setDocComment($docComment);
                 }
@@ -235,17 +235,17 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    private function getDocComment(string $type, string $tag, Code\Property $property): ?string
+    private function getDocComment(string $type, string $tag, Code\Property $property, ?string $argumentName = null): ?string
     {
         $docType = $property->getDocType();
         if ($type === 'array') {
             // in case we have an array we must add a var annotation to describe which type is inside the array
-            return $this->buildComment([$tag => $docType . '|null']);
+            return $this->buildComment([$tag => $docType . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
         } elseif ($type === '\\' . Record::class) {
             // in case we have an inline map we need to provide the inner type
-            return $this->buildComment([$tag => $property->getDocType() . '|null']);
+            return $this->buildComment([$tag => $property->getDocType() . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
         } elseif ($type === 'mixed' && $docType !== 'mixed') {
-            return $this->buildComment([$tag => $docType . ' $' . $property->getName()->getArgument()]);
+            return $this->buildComment([$tag => $docType . ($argumentName !== null ? ' $' . $argumentName : '')]);
         }
 
         return null;

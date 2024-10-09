@@ -64,7 +64,7 @@ class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?int $totalResults = null;
     /**
-     * @var P $parent
+     * @var P
      */
     protected mixed $parent = null;
     /**
@@ -87,14 +87,14 @@ class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
         $this->parent = $parent;
     }
     /**
-     * @return P $parent
+     * @return P
      */
     public function getParent() : mixed
     {
         return $this->parent;
     }
     /**
-     * @param array<T>|null
+     * @param array<T>|null $entries
      */
     public function setEntries(?array $entries) : void
     {
