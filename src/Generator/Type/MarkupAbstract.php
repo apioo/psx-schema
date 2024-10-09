@@ -31,6 +31,11 @@ use PSX\Schema\Format;
  */
 abstract class MarkupAbstract extends GeneratorAbstract
 {
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
+    }
+
     protected function getString(): string
     {
         return 'String';
@@ -84,11 +89,6 @@ abstract class MarkupAbstract extends GeneratorAbstract
     protected function getReference(string $ref): string
     {
         return $ref;
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '';
     }
 
     protected function getAny(): string

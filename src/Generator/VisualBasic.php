@@ -57,13 +57,13 @@ class VisualBasic extends CodeGeneratorAbstract
         $code = 'Public Class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= $this->generator->getGenericType($generics);
+            $code.= $this->generator->getGenericDefinition($generics);
         }
 
         if (!empty($extends)) {
             $code.= "\n" . $this->indent . 'Inherits ' . $extends;
             if (!empty($templates)) {
-                $code.= $this->generator->getGenericType($templates);
+                $code.= $this->generator->getGenericDefinition($templates);
             }
         }
 

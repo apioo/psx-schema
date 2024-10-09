@@ -31,6 +31,11 @@ use PSX\Schema\Format;
  */
 class Protobuf extends GeneratorAbstract
 {
+    public function getGenericDefinition(array $types): string
+    {
+        return '';
+    }
+
     protected function getString(): string
     {
         return 'string';
@@ -73,11 +78,6 @@ class Protobuf extends GeneratorAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '';
     }
 
     protected function getAny(): string

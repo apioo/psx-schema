@@ -63,7 +63,10 @@ class Student extends Human implements \JsonSerializable, \PSX\Record\Recordable
 class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?int $totalResults = null;
-    protected ?P $parent = null;
+    /**
+     * @var P $parent
+     */
+    protected mixed $parent = null;
     /**
      * @var array<T>|null
      */
@@ -76,16 +79,22 @@ class Map implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->totalResults;
     }
-    public function setParent(?P $parent) : void
+    /**
+     * @param P $parent
+     */
+    public function setParent(mixed $parent) : void
     {
         $this->parent = $parent;
     }
-    public function getParent() : ?P
+    /**
+     * @return P $parent
+     */
+    public function getParent() : mixed
     {
         return $this->parent;
     }
     /**
-     * @param array<T>|null $entries
+     * @param array<T>|null
      */
     public function setEntries(?array $entries) : void
     {

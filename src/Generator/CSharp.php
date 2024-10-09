@@ -71,13 +71,13 @@ class CSharp extends CodeGeneratorAbstract
         $code.= 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= $this->generator->getGenericType($generics);
+            $code.= $this->generator->getGenericDefinition($generics);
         }
 
         if (!empty($extends)) {
             $code.= ' : ' . $extends;
             if (!empty($templates)) {
-                $code.= $this->generator->getGenericType($templates);
+                $code.= $this->generator->getGenericDefinition($templates);
             }
         }
 

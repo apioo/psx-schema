@@ -14,25 +14,26 @@
     "HumanMap": {
       "allOf": [
         {
-          "$ref": "#/definitions/Map"
+          "type": "object",
+          "properties": {
+            "totalResults": {
+              "type": "integer"
+            },
+            "parent": {
+              "$ref": "#/definitions/Human"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Human"
+              }
+            }
+          }
         },
         {
           "type": "object"
         }
       ]
-    },
-    "Map": {
-      "type": "object",
-      "properties": {
-        "totalResults": {
-          "type": "integer"
-        },
-        "parent": [],
-        "entries": {
-          "type": "array",
-          "items": []
-        }
-      }
     },
     "RootSchema": {
       "type": "object",
@@ -60,7 +61,21 @@
     "StudentMap": {
       "allOf": [
         {
-          "$ref": "#/definitions/Map"
+          "type": "object",
+          "properties": {
+            "totalResults": {
+              "type": "integer"
+            },
+            "parent": {
+              "$ref": "#/definitions/Human"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Student"
+              }
+            }
+          }
         },
         {
           "type": "object"

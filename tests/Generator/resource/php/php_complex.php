@@ -106,10 +106,16 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
     {
         return $this->base;
     }
+    /**
+     * @param \PSX\Record\Record<PropertyType>|null
+     */
     public function setProperties(?\PSX\Record\Record $properties) : void
     {
         $this->properties = $properties;
     }
+    /**
+     * @return \PSX\Record\Record<PropertyType>|null
+     */
     public function getProperties() : ?\PSX\Record\Record
     {
         return $this->properties;
@@ -122,18 +128,30 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
     {
         return $this->discriminator;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null
+     */
     public function setMapping(?\PSX\Record\Record $mapping) : void
     {
         $this->mapping = $mapping;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getMapping() : ?\PSX\Record\Record
     {
         return $this->mapping;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null
+     */
     public function setTemplate(?\PSX\Record\Record $template) : void
     {
         $this->template = $template;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getTemplate() : ?\PSX\Record\Record
     {
         return $this->template;
@@ -711,18 +729,30 @@ class Specification implements \JsonSerializable, \PSX\Record\RecordableInterfac
     protected ?\PSX\Record\Record $definitions = null;
     #[Description('')]
     protected ?string $root = null;
+    /**
+     * @param \PSX\Record\Record<string>|null
+     */
     public function setImport(?\PSX\Record\Record $import) : void
     {
         $this->import = $import;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getImport() : ?\PSX\Record\Record
     {
         return $this->import;
     }
+    /**
+     * @param \PSX\Record\Record<DefinitionType>|null
+     */
     public function setDefinitions(?\PSX\Record\Record $definitions) : void
     {
         $this->definitions = $definitions;
     }
+    /**
+     * @return \PSX\Record\Record<DefinitionType>|null
+     */
     public function getDefinitions() : ?\PSX\Record\Record
     {
         return $this->definitions;

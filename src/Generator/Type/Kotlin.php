@@ -43,6 +43,11 @@ class Kotlin extends GeneratorAbstract
         };
     }
 
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
+    }
+
     protected function getString(): string
     {
         return 'String';
@@ -86,11 +91,6 @@ class Kotlin extends GeneratorAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getAny(): string

@@ -64,7 +64,7 @@ class Php extends GeneratorAbstract
             $return = $this->getType($type);
             $template = $type->getTemplate();
             if (!empty($template)) {
-                $return.= $this->getGeneric($template);
+                $return.= $this->getGenericDefinition($template);
             }
 
             return $return;
@@ -82,6 +82,11 @@ class Php extends GeneratorAbstract
             ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? '\\Sdkgen\\Client\\Multipart' : '\\PSX\\Data\\Body\\Multipart',
             ContentType::TEXT, ContentType::XML => $this->getString(),
         };
+    }
+
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getString(): string
@@ -129,9 +134,9 @@ class Php extends GeneratorAbstract
         return '(' . $type . ')';
     }
 
-    protected function getGeneric(array $types): string
+    protected function getGeneric(string $name): string
     {
-        return '<' . implode(', ', $types) . '>';
+        return 'mixed';
     }
 
     protected function getAny(): string

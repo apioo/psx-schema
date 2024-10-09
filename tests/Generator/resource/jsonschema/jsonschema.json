@@ -128,7 +128,7 @@
                 "media.fields": {
                     "type": "string"
                 },
-                "payload": []
+                "payload": {}
             }
         }
     },
@@ -211,6 +211,6 @@
         "media.fields": {
             "type": "string"
         },
-        "payload": []
+        "payload": {}
     }
 }

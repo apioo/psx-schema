@@ -72,7 +72,7 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->email;
     }
     /**
-     * @param array<string>|null $categories
+     * @param array<string>|null
      */
     public function setCategories(?array $categories) : void
     {
@@ -86,7 +86,7 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->categories;
     }
     /**
-     * @param array<Location>|null $locations
+     * @param array<Location>|null
      */
     public function setLocations(?array $locations) : void
     {
@@ -183,32 +183,50 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->config;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null
+     */
     public function setInlineConfig(?\PSX\Record\Record $inlineConfig) : void
     {
         $this->inlineConfig = $inlineConfig;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getInlineConfig() : ?\PSX\Record\Record
     {
         return $this->inlineConfig;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null
+     */
     public function setMapTags(?\PSX\Record\Record $mapTags) : void
     {
         $this->mapTags = $mapTags;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getMapTags() : ?\PSX\Record\Record
     {
         return $this->mapTags;
     }
+    /**
+     * @param \PSX\Record\Record<Author>|null
+     */
     public function setMapReceiver(?\PSX\Record\Record $mapReceiver) : void
     {
         $this->mapReceiver = $mapReceiver;
     }
+    /**
+     * @return \PSX\Record\Record<Author>|null
+     */
     public function getMapReceiver() : ?\PSX\Record\Record
     {
         return $this->mapReceiver;
     }
     /**
-     * @param array<string>|null $tags
+     * @param array<string>|null
      */
     public function setTags(?array $tags) : void
     {
@@ -222,7 +240,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         return $this->tags;
     }
     /**
-     * @param array<Author>|null $receiver
+     * @param array<Author>|null
      */
     public function setReceiver(?array $receiver) : void
     {

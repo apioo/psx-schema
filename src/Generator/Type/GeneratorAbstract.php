@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Type\ArrayPropertyType;
@@ -69,7 +70,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof ReferencePropertyType) {
             return $this->getReference($type->getTarget());
         } elseif ($type instanceof GenericPropertyType) {
-            return $type->getName() ?? '';
+            return $this->getGeneric($type->getName() ?? throw new GeneratorException('Provided no generic name'));
         }
 
         return $this->getAny();
@@ -80,15 +81,12 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $this->getType($type);
     }
 
-    public function getGenericType(array $types): string
-    {
-        return $this->getGeneric($types);
-    }
-
     public function getContentType(ContentType $contentType, int $context): string
     {
         return $this->getString();
     }
+
+    abstract public function getGenericDefinition(array $types): string;
 
     abstract protected function getString(): string;
 
@@ -127,7 +125,10 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $name;
     }
 
-    abstract protected function getGeneric(array $types): string;
+    protected function getGeneric(string $name): string
+    {
+        return $name;
+    }
 
     abstract protected function getAny(): string;
 

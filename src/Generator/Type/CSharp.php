@@ -43,6 +43,11 @@ class CSharp extends GeneratorAbstract
         };
     }
 
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
+    }
+
     protected function getString(): string
     {
         return 'string';
@@ -86,11 +91,6 @@ class CSharp extends GeneratorAbstract
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getAny(): string

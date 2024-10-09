@@ -68,7 +68,7 @@ class Python extends CodeGeneratorAbstract
         $parts = [];
         if (!empty($extends)) {
             if (!empty($templates)) {
-                $extends.= $this->generator->getGenericType($templates);
+                $extends.= $this->generator->getGenericDefinition($templates);
             }
             $parts[] = $extends;
         } else {
