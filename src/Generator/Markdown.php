@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Markdown
@@ -43,7 +43,7 @@ class Markdown extends MarkupAbstract
         return new Type\Markdown($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name->getClass()) . "\n";
         $return.= '' . "\n";
@@ -54,18 +54,15 @@ class Markdown extends MarkupAbstract
             $return.= '' . "\n";
         }
 
-        $return.= 'Field | Type | Description | Constraints' . "\n";
-        $return.= '----- | ---- | ----------- | -----------' . "\n";
+        $return.= 'Field | Type | Description' . "\n";
+        $return.= '----- | ---- | -----------' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $constraints = $this->getConstraints($property->getOrigin());
-
             $row = [
                 $property->getName()->getProperty(),
                 $property->getType(),
-                ($property->isRequired() ? '**REQUIRED**. ' : '') . $property->getComment(),
-                !empty($constraints) ? $this->writeConstraints($constraints) : '',
+                $property->getComment(),
             ];
 
             $return.= implode(' | ', $row);
@@ -75,7 +72,7 @@ class Markdown extends MarkupAbstract
         return $return;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         $return = str_repeat('#', $this->heading) . ' ' . htmlspecialchars($name->getClass()) . "\n";
         $return.= '' . "\n";

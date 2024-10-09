@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,13 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeUtil;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Go
@@ -59,10 +57,10 @@ class Go extends CodeGeneratorAbstract
         return false;
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $generic = '';
-        if (!empty($generics)) {
+        if (!empty($generics) && empty($templates)) {
             $types = [];
             foreach ($generics as $type) {
                 $types[] = $type . ' any';
@@ -75,7 +73,7 @@ class Go extends CodeGeneratorAbstract
         foreach ($properties as $property) {
             /** @var Code\Property $property */
             $ref = '';
-            if ($property->getOrigin() instanceof ReferenceType) {
+            if ($property->getOrigin() instanceof ReferencePropertyType) {
                 $ref = '*';
             }
 
@@ -87,19 +85,17 @@ class Go extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
-
-        return 'type ' . $name->getClass() . ' = map[string]' . $subType . "\n";
+        return 'type ' . $name->getClass() . ' = map[string]' . $type . "\n";
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        return 'type ' . $name->getClass() . ' = ' . $type . "\n";
+        return 'type ' . $name->getClass() . ' = []' . $type . "\n";
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = "\n";
 

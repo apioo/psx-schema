@@ -1,8 +1,6 @@
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
 
 #[Description('Location of the person')]
-#[Required(array('lat', 'long'))]
 class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?float $lat = null;
@@ -38,55 +36,11 @@ class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Required;
-
-#[Description('An application')]
-#[Required(array('name', 'url'))]
-class Web implements \JsonSerializable, \PSX\Record\RecordableInterface
-{
-    protected ?string $name = null;
-    protected ?string $url = null;
-    public function setName(?string $name) : void
-    {
-        $this->name = $name;
-    }
-    public function getName() : ?string
-    {
-        return $this->name;
-    }
-    public function setUrl(?string $url) : void
-    {
-        $this->url = $url;
-    }
-    public function getUrl() : ?string
-    {
-        return $this->url;
-    }
-    public function toRecord() : \PSX\Record\RecordInterface
-    {
-        /** @var \PSX\Record\Record<mixed> $record */
-        $record = new \PSX\Record\Record();
-        $record->put('name', $this->name);
-        $record->put('url', $this->url);
-        return $record;
-    }
-    public function jsonSerialize() : object
-    {
-        return (object) $this->toRecord()->getAll();
-    }
-}
-
-use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\MaxItems;
 use PSX\Schema\Attribute\Nullable;
-use PSX\Schema\Attribute\Pattern;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An simple author element with some description')]
-#[Required(array('title'))]
 class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Pattern('[A-z]{3,16}')]
     protected ?string $title = null;
     #[Description('We will send no spam to this address')]
     #[Nullable(true)]
@@ -94,7 +48,6 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     /**
      * @var array<string>|null
      */
-    #[MaxItems(8)]
     protected ?array $categories = null;
     /**
      * @var array<Location>|null
@@ -171,30 +124,17 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     }
 }
 
-use PSX\Schema\Attribute\MaxProperties;
-use PSX\Schema\Attribute\MinProperties;
 /**
- * @extends \PSX\Record\Record<string>
+ * @extends \ArrayObject<string, string>
  */
-#[MinProperties(1)]
-#[MaxProperties(6)]
-class Meta extends \PSX\Record\Record
+class Meta extends \ArrayObject
 {
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Enum;
 use PSX\Schema\Attribute\Key;
-use PSX\Schema\Attribute\MaxItems;
-use PSX\Schema\Attribute\MaxLength;
-use PSX\Schema\Attribute\Maximum;
-use PSX\Schema\Attribute\MinItems;
-use PSX\Schema\Attribute\MinLength;
-use PSX\Schema\Attribute\Minimum;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An general news entry')]
-#[Required(array('receiver', 'price', 'content'))]
 class News implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?Meta $config = null;
@@ -211,48 +151,25 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      */
     protected ?\PSX\Record\Record $mapReceiver = null;
     /**
-     * @var \PSX\Record\Record<Location|Web>|null
-     */
-    protected ?\PSX\Record\Record $mapResources = null;
-    /**
      * @var array<string>|null
      */
-    #[MinItems(1)]
-    #[MaxItems(6)]
     protected ?array $tags = null;
     /**
      * @var array<Author>|null
      */
-    #[MinItems(1)]
     protected ?array $receiver = null;
-    /**
-     * @var array<Location|Web>|null
-     */
-    protected ?array $resources = null;
-    protected ?string $profileImage = null;
     protected ?bool $read = null;
-    protected Author|Web|null $source = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
-    protected ?string $expires = null;
-    protected ?string $range = null;
-    #[Minimum(1)]
-    #[Maximum(100)]
     protected ?float $price = null;
-    #[Minimum(1)]
-    #[Maximum(5)]
     protected ?int $rating = null;
     #[Description('Contains the main content of the news entry')]
-    #[MinLength(3)]
-    #[MaxLength(512)]
     protected ?string $content = null;
-    #[Enum(array('foo', 'bar'))]
     protected ?string $question = null;
-    protected ?string $version = 'http://foo.bar';
+    protected ?string $version = null;
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
-    protected ?string $profileUri = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
     #[Key('media.fields')]
@@ -266,37 +183,47 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->config;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null $inlineConfig
+     */
     public function setInlineConfig(?\PSX\Record\Record $inlineConfig) : void
     {
         $this->inlineConfig = $inlineConfig;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getInlineConfig() : ?\PSX\Record\Record
     {
         return $this->inlineConfig;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null $mapTags
+     */
     public function setMapTags(?\PSX\Record\Record $mapTags) : void
     {
         $this->mapTags = $mapTags;
     }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
     public function getMapTags() : ?\PSX\Record\Record
     {
         return $this->mapTags;
     }
+    /**
+     * @param \PSX\Record\Record<Author>|null $mapReceiver
+     */
     public function setMapReceiver(?\PSX\Record\Record $mapReceiver) : void
     {
         $this->mapReceiver = $mapReceiver;
     }
+    /**
+     * @return \PSX\Record\Record<Author>|null
+     */
     public function getMapReceiver() : ?\PSX\Record\Record
     {
         return $this->mapReceiver;
-    }
-    public function setMapResources(?\PSX\Record\Record $mapResources) : void
-    {
-        $this->mapResources = $mapResources;
-    }
-    public function getMapResources() : ?\PSX\Record\Record
-    {
-        return $this->mapResources;
     }
     /**
      * @param array<string>|null $tags
@@ -326,28 +253,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->receiver;
     }
-    /**
-     * @param array<Location|Web>|null $resources
-     */
-    public function setResources(?array $resources) : void
-    {
-        $this->resources = $resources;
-    }
-    /**
-     * @return array<Location|Web>|null
-     */
-    public function getResources() : ?array
-    {
-        return $this->resources;
-    }
-    public function setProfileImage(?string $profileImage) : void
-    {
-        $this->profileImage = $profileImage;
-    }
-    public function getProfileImage() : ?string
-    {
-        return $this->profileImage;
-    }
     public function setRead(?bool $read) : void
     {
         $this->read = $read;
@@ -355,14 +260,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getRead() : ?bool
     {
         return $this->read;
-    }
-    public function setSource(Author|Web|null $source) : void
-    {
-        $this->source = $source;
-    }
-    public function getSource() : Author|Web|null
-    {
-        return $this->source;
     }
     public function setAuthor(?Author $author) : void
     {
@@ -395,22 +292,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getReadDate() : ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
-    }
-    public function setExpires(?string $expires) : void
-    {
-        $this->expires = $expires;
-    }
-    public function getExpires() : ?string
-    {
-        return $this->expires;
-    }
-    public function setRange(?string $range) : void
-    {
-        $this->range = $range;
-    }
-    public function getRange() : ?string
-    {
-        return $this->range;
     }
     public function setPrice(?float $price) : void
     {
@@ -460,14 +341,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->coffeeTime;
     }
-    public function setProfileUri(?string $profileUri) : void
-    {
-        $this->profileUri = $profileUri;
-    }
-    public function getProfileUri() : ?string
-    {
-        return $this->profileUri;
-    }
     public function setCaptcha(?string $captcha) : void
     {
         $this->captcha = $captcha;
@@ -500,26 +373,19 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('inlineConfig', $this->inlineConfig);
         $record->put('mapTags', $this->mapTags);
         $record->put('mapReceiver', $this->mapReceiver);
-        $record->put('mapResources', $this->mapResources);
         $record->put('tags', $this->tags);
         $record->put('receiver', $this->receiver);
-        $record->put('resources', $this->resources);
-        $record->put('profileImage', $this->profileImage);
         $record->put('read', $this->read);
-        $record->put('source', $this->source);
         $record->put('author', $this->author);
         $record->put('meta', $this->meta);
         $record->put('sendDate', $this->sendDate);
         $record->put('readDate', $this->readDate);
-        $record->put('expires', $this->expires);
-        $record->put('range', $this->range);
         $record->put('price', $this->price);
         $record->put('rating', $this->rating);
         $record->put('content', $this->content);
         $record->put('question', $this->question);
         $record->put('version', $this->version);
         $record->put('coffeeTime', $this->coffeeTime);
-        $record->put('profileUri', $this->profileUri);
         $record->put('g-recaptcha-response', $this->captcha);
         $record->put('media.fields', $this->mediaFields);
         $record->put('payload', $this->payload);

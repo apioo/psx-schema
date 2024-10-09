@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Swift
@@ -54,12 +51,22 @@ class Swift extends CodeGeneratorAbstract
         return new Normalizer\Swift();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
-        $code = 'class ' . $name->getClass() . ': ';
+        $code = 'class ' . $name->getClass();
+
+        if (!empty($generics)) {
+            $code.= $this->generator->getGenericDefinition($generics);
+        }
+
+        $code.= ': ';
 
         if (!empty($extends)) {
-            $code.= $extends . ' ';
+            $code.= $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericDefinition($templates);
+            }
+            $code.= ' ';
         } else {
             $code.= 'Codable ';
         }
@@ -87,32 +94,17 @@ class Swift extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
         return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
         return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
     }
 
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
-    {
-        return 'typealias ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

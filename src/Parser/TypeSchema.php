@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ namespace PSX\Schema\Parser;
 use PSX\Json\Parser;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Exception\UnknownTypeException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
@@ -33,22 +33,15 @@ use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManagerInterface;
 use PSX\Schema\Type;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeFactory;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\Enum\DefinitionType;
+use PSX\Schema\Type\Enum\PropertyType;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
-use PSX\Uri\Uri;
 
 /**
  * TypeSchema
@@ -83,15 +76,17 @@ class TypeSchema implements ParserInterface
         $this->parseImport($data, $definitions, $context);
         $this->parseDefinitions($data, $definitions);
 
-        try {
-            $type = $this->parseType($data);
-        } catch (UnknownTypeException $e) {
-            // in case we parse i.e. an OpenAPI document we have no root schema
-            // and only definitions
-            $type = TypeFactory::getAny();
+        $root = $this->getStringValue($data, ['root', '$ref']);
+        if (empty($root)) {
+            try {
+                $type = $this->parseDefinitionType($data);
+                $root = 'RootType';
+                $definitions->addType($root, $type);
+            } catch (UnknownTypeException) {
+            }
         }
 
-        return new Schema($type, $definitions);
+        return new Schema($definitions, $root);
     }
 
     private function parseDefinitions(\stdClass $schema, DefinitionsInterface $definitions): void
@@ -109,7 +104,7 @@ class TypeSchema implements ParserInterface
 
         foreach ($data as $name => $definition) {
             try {
-                $type = $this->parseType($definition);
+                $type = $this->parseDefinitionType($definition);
             } catch (\Exception $e) {
                 throw new ParserException('Type ' . $name . ' contains an invalid schema: ' . $e->getMessage(), 0, $e);
             }
@@ -120,9 +115,9 @@ class TypeSchema implements ParserInterface
 
     private function parseImport(\stdClass $schema, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
-        $import = $schema->{'$import'} ?? null;
-        if (!$import instanceof \stdClass) {
-            return;
+        $import = $this->getObjectValue($schema, ['import', '$import']);
+        if (empty($import)) {
+            $import = [];
         }
 
         foreach ($import as $namespace => $uri) {
@@ -147,66 +142,19 @@ class TypeSchema implements ParserInterface
     }
 
     /**
-     * @throws InvalidSchemaException
-     * @throws ParserException
      * @throws UnknownTypeException
      */
-    public function parseType(\stdClass $data, ?string $namespace = null): TypeInterface
+    public function parseDefinitionType(\stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
     {
-        $data = BCLayer::transform($data);
-        $type = $this->newPropertyType($data);
-
-        if ($type instanceof TypeAbstract) {
-            $this->parseCommon($type, $data);
-        }
-
-        if ($type instanceof ScalarType) {
-            $this->parseScalar($type, $data);
-        }
-
-        if ($type instanceof StructType) {
-            $this->parseStruct($type, $data, $namespace);
-        } elseif ($type instanceof MapType) {
-            $this->parseMap($type, $data, $namespace);
-        } elseif ($type instanceof ArrayType) {
-            $this->parseArray($type, $data, $namespace);
-        } elseif ($type instanceof NumberType || $type instanceof IntegerType) {
-            $this->parseNumber($type, $data);
-        } elseif ($type instanceof StringType) {
-            $this->parseString($type, $data);
-        } elseif ($type instanceof IntersectionType) {
-            $this->parseIntersection($type, $data, $namespace);
-        } elseif ($type instanceof UnionType) {
-            $this->parseUnion($type, $data, $namespace);
-        } elseif ($type instanceof ReferenceType) {
-            $this->parseReference($type, $data, $namespace);
-        } elseif ($type instanceof GenericType) {
-            $this->parseGeneric($type, $data);
-        }
-
-        return $type;
-    }
-
-    protected function parseCommon(TypeAbstract $type, \stdClass $data): void
-    {
-        if (isset($data->title)) {
-            $type->setTitle($data->title);
-        }
+        $data = BCLayer::transformDefinition($data);
+        $type = $this->newDefinitionType($data);
 
         if (isset($data->description)) {
             $type->setDescription($data->description);
         }
 
-        if (isset($data->nullable)) {
-            $type->setNullable($data->nullable);
-        }
-
         if (isset($data->deprecated)) {
             $type->setDeprecated($data->deprecated);
-        }
-
-        if (isset($data->readonly)) {
-            $type->setReadonly($data->readonly);
         }
 
         // PSX specific attributes
@@ -216,263 +164,274 @@ class TypeSchema implements ParserInterface
                 $type->setAttribute(substr($key, 6), $value);
             }
         }
+
+        if ($type instanceof Type\StructDefinitionType) {
+            $this->parseDefinitionStruct($type, $data, $namespace);
+        } elseif ($type instanceof Type\MapDefinitionType) {
+            $this->parseDefinitionMap($type, $data, $namespace);
+        } elseif ($type instanceof Type\ArrayDefinitionType) {
+            $this->parseDefinitionArray($type, $data, $namespace);
+        }
+
+        return $type;
     }
 
-    protected function parseScalar(ScalarType $property, \stdClass $data): void
+    private function parseDefinitionStruct(StructDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        if (isset($data->format) && is_string($data->format)) {
-            $format = Format::tryFrom($data->format);
-            if ($format !== null) {
-                $property->setFormat($format);
+        $base = $this->getBooleanValue($data, ['base']);
+        if ($base !== null) {
+            $type->setBase($base);
+        }
+
+        $discriminator = $this->getStringValue($data, ['discriminator']);
+        if (!empty($discriminator)) {
+            $type->setDiscriminator($discriminator);
+        }
+
+        $mapping = $this->getObjectValue($data, ['mapping']);
+        if ($mapping instanceof \stdClass) {
+            $result = [];
+            foreach ($mapping as $mappingType => $mappingValue) {
+                if ($namespace !== null) {
+                    $result[$namespace . ':' . $mappingType] = $mappingValue;
+                } else {
+                    $result[$mappingType] = $mappingValue;
+                }
             }
+
+            $type->setMapping($result);
         }
 
-        if (isset($data->enum)) {
-            $property->setEnum($data->enum);
-        }
+        $parent = $this->getStringValue($data, ['parent', '$extends', '$ref']);
+        if (!empty($parent)) {
+            $legacyParent = (object) [
+                'type' => 'reference',
+                'target' => $parent,
+                'template' => $this->getObjectValue($data, ['template', '$template']),
+            ];
 
-        if (isset($data->const)) {
-            $property->setConst($data->const);
-        }
-
-        if (isset($data->default)) {
-            $property->setDefault($data->default);
-        }
-    }
-
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseStruct(StructType $type, \stdClass $data, ?string $namespace): void
-    {
-        if (isset($data->{'$extends'})) {
-            if ($namespace !== null) {
-                $type->setExtends($namespace . ':' . $data->{'$extends'});
-            } else {
-                $type->setExtends($data->{'$extends'});
+            $parentType = $this->parsePropertyType($legacyParent, $namespace);
+            if (!$parentType instanceof ReferencePropertyType) {
+                throw new ParserException('Parent must be an reference type');
             }
+
+            $type->setParent($parentType);
         }
 
-        if (isset($data->properties) && $data->properties instanceof \stdClass) {
-            foreach ($data->properties as $name => $row) {
+        $parent = $this->getObjectValue($data, ['parent']);
+        if ($parent instanceof \stdClass) {
+            $parentType = $this->parsePropertyType($parent, $namespace);
+            if (!$parentType instanceof ReferencePropertyType) {
+                throw new ParserException('Parent must be an reference type');
+            }
+
+            $type->setParent($parentType);
+        }
+
+        $properties = $this->getObjectValue($data, ['properties']);
+        if ($properties instanceof \stdClass) {
+            foreach ($properties as $name => $row) {
                 if ($row instanceof \stdClass) {
-                    $type->addProperty($name, $this->parseType($row, $namespace));
+                    $type->addProperty($name, $this->parsePropertyType($row, $namespace));
                 }
             }
         }
+    }
 
-        if (isset($data->required) && is_array($data->required)) {
-            $type->setRequired($data->required);
+    private function parseDefinitionMap(Type\MapDefinitionType $type, \stdClass $data, ?string $namespace): void
+    {
+        $schema = $this->getObjectValue($data, ['schema', 'additionalProperties']);
+        if ($schema instanceof \stdClass) {
+            $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseMap(MapType $type, \stdClass $data, ?string $namespace): void
+    private function parseDefinitionArray(Type\ArrayDefinitionType $type, \stdClass $data, ?string $namespace): void
     {
-        if (isset($data->additionalProperties)) {
-            if ($data->additionalProperties === true) {
-                // in TypeSchema we allow only true, which means any value
-                $type->setAdditionalProperties(TypeFactory::getAny());
-            } elseif ($data->additionalProperties instanceof \stdClass) {
-                $type->setAdditionalProperties($this->parseType($data->additionalProperties, $namespace));
-            }
-        }
-
-        if (isset($data->minProperties)) {
-            $type->setMinProperties($data->minProperties);
-        }
-
-        if (isset($data->maxProperties)) {
-            $type->setMaxProperties($data->maxProperties);
+        $schema = $this->getObjectValue($data, ['schema', 'items']);
+        if ($schema instanceof \stdClass) {
+            $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseArray(ArrayType $type, \stdClass $data, ?string $namespace): void
+    private function newDefinitionType(\stdClass $data): Type\DefinitionTypeAbstract
     {
-        if (isset($data->items)) {
-            if ($data->items === true) {
-                $type->setItems(TypeFactory::getAny());
-            } elseif ($data->items instanceof \stdClass) {
-                $type->setItems($this->parseType($data->items, $namespace));
-            }
+        $rawType = $this->getStringValue($data, ['type']);
+        $type = is_string($rawType) ? DefinitionType::tryFrom($rawType) : null;
+
+        if ($type === DefinitionType::STRUCT) {
+            return DefinitionTypeFactory::getStruct();
+        } elseif ($type === DefinitionType::MAP) {
+            return DefinitionTypeFactory::getMap();
+        } elseif ($type === DefinitionType::ARRAY) {
+            return DefinitionTypeFactory::getArray();
         }
 
-        if (isset($data->minItems)) {
-            $type->setMinItems($data->minItems);
+        throw new UnknownTypeException('Could not assign schema to a definition type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
+    }
+
+    public function parsePropertyType(\stdClass $data, ?string $namespace = null): Type\PropertyTypeAbstract
+    {
+        $data = BCLayer::transformProperty($data);
+        $type = $this->newPropertyType($data);
+
+        $description = $this->getStringValue($data, ['description']);
+        if ($description !== null) {
+            $type->setDescription($description);
         }
 
-        if (isset($data->maxItems)) {
-            $type->setMaxItems($data->maxItems);
+        $deprecated = $this->getBooleanValue($data, ['deprecated']);
+        if ($deprecated !== null) {
+            $type->setDeprecated($deprecated);
         }
 
-        if (isset($data->uniqueItems)) {
-            $type->setUniqueItems($data->uniqueItems);
+        $nullable = $this->getBooleanValue($data, ['nullable']);
+        if ($nullable !== null) {
+            $type->setNullable($nullable);
+        }
+
+        if ($type instanceof Type\CollectionPropertyType) {
+            $this->parseCollection($type, $data, $namespace);
+        } elseif ($type instanceof Type\StringPropertyType) {
+            $this->parseString($type, $data);
+        } elseif ($type instanceof Type\ReferencePropertyType) {
+            $this->parseReference($type, $data, $namespace);
+        } elseif ($type instanceof Type\GenericPropertyType) {
+            $this->parseGeneric($type, $data);
+        }
+
+        return $type;
+    }
+
+    protected function parseCollection(Type\CollectionPropertyType $type, \stdClass $data, ?string $namespace): void
+    {
+        $schema = null;
+        if ($type instanceof Type\MapPropertyType) {
+            $schema = $this->getObjectValue($data, ['schema', 'additionalProperties']);
+        } elseif ($type instanceof Type\ArrayPropertyType) {
+            $schema = $this->getObjectValue($data, ['schema', 'items']);
+        }
+
+        if ($schema instanceof \stdClass) {
+            $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseNumber(NumberType $type, \stdClass $data): void
+    protected function parseString(StringPropertyType $property, \stdClass $data): void
     {
-        if (isset($data->minimum)) {
-            $type->setMinimum($data->minimum);
-        }
+        $rawFormat = $this->getStringValue($data, ['format']);
+        $format = is_string($rawFormat) ? Format::tryFrom($rawFormat) : null;
 
-        if (isset($data->exclusiveMinimum)) {
-            $type->setExclusiveMinimum((bool) $data->exclusiveMinimum);
-        }
-
-        if (isset($data->maximum)) {
-            $type->setMaximum($data->maximum);
-        }
-
-        if (isset($data->exclusiveMaximum)) {
-            $type->setExclusiveMaximum((bool) $data->exclusiveMaximum);
-        }
-
-        if (isset($data->multipleOf)) {
-            $type->setMultipleOf($data->multipleOf);
+        if ($format instanceof Format) {
+            $property->setFormat($format);
         }
     }
 
-    protected function parseString(StringType $type, \stdClass $data): void
+    protected function parseReference(ReferencePropertyType $type, \stdClass $data, ?string $namespace): void
     {
-        if (isset($data->pattern)) {
-            $type->setPattern($data->pattern);
-        }
-
-        if (isset($data->minLength)) {
-            $type->setMinLength($data->minLength);
-        }
-
-        if (isset($data->maxLength)) {
-            $type->setMaxLength($data->maxLength);
-        }
-    }
-
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseIntersection(IntersectionType $type, \stdClass $data, ?string $namespace): void
-    {
-        if (isset($data->allOf) && is_array($data->allOf)) {
-            $props = [];
-            foreach ($data->allOf as $prop) {
-                if ($prop instanceof \stdClass) {
-                    $props[] = $this->parseType($prop, $namespace);
-                }
-            }
-
-            $type->setAllOf($props);
-        }
-    }
-
-    /**
-     * @throws InvalidSchemaException
-     */
-    protected function parseUnion(UnionType $type, \stdClass $data, ?string $namespace): void
-    {
-        if (isset($data->oneOf) && is_array($data->oneOf)) {
-            $props = [];
-            foreach ($data->oneOf as $prop) {
-                if ($prop instanceof \stdClass) {
-                    $props[] = $this->parseType($prop, $namespace);
-                }
-            }
-
-            $type->setOneOf($props);
-
-            if (isset($data->discriminator) && isset($data->discriminator->propertyName)) {
-                $propertyName = $data->discriminator->propertyName;
-                $mapping = $data->discriminator->mapping ?? null;
-
-                $type->setDiscriminator($propertyName, (array) $mapping);
-            }
-        }
-    }
-
-    protected function parseReference(ReferenceType $type, \stdClass $data, ?string $namespace): void
-    {
-        $ref = $data->{'$ref'} ?? null;
-        if (empty($ref) || !is_string($ref)) {
-            throw new ParserException('Provided reference must be of type string');
+        $target = $this->getStringValue($data, ['target', '$ref']);
+        if (empty($target)) {
+            throw new ParserException('Provided reference target must be of type string');
         }
 
         // JSON Schema compatibility
-        $ref = str_replace('#/definitions/', '', $ref);
+        $target = str_replace('#/definitions/', '', $target);
         // OpenAPI compatibility
-        $ref = str_replace('#/components/schemas/', '', $ref);
+        $target = str_replace('#/components/schemas/', '', $target);
 
-        if (strpos($ref, ':') !== false) {
+        if (str_contains($target, ':')) {
             $namespace = null;
         }
 
         if ($namespace !== null) {
-            $type->setRef($namespace . ':' . $ref);
+            $type->setTarget($namespace . ':' . $target);
         } else {
-            $type->setRef($ref);
+            $type->setTarget($target);
         }
 
-        $template = $data->{'$template'} ?? null;
-        if (!empty($template) && $template instanceof \stdClass) {
-            $vars = get_object_vars($template);
-            if ($namespace !== null) {
-                $vars = array_map(static function(string $value) use ($namespace) {
-                    return $namespace . ':' . $value;
-                }, $vars);
+        $template = $this->getObjectValue($data, ['template', '$template']);
+        if ($template instanceof \stdClass) {
+            $result = [];
+            foreach ($template as $templateName => $templateType) {
+                if ($namespace !== null) {
+                    $result[$templateName] = $namespace . ':' . $templateType;
+                } else {
+                    $result[$templateName] = $templateType;
+                }
             }
 
-            $type->setTemplate($vars);
+            $type->setTemplate($result);
         }
     }
 
-    protected function parseGeneric(GenericType $type, \stdClass $data): void
+    protected function parseGeneric(Type\GenericPropertyType $type, \stdClass $data): void
     {
-        $generic = $data->{'$generic'} ?? null;
-        if (empty($generic) || !is_string($generic)) {
-            throw new ParserException('Provided generic must be of type string');
+        $name = $this->getStringValue($data, ['name', '$generic']);
+        if (empty($name)) {
+            throw new ParserException('Provided generic name must be of type string');
         }
 
-        $type->setGeneric($generic);
+        $type->setName($name);
     }
 
-    private function newPropertyType(\stdClass $data): TypeInterface
+    private function newPropertyType(\stdClass $data): PropertyTypeAbstract
     {
-        $type = isset($data->type) && is_string($data->type) ? Type::tryFrom($data->type) : null;
-        if ($type === Type::OBJECT) {
-            if (isset($data->properties)) {
-                return TypeFactory::getStruct();
-            } elseif (isset($data->additionalProperties)) {
-                return TypeFactory::getMap();
-            }
-        } elseif ($type === Type::ARRAY) {
-            return TypeFactory::getArray();
-        } elseif ($type === Type::STRING) {
-            return TypeFactory::getString();
-        } elseif ($type === Type::INTEGER) {
-            return TypeFactory::getInteger();
-        } elseif ($type === Type::NUMBER) {
-            return TypeFactory::getNumber();
-        } elseif ($type === Type::BOOLEAN) {
-            return TypeFactory::getBoolean();
-        } elseif ($type === Type::ANY) {
-            return TypeFactory::getAny();
-        } elseif (isset($data->allOf)) {
-            return TypeFactory::getIntersection();
-        } elseif (isset($data->oneOf)) {
-            return TypeFactory::getUnion();
-        } elseif (isset($data->{'$ref'})) {
-            return TypeFactory::getReference();
-        } elseif (isset($data->{'$generic'})) {
-            return TypeFactory::getGeneric();
+        $rawType = $this->getStringValue($data, ['type']);
+        $type = is_string($rawType) ? PropertyType::tryFrom($rawType) : null;
+
+        if ($type === PropertyType::MAP) {
+            return PropertyTypeFactory::getMap();
+        } elseif ($type === PropertyType::ARRAY) {
+            return PropertyTypeFactory::getArray();
+        } elseif ($type === PropertyType::STRING) {
+            return PropertyTypeFactory::getString();
+        } elseif ($type === PropertyType::INTEGER) {
+            return PropertyTypeFactory::getInteger();
+        } elseif ($type === PropertyType::NUMBER) {
+            return PropertyTypeFactory::getNumber();
+        } elseif ($type === PropertyType::BOOLEAN) {
+            return PropertyTypeFactory::getBoolean();
+        } elseif ($type === PropertyType::ANY) {
+            return PropertyTypeFactory::getAny();
+        } elseif ($type === PropertyType::REFERENCE) {
+            return PropertyTypeFactory::getReference();
+        } elseif ($type === PropertyType::GENERIC) {
+            return PropertyTypeFactory::getGeneric();
         }
 
-        throw new UnknownTypeException('Could not assign schema to a type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
+        throw new UnknownTypeException('Could not assign schema to a property type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
+    }
+
+    private function getStringValue(\stdClass $data, array $keywords): ?string
+    {
+        foreach ($keywords as $keyword) {
+            if (isset($data->{$keyword}) && is_string($data->{$keyword})) {
+                return $data->{$keyword};
+            }
+        }
+
+        return null;
+    }
+
+    private function getBooleanValue(\stdClass $data, array $keywords): ?bool
+    {
+        foreach ($keywords as $keyword) {
+            if (isset($data->{$keyword}) && is_bool($data->{$keyword})) {
+                return $data->{$keyword};
+            }
+        }
+
+        return null;
+    }
+
+    private function getObjectValue(\stdClass $data, array $keywords): ?\stdClass
+    {
+        foreach ($keywords as $keyword) {
+            if (isset($data->{$keyword}) && $data->{$keyword} instanceof \stdClass) {
+                return $data->{$keyword};
+            }
+        }
+
+        return null;
     }
 }

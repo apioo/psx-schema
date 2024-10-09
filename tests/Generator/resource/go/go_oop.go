@@ -9,10 +9,21 @@ type Student struct {
     MatricleNumber string `json:"matricleNumber"`
 }
 
-type StudentMap = Map[Student]
-
-type Map[T any] struct {
+type StudentMap struct {
     TotalResults int `json:"totalResults"`
+    Parent *Human `json:"parent"`
+    Entries []Student `json:"entries"`
+}
+
+type HumanMap struct {
+    TotalResults int `json:"totalResults"`
+    Parent *Human `json:"parent"`
+    Entries []Human `json:"entries"`
+}
+
+type Map[P any, T any] struct {
+    TotalResults int `json:"totalResults"`
+    Parent P `json:"parent"`
     Entries []T `json:"entries"`
 }
 

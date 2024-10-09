@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,25 +24,23 @@ use PSX\Schema\Attribute;
 use PSX\Schema\Definitions;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\ParserException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Format;
 use PSX\Schema\Parser\Context\NamespaceContext;
-use PSX\Schema\Parser\Popo\ResolverInterface;
+use PSX\Schema\Parser\Popo\ReflectionReader;
 use PSX\Schema\Parser\Popo\TypeNameBuilder;
 use PSX\Schema\ParserInterface;
 use PSX\Schema\Schema;
 use PSX\Schema\SchemaInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeFactory;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use ReflectionClass;
 
 /**
@@ -54,12 +52,12 @@ use ReflectionClass;
  */
 class Popo implements ParserInterface
 {
-    private ResolverInterface $resolver;
+    private ReflectionReader $reader;
     private TypeNameBuilder $typeNameBuilder;
 
     public function __construct()
     {
-        $this->resolver = self::createDefaultResolver();
+        $this->reader = new ReflectionReader();
         $this->typeNameBuilder = new TypeNameBuilder();
     }
 
@@ -71,15 +69,20 @@ class Popo implements ParserInterface
         $className = str_replace('.', '\\', $schema);
         $definitions = new Definitions();
 
-        $this->parseClass($className, $definitions, $context);
+        try {
+            $this->parseClass($className, $definitions, $context, $typeName);
+        } catch (\ReflectionException|TypeNotFoundException $e) {
+            throw new ParserException('Could not parse class: ' . $className, previous: $e);
+        }
 
-        $name = $this->getTypeName(new ReflectionClass($className), $context);
-        $type = TypeFactory::getReference($name);
-
-        return new Schema($type, $definitions);
+        return new Schema($definitions, $typeName);
     }
 
-    protected function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null): TypeInterface
+    /**
+     * @throws \ReflectionException
+     * @throws TypeNotFoundException
+     */
+    private function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null, ?string &$typeName = null): DefinitionTypeAbstract
     {
         $class = new ReflectionClass($className);
 
@@ -88,7 +91,7 @@ class Popo implements ParserInterface
             return $definitions->getType($typeName);
         }
 
-        $type = $this->resolver->resolveClass($class);
+        $type = $this->reader->buildDefinition($class);
 
         $annotations = [];
         foreach ($class->getAttributes() as $attribute) {
@@ -97,41 +100,66 @@ class Popo implements ParserInterface
 
         $definitions->addType($typeName, $type);
 
-        if ($type instanceof StructType) {
-            $parent = $class->getParentClass();
-            if ($parent instanceof \ReflectionClass) {
-                $extends = $this->parseClass($parent->getName(), $definitions, $context);
-                if ($extends instanceof StructType) {
-                    $type->setExtends($this->getTypeName($parent, $context));
+        $this->parseDefinitionAnnotations($annotations, $type);
+
+        if ($type instanceof StructDefinitionType) {
+            $parentClass = $class->getParentClass();
+            if ($parentClass instanceof \ReflectionClass) {
+                $this->parseClass($parentClass->getName(), $definitions, $context, $parentName);
+            }
+
+            $this->parseStructAnnotations($annotations, $type);
+
+            $parent = $type->getParent();
+            if ($parent instanceof ReferencePropertyType) {
+                $this->parseClass($parent->getTarget(), $definitions, $context, $parentTypeName);
+                $parent->setTarget($parentTypeName);
+
+                $template = $parent->getTemplate();
+                if (!empty($template)) {
+                    $result = [];
+                    foreach ($template as $key => $className) {
+                        $this->parseClass($className, $definitions, $context, $templateTypeName);
+                        $result[$key] = $templateTypeName;
+                    }
+
+                    $parent->setTemplate($result);
                 }
             }
-        }
 
-        if ($type instanceof TypeAbstract) {
-            $this->parseCommonAnnotations($annotations, $type);
-        }
+            $mapping = $type->getMapping();
+            if (!empty($mapping)) {
+                $result = [];
+                foreach ($mapping as $className => $typeValue) {
+                    $this->parseClass($className, $definitions, $context, $mappingTypeName);
+                    $result[$mappingTypeName] = $typeValue;
+                }
 
-        if ($type instanceof StructType) {
-            $this->parseStructAnnotations($annotations, $type);
+                $type->setMapping($result);
+            }
+
             $this->parseProperties($class, $type, $definitions, $context);
-        } elseif ($type instanceof MapType) {
-            $this->parseMapAnnotations($annotations, $type);
-            $this->parseReferences($type, $definitions, $context);
-        } elseif ($type instanceof ReferenceType) {
-            $this->parseReferences($type, $definitions, $context);
+        } elseif ($type instanceof MapDefinitionType) {
+            // noop
+        } elseif ($type instanceof ArrayDefinitionType) {
+            // noop
         } else {
             throw new ParserException('Could not determine class type');
         }
 
-        $type->setAttribute(TypeAbstract::ATTR_CLASS, $class->getName());
+        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, $class->getName());
 
         return $type;
     }
 
-    private function parseProperties(ReflectionClass $class, StructType $property, DefinitionsInterface $definitions, ?ContextInterface $context): void
+    /**
+     * @throws \ReflectionException
+     * @throws TypeNotFoundException
+     */
+    private function parseProperties(ReflectionClass $class, StructDefinitionType $property, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
-        $properties = Popo\ObjectReader::getProperties($class);
-        $mapping    = [];
+        $properties = $this->reader->getProperties($class);
+        $mapping = [];
 
         foreach ($properties as $key => $reflection) {
             if ($reflection->getDeclaringClass()->getName() !== $class->getName()) {
@@ -144,74 +172,75 @@ class Popo implements ParserInterface
             }
 
             $type = $this->parseProperty($reflection);
-            if ($type instanceof TypeInterface) {
-                $this->parseReferences($type, $definitions, $context);
-
-                $property->addProperty($key, $type);
+            if ($type instanceof PropertyTypeAbstract) {
+                $property->addProperty($key, $this->transform($type, $definitions, $context));
             }
         }
 
         if (!empty($mapping)) {
-            $property->setAttribute(TypeAbstract::ATTR_MAPPING, $mapping);
+            $property->setAttribute(DefinitionTypeAbstract::ATTR_MAPPING, $mapping);
         }
     }
 
-    private function parseProperty(\ReflectionProperty $reflection): ?TypeInterface
+    private function parseProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
-        $type = $this->resolver->resolveProperty($reflection);
+        $type = $this->reader->buildProperty($reflection);
 
         $annotations = [];
         foreach ($reflection->getAttributes() as $attribute) {
             $annotations[] = $attribute->newInstance();
         }
 
-        if ($type instanceof TypeAbstract) {
-            $this->parseCommonAnnotations($annotations, $type);
+        if ($type instanceof PropertyTypeAbstract) {
+            $this->parsePropertyAnnotations($annotations, $type);
         }
 
-        if ($type instanceof ScalarType) {
+        if ($type instanceof ScalarPropertyType) {
             $this->parseScalarAnnotations($annotations, $type);
-        }
-
-        if ($type instanceof MapType) {
-            $this->parseMapAnnotations($annotations, $type);
-        } elseif ($type instanceof ArrayType) {
-            $this->parseArrayAnnotations($annotations, $type);
-
-            // in case the array property contains an union parse the union annotations
-            $items = $type->getItems();
-            if ($items instanceof UnionType) {
-                $this->parseUnionAnnotations($annotations, $items);
-            }
-        } elseif ($type instanceof StringType) {
-            $this->parseStringAnnotations($annotations, $type);
-        } elseif ($type instanceof NumberType) {
-            $this->parseNumberAnnotations($annotations, $type);
-        } elseif ($type instanceof UnionType) {
-            $this->parseUnionAnnotations($annotations, $type);
         }
 
         return $type;
     }
 
-    private function parseCommonAnnotations(array $annotations, TypeAbstract $type): void
+    private function parseDefinitionAnnotations(array $annotations, DefinitionTypeAbstract $type): void
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Title) {
-                $type->setTitle($annotation->title);
-            } elseif ($annotation instanceof Attribute\Description) {
+            if ($annotation instanceof Attribute\Description) {
                 $type->setDescription($annotation->description);
-            } elseif ($annotation instanceof Attribute\Nullable) {
-                $type->setNullable($annotation->nullable);
             } elseif ($annotation instanceof Attribute\Deprecated) {
                 $type->setDeprecated($annotation->deprecated);
-            } elseif ($annotation instanceof Attribute\Immutable) {
-                $type->setReadonly($annotation->readonly);
             }
         }
     }
 
-    private function parseScalarAnnotations(array $annotations, ScalarType $type): void
+    private function parseStructAnnotations(array $annotations, StructDefinitionType $type): void
+    {
+        $mapping = [];
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Attribute\Discriminator) {
+                $type->setDiscriminator($annotation->property);
+            } elseif ($annotation instanceof Attribute\DerivedType) {
+                $mapping[$annotation->class] = $annotation->type;
+            }
+        }
+
+        $type->setMapping($mapping);
+    }
+
+    private function parsePropertyAnnotations(array $annotations, PropertyTypeAbstract $type): void
+    {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Attribute\Description) {
+                $type->setDescription($annotation->description);
+            } elseif ($annotation instanceof Attribute\Deprecated) {
+                $type->setDeprecated($annotation->deprecated);
+            } elseif ($annotation instanceof Attribute\Nullable) {
+                $type->setNullable($annotation->nullable);
+            }
+        }
+    }
+
+    private function parseScalarAnnotations(array $annotations, ScalarPropertyType $type): void
     {
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Attribute\Format) {
@@ -219,146 +248,25 @@ class Popo implements ParserInterface
                 if ($format !== null) {
                     $type->setFormat($format);
                 }
-            } elseif ($annotation instanceof Attribute\Enum) {
-                $type->setEnum($annotation->enum);
             }
         }
     }
 
-    private function parseStructAnnotations(array $annotations, StructType $type): void
+    /**
+     * @throws \ReflectionException
+     * @throws TypeNotFoundException
+     */
+    private function transform(PropertyTypeAbstract $type, DefinitionsInterface $definitions, ?ContextInterface $context): PropertyTypeAbstract
     {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Required) {
-                $type->setRequired($annotation->required);
-            }
-        }
-    }
+        if ($type instanceof ReferencePropertyType) {
+            $this->parseClass($type->getTarget(), $definitions, $context, $typeName);
 
-    private function parseMapAnnotations(array $annotations, MapType $type): void
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\MinProperties) {
-                $type->setMinProperties($annotation->minProperties);
-            } elseif ($annotation instanceof Attribute\MaxProperties) {
-                $type->setMaxProperties($annotation->maxProperties);
-            }
-        }
-    }
-
-    private function parseArrayAnnotations(array $annotations, ArrayType $type): void
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\MinItems) {
-                $type->setMinItems($annotation->minItems);
-            } elseif ($annotation instanceof Attribute\MaxItems) {
-                $type->setMaxItems($annotation->maxItems);
-            } elseif ($annotation instanceof Attribute\UniqueItems) {
-                $type->setUniqueItems($annotation->uniqueItems);
-            }
-        }
-    }
-
-    private function parseStringAnnotations(array $annotations, StringType $type): void
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\MinLength) {
-                $type->setMinLength($annotation->minLength);
-            } elseif ($annotation instanceof Attribute\MaxLength) {
-                $type->setMaxLength($annotation->maxLength);
-            } elseif ($annotation instanceof Attribute\Pattern) {
-                $type->setPattern($annotation->pattern);
-            } elseif ($annotation instanceof Attribute\Format) {
-                $format = Format::tryFrom($annotation->format);
-                if ($format !== null) {
-                    $type->setFormat($format);
-                }
-            }
-        }
-    }
-
-    private function parseNumberAnnotations(array $annotations, NumberType $type): void
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Minimum) {
-                $type->setMinimum($annotation->minimum);
-            } elseif ($annotation instanceof Attribute\Maximum) {
-                $type->setMaximum($annotation->maximum);
-            } elseif ($annotation instanceof Attribute\ExclusiveMinimum) {
-                $type->setExclusiveMinimum($annotation->exclusiveMinimum);
-            } elseif ($annotation instanceof Attribute\ExclusiveMaximum) {
-                $type->setExclusiveMaximum($annotation->exclusiveMaximum);
-            } elseif ($annotation instanceof Attribute\MultipleOf) {
-                $type->setMultipleOf($annotation->multipleOf);
-            }
-        }
-    }
-
-    private function parseUnionAnnotations(array $annotations, UnionType $type): void
-    {
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof Attribute\Discriminator) {
-                $type->setDiscriminator($annotation->propertyName, $annotation->mapping);
-            }
-        }
-    }
-
-    private function parseReferences(TypeInterface $type, DefinitionsInterface $definitions, ?ContextInterface $context): void
-    {
-        if ($type instanceof MapType) {
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                $this->parseReferences($additionalProperties, $definitions, $context);
-            }
-        } elseif ($type instanceof ArrayType) {
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                $this->parseReferences($items, $definitions, $context);
-            }
-        } elseif ($type instanceof UnionType) {
-            $items = $type->getOneOf();
-            foreach ($items as $item) {
-                if ($item instanceof ReferenceType) {
-                    $this->parseReferences($item, $definitions, $context);
-                }
-            }
-        } elseif ($type instanceof IntersectionType) {
-            $items = $type->getAllOf();
-            foreach ($items as $item) {
-                if ($item instanceof ReferenceType) {
-                    $this->parseReferences($item, $definitions, $context);
-                }
-            }
-        } elseif ($type instanceof ReferenceType) {
-            $this->parseRef($type, $definitions, $context);
-        }
-    }
-
-    private function parseRef(ReferenceType $type, DefinitionsInterface $definitions, ?ContextInterface $context): void
-    {
-        $className = $type->getRef();
-        try {
-            $reflection = new ReflectionClass($className);
-            $type->setRef($this->getTypeName($reflection, $context));
-
-            $this->parseClass($className, $definitions, $context);
-        } catch (\ReflectionException $e) {
-            // in this case the class does not exist
+            return PropertyTypeFactory::getReference($typeName);
+        } elseif ($type instanceof CollectionPropertyType) {
+            $type->setSchema($this->transform($type->getSchema(), $definitions, $context));
         }
 
-        $template = $type->getTemplate();
-        if (!empty($template)) {
-            $result = [];
-            foreach ($template as $key => $className) {
-                try {
-                    $reflection = new ReflectionClass($className);
-                    $result[$key] = $this->getTypeName($reflection, $context);
-                    $this->parseClass($className, $definitions, $context);
-                } catch (\ReflectionException $e) {
-                    // in this case the class does not exist
-                }
-            }
-            $type->setTemplate($result);
-        }
+        return $type;
     }
 
     private function getTypeName(ReflectionClass $reflection, ?ContextInterface $context): string
@@ -369,13 +277,5 @@ class Popo implements ParserInterface
         }
 
         return $this->typeNameBuilder->build($reflection, $level);
-    }
-
-    public static function createDefaultResolver(): Popo\ResolverInterface
-    {
-        return new Popo\Resolver\Composite(
-            new Popo\Resolver\Native(),
-            new Popo\Resolver\Documentor()
-        );
     }
 }

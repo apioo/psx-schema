@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,13 +54,6 @@ class DumperTest extends TestCase
         $author->setLocations([$location, $location]);
         $author->setOrigin($location);
 
-        $web = new Attribute\Web();
-        $web->setName('foo');
-        $web->setUrl('http://google.com');
-
-        $profileImage = fopen('php://memory', 'r+');
-        fwrite($profileImage, 'foobar');
-
         $meta = new Attribute\Meta();
         $meta['tags_0'] = 'foo';
         $meta['tags_1'] = 'bar';
@@ -69,21 +62,16 @@ class DumperTest extends TestCase
         $news->setConfig($config);
         $news->setTags(['foo', 'bar']);
         $news->setReceiver([$author]);
-        $news->setResources([$web, $location]);
-        $news->setProfileImage($profileImage);
         $news->setRead(false);
-        $news->setSource($web);
         $news->setAuthor($author);
         $news->setMeta($meta);
         $news->setSendDate(LocalDate::parse('2016-12-11'));
         $news->setReadDate(LocalDateTime::parse('2016-12-11T10:50:00'));
-        $news->setExpires(Period::parse('P1D'));
         $news->setPrice(50);
         $news->setRating(4);
         $news->setContent('foobar');
         $news->setQuestion('foo');
         $news->setCoffeeTime(LocalTime::parse('10:49:00'));
-        $news->setProfileUri(Uri::parse('urn:foo:image'));
 
         $dumper = new Dumper();
         $actual = $dumper->dump($news);

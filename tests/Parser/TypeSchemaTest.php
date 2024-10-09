@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,11 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PSX\Http\Client;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaManager;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -52,9 +53,8 @@ class TypeSchemaTest extends ParserTestCase
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/typeschema.json');
-        $type   = $schema->getType();
 
-        $this->assertInstanceOf(TypeInterface::class, $type);
+        $this->assertEquals('Specification', $schema->getRoot());
     }
 
     public function testDiscriminator()
@@ -82,14 +82,12 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_external.json');
 
-        /** @var StructType $type */
-        $type = $schema->getType();
-        $this->assertInstanceOf(StructType::class, $type);
-        $reference = $type->getProperty('user');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertEquals('RootType', $schema->getRoot());
+        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('user');
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
-        $type = $schema->getDefinitions()->getType($reference->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $type = $schema->getDefinitions()->getType($reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
 
         $this->assertEquals(1, count($container));
         $transaction = array_shift($container);
@@ -104,14 +102,12 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager(null, $client));
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_typehub.json');
 
-        /** @var StructType $type */
-        $type = $schema->getType();
-        $this->assertInstanceOf(StructType::class, $type);
-        $reference = $type->getProperty('software');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
+        $this->assertEquals('RootType', $schema->getRoot());
+        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('software');
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
-        $type = $schema->getDefinitions()->getType($reference->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
+        $type = $schema->getDefinitions()->getType($reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
     }
 
     public function testParseNestedImport()
@@ -119,24 +115,24 @@ class TypeSchemaTest extends ParserTestCase
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_import.json', new Parser\Context\FilesystemContext(__DIR__ . '/TypeSchema'));
 
-        /** @var StructType $type */
+        /** @var StructDefinitionType $type */
         $type = $schema->getDefinitions()->getType('Test');
-        $this->assertInstanceOf(StructType::class, $type);
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
 
         $reference = $type->getProperty('foo');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
-        $this->assertEquals('foo:Import', $reference->getRef());
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
+        $this->assertEquals('foo:Import', $reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getTarget()));
 
         $reference = $type->getProperty('bar');
-        $this->assertInstanceOf(ReferenceType::class, $reference);
-        $this->assertEquals('my_import:Student', $reference->getRef());
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType($reference->getRef()));
+        $this->assertInstanceOf(ReferencePropertyType::class, $reference);
+        $this->assertEquals('my_import:Student', $reference->getTarget());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getTarget()));
     }
 
     public function testParseInvalidFile()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ParserException::class);
         $this->expectExceptionMessageMatches('/^Could not load external schema (.*)$/');
 
         $parser = new Parser\File(new SchemaManager());

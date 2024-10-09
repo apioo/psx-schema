@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeFactory;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * BuilderTest
@@ -39,28 +39,21 @@ class BuilderTest extends TestCase
     {
         $builder = new Builder('foo');
         $builder->setDescription('bar');
-        $builder->setRequired(['foo', 'bar']);
         $builder->setClass('stdClass');
-        $builder->addArray('array', TypeFactory::getString());
+        $builder->addArray('array', PropertyTypeFactory::getString());
         $builder->addBoolean('boolean');
         $builder->addInteger('integer');
-        $builder->addIntersection('intersection', []);
         $builder->addNumber('number');
         $builder->addString('string');
-        $builder->addUnion('union', []);
 
-        $builder->addBinary('binary');
         $builder->addDateTime('datetime');
         $builder->addDate('date');
-        $builder->addDuration('duration');
         $builder->addTime('time');
-        $builder->addUri('uri');
 
         $type = $builder->getType();
 
-        $this->assertInstanceOf(StructType::class, $type);
-        $this->assertEquals(null, $type->getTitle());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
         $this->assertEquals('bar', $type->getDescription());
-        $this->assertEquals('stdClass', $type->getAttribute(TypeAbstract::ATTR_CLASS));
+        $this->assertEquals('stdClass', $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS));
     }
 }

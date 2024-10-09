@@ -16,16 +16,27 @@ class Student
   end
 end
 
-class StudentMap
-  extend Map
+class Map
+  attr_accessor :total_results, :parent, :entries
+
+  def initialize(total_results, parent, entries)
+    @total_results = total_results
+    @parent = parent
+    @entries = entries
+  end
 end
 
-class Map
-  attr_accessor :total_results, :entries
+class StudentMap
+  extend Map
 
-  def initialize(total_results, entries)
-    @total_results = total_results
-    @entries = entries
+  def initialize()
+  end
+end
+
+class HumanMap
+  extend Map
+
+  def initialize()
   end
 end
 

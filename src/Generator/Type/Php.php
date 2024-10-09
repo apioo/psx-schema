@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ use PSX\DateTime\LocalTime;
 use PSX\Record\Record;
 use PSX\Schema\ContentType;
 use PSX\Schema\Format;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
 
 /**
  * Php
@@ -42,26 +42,32 @@ use PSX\Schema\TypeInterface;
  */
 class Php extends GeneratorAbstract
 {
-    public function getDocType(TypeInterface $type): string
+    public function getDocType(PropertyTypeAbstract $type): string
     {
-        if ($type instanceof ArrayType) {
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                return 'array<' . $this->getDocType($items) . '>';
+        if ($type instanceof ArrayPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                return 'array<' . $this->getDocType($schema) . '>';
             } else {
                 return 'array';
             }
-        } elseif ($type instanceof MapType) {
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                return '\\' . Record::class . '<' . $this->getDocType($additionalProperties) . '>';
+        } elseif ($type instanceof MapPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                return '\\' . Record::class . '<' . $this->getDocType($schema) . '>';
             } else {
                 return '\\' . Record::class;
             }
-        } elseif ($type instanceof StringType && $type->getFormat() === Format::BINARY) {
-            return 'resource';
-        } elseif ($type instanceof GenericType) {
-            return $type->getGeneric() ?? '';
+        } elseif ($type instanceof GenericPropertyType) {
+            return $type->getName() ?? '';
+        } elseif ($type instanceof ReferencePropertyType) {
+            $return = $this->getType($type);
+            $template = $type->getTemplate();
+            if (!empty($template)) {
+                $return.= $this->getGenericDefinition($template);
+            }
+
+            return $return;
         } else {
             return $this->getType($type);
         }
@@ -76,6 +82,11 @@ class Php extends GeneratorAbstract
             ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? '\\Sdkgen\\Client\\Multipart' : '\\PSX\\Data\\Body\\Multipart',
             ContentType::TEXT, ContentType::XML => $this->getString(),
         };
+    }
+
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
     }
 
     protected function getString(): string
@@ -118,24 +129,14 @@ class Php extends GeneratorAbstract
         return '\\' . Record::class;
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode('|', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode('&', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
     }
 
-    protected function getGeneric(array $types): string
+    protected function getGeneric(string $name): string
     {
-        return '';
+        return 'mixed';
     }
 
     protected function getAny(): string

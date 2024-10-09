@@ -30,22 +30,7 @@
       }
     }
   ],
-  "resources": [
-    {
-      "name": "foo",
-      "url": "http:\/\/google.com"
-    },
-    {
-      "lat": 12.34,
-      "long": 56.78
-    }
-  ],
-  "profileImage": "Zm9vYmFy",
   "read": false,
-  "source": {
-    "name": "foo",
-    "url": "http:\/\/google.com"
-  },
   "author": {
     "title": "foo",
     "email": "foo@bar.com",
@@ -74,12 +59,9 @@
   },
   "sendDate": "2016-12-11",
   "readDate": "2016-12-11T10:50:00Z",
-  "expires": "P1D",
   "price": 50,
   "rating": 4,
   "content": "foobar",
   "question": "foo",
-  "version": "http:\/\/foo.bar",
-  "coffeeTime": "10:49:00",
-  "profileUri": "urn:foo:image"
+  "coffeeTime": "10:49:00"
 }

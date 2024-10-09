@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,20 @@
 
 namespace PSX\Schema;
 
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\CollectionDefinitionType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * TypeUtil
@@ -46,44 +47,30 @@ class TypeUtil
     /**
      * Walks through every nested element of the type and calls the visitor 
      * callback for each type
-     * 
-     * @param TypeInterface $type
-     * @param \Closure $visitor
      */
-    public static function walk(TypeInterface $type, \Closure $visitor)
+    public static function walk(TypeInterface $type, \Closure $visitor): void
     {
         $visitor($type);
 
-        if ($type instanceof StructType) {
-            $properties = $type->getProperties();
-            if (is_iterable($properties)) {
-                foreach ($properties as $property) {
-                    self::walk($property, $visitor);
-                }
+        if ($type instanceof StructDefinitionType) {
+            $parent = $type->getParent();
+            if ($parent instanceof ReferencePropertyType) {
+                self::walk($parent, $visitor);
             }
-        } elseif ($type instanceof MapType) {
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                self::walk($additionalProperties, $visitor);
+
+            $properties = $type->getProperties() ?? [];
+            foreach ($properties as $property) {
+                self::walk($property, $visitor);
             }
-        } elseif ($type instanceof ArrayType) {
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                self::walk($items, $visitor);
+        } elseif ($type instanceof CollectionDefinitionType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                self::walk($schema, $visitor);
             }
-        } elseif ($type instanceof UnionType) {
-            $oneOf = $type->getOneOf();
-            if (is_iterable($oneOf)) {
-                foreach ($oneOf as $property) {
-                    self::walk($property, $visitor);
-                }
-            }
-        } elseif ($type instanceof IntersectionType) {
-            $allOf = $type->getAllOf();
-            if (is_iterable($allOf)) {
-                foreach ($allOf as $property) {
-                    self::walk($property, $visitor);
-                }
+        } elseif ($type instanceof CollectionPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                self::walk($schema, $visitor);
             }
         }
     }
@@ -103,7 +90,7 @@ class TypeUtil
                 return;
             }
 
-            if ($format !== null && $type instanceof ScalarType) {
+            if ($format !== null && $type instanceof ScalarPropertyType) {
                 $found = $type->getFormat() === $format;
             } else {
                 $found = true;
@@ -128,29 +115,60 @@ class TypeUtil
     }
 
     /**
+     * Collects and returns all refs
+     */
+    public static function findRefs(TypeInterface $type): array
+    {
+        $refs = [];
+        self::refs($type, function(string $ns, string $name) use (&$refs){
+            $refs[$ns . ':' . $name] = $ns . ':' . $name;
+            return null;
+        });
+
+        return $refs;
+    }
+
+    /**
      * Goes through all refs and replaces the ref using a specific callback
      */
     public static function refs(TypeInterface $type, \Closure $callback): void
     {
         self::walk($type, function(TypeInterface $type) use ($callback){
-            if ($type instanceof ReferenceType) {
-                [$ns, $name] = self::split($type->getRef());
-                $type->setRef($callback($ns, $name));
+            if ($type instanceof ReferencePropertyType) {
+                [$ns, $name] = self::split($type->getTarget());
+                $return = $callback($ns, $name);
+                if ($return !== null) {
+                    $type->setTarget($return);
+                }
 
                 $template = $type->getTemplate();
                 if (!empty($template)) {
                     $result = [];
-                    foreach ($template as $key => $ref) {
-                        [$ns, $name] = self::split($ref);
-                        $result[$key] = $callback($ns, $name);
+                    foreach ($template as $templateName => $templateType) {
+                        [$ns, $name] = self::split($templateType);
+                        $return = $callback($ns, $name);
+                        if ($return !== null) {
+                            $result[$templateName] = $return;
+                        }
                     }
-                    $type->setTemplate($result);
+                    if (count($result) > 0) {
+                        $type->setTemplate($result);
+                    }
                 }
-            } elseif ($type instanceof StructType) {
-                $extends = $type->getExtends();
-                if (!empty($extends)) {
-                    [$ns, $name] = self::split($extends);
-                    $type->setExtends($callback($ns, $name));
+            } elseif ($type instanceof StructDefinitionType) {
+                $mapping = $type->getMapping();
+                if (!empty($mapping)) {
+                    $result = [];
+                    foreach ($mapping as $mappingType => $mappingValue) {
+                        [$ns, $name] = self::split($mappingType);
+                        $return = $callback($ns, $name);
+                        if ($return !== null) {
+                            $result[$return] = $mappingValue;
+                        }
+                    }
+                    if (!empty($result)) {
+                        $type->setMapping($result);
+                    }
                 }
             }
         });
@@ -158,9 +176,6 @@ class TypeUtil
 
     /**
      * Splits a type name into the namespace and name
-     * 
-     * @param string $ref
-     * @return array
      */
     public static function split(string $ref): array
     {
@@ -176,10 +191,6 @@ class TypeUtil
         return [$ns, $name];
     }
 
-    /**
-     * @param string $ref
-     * @return string
-     */
     public static function getFullyQualifiedName(string $ref): string
     {
         [$ns, $name] = self::split($ref);
@@ -188,30 +199,26 @@ class TypeUtil
 
     public static function getTypeName(TypeInterface $type): string
     {
-        if ($type instanceof AnyType) {
+        if ($type instanceof AnyPropertyType) {
             return 'any';
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayTypeInterface) {
             return 'array';
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return 'boolean';
-        } elseif ($type instanceof GenericType) {
+        } elseif ($type instanceof GenericPropertyType) {
             return 'generic';
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return 'integer';
-        } elseif ($type instanceof IntersectionType) {
-            return 'intersection';
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapTypeInterface) {
             return 'map';
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return 'number';
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             return 'reference';
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             return 'string';
-        } elseif ($type instanceof StructType) {
+        } elseif ($type instanceof StructDefinitionType) {
             return 'struct';
-        } elseif ($type instanceof UnionType) {
-            return 'union';
         } else {
             return 'unknown';
         }

@@ -11,17 +11,29 @@
         }
       }
     },
-    "Map": {
-      "type": "object",
-      "properties": {
-        "totalResults": {
-          "type": "integer"
+    "HumanMap": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "totalResults": {
+              "type": "integer"
+            },
+            "parent": {
+              "$ref": "#/definitions/Human"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Human"
+              }
+            }
+          }
         },
-        "entries": {
-          "type": "array",
-          "items": []
+        {
+          "type": "object"
         }
-      }
+      ]
     },
     "RootSchema": {
       "type": "object",
@@ -47,30 +59,28 @@
       ]
     },
     "StudentMap": {
-      "type": "object",
-      "properties": {
-        "totalResults": {
-          "type": "integer"
-        },
-        "entries": {
-          "type": "array",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/definitions/Human"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "matricleNumber": {
-                    "type": "string"
-                  }
-                }
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "totalResults": {
+              "type": "integer"
+            },
+            "parent": {
+              "$ref": "#/definitions/Human"
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Student"
               }
-            ]
+            }
           }
+        },
+        {
+          "type": "object"
         }
-      }
+      ]
     },
     "Import": {
       "type": "object",
@@ -94,5 +104,13 @@
       ]
     }
   },
-  "$ref": "#/definitions/Import"
+  "type": "object",
+  "properties": {
+    "students": {
+      "$ref": "#/definitions/StudentMap"
+    },
+    "student": {
+      "$ref": "#/definitions/Student"
+    }
+  }
 }

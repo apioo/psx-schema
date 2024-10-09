@@ -4,12 +4,6 @@ type Location struct {
     Long float64 `json:"long"`
 }
 
-// An application
-type Web struct {
-    Name string `json:"name"`
-    Url string `json:"url"`
-}
-
 // An simple author element with some description
 type Author struct {
     Title string `json:"title"`
@@ -27,26 +21,19 @@ type News struct {
     InlineConfig map[string]string `json:"inlineConfig"`
     MapTags map[string]string `json:"mapTags"`
     MapReceiver map[string]Author `json:"mapReceiver"`
-    MapResources map[string]any `json:"mapResources"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
-    Resources []any `json:"resources"`
-    ProfileImage string `json:"profileImage"`
     Read bool `json:"read"`
-    Source any `json:"source"`
     Author *Author `json:"author"`
     Meta *Meta `json:"meta"`
     SendDate string `json:"sendDate"`
     ReadDate string `json:"readDate"`
-    Expires string `json:"expires"`
-    Range string `json:"range"`
     Price float64 `json:"price"`
     Rating int `json:"rating"`
     Content string `json:"content"`
     Question string `json:"question"`
     Version string `json:"version"`
     CoffeeTime string `json:"coffeeTime"`
-    ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
     MediaFields string `json:"media.fields"`
     Payload any `json:"payload"`

@@ -7,12 +7,13 @@
           "type": "string"
         },
         "parent": {
-          "$ref": "Human"
+          "type": "reference",
+          "target": "Human"
         }
       }
     },
     "Student": {
-      "$extends": "Human",
+      "parent": "Human",
       "type": "object",
       "properties": {
         "matricleNumber": {
@@ -21,9 +22,25 @@
       }
     },
     "StudentMap": {
-      "$ref": "Map",
-      "$template": {
-        "T": "Student"
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "P": "Human",
+          "T": "Student"
+        }
+      }
+    },
+    "HumanMap": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "P": "Human",
+          "T": "Human"
+        }
       }
     },
     "Map": {
@@ -32,10 +49,15 @@
         "totalResults": {
           "type": "integer"
         },
+        "parent": {
+          "type": "generic",
+          "name": "P"
+        },
         "entries": {
           "type": "array",
           "items": {
-            "$generic": "T"
+            "type": "generic",
+            "name": "T"
           }
         }
       }
@@ -44,7 +66,8 @@
       "type": "object",
       "properties": {
         "students": {
-          "$ref": "StudentMap"
+          "type": "reference",
+          "target": "StudentMap"
         }
       }
     }

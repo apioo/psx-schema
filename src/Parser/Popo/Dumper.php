@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
@@ -29,19 +28,21 @@ use PSX\Record\Record;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Format;
-use PSX\Schema\Parser\Popo;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * The dumper extracts all data from POPOs
@@ -52,13 +53,17 @@ use PSX\Schema\TypeInterface;
  */
 class Dumper
 {
-    private ResolverInterface $resolver;
+    private ReflectionReader $reader;
 
     public function __construct()
     {
-        $this->resolver = Popo::createDefaultResolver();
+        $this->reader = new ReflectionReader();
     }
 
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
     public function dump(mixed $data): mixed
     {
         if (is_iterable($data)) {
@@ -80,55 +85,59 @@ class Dumper
         }
     }
 
-    private function dumpObject(mixed $data, string $class): mixed
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
+    private function dumpObject(object $data, string $class): mixed
     {
-        $type = $this->resolver->resolveClass(new \ReflectionClass($class));
-        if ($type instanceof StructType) {
+        $type = $this->reader->buildDefinition(new \ReflectionClass($class));
+        if ($type instanceof StructDefinitionType) {
             return $this->dumpStruct($data);
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapDefinitionType) {
             return $this->dumpMap($data, $type);
+        } elseif ($type instanceof ArrayDefinitionType) {
+            return $this->dumpArray($data, $type);
         } else {
             throw new ParserException('Could not determine object type');
         }
     }
 
-    private function dumpStruct($data): RecordInterface
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
+    private function dumpStruct(object $data): RecordInterface
     {
-        if (!is_object($data)) {
-            throw new ParserException('Struct must be an object');
-        }
-
         $reflection = new \ReflectionClass(get_class($data));
         $result = new Record();
 
-        $properties = ObjectReader::getProperties($reflection);
+        $properties = $this->reader->getProperties($reflection);
         foreach ($properties as $name => $property) {
-            $getters = [
-                'get' . ucfirst($property->getName()),
-                'is' . ucfirst($property->getName())
-            ];
+            $getter = $this->reader->findGetter($property);
+            if (!$getter instanceof \ReflectionMethod) {
+                continue;
+            }
 
-            foreach ($getters as $getter) {
-                if ($reflection->hasMethod($getter)) {
-                    $value = $reflection->getMethod($getter)->invoke($data);
+            $value = $getter->invoke($data);
 
-                    $type = $this->resolver->resolveProperty($property);
-                    if ($type instanceof TypeInterface) {
-                        $value = $this->dumpValue($value, $type);
-                    }
+            $type = $this->reader->buildProperty($property);
+            if ($type instanceof PropertyTypeAbstract) {
+                $value = $this->dumpValue($value, $type);
+            }
 
-                    if ($value !== null) {
-                        $result->setProperty($name, $value);
-                    }
-                    break;
-                }
+            if ($value !== null) {
+                $result->put($name, $value);
             }
         }
 
         return $result;
     }
 
-    private function dumpMap($data, MapType $type): RecordInterface
+    /**
+     * @throws ParserException
+     */
+    private function dumpMap(object $data, MapTypeInterface $type): RecordInterface
     {
         if (!$data instanceof \Traversable) {
             throw new ParserException('Map must be traversable');
@@ -136,59 +145,61 @@ class Dumper
 
         $result = new Record();
         foreach ($data as $key => $value) {
-            $result->setProperty($key, $this->dumpValue($value, $type->getAdditionalProperties()));
+            $result->put($key, $this->dumpValue($value, $type->getSchema()));
         }
 
         return $result;
     }
 
-    private function dumpArray($data, ArrayType $type): array
+    /**
+     * @throws ParserException
+     */
+    private function dumpArray($data, ArrayTypeInterface $type): array
     {
         if (!is_iterable($data)) {
             throw new ParserException('Array must be iterable');
         }
 
         $result = [];
-        foreach ($data as $index => $value) {
-            $result[] = $this->dumpValue($value, $type->getItems());
+        foreach ($data as $value) {
+            $result[] = $this->dumpValue($value, $type->getSchema());
         }
 
         return $result;
     }
 
-    private function dumpValue($value, TypeInterface $type)
+    /**
+     * @throws ParserException
+     */
+    private function dumpValue(mixed $value, PropertyTypeAbstract $type): mixed
     {
         if ($value === null) {
             return null;
         }
 
-        if ($type instanceof StructType) {
-            return $this->dumpStruct($value);
-        } elseif ($type instanceof MapType) {
+        if ($type instanceof MapPropertyType) {
             return $this->dumpMap($value, $type);
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayPropertyType) {
             return $this->dumpArray($value, $type);
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return (bool) $value;
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return (int) $value;
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return (float) $value;
-        } elseif ($type instanceof StringType) {
+        } elseif ($type instanceof StringPropertyType) {
             $format = $type->getFormat();
-            if ($format === Format::BINARY && is_resource($value)) {
-                return base64_encode(stream_get_contents($value, -1, 0));
+            if ($format === Format::DATE) {
+                if ($value instanceof LocalDate) {
+                    return $value->toString();
+                } elseif ($value instanceof \DateTimeInterface) {
+                    return LocalDate::from($value)->toString();
+                }
             } elseif ($format === Format::DATETIME) {
                 if ($value instanceof LocalDateTime) {
                     return $value->toString();
                 } elseif ($value instanceof \DateTimeInterface) {
                     return LocalDateTime::from($value)->toString();
-                }
-            } elseif ($format === Format::DATE) {
-                if ($value instanceof LocalDate) {
-                    return $value->toString();
-                } elseif ($value instanceof \DateTimeInterface) {
-                    return LocalDate::from($value)->toString();
                 }
             } elseif ($format === Format::TIME) {
                 if ($value instanceof LocalTime) {
@@ -196,40 +207,32 @@ class Dumper
                 } elseif ($value instanceof \DateTimeInterface) {
                     return LocalTime::from($value)->toString();
                 }
-            } elseif ($format === Format::PERIOD) {
-                if ($value instanceof Period) {
-                    return $value->toString();
-                } elseif ($value instanceof \DateInterval) {
-                    return Period::from($value)->toString();
-                }
-            } elseif ($format === Format::DURATION) {
-                if ($value instanceof Duration) {
-                    return $value->toString();
-                } elseif ($value instanceof \DateInterval) {
-                    return Duration::from($value)->toString();
-                }
             } else {
                 return (string) $value;
             }
-        } elseif ($type instanceof IntersectionType) {
-            return $this->dump($value);
-        } elseif ($type instanceof UnionType) {
-            return $this->dump($value);
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             return $this->dumpReference($value, $type);
-        } elseif ($type instanceof AnyType) {
+        } elseif ($type instanceof AnyPropertyType) {
             return $value;
         }
 
         return null;
     }
 
-    private function dumpReference($data, ReferenceType $type)
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
+    private function dumpReference($data, ReferencePropertyType $type)
     {
-        return $this->dumpObject($data, $type->getRef());
+        return $this->dumpObject($data, $type->getTarget());
     }
 
-    private function dumpIterable(iterable $data)
+    /**
+     * @throws \ReflectionException
+     * @throws ParserException
+     */
+    private function dumpIterable(iterable $data): Record|array
     {
         $values = [];
         foreach ($data as $key => $value) {

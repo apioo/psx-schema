@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 namespace PSX\Schema\Parser\Popo\Resolver;
 
 use PSX\Schema\Parser\Popo\ResolverInterface;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * Composite
@@ -37,22 +38,16 @@ class Composite implements ResolverInterface
      */
     private array $resolver;
 
-    /**
-     * @param ResolverInterface ...$resolver
-     */
     public function __construct(ResolverInterface ...$resolver)
     {
         $this->resolver = $resolver;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function resolveClass(\ReflectionClass $reflection): ?TypeInterface
+    public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
         foreach ($this->resolver as $resolver) {
             $property = $resolver->resolveClass($reflection);
-            if ($property instanceof TypeInterface) {
+            if ($property instanceof DefinitionTypeAbstract) {
                 return $property;
             }
         }
@@ -60,14 +55,11 @@ class Composite implements ResolverInterface
         return null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function resolveProperty(\ReflectionProperty $reflection): ?TypeInterface
+    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
         foreach ($this->resolver as $resolver) {
             $property = $resolver->resolveProperty($reflection);
-            if ($property instanceof TypeInterface) {
+            if ($property instanceof PropertyTypeAbstract) {
                 return $property;
             }
         }

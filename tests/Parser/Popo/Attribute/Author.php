@@ -3,16 +3,11 @@
 namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\MaxItems;
 use PSX\Schema\Attribute\Nullable;
-use PSX\Schema\Attribute\Pattern;
-use PSX\Schema\Attribute\Required;
 
 #[Description('An simple author element with some description')]
-#[Required(['title'])]
 class Author
 {
-    #[Pattern('[A-z]{3,16}')]
     protected ?string $title = null;
 
     #[Description('We will send no spam to this address')]
@@ -22,7 +17,6 @@ class Author
     /**
      * @var array<string>
      */
-    #[MaxItems(8)]
     protected ?array $categories = null;
 
     /**

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,36 +29,61 @@ namespace PSX\Schema\Parser\TypeSchema;
  */
 class BCLayer
 {
-    /**
-     * This method takes a look at the schema and adds missing properties
-     *
-     * @param \stdClass $data
-     * @return \stdClass
-     */
-    public static function transform(\stdClass $data): \stdClass
+    public static function transformDefinition(\stdClass $data): \stdClass
     {
         if (isset($data->patternProperties) && !isset($data->properties) && !isset($data->additionalProperties)) {
             // in this case we have a schema with only pattern properties
             $vars = get_object_vars($data->patternProperties);
-            if (count($vars) === 1) {
-                $data->additionalProperties = reset($vars);
+            $firstPattern = reset($vars);
+            if ($firstPattern instanceof \stdClass) {
+                $data->additionalProperties = $firstPattern;
             } else {
-                $data->additionalProperties = true;
+                $data->additionalProperties = (object) [
+                    'type' => 'any',
+                ];
             }
         }
 
-        if (isset($data->{'$extends'})) {
-            if (!isset($data->type)) {
-                $data->type = 'object';
-            }
-            if (!isset($data->properties)) {
-                $data->properties = new \stdClass();
-            }
+        if (isset($data->{'$ref'}) && is_string($data->{'$ref'})) {
+            $data->type = 'struct';
         }
 
         if (!isset($data->type)) {
-            if (isset($data->properties) || isset($data->additionalProperties)) {
-                $data->type = 'object';
+            if (isset($data->additionalProperties) || isset($data->schema)) {
+                $data->type = 'map';
+            } elseif (isset($data->items)) {
+                $data->type = 'array';
+            } else {
+                $data->type = 'struct';
+
+                if (!isset($data->properties)) {
+                    $data->properties = new \stdClass();
+                }
+            }
+        } else {
+            if ($data->type === 'object' && isset($data->additionalProperties)) {
+                $data->type = 'map';
+            } elseif ($data->type === 'array' && isset($data->items)) {
+                $data->type = 'array';
+            } else {
+                $data->type = 'struct';
+            }
+        }
+
+        return $data;
+    }
+
+    public static function transformProperty(\stdClass $data): \stdClass
+    {
+        if (isset($data->{'$ref'})) {
+            $data->type = 'reference';
+        } elseif (isset($data->{'$generic'})) {
+            $data->type = 'generic';
+        }
+
+        if (!isset($data->type)) {
+            if (isset($data->additionalProperties)) {
+                $data->type = 'map';
             } elseif (isset($data->items)) {
                 $data->type = 'array';
             } elseif (isset($data->pattern) || isset($data->minLength) || isset($data->maxLength)) {
@@ -66,15 +91,11 @@ class BCLayer
             } elseif (isset($data->minimum) || isset($data->maximum)) {
                 $data->type = 'number';
             }
-        }
-
-        if (isset($data->type) && $data->type === 'int') {
-            $data->type = 'integer';
-        }
-
-        if (isset($data->type) && $data->type === 'object') {
-            if (!isset($data->properties) && !isset($data->additionalProperties)) {
-                $data->properties = new \stdClass();
+        } else {
+            if ($data->type === 'object' && isset($data->additionalProperties)) {
+                $data->type = 'map';
+            } elseif ($data->type === 'int') {
+                $data->type = 'integer';
             }
         }
 

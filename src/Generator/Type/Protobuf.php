@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,11 @@ use PSX\Schema\Format;
  */
 class Protobuf extends GeneratorAbstract
 {
+    public function getGenericDefinition(array $types): string
+    {
+        return '';
+    }
+
     protected function getString(): string
     {
         return 'string';
@@ -39,7 +44,6 @@ class Protobuf extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::BINARY => 'bytes',
             Format::DATE => 'Timestamp',
             Format::DATETIME => 'Timestamp',
             default => $this->getString(),
@@ -49,15 +53,6 @@ class Protobuf extends GeneratorAbstract
     protected function getInteger(): string
     {
         return 'int64';
-    }
-
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'int32',
-            Format::INT64 => 'int64',
-            default => $this->getInteger(),
-        };
     }
 
     protected function getNumber(): string
@@ -80,24 +75,9 @@ class Protobuf extends GeneratorAbstract
         return 'map<string, ' . $type . '>';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'Struct';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'Struct';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '';
     }
 
     protected function getAny(): string

@@ -1,135 +1,140 @@
 /**
- * Represents a base type. Every type extends from this common type and shares the defined properties
+ * Base definition type
  */
-open class CommonType {
+open abstract class DefinitionType {
     var description: String? = null
-    var type: String? = null
-    var nullable: Boolean? = null
     var deprecated: Boolean? = null
-    var readonly: Boolean? = null
-}
-
-/**
- * Represents an any type
- */
-open class AnyType : CommonType {
     var type: String? = null
 }
 
 /**
- * Represents an array type. An array type contains an ordered list of a specific type
+ * Represents a struct which contains a fixed set of defined properties
  */
-open class ArrayType : CommonType {
+open class StructDefinitionType : DefinitionType {
     var type: String? = null
-    var items: Any? = null
-    var maxItems: Int? = null
-    var minItems: Int? = null
-}
-
-/**
- * Represents a scalar type
- */
-open class ScalarType : CommonType {
-    var format: String? = null
-    var enum: Array<Any>? = null
-    var default: Any? = null
-}
-
-/**
- * Represents a boolean type
- */
-open class BooleanType : ScalarType {
-    var type: String? = null
-}
-
-/**
- * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
- */
-open class Discriminator {
-    var propertyName: String? = null
+    var parent: String? = null
+    var base: Boolean? = null
+    var properties: Map<String, PropertyType>? = null
+    var discriminator: String? = null
     var mapping: Map<String, String>? = null
-}
-
-/**
- * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
- */
-open class GenericType {
-    var generic: String? = null
-}
-
-/**
- * Represents an intersection type
- */
-open class IntersectionType {
-    var description: String? = null
-    var allOf: Array<ReferenceType>? = null
-}
-
-/**
- * Represents a map type. A map type contains variable key value entries of a specific type
- */
-open class MapType : CommonType {
-    var type: String? = null
-    var additionalProperties: Any? = null
-    var maxProperties: Int? = null
-    var minProperties: Int? = null
-}
-
-/**
- * Represents a number type (contains also integer)
- */
-open class NumberType : ScalarType {
-    var type: String? = null
-    var multipleOf: Float? = null
-    var maximum: Float? = null
-    var exclusiveMaximum: Boolean? = null
-    var minimum: Float? = null
-    var exclusiveMinimum: Boolean? = null
-}
-
-/**
- * Represents a reference type. A reference type points to a specific type at the definitions map
- */
-open class ReferenceType {
-    var ref: String? = null
     var template: Map<String, String>? = null
 }
 
 /**
- * Represents a string type
+ * Base type for the map and array collection type
  */
-open class StringType : ScalarType {
+open abstract class CollectionDefinitionType : DefinitionType {
     var type: String? = null
-    var maxLength: Int? = null
-    var minLength: Int? = null
-    var pattern: String? = null
+    var schema: PropertyType? = null
 }
 
 /**
- * Represents a struct type. A struct type contains a fix set of defined properties
+ * Represents a map which contains a dynamic set of key value entries
  */
-open class StructType : CommonType {
-    var final: Boolean? = null
-    var extends: String? = null
+open class MapDefinitionType : CollectionDefinitionType {
     var type: String? = null
-    var properties: Map<String, Any>? = null
-    var required: Array<String>? = null
 }
 
 /**
- * The root TypeSchema
+ * Represents an array which contains a dynamic list of values
  */
-open class TypeSchema {
-    var import: Map<String, String>? = null
-    var definitions: Map<String, Any>? = null
-    var ref: String? = null
+open class ArrayDefinitionType : CollectionDefinitionType {
+    var type: String? = null
 }
 
 /**
- * Represents an union type. An union type can contain one of the provided types
+ * Base property type
  */
-open class UnionType {
+open abstract class PropertyType {
     var description: String? = null
-    var discriminator: Discriminator? = null
-    var oneOf: Array<Any>? = null
+    var deprecated: Boolean? = null
+    var type: String? = null
+    var nullable: Boolean? = null
+}
+
+/**
+ * Base scalar property type
+ */
+open abstract class ScalarPropertyType : PropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents an integer value
+ */
+open class IntegerPropertyType : ScalarPropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents a float value
+ */
+open class NumberPropertyType : ScalarPropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents a string value
+ */
+open class StringPropertyType : ScalarPropertyType {
+    var type: String? = null
+    var format: String? = null
+}
+
+/**
+ * Represents a boolean value
+ */
+open class BooleanPropertyType : ScalarPropertyType {
+    var type: String? = null
+}
+
+/**
+ * Base collection property type
+ */
+open abstract class CollectionPropertyType : PropertyType {
+    var type: String? = null
+    var schema: PropertyType? = null
+}
+
+/**
+ * Represents a map which contains a dynamic set of key value entries
+ */
+open class MapPropertyType : CollectionPropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents an array which contains a dynamic list of values
+ */
+open class ArrayPropertyType : CollectionPropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents an any value which allows any kind of value
+ */
+open class AnyPropertyType : PropertyType {
+    var type: String? = null
+}
+
+/**
+ * Represents a generic value which can be replaced with a dynamic type
+ */
+open class GenericPropertyType : PropertyType {
+    var type: String? = null
+    var name: String? = null
+}
+
+/**
+ * Represents a reference to a definition type
+ */
+open class ReferencePropertyType : PropertyType {
+    var type: String? = null
+    var target: String? = null
+}
+
+open class Specification {
+    var import: Map<String, String>? = null
+    var definitions: Map<String, DefinitionType>? = null
+    var root: String? = null
 }

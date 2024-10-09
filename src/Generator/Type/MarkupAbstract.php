@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,11 @@ use PSX\Schema\Format;
  */
 abstract class MarkupAbstract extends GeneratorAbstract
 {
+    public function getGenericDefinition(array $types): string
+    {
+        return '<' . implode(', ', $types) . '>';
+    }
+
     protected function getString(): string
     {
         return 'String';
@@ -76,16 +81,6 @@ abstract class MarkupAbstract extends GeneratorAbstract
         return 'Map (' . $type . ')';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode(' &#124; ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return implode(' &#38; ', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
@@ -94,11 +89,6 @@ abstract class MarkupAbstract extends GeneratorAbstract
     protected function getReference(string $ref): string
     {
         return $ref;
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '';
     }
 
     protected function getAny(): string

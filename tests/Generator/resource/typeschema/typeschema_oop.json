@@ -1,41 +1,62 @@
 {
   "definitions": {
     "Human": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "firstName": {
           "type": "string"
         },
         "parent": {
-          "$ref": "Human"
+          "type": "reference",
+          "target": "Human"
+        }
+      }
+    },
+    "HumanMap": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "P": "Human",
+          "T": "Human"
         }
       }
     },
     "Map": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "totalResults": {
           "type": "integer"
         },
+        "parent": {
+          "type": "generic",
+          "name": "P"
+        },
         "entries": {
           "type": "array",
-          "items": {
-            "$generic": "T"
+          "schema": {
+            "type": "generic",
+            "name": "T"
           }
         }
       }
     },
     "RootSchema": {
-      "type": "object",
+      "type": "struct",
       "properties": {
         "students": {
-          "$ref": "StudentMap"
+          "type": "reference",
+          "target": "StudentMap"
         }
       }
     },
     "Student": {
-      "$extends": "Human",
-      "type": "object",
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Human"
+      },
       "properties": {
         "matricleNumber": {
           "type": "string"
@@ -43,11 +64,16 @@
       }
     },
     "StudentMap": {
-      "$ref": "Map",
-      "$template": {
-        "T": "Student"
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "P": "Human",
+          "T": "Student"
+        }
       }
     }
   },
-  "$ref": "RootSchema"
+  "root": "RootSchema"
 }

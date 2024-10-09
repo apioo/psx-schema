@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\DefinitionType;
 
 /**
  * DefinitionsInterface
@@ -40,10 +42,10 @@ interface DefinitionsInterface
      * the "self" namespace
      * 
      * @param string $name
-     * @param TypeInterface $type
+     * @param DefinitionTypeAbstract $type
      * @return void
      */
-    public function addType(string $name, TypeInterface $type): void;
+    public function addType(string $name, DefinitionTypeAbstract $type): void;
 
     /**
      * @param string $name
@@ -58,24 +60,23 @@ interface DefinitionsInterface
      * namespace is used
      *
      * @param string $name
-     * @return TypeInterface
      * @throws TypeNotFoundException
      */
-    public function getType(string $name): TypeInterface;
+    public function getType(string $name): DefinitionTypeAbstract;
 
     /**
      * Returns all available types for a specific namespace. The key contains
      * the name of the type
      *
      * @param string $namespace
-     * @return array<TypeInterface>
+     * @return array<DefinitionTypeAbstract>
      */
     public function getTypes(string $namespace): iterable;
 
     /**
      * Returns all types registered at this container
      *
-     * @return array<TypeInterface>
+     * @return array<DefinitionTypeAbstract>
      */
     public function getAllTypes(): iterable;
 

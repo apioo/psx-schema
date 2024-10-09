@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,18 +64,6 @@ class SwiftTest extends GeneratorTestCase
         $actual = (string) $generator->generate($this->getOOPSchema());
 
         $expect = file_get_contents(__DIR__ . '/resource/swift/swift_oop.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
-    }
-
-    public function testGenerateUnion()
-    {
-        $generator = new Swift();
-
-        $actual = (string) $generator->generate($this->getUnionSchema());
-
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_union.swift');
         $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
 
         $this->assertEquals($expect, $actual, $actual);

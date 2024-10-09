@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,8 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * Ruby
@@ -50,7 +49,7 @@ class Ruby extends CodeGeneratorAbstract
         return new Normalizer\Ruby();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'class ' . $name->getClass() . "\n";
 
@@ -83,16 +82,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
-    {
-        $code = 'class ' . $name->getClass() . "\n";
-        $code.= $this->indent . 'extend ' . $type . "\n";
-        $code.= 'end' . "\n";
-
-        return $code;
-    }
-
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -109,7 +99,7 @@ class Ruby extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 

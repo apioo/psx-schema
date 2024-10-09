@@ -1,0 +1,22 @@
+{
+  "definitions": {
+    "Person": {
+      "type": "struct",
+      "properties": {
+        "firstName": {
+          "description": "The person's first name.",
+          "type": "string"
+        },
+        "lastName": {
+          "description": "The person's last name.",
+          "type": "string"
+        },
+        "age": {
+          "description": "Age in years which must be equal to or greater than zero.",
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "root": "Person"
+}

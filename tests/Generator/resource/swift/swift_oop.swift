@@ -16,15 +16,27 @@ class Student: Human {
     }
 }
 
-typealias StudentMap = Map<Student>;
-
-class Map: Codable {
+class Map<P, T>: Codable {
     var totalResults: Int
+    var parent: P
     var entries: Array<T>
 
     enum CodingKeys: String, CodingKey {
         case totalResults = "totalResults"
+        case parent = "parent"
         case entries = "entries"
+    }
+}
+
+class StudentMap: Map<Human, Student> {
+
+    enum CodingKeys: String, CodingKey {
+    }
+}
+
+class HumanMap: Map<Human, Human> {
+
+    enum CodingKeys: String, CodingKey {
     }
 }
 

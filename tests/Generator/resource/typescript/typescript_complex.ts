@@ -1,188 +1,195 @@
+import {StructDefinitionType} from "./StructDefinitionType";
+import {MapDefinitionType} from "./MapDefinitionType";
+import {ArrayDefinitionType} from "./ArrayDefinitionType";
+
 /**
- * Represents a base type. Every type extends from this common type and shares the defined properties
+ * Base definition type
  */
-export interface CommonType {
+export abstract class DefinitionType {
     description?: string
+    deprecated?: boolean
+    type?: string
+}
+
+import {DefinitionType} from "./DefinitionType";
+import {PropertyType} from "./PropertyType";
+
+/**
+ * Represents a struct which contains a fixed set of defined properties
+ */
+export class StructDefinitionType extends DefinitionType {
+    type?: string
+    parent?: string
+    base?: boolean
+    properties?: Map<string, PropertyType>
+    discriminator?: string
+    mapping?: Map<string, string>
+    template?: Map<string, string>
+}
+
+import {MapDefinitionType} from "./MapDefinitionType";
+import {ArrayDefinitionType} from "./ArrayDefinitionType";
+import {DefinitionType} from "./DefinitionType";
+import {PropertyType} from "./PropertyType";
+
+/**
+ * Base type for the map and array collection type
+ */
+export abstract class CollectionDefinitionType extends DefinitionType {
+    type?: string
+    schema?: PropertyType
+}
+
+import {CollectionDefinitionType} from "./CollectionDefinitionType";
+
+/**
+ * Represents a map which contains a dynamic set of key value entries
+ */
+export class MapDefinitionType extends CollectionDefinitionType {
+    type?: string
+}
+
+import {CollectionDefinitionType} from "./CollectionDefinitionType";
+
+/**
+ * Represents an array which contains a dynamic list of values
+ */
+export class ArrayDefinitionType extends CollectionDefinitionType {
+    type?: string
+}
+
+import {IntegerPropertyType} from "./IntegerPropertyType";
+import {NumberPropertyType} from "./NumberPropertyType";
+import {StringPropertyType} from "./StringPropertyType";
+import {BooleanPropertyType} from "./BooleanPropertyType";
+import {MapPropertyType} from "./MapPropertyType";
+import {ArrayPropertyType} from "./ArrayPropertyType";
+import {AnyPropertyType} from "./AnyPropertyType";
+import {GenericPropertyType} from "./GenericPropertyType";
+import {ReferencePropertyType} from "./ReferencePropertyType";
+
+/**
+ * Base property type
+ */
+export abstract class PropertyType {
+    description?: string
+    deprecated?: boolean
     type?: string
     nullable?: boolean
-    deprecated?: boolean
-    readonly?: boolean
 }
 
-import {CommonType} from "./CommonType";
+import {IntegerPropertyType} from "./IntegerPropertyType";
+import {NumberPropertyType} from "./NumberPropertyType";
+import {StringPropertyType} from "./StringPropertyType";
+import {BooleanPropertyType} from "./BooleanPropertyType";
+import {PropertyType} from "./PropertyType";
 
 /**
- * Represents an any type
+ * Base scalar property type
  */
-export interface AnyType extends CommonType {
+export abstract class ScalarPropertyType extends PropertyType {
     type?: string
 }
 
-import {CommonType} from "./CommonType";
-import {BooleanType} from "./BooleanType";
-import {NumberType} from "./NumberType";
-import {StringType} from "./StringType";
-import {ReferenceType} from "./ReferenceType";
-import {GenericType} from "./GenericType";
-import {AnyType} from "./AnyType";
+import {ScalarPropertyType} from "./ScalarPropertyType";
 
 /**
- * Represents an array type. An array type contains an ordered list of a specific type
+ * Represents an integer value
  */
-export interface ArrayType extends CommonType {
+export class IntegerPropertyType extends ScalarPropertyType {
     type?: string
-    items?: BooleanType | NumberType | StringType | ReferenceType | GenericType | AnyType
-    maxItems?: number
-    minItems?: number
 }
 
-import {CommonType} from "./CommonType";
+import {ScalarPropertyType} from "./ScalarPropertyType";
 
 /**
- * Represents a scalar type
+ * Represents a float value
  */
-export interface ScalarType extends CommonType {
+export class NumberPropertyType extends ScalarPropertyType {
+    type?: string
+}
+
+import {ScalarPropertyType} from "./ScalarPropertyType";
+
+/**
+ * Represents a string value
+ */
+export class StringPropertyType extends ScalarPropertyType {
+    type?: string
     format?: string
-    enum?: Array<string | number>
-    default?: string | number | boolean
 }
 
-import {ScalarType} from "./ScalarType";
+import {ScalarPropertyType} from "./ScalarPropertyType";
 
 /**
- * Represents a boolean type
+ * Represents a boolean value
  */
-export interface BooleanType extends ScalarType {
+export class BooleanPropertyType extends ScalarPropertyType {
     type?: string
 }
 
-/**
- * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
- */
-export interface Discriminator {
-    propertyName?: string
-    mapping?: Record<string, string>
-}
+import {MapPropertyType} from "./MapPropertyType";
+import {ArrayPropertyType} from "./ArrayPropertyType";
+import {PropertyType} from "./PropertyType";
 
 /**
- * Represents a generic type. A generic type can be used i.e. at a map or array which then can be replaced on reference via the $template keyword
+ * Base collection property type
  */
-export interface GenericType {
-    $generic?: string
-}
-
-import {ReferenceType} from "./ReferenceType";
-
-/**
- * Represents an intersection type
- */
-export interface IntersectionType {
-    description?: string
-    allOf?: Array<ReferenceType>
-}
-
-import {CommonType} from "./CommonType";
-import {BooleanType} from "./BooleanType";
-import {NumberType} from "./NumberType";
-import {StringType} from "./StringType";
-import {ArrayType} from "./ArrayType";
-import {UnionType} from "./UnionType";
-import {IntersectionType} from "./IntersectionType";
-import {ReferenceType} from "./ReferenceType";
-import {GenericType} from "./GenericType";
-import {AnyType} from "./AnyType";
-
-/**
- * Represents a map type. A map type contains variable key value entries of a specific type
- */
-export interface MapType extends CommonType {
+export abstract class CollectionPropertyType extends PropertyType {
     type?: string
-    additionalProperties?: BooleanType | NumberType | StringType | ArrayType | UnionType | IntersectionType | ReferenceType | GenericType | AnyType
-    maxProperties?: number
-    minProperties?: number
+    schema?: PropertyType
 }
 
-import {ScalarType} from "./ScalarType";
+import {CollectionPropertyType} from "./CollectionPropertyType";
 
 /**
- * Represents a number type (contains also integer)
+ * Represents a map which contains a dynamic set of key value entries
  */
-export interface NumberType extends ScalarType {
+export class MapPropertyType extends CollectionPropertyType {
     type?: string
-    multipleOf?: number
-    maximum?: number
-    exclusiveMaximum?: boolean
-    minimum?: number
-    exclusiveMinimum?: boolean
 }
 
-/**
- * Represents a reference type. A reference type points to a specific type at the definitions map
- */
-export interface ReferenceType {
-    $ref?: string
-    $template?: Record<string, string>
-}
-
-import {ScalarType} from "./ScalarType";
+import {CollectionPropertyType} from "./CollectionPropertyType";
 
 /**
- * Represents a string type
+ * Represents an array which contains a dynamic list of values
  */
-export interface StringType extends ScalarType {
+export class ArrayPropertyType extends CollectionPropertyType {
     type?: string
-    maxLength?: number
-    minLength?: number
-    pattern?: string
 }
 
-import {CommonType} from "./CommonType";
-import {MapType} from "./MapType";
-import {ArrayType} from "./ArrayType";
-import {BooleanType} from "./BooleanType";
-import {NumberType} from "./NumberType";
-import {StringType} from "./StringType";
-import {AnyType} from "./AnyType";
-import {IntersectionType} from "./IntersectionType";
-import {UnionType} from "./UnionType";
-import {ReferenceType} from "./ReferenceType";
-import {GenericType} from "./GenericType";
+import {PropertyType} from "./PropertyType";
 
 /**
- * Represents a struct type. A struct type contains a fix set of defined properties
+ * Represents an any value which allows any kind of value
  */
-export interface StructType extends CommonType {
-    $final?: boolean
-    $extends?: string
+export class AnyPropertyType extends PropertyType {
     type?: string
-    properties?: Record<string, MapType | ArrayType | BooleanType | NumberType | StringType | AnyType | IntersectionType | UnionType | ReferenceType | GenericType>
-    required?: Array<string>
 }
 
-import {StructType} from "./StructType";
-import {MapType} from "./MapType";
-import {ReferenceType} from "./ReferenceType";
+import {PropertyType} from "./PropertyType";
 
 /**
- * The root TypeSchema
+ * Represents a generic value which can be replaced with a dynamic type
  */
-export interface TypeSchema {
-    $import?: Record<string, string>
-    definitions?: Record<string, StructType | MapType | ReferenceType>
-    $ref?: string
+export class GenericPropertyType extends PropertyType {
+    type?: string
+    name?: string
 }
 
-import {Discriminator} from "./Discriminator";
-import {NumberType} from "./NumberType";
-import {StringType} from "./StringType";
-import {BooleanType} from "./BooleanType";
-import {ReferenceType} from "./ReferenceType";
+import {PropertyType} from "./PropertyType";
 
 /**
- * Represents an union type. An union type can contain one of the provided types
+ * Represents a reference to a definition type
  */
-export interface UnionType {
-    description?: string
-    discriminator?: Discriminator
-    oneOf?: Array<NumberType | StringType | BooleanType | ReferenceType>
+export class ReferencePropertyType extends PropertyType {
+    type?: string
+    target?: string
+}
+
+import {DefinitionType} from "./DefinitionType";
+export class Specification {
+    import?: Map<string, string>
+    definitions?: Map<string, DefinitionType>
+    root?: string
 }

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ interface GeneratorInterface
     /**
      * Generates a representation of this schema in another schema format
      *
-     * @param SchemaInterface $schema
-     * @return string|Chunks
      * @throws GeneratorException
      */
-    public function generate(SchemaInterface $schema);
+    public function generate(SchemaInterface $schema): Chunks|string;
 }

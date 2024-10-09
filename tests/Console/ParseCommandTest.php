@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,24 +40,23 @@ class ParseCommandTest extends TestCase
         $command = $this->getParseCommand();
 
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array(
+        $commandTester->execute([
             'source'   => News::class,
             'target'   => __DIR__ . '/resource',
             '--format' => 'php',
-        ));
+        ]);
 
         $actual = $commandTester->getDisplay();
-        $expect = 'Generated 5 files';
+        $expect = 'Generated 4 files';
 
         $this->assertStringContainsString($expect, $actual, $actual);
         $this->assertFileExists(__DIR__ . '/resource/Author.php');
         $this->assertFileExists(__DIR__ . '/resource/Location.php');
         $this->assertFileExists(__DIR__ . '/resource/Meta.php');
         $this->assertFileExists(__DIR__ . '/resource/News.php');
-        $this->assertFileExists(__DIR__ . '/resource/Web.php');
     }
 
-    protected function getParseCommand()
+    private function getParseCommand(): ParseCommand
     {
         return new ParseCommand(new SchemaManager());
     }

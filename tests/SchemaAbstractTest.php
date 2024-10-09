@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ use PSX\Schema\SchemaManager;
 use PSX\Schema\Tests\Schema\SchemaA;
 use PSX\Schema\Tests\Schema\SchemaB;
 use PSX\Schema\Tests\Schema\SchemaCommon;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * SchemaAbstractTest
@@ -55,23 +55,23 @@ class SchemaAbstractTest extends TestCase
         $schemaA = $this->schemaManager->getSchema(SchemaA::class);
         $schemaB = $this->schemaManager->getSchema(SchemaB::class);
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaC->getType());
-        $type = $schemaC->getDefinitions()->getType($schemaC->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
-        $this->assertNull($type->getProperty('lat')->getTitle());
-        $this->assertNull($type->getProperty('long')->getTitle());
+        $this->assertEquals('Location', $schemaC->getRoot());
+        $type = $schemaC->getDefinitions()->getType($schemaC->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
+        $this->assertNull($type->getProperty('lat')->getDescription());
+        $this->assertNull($type->getProperty('long')->getDescription());
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaA->getType());
-        $type = $schemaA->getDefinitions()->getType($schemaA->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
-        $this->assertEquals('foo', $type->getProperty('lat')->getTitle());
-        $this->assertEquals(null, $type->getProperty('long')->getTitle());
+        $this->assertEquals('LocationA', $schemaA->getRoot());
+        $type = $schemaA->getDefinitions()->getType($schemaA->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
+        $this->assertEquals('foo', $type->getProperty('lat')->getDescription());
+        $this->assertEquals(null, $type->getProperty('long')->getDescription());
 
-        $this->assertInstanceOf(ReferenceType::class, $schemaB->getType());
-        $type = $schemaB->getDefinitions()->getType($schemaB->getType()->getRef());
-        $this->assertInstanceOf(StructType::class, $type);
-        $this->assertEquals(null, $type->getProperty('lat')->getTitle());
-        $this->assertEquals('bar', $type->getProperty('long')->getTitle());
+        $this->assertEquals('LocationB', $schemaB->getRoot());
+        $type = $schemaB->getDefinitions()->getType($schemaB->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $type);
+        $this->assertEquals(null, $type->getProperty('lat')->getDescription());
+        $this->assertEquals('bar', $type->getProperty('long')->getDescription());
     }
     
     public function testSerialize()
@@ -84,9 +84,9 @@ class SchemaAbstractTest extends TestCase
         $schema = unserialize($data);
 
         $this->assertInstanceOf(Schema::class, $schema);
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Entry'));
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Author'));
-        $this->assertInstanceOf(StructType::class, $schema->getDefinitions()->getType('Location'));
-        $this->assertInstanceOf(ReferenceType::class, $schema->getType());
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Entry'));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Author'));
+        $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType('Location'));
+        $this->assertEquals('Location', $schema->getRoot());
     }
 }

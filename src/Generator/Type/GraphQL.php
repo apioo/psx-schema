@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,11 @@ namespace PSX\Schema\Generator\Type;
  */
 class GraphQL extends GeneratorAbstract
 {
+    public function getGenericDefinition(array $types): string
+    {
+        return '';
+    }
+
     protected function getString(): string
     {
         return 'String';
@@ -60,25 +65,9 @@ class GraphQL extends GeneratorAbstract
         return '[' . $type . ']';
     }
 
-    protected function getUnion(array $types): string
-    {
-        return implode(' | ', $types);
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        // in GraphQL there is no intersection type
-        return implode(' | ', $types);
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '';
     }
 
     protected function getAny(): string

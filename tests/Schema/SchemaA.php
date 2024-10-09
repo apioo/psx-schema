@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,6 @@ class SchemaA extends SchemaAbstract
     public function build(): void
     {
         $location = $this->modify(SchemaCommon::class, 'LocationA');
-        $location->getProperty('lat')->setTitle('foo');
+        $location->getProperty('lat')->setDescription('foo');
     }
 }

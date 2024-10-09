@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,11 @@ namespace PSX\Schema\Generator;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -55,7 +54,7 @@ class Python extends CodeGeneratorAbstract
         return new Normalizer\Python();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = '';
         if (!empty($generics)) {
@@ -68,6 +67,9 @@ class Python extends CodeGeneratorAbstract
 
         $parts = [];
         if (!empty($extends)) {
+            if (!empty($templates)) {
+                $extends.= $this->generator->getGenericDefinition($templates);
+            }
             $parts[] = $extends;
         } else {
             $parts[] = 'BaseModel';
@@ -93,31 +95,31 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
-
-        $code = 'class ' . $name->getClass() . '(Dict[str, ' . $subType . ']):' . "\n";
+        $code = 'class ' . $name->getClass() . '(UserDict[str, ' . $type . ']):' . "\n";
         $code.= '    @classmethod' . "\n";
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
-        $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $subType . '))' . "\n";
+        $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
         $code.= "\n";
         $code.= "\n";
 
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'class ' . $name->getClass() . '(' . $type . '):' . "\n";
-        $code.= '    pass' . "\n";
+        $code = 'class ' . $name->getClass() . '(UserList[' . $type . ']):' . "\n";
+        $code.= '    @classmethod' . "\n";
+        $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
+        $code.= '        return core_schema.list_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
         $code.= "\n";
         $code.= "\n";
 
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -143,36 +145,23 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(TypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
 
         $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Union';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict';
 
-        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
+        if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
             $imports[] = 'import datetime';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
+        } elseif (TypeUtil::contains($origin, StringPropertyType::class, Format::TIME)) {
             $imports[] = 'import datetime';
-        } elseif (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
+        } elseif (TypeUtil::contains($origin, StringPropertyType::class, Format::DATETIME)) {
             $imports[] = 'import datetime';
         }
 
-        $refs = [];
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs){
-            if ($type instanceof ReferenceType) {
-                $refs[$type->getRef()] = $type->getRef();
-                if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $ref) {
-                        $refs[$ref] = $ref;
-                    }
-                }
-            } elseif ($type instanceof StructType && $type->getExtends()) {
-                $refs[$type->getExtends()] = $type->getExtends();
-            }
-        });
-
+        $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
             $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);

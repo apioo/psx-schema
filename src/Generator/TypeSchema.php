@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,35 +37,30 @@ use PSX\Schema\TypeUtil;
  */
 class TypeSchema implements GeneratorInterface
 {
-    public function generate(SchemaInterface $schema)
+    public function generate(SchemaInterface $schema): Code\Chunks|string
     {
         $data = $this->toArray(
-            $schema->getType(),
-            $schema->getDefinitions()
+            $schema->getDefinitions(),
+            $schema->getRoot()
         );
 
         return Parser::encode($data);
     }
 
-    /**
-     * @param \PSX\Schema\TypeInterface $type
-     * @param \PSX\Schema\DefinitionsInterface $definitions
-     * @return array
-     */
-    public function toArray(TypeInterface $type, DefinitionsInterface $definitions)
+    public function toArray(DefinitionsInterface $definitions, ?string $root): array
     {
-        $object = $this->generateType($type);
-
         $result = [
             'definitions' => $this->generateDefinitions($definitions),
         ];
 
-        $result = array_merge($result, $object);
+        if ($root !== null) {
+            $result['root'] = $root;
+        }
 
         return $result;
     }
 
-    protected function generateDefinitions(DefinitionsInterface $definitions)
+    protected function generateDefinitions(DefinitionsInterface $definitions): array
     {
         $result = [];
         $types  = $definitions->getAllTypes();
@@ -85,7 +80,7 @@ class TypeSchema implements GeneratorInterface
         return $result;
     }
 
-    protected function generateType(TypeInterface $type)
+    protected function generateType(TypeInterface $type): array
     {
         TypeUtil::normalize($type);
 

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\SchemaResolver;
-use PSX\Schema\TypeFactory;
+use PSX\Schema\Type\Factory\DefinitionTypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 
 /**
  * SchemaResolverTest
@@ -36,14 +37,14 @@ class SchemaResolverTest extends SchemaTestCase
     {
         $schema = $this->getSchema();
 
-        $foo = TypeFactory::getStruct();
-        $foo->addProperty('bar', TypeFactory::getString());
+        $foo = DefinitionTypeFactory::getStruct();
+        $foo->addProperty('bar', PropertyTypeFactory::getString());
         $schema->getDefinitions()->addType('foo', $foo);
 
         $resolver = new SchemaResolver();
         $resolver->resolve($schema);
 
         $types = $schema->getDefinitions()->getAllTypes();
-        $this->assertEquals(['self:Location', 'self:Web', 'self:Author', 'self:Meta', 'self:News'], array_keys($types));
+        $this->assertEquals(['self:Location', 'self:Author', 'self:Meta', 'self:News'], array_keys($types));
     }
 }

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -52,16 +52,19 @@ class VisualBasic extends CodeGeneratorAbstract
         return new Normalizer\VisualBasic();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'Public Class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '(Of ' . implode(', ', $generics) . ')';
+            $code.= $this->generator->getGenericDefinition($generics);
         }
 
         if (!empty($extends)) {
             $code.= "\n" . $this->indent . 'Inherits ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericDefinition($templates);
+            }
         }
 
         $code.= "\n";
@@ -70,6 +73,7 @@ class VisualBasic extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $code.= $this->indent . '<JsonPropertyName("' . $property->getName()->getRaw() . '")>' . "\n";
             $code.= $this->indent . 'Public Property ' . $property->getName()->getProperty() . ' As ' . $property->getType() . "\n";
+            $code.= "\n";
         }
 
         $code.= 'End Class' . "\n";
@@ -77,27 +81,25 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getType($origin->getAdditionalProperties());
-
         $code = 'Public Class ' . $name->getClass() . "\n";
-        $code.= $this->indent . 'Inherits Dictionary(Of String, ' . $subType . ')' . "\n";
+        $code.= $this->indent . 'Inherits Dictionary(Of String, ' . $type . ')' . "\n";
         $code.= 'End Class' . "\n";
 
         return $code;
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'Public Class ' . $name->getClass() . ' : ' . $type . "\n";
-        $code.= $this->indent . 'Inherits ' . $type . "\n";
+        $code = 'Public Class ' . $name->getClass() . "\n";
+        $code.= $this->indent . 'Inherits List(Of ' . $type . ')' . "\n";
         $code.= 'End Class' . "\n";
 
         return $code;
     }
 
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -122,7 +124,7 @@ class VisualBasic extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeFooter(TypeAbstract $origin, Code\Name $className): string
+    protected function writeFooter(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         if (!empty($this->namespace)) {
             return 'End Namespace' . "\n";
@@ -131,12 +133,12 @@ class VisualBasic extends CodeGeneratorAbstract
         }
     }
 
-    private function getImports(TypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
         $imports[] = 'Imports System.Text.Json.Serialization';
 
-        if (TypeUtil::contains($origin, MapType::class)) {
+        if (TypeUtil::contains($origin, MapDefinitionType::class)) {
             $imports[] = 'Imports System.Collections.Generic';
         }
 

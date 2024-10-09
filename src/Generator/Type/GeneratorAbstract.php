@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,15 @@ use PSX\Schema\ContentType;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -56,45 +53,30 @@ abstract class GeneratorAbstract implements GeneratorInterface
         $this->normalizer = $normalizer;
     }
 
-    public function getType(TypeInterface $type): string
+    public function getType(PropertyTypeAbstract $type): string
     {
-        if ($type instanceof StringType) {
+        if ($type instanceof StringPropertyType) {
             return $this->getStringType($type);
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             return $this->getIntegerType($type);
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             return $this->getNumber();
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             return $this->getBoolean();
-        } elseif ($type instanceof ArrayType) {
-            return $this->getArray($this->getType($type->getItems()));
-        } elseif ($type instanceof StructType) {
-            throw new GeneratorException('Could not determine name of anonymous struct, use a reference to the definitions instead');
-        } elseif ($type instanceof MapType) {
-            return $this->getMap($this->getType($type->getAdditionalProperties()));
-        } elseif ($type instanceof UnionType) {
-            return $this->getUnion($this->getCombinationType($type->getOneOf()));
-        } elseif ($type instanceof IntersectionType) {
-            return $this->getIntersection($this->getCombinationType($type->getAllOf()));
-        } elseif ($type instanceof ReferenceType) {
-            $template = $type->getTemplate();
-            if (!empty($template)) {
-                $types = [];
-                foreach ($template as $value) {
-                    $types[] = $this->getReference($value);
-                }
-                return $this->getReference($type->getRef()) . $this->getGeneric($types);
-            } else {
-                return $this->getReference($type->getRef());
-            }
-        } elseif ($type instanceof GenericType) {
-            return $type->getGeneric() ?? '';
+        } elseif ($type instanceof ArrayPropertyType) {
+            return $this->getArray($this->getType($type->getSchema()));
+        } elseif ($type instanceof MapPropertyType) {
+            return $this->getMap($this->getType($type->getSchema()));
+        } elseif ($type instanceof ReferencePropertyType) {
+            return $this->getReference($type->getTarget());
+        } elseif ($type instanceof GenericPropertyType) {
+            return $this->getGeneric($type->getName() ?? throw new GeneratorException('Provided no generic name'));
         }
 
         return $this->getAny();
     }
 
-    public function getDocType(TypeInterface $type): string
+    public function getDocType(PropertyTypeAbstract $type): string
     {
         return $this->getType($type);
     }
@@ -103,6 +85,8 @@ abstract class GeneratorAbstract implements GeneratorInterface
     {
         return $this->getString();
     }
+
+    abstract public function getGenericDefinition(array $types): string;
 
     abstract protected function getString(): string;
 
@@ -126,10 +110,6 @@ abstract class GeneratorAbstract implements GeneratorInterface
 
     abstract protected function getMap(string $type): string;
 
-    abstract protected function getUnion(array $types): string;
-
-    abstract protected function getIntersection(array $types): string;
-
     abstract protected function getGroup(string $type): string;
 
     protected function getReference(string $ref): string
@@ -145,13 +125,16 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $name;
     }
 
-    abstract protected function getGeneric(array $types): string;
+    protected function getGeneric(string $name): string
+    {
+        return $name;
+    }
 
     abstract protected function getAny(): string;
 
     abstract protected function getNamespaced(string $namespace, string $name): string;
 
-    private function getStringType(StringType $type): string
+    private function getStringType(StringPropertyType $type): string
     {
         $format = $type->getFormat();
         if ($format !== null) {
@@ -161,7 +144,7 @@ abstract class GeneratorAbstract implements GeneratorInterface
         }
     }
 
-    private function getIntegerType(IntegerType $type): string
+    private function getIntegerType(IntegerPropertyType $type): string
     {
         $format = $type->getFormat();
         if ($format !== null) {
@@ -169,20 +152,5 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } else {
             return $this->getInteger();
         }
-    }
-
-    private function getCombinationType(array $properties): array
-    {
-        $types = [];
-        foreach ($properties as $property) {
-            $type = $this->getType($property);
-            if ($property instanceof UnionType || $property instanceof IntersectionType) {
-                $types[] = $this->getGroup($type);
-            } else {
-                $types[] = $type;
-            }
-        }
-
-        return $types;
     }
 }

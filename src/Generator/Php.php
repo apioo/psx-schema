@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,19 @@ use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
+use PSX\Record\ArrayList;
+use PSX\Record\HashMap;
 use PSX\Record\Record;
 use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 
 /**
  * Php
@@ -81,11 +79,15 @@ class Php extends CodeGeneratorAbstract
         return new Normalizer\Php();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $tags = [];
         if ($generics !== null) {
             $tags['template'] = $generics;
+        }
+
+        if (!empty($templates)) {
+            $tags['extends'] = $extends . $this->generator->getGenericDefinition($templates);
         }
 
         $uses = [];
@@ -94,9 +96,13 @@ class Php extends CodeGeneratorAbstract
         $class->implement('\\' . \JsonSerializable::class, '\\' . RecordableInterface::class);
         $class->setDocComment($this->buildComment($tags));
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
+        }
+
+        if ($origin->getBase() === true) {
+            $class->makeAbstract();
         }
 
         if (!empty($extends)) {
@@ -118,34 +124,26 @@ class Php extends CodeGeneratorAbstract
             $prop->makeProtected();
             $type = $property->getType();
             if (!empty($type)) {
-                $combinationType = $this->getNullableCombinationType($type);
-                if ($combinationType) {
-                    $prop->setType($combinationType);
-                } else {
-                    if ($type === 'array') {
-                        // in case we have an array we must add a var annotation to describe which type is inside the array
-                        $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
-                    } elseif ($type === '\\' . Record::class) {
-                        // in case we have an inline map we need to provide the inner type
-                        $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
-                    }
+                $docComment = $this->getDocComment($type, 'var', $property);
+                if (!empty($docComment)) {
+                    $prop->setDocComment($docComment);
+                }
 
-                    if ($type !== 'mixed') {
-                        $prop->setType('?' . $type);
-                    } else {
-                        $prop->setType($type);
-                    }
+                if ($type !== 'mixed') {
+                    $prop->setType('?' . $type);
+                } else {
+                    $prop->setType($type);
                 }
             } else {
                 $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
             }
 
-            $attributes = $this->getAttributesForType($property->getOrigin(), $uses, $realKey);
+            $attributes = $this->getAttributesForProperty($property->getOrigin(), $uses, $realKey);
             foreach ($attributes as $attribute) {
                 $prop->addAttribute($attribute);
             }
 
-            $prop->setDefault($this->getDefault($property->getOrigin()));
+            $prop->setDefault(null);
 
             $class->addStmt($prop);
 
@@ -154,20 +152,15 @@ class Php extends CodeGeneratorAbstract
             $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
             if (!empty($type)) {
-                $combinationType = $this->getNullableCombinationType($type);
-                if ($combinationType) {
-                    $param->setType($combinationType);
-                } else {
-                    if ($type === 'array') {
-                        // in case we have an array we must add a var annotation to describe which type is inside the array
-                        $setter->setDocComment($this->buildComment(['param' => $property->getDocType() . '|null $' . $property->getName()->getArgument()]));
-                    }
+                $docComment = $this->getDocComment($type, 'param', $property, $property->getName()->getArgument());
+                if (!empty($docComment)) {
+                    $setter->setDocComment($docComment);
+                }
 
-                    if ($type !== 'mixed') {
-                        $param->setType('?' . $type);
-                    } else {
-                        $param->setType($type);
-                    }
+                if ($type !== 'mixed') {
+                    $param->setType('?' . $type);
+                } else {
+                    $param->setType($type);
                 }
             }
 
@@ -182,20 +175,15 @@ class Php extends CodeGeneratorAbstract
 
             $getter = $this->factory->method($property->getName()->getMethod(prefix: ['get']));
             if (!empty($type)) {
-                $combinationType = $this->getNullableCombinationType($type);
-                if ($combinationType) {
-                    $getter->setReturnType($combinationType);
-                } else {
-                    if ($type === 'array') {
-                        // in case we have an array we must add a return annotation to describe which type is inside the array
-                        $getter->setDocComment($this->buildComment(['return' => $property->getDocType() . '|null']));
-                    }
+                $docComment = $this->getDocComment($type, 'return', $property);
+                if (!empty($docComment)) {
+                    $getter->setDocComment($docComment);
+                }
 
-                    if ($type !== 'mixed') {
-                        $getter->setReturnType('?' . $type);
-                    } else {
-                        $getter->setReturnType($type);
-                    }
+                if ($type !== 'mixed') {
+                    $getter->setReturnType('?' . $type);
+                } else {
+                    $getter->setReturnType($type);
                 }
             } else {
                 $setter->setReturnType('void');
@@ -215,17 +203,15 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $subType = $this->generator->getDocType($origin->getAdditionalProperties());
-
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment(['extends' => '\PSX\Record\Record<' . $subType . '>']));
-        $class->extend('\\' . Record::class);
+        $class->setDocComment($this->buildComment(['extends' => '\\ArrayObject<string, ' . $type . '>']));
+        $class->extend('\\ArrayObject');
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
         }
@@ -233,31 +219,36 @@ class Php extends CodeGeneratorAbstract
         return $this->prettyPrint($class, $uses);
     }
 
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $tags = [];
-        $template = $origin->getTemplate();
-        if (!empty($template)) {
-            $types = [];
-            foreach ($template as $value) {
-                $types[] = $this->generator->getDocType((new ReferenceType())->setRef($value));
-            }
-
-            $tags['extends'] = $type . '<' . implode(', ', $types) . '>';
-        }
-
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment($tags));
-        $class->extend($type);
+        $class->setDocComment($this->buildComment(['extends' => '\\ArrayIterator<' . $type . '>']));
+        $class->extend('\\ArrayIterator');
 
-        $attributes = $this->getAttributesForType($origin, $uses);
+        $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {
             $class->addAttribute($attribute);
         }
 
         return $this->prettyPrint($class, $uses);
+    }
+
+    private function getDocComment(string $type, string $tag, Code\Property $property, ?string $argumentName = null): ?string
+    {
+        $docType = $property->getDocType();
+        if ($type === 'array') {
+            // in case we have an array we must add a var annotation to describe which type is inside the array
+            return $this->buildComment([$tag => $docType . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
+        } elseif ($type === '\\' . Record::class) {
+            // in case we have an inline map we need to provide the inner type
+            return $this->buildComment([$tag => $property->getDocType() . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
+        } elseif ($type === 'mixed' && $docType !== 'mixed') {
+            return $this->buildComment([$tag => $docType . ($argumentName !== null ? ' $' . $argumentName : '')]);
+        }
+
+        return null;
     }
 
     private function buildComment(array $tags, ?string $comment = null): string
@@ -285,12 +276,43 @@ class Php extends CodeGeneratorAbstract
     }
 
     /**
-     * @param TypeInterface $type
-     * @param array $uses
-     * @param string|null $key
      * @return Node\Attribute[]
      */
-    private function getAttributesForType(TypeInterface $type, array &$uses, ?string $key = null): array
+    private function getAttributesForDefinition(DefinitionTypeAbstract $type, array &$uses): array
+    {
+        $result = [];
+
+        $description = $type->getDescription();
+        if ($description !== null) {
+            $result[] = $this->newAttribute('Description', [$this->newScalar($description)], $uses);
+        }
+
+        $deprecated = $type->isDeprecated();
+        if ($deprecated !== null) {
+            $result[] = $this->newAttribute('Deprecated', [$this->newScalar($deprecated)], $uses);
+        }
+
+        if ($type instanceof StructDefinitionType) {
+            $discriminator = $type->getDiscriminator();
+            if ($discriminator !== null) {
+                $result[] = $this->newAttribute('Discriminator', [$this->newScalar($discriminator)], $uses);
+            }
+
+            $mapping = $type->getMapping();
+            if ($mapping !== null) {
+                foreach ($mapping as $class => $value) {
+                    $result[] = $this->newAttribute('DerivedType', [$this->newScalar($class), $this->newScalar($value)], $uses);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Node\Attribute[]
+     */
+    private function getAttributesForProperty(PropertyTypeAbstract $type, array &$uses, ?string $key = null): array
     {
         $result = [];
 
@@ -298,72 +320,14 @@ class Php extends CodeGeneratorAbstract
             $result[] = $this->newAttribute('Key', [$this->newScalar($key)], $uses);
         }
 
-        if ($type instanceof TypeAbstract) {
-            if ($type->getTitle() !== null) {
-                $result[] = $this->newAttribute('Title', [$this->newScalar($type->getTitle())], $uses);
-            }
-            if ($type->getDescription() !== null) {
-                $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
-            }
-            if ($type->isNullable() !== null) {
-                $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
-            }
-            if ($type->isDeprecated() !== null) {
-                $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
-            }
-            if ($type->isReadonly() !== null) {
-                $result[] = $this->newAttribute('Readonly', [$this->newScalar($type->isReadonly())], $uses);
-            }
+        if ($type->getDescription() !== null) {
+            $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
         }
-
-        if ($type instanceof ScalarType) {
-            if ($type->getEnum() !== null) {
-                $result[] = $this->newAttribute('Enum', [$this->newArray($type->getEnum())], $uses);
-            }
+        if ($type->isDeprecated() !== null) {
+            $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
         }
-
-        if ($type instanceof StructType) {
-            if ($type->getRequired() !== null) {
-                $result[] = $this->newAttribute('Required', [$this->newArray($type->getRequired())], $uses);
-            }
-        } elseif ($type instanceof MapType) {
-            if ($type->getMinProperties() !== null) {
-                $result[] = $this->newAttribute('MinProperties', [$this->newScalar($type->getMinProperties())], $uses);
-            }
-            if ($type->getMaxProperties() !== null) {
-                $result[] = $this->newAttribute('MaxProperties', [$this->newScalar($type->getMaxProperties())], $uses);
-            }
-        } elseif ($type instanceof ArrayType) {
-            if ($type->getMinItems() !== null) {
-                $result[] = $this->newAttribute('MinItems', [$this->newScalar($type->getMinItems())], $uses);
-            }
-            if ($type->getMaxItems() !== null) {
-                $result[] = $this->newAttribute('MaxItems', [$this->newScalar($type->getMaxItems())], $uses);
-            }
-        } elseif ($type instanceof NumberType) {
-            if ($type->getMinimum() !== null) {
-                $result[] = $this->newAttribute('Minimum', [$this->newScalar($type->getMinimum())], $uses);
-            }
-            if ($type->getMaximum() !== null) {
-                $result[] = $this->newAttribute('Maximum', [$this->newScalar($type->getMaximum())], $uses);
-            }
-        } elseif ($type instanceof StringType) {
-            if ($type->getPattern() !== null) {
-                $result[] = $this->newAttribute('Pattern', [$this->newScalar($type->getPattern())], $uses);
-            }
-            if ($type->getMinLength() !== null) {
-                $result[] = $this->newAttribute('MinLength', [$this->newScalar($type->getMinLength())], $uses);
-            }
-            if ($type->getMaxLength() !== null) {
-                $result[] = $this->newAttribute('MaxLength', [$this->newScalar($type->getMaxLength())], $uses);
-            }
-        } elseif ($type instanceof UnionType && !empty($type->getPropertyName())) {
-            $args = [$this->newScalar($type->getPropertyName())];
-            if (!empty($type->getMapping())) {
-                $args[] = $this->newArray($type->getMapping());
-            }
-
-            $result[] = $this->newAttribute('Discriminator', $args, $uses);
+        if ($type->isNullable() !== null) {
+            $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
         }
 
         return $result;
@@ -393,24 +357,6 @@ class Php extends CodeGeneratorAbstract
         } else {
             throw new \InvalidArgumentException('Provided a non scalar value');
         }
-    }
-
-    private function newArray(array $values): Node
-    {
-        $result = [];
-        foreach ($values as $index => $value) {
-            $result[$index] = $this->newScalar($value);
-        }
-        return new Node\Expr\Array_($result);
-    }
-
-    private function getDefault(TypeInterface $type)
-    {
-        if (!$type instanceof ScalarType) {
-            return null;
-        }
-
-        return $type->getConst();
     }
 
     private function prettyPrint($class, array $uses): string
@@ -485,16 +431,5 @@ class Php extends CodeGeneratorAbstract
         $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($toRecord)));
 
         $class->addStmt($serialize);
-    }
-
-    private function getNullableCombinationType(string $type): ?string
-    {
-        if (str_contains($type, '|')) {
-            return $type . '|null';
-        } elseif (str_contains($type, '&')) {
-            return '(' . $type . ')|null';
-        } else {
-            return null;
-        }
     }
 }

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\SchemaTestCase;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
 
 /**
@@ -35,27 +35,20 @@ use PSX\Schema\Type\UnionType;
  */
 abstract class ParserTestCase extends SchemaTestCase
 {
-    protected function assertDiscriminator(SchemaInterface $schema)
+    protected function assertDiscriminator(SchemaInterface $schema): void
     {
-        /** @var StructType $container */
-        $container = $schema->getDefinitions()->getType('Form_Container');
-        $this->assertInstanceOf(StructType::class, $container);
+        /** @var StructDefinitionType $container */
+        $element = $schema->getDefinitions()->getType('Form_Element');
+        $this->assertInstanceOf(StructDefinitionType::class, $element);
 
-        /** @var ArrayType $elements */
-        $elements = $container->getProperty('elements');
-        $this->assertInstanceOf(ArrayType::class, $elements);
-
-        /** @var UnionType $items */
         $expect = [
-            'http://fusio-project.org/ns/2015/form/input' => 'Form_Element_Input',
-            'http://fusio-project.org/ns/2015/form/select' => 'Form_Element_Select',
-            'http://fusio-project.org/ns/2015/form/tag' => 'Form_Element_Tag',
-            'http://fusio-project.org/ns/2015/form/textarea' => 'Form_Element_TextArea',
+            'Form_Element_Input' => 'http://fusio-project.org/ns/2015/form/input',
+            'Form_Element_Select' => 'http://fusio-project.org/ns/2015/form/select',
+            'Form_Element_Tag' => 'http://fusio-project.org/ns/2015/form/tag',
+            'Form_Element_TextArea' => 'http://fusio-project.org/ns/2015/form/textarea',
         ];
 
-        $items = $elements->getItems();
-        $this->assertInstanceOf(UnionType::class, $items);
-        $this->assertEquals('element', $items->getPropertyName());
-        $this->assertEquals($expect, $items->getMapping());
+        $this->assertEquals('element', $element->getDiscriminator());
+        $this->assertEquals($expect, $element->getMapping());
     }
 }

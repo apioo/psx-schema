@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,10 @@ use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -58,16 +54,19 @@ class TypeScript extends CodeGeneratorAbstract
         return new Normalizer\TypeScript();
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
-        $code = 'export interface ' . $name->getClass();
+        $code = 'export ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
 
         if (!empty($generics)) {
-            $code.= '<' . implode(', ', $generics) . '>';
+            $code.= $this->generator->getGenericDefinition($generics);
         }
 
         if (!empty($extends)) {
             $code.= ' extends ' . $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericDefinition($templates);
+            }
         }
 
         $code.= ' {' . "\n";
@@ -89,7 +88,7 @@ class TypeScript extends CodeGeneratorAbstract
                 $type = $this->appendGlobalThis($type, $reservedClassNames);
             }
 
-            $code.= $this->indent . $propertyName . ($property->isRequired() ? '' : '?') . ': ' . $type . "\n";
+            $code.= $this->indent . $propertyName . '?: ' . $type . "\n";
         }
 
         $code.= '}' . "\n";
@@ -97,32 +96,23 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    protected function writeMap(Code\Name $name, string $type, MapType $origin): string
+    protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
+        $code ='export class ' . $name->getClass() . ' extends Map<string, ' . $type . '> {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
-    protected function writeArray(Code\Name $name, string $type, ArrayType $origin): string
+    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
+        $code ='export class ' . $name->getClass() . ' extends Array<' . $type . '> {' . "\n";
+        $code.= '}' . "\n";
+
+        return $code;
     }
 
-    protected function writeUnion(Code\Name $name, string $type, UnionType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeIntersection(Code\Name $name, string $type, IntersectionType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeReference(Code\Name $name, string $type, ReferenceType $origin): string
-    {
-        return 'export type ' . $name->getClass() . ' = ' . $type . ';' . "\n";
-    }
-
-    protected function writeHeader(TypeAbstract $origin, Code\Name $className): string
+    protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
         $code = '';
 
@@ -145,23 +135,10 @@ class TypeScript extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(TypeInterface $origin, Code\Name $className): array
+    private function getImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
-        $refs = [];
-        TypeUtil::walk($origin, function(TypeInterface $type) use (&$refs, $className){
-            if ($type instanceof ReferenceType) {
-                $refs[$type->getRef()] = $type->getRef();
-                if ($type->getTemplate()) {
-                    foreach ($type->getTemplate() as $ref) {
-                        $refs[$ref] = $ref;
-                    }
-                }
-            } elseif ($type instanceof StructType && $type->getExtends()) {
-                $refs[$type->getExtends()] = $type->getExtends();
-            }
-        });
-
         $imports = [];
+        $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
 

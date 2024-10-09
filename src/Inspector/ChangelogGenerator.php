@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,20 @@
 namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\GenericType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\GenericPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
 /**
@@ -50,7 +51,7 @@ class ChangelogGenerator
     {
         foreach ($left->getAllTypes() as $leftName => $leftType) {
             if ($right->hasType($leftName)) {
-                yield from $this->generateType($leftType, $right->getType($leftName), $leftName);
+                yield from $this->generateDefinitionType($leftType, $right->getType($leftName), $leftName);
             } else {
                 yield SemVer::MAJOR => $this->getMessageRemoved($leftName, null);
             }
@@ -63,69 +64,38 @@ class ChangelogGenerator
         }
     }
 
-    public function generateType(TypeInterface $leftType, TypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
+    public function generateDefinitionType(DefinitionTypeAbstract $leftType, DefinitionTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        if (get_class($leftType) !== get_class($rightType)) {
-            yield SemVer::MAJOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'type', TypeUtil::getTypeName($leftType), TypeUtil::getTypeName($rightType));
-            return;
-        }
+        yield from $this->generateDefinition($leftType, $rightType, $typeName, $propertyName);
 
-        if ($leftType instanceof TypeAbstract && $rightType instanceof TypeAbstract) {
-            yield from $this->generateCommon($leftType, $rightType, $typeName, $propertyName);
-        }
-
-        if ($leftType instanceof StructType && $rightType instanceof StructType) {
+        if ($leftType instanceof StructDefinitionType && $rightType instanceof StructDefinitionType) {
             yield from $this->generateStruct($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof MapType && $rightType instanceof MapType) {
+        } elseif ($leftType instanceof MapDefinitionType && $rightType instanceof MapDefinitionType) {
             yield from $this->generateMap($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof ArrayType && $rightType instanceof ArrayType) {
+        } elseif ($leftType instanceof ArrayDefinitionType && $rightType instanceof ArrayDefinitionType) {
             yield from $this->generateArray($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof NumberType && $rightType instanceof NumberType) {
-            yield from $this->generateNumber($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof BooleanType && $rightType instanceof BooleanType) {
-            // nothing to diff here
-        } elseif ($leftType instanceof StringType && $rightType instanceof StringType) {
-            yield from $this->generateString($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof IntersectionType && $rightType instanceof IntersectionType) {
-            yield from $this->generateIntersection($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof UnionType && $rightType instanceof UnionType) {
-            yield from $this->generateUnion($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof ReferenceType && $rightType instanceof ReferenceType) {
-            yield from $this->generateReference($leftType, $rightType, $typeName, $propertyName);
-        } elseif ($leftType instanceof AnyType && $rightType instanceof AnyType) {
-            // nothing to diff here
-        } elseif ($leftType instanceof GenericType && $rightType instanceof GenericType) {
-            // nothing to diff here
         }
     }
 
-    private function generateCommon(TypeAbstract $leftType, TypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateDefinition(DefinitionTypeAbstract $leftType, DefinitionTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getDescription() !== $rightType->getDescription()) {
             yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
         }
 
-        if ($leftType->isNullable() !== $rightType->isNullable()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'nullable', $leftType->isNullable(), $rightType->isNullable());
-        }
-
         if ($leftType->isDeprecated() !== $rightType->isDeprecated()) {
             yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'deprecated', $leftType->isDeprecated(), $rightType->isDeprecated());
         }
-
-        if ($leftType->isReadonly() !== $rightType->isReadonly()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'readonly', $leftType->isReadonly(), $rightType->isReadonly());
-        }
     }
 
-    private function generateStruct(StructType $leftType, StructType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         $left = $leftType->getProperties() ?? [];
         $right = $rightType->getProperties() ?? [];
 
         foreach ($left as $key => $property) {
             if (isset($right[$key])) {
-                yield from $this->generateType($property, $right[$key], $typeName, $key);
+                yield from $this->generatePropertyType($property, $right[$key], $typeName, $key);
             } else {
                 yield SemVer::MAJOR => $this->getMessageRemoved($typeName, $key);
             }
@@ -138,104 +108,102 @@ class ChangelogGenerator
         }
     }
 
-    private function generateMap(MapType $leftType, MapType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateMap(MapTypeInterface $leftType, MapTypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getAdditionalProperties();
-        $right = $rightType->getAdditionalProperties();
+        $left = $leftType->getSchema();
+        $right = $rightType->getSchema();
 
-        if ($left instanceof TypeInterface && $right instanceof TypeInterface) {
-            yield from $this->generateType($left, $right, $typeName);
+        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
+            yield from $this->generatePropertyType($left, $right, $typeName, $propertyName);
         }
     }
 
-    private function generateArray(ArrayType $leftType, ArrayType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateArray(ArrayTypeInterface $leftType, ArrayTypeInterface $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getItems();
-        $right = $rightType->getItems();
+        $left = $leftType->getSchema();
+        $right = $rightType->getSchema();
 
-        if ($left instanceof TypeInterface && $right instanceof TypeInterface) {
-            yield from $this->generateType($left, $right, $typeName);
+        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
+            yield from $this->generatePropertyType($left, $right, $typeName, $propertyName);
         }
     }
 
-    private function generateIntersection(IntersectionType $leftType, IntersectionType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    public function generatePropertyType(PropertyTypeAbstract $leftType, PropertyTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getAllOf() ?? [];
-        $right = $rightType->getAllOf() ?? [];
-
-        foreach ($left as $index => $value) {
-            if (isset($right[$index])) {
-                yield from $this->generateType($value, $right[$index], $typeName, $propertyName);
-            } else {
-                yield $this->getMessageRemoved($typeName, $propertyName . '[' . $index . ']');
-            }
+        if (get_class($leftType) !== get_class($rightType)) {
+            yield SemVer::MAJOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'type', TypeUtil::getTypeName($leftType), TypeUtil::getTypeName($rightType));
+            return;
         }
 
-        foreach ($right as $index => $value) {
-            if (!isset($left[$index])) {
-                yield $this->getMessageAdded($typeName, $propertyName . '[' . $index . ']');
-            }
+        yield from $this->generateType($leftType, $rightType, $typeName, $propertyName);
+
+        if ($leftType instanceof CollectionPropertyType && $rightType instanceof CollectionPropertyType) {
+            yield from $this->generateCollection($leftType, $rightType, $typeName, $propertyName);
+        } elseif ($leftType instanceof NumberPropertyType && $rightType instanceof NumberPropertyType) {
+            yield from $this->generateNumber($leftType, $rightType, $typeName, $propertyName);
+        } elseif ($leftType instanceof BooleanPropertyType && $rightType instanceof BooleanPropertyType) {
+            // nothing to diff here
+        } elseif ($leftType instanceof StringPropertyType && $rightType instanceof StringPropertyType) {
+            yield from $this->generateString($leftType, $rightType, $typeName, $propertyName);
+        } elseif ($leftType instanceof ReferencePropertyType && $rightType instanceof ReferencePropertyType) {
+            yield from $this->generateReference($leftType, $rightType, $typeName, $propertyName);
+        } elseif ($leftType instanceof AnyPropertyType && $rightType instanceof AnyPropertyType) {
+            // nothing to diff here
+        } elseif ($leftType instanceof GenericPropertyType && $rightType instanceof GenericPropertyType) {
+            yield from $this->generateGeneric($leftType, $rightType, $typeName, $propertyName);
         }
     }
 
-    private function generateUnion(UnionType $leftType, UnionType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateType(PropertyTypeAbstract $leftType, PropertyTypeAbstract $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        $left = $leftType->getOneOf() ?? [];
-        $right = $rightType->getOneOf() ?? [];
-
-        foreach ($left as $index => $value) {
-            if (isset($right[$index])) {
-                yield from $this->generateType($value, $right[$index], $typeName, $propertyName);
-            } else {
-                yield $this->getMessageRemoved($typeName, $propertyName . '[' . $index . ']');
-            }
+        if ($leftType->getDescription() !== $rightType->getDescription()) {
+            yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'description', $leftType->getDescription(), $rightType->getDescription());
         }
 
-        foreach ($right as $index => $value) {
-            if (!isset($left[$index])) {
-                yield $this->getMessageAdded($typeName, $propertyName . '[' . $index . ']');
-            }
+        if ($leftType->isDeprecated() !== $rightType->isDeprecated()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'deprecated', $leftType->isDeprecated(), $rightType->isDeprecated());
+        }
+
+        if ($leftType->isNullable() !== $rightType->isNullable()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'nullable', $leftType->isNullable(), $rightType->isNullable());
         }
     }
 
-    private function generateReference(ReferenceType $leftType, ReferenceType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateCollection(CollectionPropertyType $leftType, CollectionPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        if ($leftType->getRef() !== $rightType->getRef()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'ref', $leftType->getRef(), $rightType->getRef());
+        $left = $leftType->getSchema();
+        $right = $rightType->getSchema();
+
+        if ($left instanceof PropertyTypeAbstract && $right instanceof PropertyTypeAbstract) {
+            yield from $this->generateType($left, $right, $typeName, $propertyName);
         }
     }
 
-    private function generateString(StringType $leftType, StringType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateReference(ReferencePropertyType $leftType, ReferencePropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        if ($leftType->getPattern() !== $rightType->getPattern()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'pattern', $leftType->getPattern(), $rightType->getPattern());
-        }
-
-        if ($leftType->getMinLength() !== $rightType->getMinLength()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'min length', $leftType->getMinLength(), $rightType->getMinLength());
-        }
-
-        if ($leftType->getMaxLength() !== $rightType->getMaxLength()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'max length', $leftType->getMaxLength(), $rightType->getMaxLength());
+        if ($leftType->getTarget() !== $rightType->getTarget()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'target', $leftType->getTarget(), $rightType->getTarget());
         }
     }
 
-    private function generateNumber(NumberType $leftType, NumberType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateGeneric(GenericPropertyType $leftType, GenericPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
-        if ($leftType->getMinimum() !== $rightType->getMinimum()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'minimum', $leftType->getMinimum(), $rightType->getMinimum());
+        if ($leftType->getName() !== $rightType->getName()) {
+            yield SemVer::PATCH => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'name', $leftType->getName(), $rightType->getName());
         }
+    }
 
-        if ($leftType->getMaximum() !== $rightType->getMaximum()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'maximum', $leftType->getMaximum(), $rightType->getMaximum());
+    private function generateString(StringPropertyType $leftType, StringPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        if ($leftType->getFormat() !== $rightType->getFormat()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'format', $leftType->getFormat(), $rightType->getFormat());
         }
+    }
 
-        if ($leftType->getExclusiveMinimum() !== $rightType->getExclusiveMinimum()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive minimum', $leftType->getExclusiveMinimum(), $rightType->getExclusiveMinimum());
-        }
-
-        if ($leftType->getExclusiveMaximum() !== $rightType->getExclusiveMaximum()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'exclusive maximum', $leftType->getExclusiveMaximum(), $rightType->getExclusiveMaximum());
+    private function generateNumber(NumberPropertyType $leftType, NumberPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    {
+        if ($leftType->getFormat() !== $rightType->getFormat()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'format', $leftType->getFormat(), $rightType->getFormat());
         }
     }
 

@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,6 @@
  */
 
 namespace PSX\Schema\Generator;
-
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ScalarType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\TypeInterface;
 
 /**
  * MarkupAbstract
@@ -46,66 +40,5 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
 
         $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
         $this->prefix  = $config?->get('prefix') ?? 'psx_model_';
-    }
-
-    protected function getConstraints(TypeInterface $type): array
-    {
-        $constraints = [];
-
-        if ($type instanceof ArrayType) {
-            $minItems = $type->getMinItems();
-            if ($minItems !== null) {
-                $constraints['minItems'] = $minItems;
-            }
-
-            $maxItems = $type->getMaxItems();
-            if ($maxItems !== null) {
-                $constraints['maxItems'] = $maxItems;
-            }
-        } elseif ($type instanceof NumberType) {
-            $minimum = $type->getMinimum();
-            if ($minimum !== null) {
-                $constraints['minimum'] = $minimum;
-            }
-
-            $maximum = $type->getMaximum();
-            if ($maximum !== null) {
-                $constraints['maximum'] = $maximum;
-            }
-
-            $multipleOf = $type->getMultipleOf();
-            if ($multipleOf !== null) {
-                $constraints['multipleOf'] = $multipleOf;
-            }
-        } elseif ($type instanceof StringType) {
-            $minLength = $type->getMinLength();
-            if ($minLength !== null) {
-                $constraints['minLength'] = $minLength;
-            }
-
-            $maxLength = $type->getMaxLength();
-            if ($maxLength !== null) {
-                $constraints['maxLength'] = $maxLength;
-            }
-
-            $pattern = $type->getPattern();
-            if ($pattern !== null) {
-                $constraints['pattern'] = $pattern;
-            }
-        }
-
-        if ($type instanceof ScalarType) {
-            $enum = $type->getEnum();
-            if ($enum !== null) {
-                $constraints['enum'] = $enum;
-            }
-
-            $const = $type->getConst();
-            if ($const !== null) {
-                $constraints['const'] = $const;
-            }
-        }
-
-        return $constraints;
     }
 }

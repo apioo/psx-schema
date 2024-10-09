@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
-use PSX\Schema\TypeInterface;
+use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
  * A generator can implement this interface if it has the ability to resolve a type from a schema instance. It returns
@@ -43,12 +43,12 @@ interface GeneratorInterface
     /**
      * Returns a type string
      */
-    public function getType(TypeInterface $type): string;
+    public function getType(PropertyTypeAbstract $type): string;
 
     /**
      * Returns a doc type string
      */
-    public function getDocType(TypeInterface $type): string;
+    public function getDocType(PropertyTypeAbstract $type): string;
 
     /**
      * Returns a fitting type for the provided content type. If the programming language has a native type for the provided content
@@ -56,4 +56,9 @@ interface GeneratorInterface
      * As default the method should simply return a string type
      */
     public function getContentType(ContentType $contentType, int $context): string;
+
+    /**
+     * Returns a generic definition
+     */
+    public function getGenericDefinition(array $types): string;
 }

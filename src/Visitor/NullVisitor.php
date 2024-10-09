@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,15 @@
 
 namespace PSX\Schema\Visitor;
 
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\VisitorInterface;
 
 /**
@@ -38,72 +40,52 @@ use PSX\Schema\VisitorInterface;
  */
 class NullVisitor implements VisitorInterface
 {
-    public function visitStruct(\stdClass $data, StructType $type, string $path)
+    public function visitStruct(\stdClass $data, StructDefinitionType $type, string $path): object
     {
         return $data;
     }
 
-    public function visitMap(\stdClass $data, MapType $type, string $path)
+    public function visitMap(\stdClass $data, MapTypeInterface $type, string $path): object
     {
         return $data;
     }
 
-    public function visitArray(array $data, ArrayType $type, string $path)
+    public function visitArray(array $data, ArrayTypeInterface $type, string $path): array
     {
         return $data;
     }
 
-    public function visitBinary($data, StringType $type, string $path)
+    public function visitBoolean(bool $data, BooleanPropertyType $type, string $path): bool
     {
         return $data;
     }
 
-    public function visitBoolean($data, BooleanType $type, string $path)
+    public function visitNumber(float|int $data, NumberPropertyType $type, string $path): float|int
     {
         return $data;
     }
 
-    public function visitDateTime($data, StringType $type, string $path)
+    public function visitInteger(int $data, IntegerPropertyType $type, string $path): int
     {
         return $data;
     }
 
-    public function visitDate($data, StringType $type, string $path)
+    public function visitString(string $data, StringPropertyType $type, string $path): string
     {
         return $data;
     }
 
-    public function visitDuration($data, StringType $type, string $path)
+    public function visitDate(string $data, StringPropertyType $type, string $path): string
     {
         return $data;
     }
 
-    public function visitPeriod($data, StringType $type, string $path)
+    public function visitDateTime(string $data, StringPropertyType $type, string $path): string
     {
         return $data;
     }
 
-    public function visitNumber($data, NumberType $type, string $path)
-    {
-        return $data;
-    }
-
-    public function visitInteger($data, IntegerType $type, string $path)
-    {
-        return $data;
-    }
-
-    public function visitString($data, StringType $type, string $path)
-    {
-        return $data;
-    }
-
-    public function visitTime($data, StringType $type, string $path)
-    {
-        return $data;
-    }
-
-    public function visitUri($data, StringType $type, string $path)
+    public function visitTime(string $data, StringPropertyType $type, string $path): string
     {
         return $data;
     }

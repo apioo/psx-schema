@@ -4,8 +4,10 @@ use human::Human;
 pub struct Human {
     #[serde(rename = "firstName")]
     first_name: Option<String>,
+
     #[serde(rename = "parent")]
     parent: Option<Human>,
+
 }
 
 use serde::{Serialize, Deserialize};
@@ -14,23 +16,60 @@ use human::Human;
 pub struct Student {
     #[serde(rename = "firstName")]
     first_name: Option<String>,
+
     #[serde(rename = "parent")]
     parent: Option<Human>,
+
     #[serde(rename = "matricleNumber")]
     matricle_number: Option<String>,
+
 }
 
+use serde::{Serialize, Deserialize};
 use map::Map;
+use human::Human;
 use student::Student;
-pub type StudentMap = Map;
+#[derive(Serialize, Deserialize)]
+pub struct StudentMap {
+    #[serde(rename = "totalResults")]
+    total_results: Option<u64>,
+
+    #[serde(rename = "parent")]
+    parent: Option<Human>,
+
+    #[serde(rename = "entries")]
+    entries: Option<Vec<Student>>,
+
+}
+
+use serde::{Serialize, Deserialize};
+use map::Map;
+use human::Human;
+#[derive(Serialize, Deserialize)]
+pub struct HumanMap {
+    #[serde(rename = "totalResults")]
+    total_results: Option<u64>,
+
+    #[serde(rename = "parent")]
+    parent: Option<Human>,
+
+    #[serde(rename = "entries")]
+    entries: Option<Vec<Human>>,
+
+}
 
 use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Map {
     #[serde(rename = "totalResults")]
     total_results: Option<u64>,
+
+    #[serde(rename = "parent")]
+    parent: Option<P>,
+
     #[serde(rename = "entries")]
     entries: Option<Vec<T>>,
+
 }
 
 use serde::{Serialize, Deserialize};
@@ -39,4 +78,5 @@ use student_map::StudentMap;
 pub struct RootSchema {
     #[serde(rename = "students")]
     students: Option<StudentMap>,
+
 }

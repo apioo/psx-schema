@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\StructType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * GraphQL
@@ -42,13 +42,13 @@ class GraphQL extends CodeGeneratorAbstract
         return new Type\GraphQL($mapping, $this->normalizer);
     }
 
-    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, StructType $origin): string
+    protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
         $code = 'type ' . $name->getClass() . ' {' . "\n";
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . ($property->isRequired() ? '!' : '') . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 
         $code.= '}' . "\n";

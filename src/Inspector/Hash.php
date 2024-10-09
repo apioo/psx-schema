@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,17 @@
 namespace PSX\Schema\Inspector;
 
 use PSX\Schema\DefinitionsInterface;
-use PSX\Schema\Type\AnyType;
-use PSX\Schema\Type\ArrayType;
-use PSX\Schema\Type\BooleanType;
-use PSX\Schema\Type\IntegerType;
-use PSX\Schema\Type\IntersectionType;
-use PSX\Schema\Type\MapType;
-use PSX\Schema\Type\NumberType;
-use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
-use PSX\Schema\Type\StructType;
-use PSX\Schema\Type\UnionType;
+use PSX\Schema\Type\AnyPropertyType;
+use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\DefinitionTypeAbstract;
+use PSX\Schema\Type\IntegerPropertyType;
+use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\StringPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -51,7 +51,7 @@ class Hash
         return hash('sha256', implode('', $values));
     }
 
-    public function generateByType(TypeInterface $type): string
+    public function generateByType(DefinitionTypeAbstract $type): string
     {
         $values = iterator_to_array($this->getValuesByType($type), false);
 
@@ -69,50 +69,36 @@ class Hash
 
     private function getValuesByType(TypeInterface $type): \Generator
     {
-        if ($type instanceof StructType) {
+        if ($type instanceof StructDefinitionType) {
             yield 'struct';
             foreach ($type->getProperties() as $name => $value) {
                 yield $name;
                 yield from $this->getValuesByType($value);
             }
-        } elseif ($type instanceof MapType) {
+        } elseif ($type instanceof MapTypeInterface) {
             yield 'map';
-            $additionalProperties = $type->getAdditionalProperties();
-            if ($additionalProperties instanceof TypeInterface) {
-                yield from $this->getValuesByType($additionalProperties);
-            } elseif (is_bool($additionalProperties)) {
-                yield $additionalProperties ? '1' : '0';
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                yield from $this->getValuesByType($schema);
             }
-        } elseif ($type instanceof ArrayType) {
+        } elseif ($type instanceof ArrayTypeInterface) {
             yield 'array';
-            $items = $type->getItems();
-            if ($items instanceof TypeInterface) {
-                yield from $this->getValuesByType($items);
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                yield from $this->getValuesByType($schema);
             }
-        } elseif ($type instanceof UnionType) {
-            yield 'union';
-            $items = $type->getOneOf() ?? [];
-            foreach ($items as $item) {
-                yield from $this->getValuesByType($item);
-            }
-        } elseif ($type instanceof IntersectionType) {
-            yield 'intersection';
-            $items = $type->getAllOf() ?? [];
-            foreach ($items as $item) {
-                yield from $this->getValuesByType($item);
-            }
-        } elseif ($type instanceof ReferenceType) {
+        } elseif ($type instanceof ReferencePropertyType) {
             yield 'reference';
-            yield $type->getRef();
-        } elseif ($type instanceof StringType) {
+            yield $type->getTarget();
+        } elseif ($type instanceof StringPropertyType) {
             yield 'string';
-        } elseif ($type instanceof IntegerType) {
+        } elseif ($type instanceof IntegerPropertyType) {
             yield 'integer';
-        } elseif ($type instanceof NumberType) {
+        } elseif ($type instanceof NumberPropertyType) {
             yield 'number';
-        } elseif ($type instanceof BooleanType) {
+        } elseif ($type instanceof BooleanPropertyType) {
             yield 'boolean';
-        } elseif ($type instanceof AnyType) {
+        } elseif ($type instanceof AnyPropertyType) {
             yield 'any';
         }
     }

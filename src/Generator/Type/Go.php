@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (c) Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
-use PSX\Schema\Format;
 
 /**
  * Go
@@ -43,6 +42,11 @@ class Go extends GeneratorAbstract
         };
     }
 
+    public function getGenericDefinition(array $types): string
+    {
+        return '[' . implode(', ', $types) . ']';
+    }
+
     protected function getString(): string
     {
         return 'string';
@@ -51,15 +55,6 @@ class Go extends GeneratorAbstract
     protected function getInteger(): string
     {
         return 'int';
-    }
-
-    protected function getIntegerFormat(Format $format): string
-    {
-        return match ($format) {
-            Format::INT32 => 'int32',
-            Format::INT64 => 'int64',
-            default => $this->getInteger(),
-        };
     }
 
     protected function getNumber(): string
@@ -82,24 +77,9 @@ class Go extends GeneratorAbstract
         return 'map[string]' . $type;
     }
 
-    protected function getUnion(array $types): string
-    {
-        return 'any';
-    }
-
-    protected function getIntersection(array $types): string
-    {
-        return 'any';
-    }
-
     protected function getGroup(string $type): string
     {
         return '(' . $type . ')';
-    }
-
-    protected function getGeneric(array $types): string
-    {
-        return '[' . implode(', ', $types) . ']';
     }
 
     protected function getAny(): string
