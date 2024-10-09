@@ -106,11 +106,11 @@ class JsonSchema implements GeneratorInterface
                 }, $data['properties']);
             }
 
-            if (isset($data['$extends'])) {
-                $extends = $data['$extends'];
-                unset($data['$extends']);
+            if (isset($data['parent']) && $data['parent'] instanceof ReferencePropertyType) {
+                $target = $data['parent']->getTarget();
+                unset($data['parent']);
 
-                [$ns, $name] = TypeUtil::split($extends);
+                [$ns, $name] = TypeUtil::split($target);
 
                 return [
                     'allOf' => [

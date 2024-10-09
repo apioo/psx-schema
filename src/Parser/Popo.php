@@ -103,23 +103,28 @@ class Popo implements ParserInterface
         $this->parseDefinitionAnnotations($annotations, $type);
 
         if ($type instanceof StructDefinitionType) {
-            $parent = $class->getParentClass();
-            if ($parent instanceof \ReflectionClass) {
-                $this->parseClass($parent->getName(), $definitions, $context, $parentName);
-                $type->setParent($parentName);
+            $parentClass = $class->getParentClass();
+            if ($parentClass instanceof \ReflectionClass) {
+                $this->parseClass($parentClass->getName(), $definitions, $context, $parentName);
             }
 
             $this->parseStructAnnotations($annotations, $type);
 
-            $template = $type->getTemplate();
-            if (!empty($template)) {
-                $result = [];
-                foreach ($template as $key => $className) {
-                    $this->parseClass($className, $definitions, $context, $templateTypeName);
-                    $result[$key] = $templateTypeName;
-                }
+            $parent = $type->getParent();
+            if ($parent instanceof ReferencePropertyType) {
+                $this->parseClass($parent->getTarget(), $definitions, $context, $parentTypeName);
+                $parent->setTarget($parentTypeName);
 
-                $type->setTemplate($result);
+                $template = $parent->getTemplate();
+                if (!empty($template)) {
+                    $result = [];
+                    foreach ($template as $key => $className) {
+                        $this->parseClass($className, $definitions, $context, $templateTypeName);
+                        $result[$key] = $templateTypeName;
+                    }
+
+                    $parent->setTemplate($result);
+                }
             }
 
             $mapping = $type->getMapping();

@@ -30,6 +30,7 @@ namespace PSX\Schema\Type;
 class ReferencePropertyType extends PropertyTypeAbstract
 {
     protected ?string $target = null;
+    protected ?array $template = null;
 
     protected function getType(): string
     {
@@ -48,10 +49,23 @@ class ReferencePropertyType extends PropertyTypeAbstract
         return $this;
     }
 
+    public function getTemplate(): ?array
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(?array $template): self
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
             'target' => $this->target,
+            'template' => !empty($this->template) ? $this->template : null,
         ], function($value){
             return $value !== null;
         }));

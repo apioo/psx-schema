@@ -29,24 +29,23 @@ namespace PSX\Schema\Type;
  */
 class StructDefinitionType extends DefinitionTypeAbstract
 {
-    protected ?string $parent = null;
+    protected ?ReferencePropertyType $parent = null;
     protected ?bool $base = null;
     protected ?array $properties = null;
     protected ?string $discriminator = null;
     protected ?array $mapping = null;
-    protected ?array $template = null;
 
     protected function getType(): string
     {
         return 'struct';
     }
 
-    public function getParent(): ?string
+    public function getParent(): ?ReferencePropertyType
     {
         return $this->parent;
     }
 
-    public function setParent(string $parent): self
+    public function setParent(ReferencePropertyType $parent): self
     {
         $this->parent = $parent;
 
@@ -130,18 +129,6 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this;
     }
 
-    public function getTemplate(): ?array
-    {
-        return $this->template;
-    }
-
-    public function setTemplate(?array $template): self
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
@@ -150,7 +137,6 @@ class StructDefinitionType extends DefinitionTypeAbstract
             'properties' => $this->properties,
             'discriminator' => $this->discriminator,
             'mapping' => !empty($this->mapping) ? $this->mapping : null,
-            'template' => !empty($this->template) ? $this->template : null,
         ], function($value){
             return $value !== null;
         }));
@@ -158,6 +144,11 @@ class StructDefinitionType extends DefinitionTypeAbstract
 
     public function __clone()
     {
+        if ($this->parent !== null) {
+            $parent = $this->parent;
+            $this->parent = clone $parent;
+        }
+
         if ($this->properties !== null) {
             $properties = $this->properties;
             $this->properties = [];

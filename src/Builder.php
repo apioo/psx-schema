@@ -84,13 +84,6 @@ class Builder
         return $this;
     }
 
-    public function setTemplate(array $template): Builder
-    {
-        $this->type->setTemplate($template);
-
-        return $this;
-    }
-
     public function setClass(string $class): Builder
     {
         $this->type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, $class);

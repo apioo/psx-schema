@@ -27,9 +27,9 @@ export class StructDefinitionType extends DefinitionType {
     template?: Map<string, string>
 }
 
-import {DefinitionType} from "./DefinitionType";
 import {MapDefinitionType} from "./MapDefinitionType";
 import {ArrayDefinitionType} from "./ArrayDefinitionType";
+import {DefinitionType} from "./DefinitionType";
 import {PropertyType} from "./PropertyType";
 
 /**
@@ -78,11 +78,11 @@ export abstract class PropertyType {
     nullable?: boolean
 }
 
-import {PropertyType} from "./PropertyType";
 import {IntegerPropertyType} from "./IntegerPropertyType";
 import {NumberPropertyType} from "./NumberPropertyType";
 import {StringPropertyType} from "./StringPropertyType";
 import {BooleanPropertyType} from "./BooleanPropertyType";
+import {PropertyType} from "./PropertyType";
 
 /**
  * Base scalar property type
@@ -128,9 +128,9 @@ export class BooleanPropertyType extends ScalarPropertyType {
     type?: string
 }
 
-import {PropertyType} from "./PropertyType";
 import {MapPropertyType} from "./MapPropertyType";
 import {ArrayPropertyType} from "./ArrayPropertyType";
+import {PropertyType} from "./PropertyType";
 
 /**
  * Base collection property type

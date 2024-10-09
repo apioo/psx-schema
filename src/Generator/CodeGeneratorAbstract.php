@@ -95,6 +95,10 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         return $this->normalizer;
     }
 
+    /**
+     * @throws TypeNotFoundException
+     * @throws GeneratorException
+     */
     private function generateDefinition(string $name, DefinitionTypeAbstract $type): void
     {
         if ($type instanceof StructDefinitionType) {
@@ -107,42 +111,20 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     }
 
     /**
-     * @throws GeneratorException
      * @throws TypeNotFoundException
+     * @throws GeneratorException
      */
     private function generateStruct(string $className, StructDefinitionType $type): void
     {
         $properties = [];
 
-        $parent = $type->getParent();
-        if (!empty($parent)) {
-            if ($this->supportsExtends()) {
-                [$ns, $name] = TypeUtil::split($parent);
-                if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                    $parentType = $this->definitions->getType($name);
-                    $parent = $this->normalizer->class($parent);
-                    if ($parentType instanceof StructDefinitionType) {
-                        $this->generateStruct($parent, $parentType);
-                    } else {
-                        throw new GeneratorException('Parent must be of type struct');
-                    }
-                } else {
-                    // in case we have an extern namespace we dont need to generate the type
-                    $parent = $this->generator->getType((new ReferencePropertyType())->setTarget($parent));
-                }
-            } else {
-                do {
-                    $parent = $this->definitions->getType($parent);
-                    if (!$parent instanceof StructDefinitionType) {
-                        throw new GeneratorException('Parent must be of type struct');
-                    }
-
-                    $properties = array_merge($properties, $parent->getProperties());
-                } while($parent = $parent->getParent());
-            }
+        $parent = null;
+        $templates = null;
+        $parentType = $type->getParent();
+        if ($parentType instanceof ReferencePropertyType) {
+            $parent = $this->getParent($parentType, $properties);
+            $templates = $parentType->getTemplate();
         }
-
-        $templates = $type->getTemplate();
 
         $className = new Code\Name($className, $className, $this->normalizer);
         $properties = array_merge($properties, $type->getProperties() ?? []);
@@ -200,6 +182,36 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
+    }
+
+    /**
+     * @throws TypeNotFoundException
+     * @throws GeneratorException
+     */
+    private function getParent(ReferencePropertyType $parent, array &$properties): ?string
+    {
+        if ($this->supportsExtends()) {
+            [$ns, $name] = TypeUtil::split($parent->getTarget());
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $parentType = $this->definitions->getType($parent->getTarget());
+                if ($parentType instanceof StructDefinitionType) {
+                    $this->generateStruct($parent->getTarget(), $parentType);
+                }
+            }
+
+            return $this->generator->getType($parent);
+        } else {
+            do {
+                $parentType = $this->definitions->getType($parent->getTarget());
+                if (!$parentType instanceof StructDefinitionType) {
+                    throw new GeneratorException('Parent must be of type struct');
+                }
+
+                $properties = array_merge($properties, $parentType->getProperties());
+            } while($parent = $parentType->getParent());
+        }
+
+        return null;
     }
 
     private function getGeneric(PropertyTypeAbstract $type): ?GenericPropertyType

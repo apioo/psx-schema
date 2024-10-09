@@ -66,19 +66,19 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
     #[Description('Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent')]
     protected ?bool $base = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<PropertyType>|null
      */
     #[Description('')]
     protected ?\PSX\Record\Record $properties = null;
     #[Description('In case this is a base type it is possible to specify a discriminator property')]
     protected ?string $discriminator = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<string>|null
      */
     #[Description('In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type')]
     protected ?\PSX\Record\Record $mapping = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<string>|null
      */
     #[Description('In case the parent type contains generics it is possible to set a concrete type for each generic type')]
     protected ?\PSX\Record\Record $template = null;
@@ -700,12 +700,12 @@ use PSX\Schema\Attribute\Description;
 class Specification implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<string>|null
      */
     #[Description('')]
     protected ?\PSX\Record\Record $import = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<DefinitionType>|null
      */
     #[Description('')]
     protected ?\PSX\Record\Record $definitions = null;

@@ -141,15 +141,15 @@ class SchemaTraverser
             return $this->traverseDefinition($data, $definitions->getType($mappingType), $definitions, $visitor, $context);
         }
 
-        $extends = $type->getParent();
-        while (!empty($extends)) {
-            $parent = $definitions->getType($extends);
-            if (!$parent instanceof StructDefinitionType) {
+        $parent = $type->getParent();
+        while ($parent instanceof ReferencePropertyType) {
+            $parentType = $definitions->getType($parent->getTarget());
+            if (!$parentType instanceof StructDefinitionType) {
                 break;
             }
 
-            $properties = array_merge($properties, $parent->getProperties() ?? []);
-            $extends = $parent->getParent();
+            $properties = array_merge($properties, $parentType->getProperties() ?? []);
+            $parent = $parentType->getParent();
         }
 
         $properties = array_merge($properties, $type->getProperties() ?? []);

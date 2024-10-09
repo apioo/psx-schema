@@ -53,6 +53,11 @@ class TypeUtil
         $visitor($type);
 
         if ($type instanceof StructDefinitionType) {
+            $parent = $type->getParent();
+            if ($parent instanceof ReferencePropertyType) {
+                self::walk($parent, $visitor);
+            }
+
             $properties = $type->getProperties() ?? [];
             foreach ($properties as $property) {
                 self::walk($property, $visitor);
@@ -135,15 +140,6 @@ class TypeUtil
                 if ($return !== null) {
                     $type->setTarget($return);
                 }
-            } elseif ($type instanceof StructDefinitionType) {
-                $parent = $type->getParent();
-                if (!empty($parent)) {
-                    [$ns, $name] = self::split($parent);
-                    $result = $callback($ns, $name);
-                    if ($result !== null) {
-                        $type->setParent($result);
-                    }
-                }
 
                 $template = $type->getTemplate();
                 if (!empty($template)) {
@@ -155,11 +151,11 @@ class TypeUtil
                             $result[$templateName] = $return;
                         }
                     }
-                    if (!empty($result)) {
+                    if (count($result) > 0) {
                         $type->setTemplate($result);
                     }
                 }
-
+            } elseif ($type instanceof StructDefinitionType) {
                 $mapping = $type->getMapping();
                 if (!empty($mapping)) {
                     $result = [];

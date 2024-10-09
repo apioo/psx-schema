@@ -3,7 +3,10 @@
         "AnyPropertyType": {
             "description": "Represents an any value which allows any kind of value",
             "type": "struct",
-            "parent": "PropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "PropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -14,7 +17,10 @@
         "ArrayDefinitionType": {
             "description": "Represents an array which contains a dynamic list of values",
             "type": "struct",
-            "parent": "CollectionDefinitionType",
+            "parent": {
+                "type": "reference",
+                "target": "CollectionDefinitionType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -25,7 +31,10 @@
         "ArrayPropertyType": {
             "description": "Represents an array which contains a dynamic list of values",
             "type": "struct",
-            "parent": "CollectionPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "CollectionPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -36,7 +45,10 @@
         "BooleanPropertyType": {
             "description": "Represents a boolean value",
             "type": "struct",
-            "parent": "ScalarPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "ScalarPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -47,7 +59,10 @@
         "CollectionDefinitionType": {
             "description": "Base type for the map and array collection type",
             "type": "struct",
-            "parent": "DefinitionType",
+            "parent": {
+                "type": "reference",
+                "target": "DefinitionType"
+            },
             "base": true,
             "properties": {
                 "type": {
@@ -69,7 +84,10 @@
         "CollectionPropertyType": {
             "description": "Base collection property type",
             "type": "struct",
-            "parent": "PropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "PropertyType"
+            },
             "base": true,
             "properties": {
                 "type": {
@@ -116,7 +134,10 @@
         "GenericPropertyType": {
             "description": "Represents a generic value which can be replaced with a dynamic type",
             "type": "struct",
-            "parent": "PropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "PropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -131,7 +152,10 @@
         "IntegerPropertyType": {
             "description": "Represents an integer value",
             "type": "struct",
-            "parent": "ScalarPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "ScalarPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -142,7 +166,10 @@
         "MapDefinitionType": {
             "description": "Represents a map which contains a dynamic set of key value entries",
             "type": "struct",
-            "parent": "CollectionDefinitionType",
+            "parent": {
+                "type": "reference",
+                "target": "CollectionDefinitionType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -153,7 +180,10 @@
         "MapPropertyType": {
             "description": "Represents a map which contains a dynamic set of key value entries",
             "type": "struct",
-            "parent": "CollectionPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "CollectionPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -164,7 +194,10 @@
         "NumberPropertyType": {
             "description": "Represents a float value",
             "type": "struct",
-            "parent": "ScalarPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "ScalarPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -210,7 +243,10 @@
         "ReferencePropertyType": {
             "description": "Represents a reference to a definition type",
             "type": "struct",
-            "parent": "PropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "PropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -225,7 +261,10 @@
         "ScalarPropertyType": {
             "description": "Base scalar property type",
             "type": "struct",
-            "parent": "PropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "PropertyType"
+            },
             "base": true,
             "properties": {
                 "type": {
@@ -269,7 +308,10 @@
         "StringPropertyType": {
             "description": "Represents a string value",
             "type": "struct",
-            "parent": "ScalarPropertyType",
+            "parent": {
+                "type": "reference",
+                "target": "ScalarPropertyType"
+            },
             "properties": {
                 "type": {
                     "description": "",
@@ -284,7 +326,10 @@
         "StructDefinitionType": {
             "description": "Represents a struct which contains a fixed set of defined properties",
             "type": "struct",
-            "parent": "DefinitionType",
+            "parent": {
+                "type": "reference",
+                "target": "DefinitionType"
+            },
             "properties": {
                 "type": {
                     "description": "",

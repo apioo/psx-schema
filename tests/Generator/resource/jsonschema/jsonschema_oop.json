@@ -12,11 +12,14 @@
       }
     },
     "HumanMap": {
-      "type": "object",
-      "parent": "Map",
-      "template": {
-        "T": "Human"
-      }
+      "allOf": [
+        {
+          "$ref": "#/definitions/Map"
+        },
+        {
+          "type": "object"
+        }
+      ]
     },
     "Map": {
       "type": "object",
@@ -41,20 +44,29 @@
       }
     },
     "Student": {
-      "type": "object",
-      "parent": "Human",
-      "properties": {
-        "matricleNumber": {
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/Human"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "matricleNumber": {
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "StudentMap": {
-      "type": "object",
-      "parent": "Map",
-      "template": {
-        "T": "Student"
-      }
+      "allOf": [
+        {
+          "$ref": "#/definitions/Map"
+        },
+        {
+          "type": "object"
+        }
+      ]
     }
   },
   "type": "object",

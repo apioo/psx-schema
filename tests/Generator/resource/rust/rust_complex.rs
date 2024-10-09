@@ -54,9 +54,9 @@ pub struct StructDefinitionType {
 }
 
 use serde::{Serialize, Deserialize};
-use definition_type::DefinitionType;
 use map_definition_type::MapDefinitionType;
 use array_definition_type::ArrayDefinitionType;
+use definition_type::DefinitionType;
 use property_type::PropertyType;
 
 // Base type for the map and array collection type
@@ -147,11 +147,11 @@ pub struct PropertyType {
 }
 
 use serde::{Serialize, Deserialize};
-use property_type::PropertyType;
 use integer_property_type::IntegerPropertyType;
 use number_property_type::NumberPropertyType;
 use string_property_type::StringPropertyType;
 use boolean_property_type::BooleanPropertyType;
+use property_type::PropertyType;
 
 // Base scalar property type
 #[derive(Serialize, Deserialize)]
@@ -254,9 +254,9 @@ pub struct BooleanPropertyType {
 }
 
 use serde::{Serialize, Deserialize};
-use property_type::PropertyType;
 use map_property_type::MapPropertyType;
 use array_property_type::ArrayPropertyType;
+use property_type::PropertyType;
 
 // Base collection property type
 #[derive(Serialize, Deserialize)]

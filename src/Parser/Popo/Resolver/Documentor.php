@@ -93,25 +93,23 @@ class Documentor implements ResolverInterface
                 $struct->setBase(true);
             }
 
-            $tag = $this->getTag('extends', $reflection->getDocComment());
-            if (empty($tag)) {
-                return $struct;
-            }
-
-            $parent = $reflection->getParentClass();
-            if (!$parent instanceof \ReflectionClass) {
+            $parentClass = $reflection->getParentClass();
+            if (!$parentClass instanceof \ReflectionClass) {
                 // we have no parent class
                 return $struct;
             }
 
-            $values = $this->getTemplateValues($reflection, $tag);
-            $keys = $this->getTemplateKeys($parent);
-            $template = array_combine($keys, $values);
+            $parent = PropertyTypeFactory::getReference($parentClass->getName());
 
-            $struct->setParent($parent->getName());
-            if (!empty($template)) {
-                $struct->setTemplate($template);
+            $tag = $this->getTag('extends', $reflection->getDocComment());
+            if (!empty($tag)) {
+                $values = $this->getTemplateValues($reflection, $tag);
+                $keys = $this->getTemplateKeys($reflection);
+                $template = array_combine($keys, $values);
+                $parent->setTemplate($template);
             }
+
+            $struct->setParent($parent);
 
             return $struct;
         }

@@ -14,9 +14,12 @@
     },
     "my_import:HumanMap": {
       "type": "struct",
-      "parent": "my_import:Map",
-      "template": {
-        "T": "my_import:Human"
+      "parent": {
+        "type": "reference",
+        "target": "my_import:Map",
+        "template": {
+          "T": "my_import:Human"
+        }
       }
     },
     "my_import:Map": {
@@ -44,7 +47,10 @@
     },
     "my_import:Student": {
       "type": "struct",
-      "parent": "my_import:Human",
+      "parent": {
+        "type": "reference",
+        "target": "my_import:Human"
+      },
       "properties": {
         "matricleNumber": {
           "type": "string"
@@ -53,9 +59,12 @@
     },
     "my_import:StudentMap": {
       "type": "struct",
-      "parent": "my_import:Map",
-      "template": {
-        "T": "my_import:Student"
+      "parent": {
+        "type": "reference",
+        "target": "my_import:Map",
+        "template": {
+          "T": "my_import:Student"
+        }
       }
     },
     "Import": {
@@ -73,7 +82,10 @@
     },
     "MyMap": {
       "type": "struct",
-      "parent": "my_import:Student"
+      "parent": {
+        "type": "reference",
+        "target": "my_import:Student"
+      }
     }
   },
   "root": "Import"

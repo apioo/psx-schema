@@ -34,9 +34,9 @@ class StructDefinitionType(DefinitionType):
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
-from .definition_type import DefinitionType
 from .map_definition_type import MapDefinitionType
 from .array_definition_type import ArrayDefinitionType
+from .definition_type import DefinitionType
 from .property_type import PropertyType
 
 
@@ -93,11 +93,11 @@ class PropertyType(BaseModel):
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
-from .property_type import PropertyType
 from .integer_property_type import IntegerPropertyType
 from .number_property_type import NumberPropertyType
 from .string_property_type import StringPropertyType
 from .boolean_property_type import BooleanPropertyType
+from .property_type import PropertyType
 
 
 # Base scalar property type
@@ -153,9 +153,9 @@ class BooleanPropertyType(ScalarPropertyType):
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
-from .property_type import PropertyType
 from .map_property_type import MapPropertyType
 from .array_property_type import ArrayPropertyType
+from .property_type import PropertyType
 
 
 # Base collection property type

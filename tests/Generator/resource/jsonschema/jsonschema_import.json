@@ -12,11 +12,14 @@
       }
     },
     "HumanMap": {
-      "type": "object",
-      "parent": "my_import:Map",
-      "template": {
-        "T": "my_import:Human"
-      }
+      "allOf": [
+        {
+          "$ref": "#/definitions/Map"
+        },
+        {
+          "type": "object"
+        }
+      ]
     },
     "Map": {
       "type": "object",
@@ -41,20 +44,29 @@
       }
     },
     "Student": {
-      "type": "object",
-      "parent": "my_import:Human",
-      "properties": {
-        "matricleNumber": {
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/Human"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "matricleNumber": {
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "StudentMap": {
-      "type": "object",
-      "parent": "my_import:Map",
-      "template": {
-        "T": "my_import:Student"
-      }
+      "allOf": [
+        {
+          "$ref": "#/definitions/Map"
+        },
+        {
+          "type": "object"
+        }
+      ]
     },
     "Import": {
       "type": "object",
@@ -68,8 +80,14 @@
       }
     },
     "MyMap": {
-      "type": "object",
-      "parent": "my_import:Student"
+      "allOf": [
+        {
+          "$ref": "#/definitions/Student"
+        },
+        {
+          "type": "object"
+        }
+      ]
     }
   },
   "type": "object",

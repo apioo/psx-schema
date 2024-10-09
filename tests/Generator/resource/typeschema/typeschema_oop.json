@@ -14,9 +14,12 @@
     },
     "HumanMap": {
       "type": "struct",
-      "parent": "Map",
-      "template": {
-        "T": "Human"
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "T": "Human"
+        }
       }
     },
     "Map": {
@@ -44,7 +47,10 @@
     },
     "Student": {
       "type": "struct",
-      "parent": "Human",
+      "parent": {
+        "type": "reference",
+        "target": "Human"
+      },
       "properties": {
         "matricleNumber": {
           "type": "string"
@@ -53,9 +59,12 @@
     },
     "StudentMap": {
       "type": "struct",
-      "parent": "Map",
-      "template": {
-        "T": "Student"
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "T": "Student"
+        }
       }
     }
   },

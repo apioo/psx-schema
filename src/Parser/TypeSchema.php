@@ -202,27 +202,30 @@ class TypeSchema implements ParserInterface
             $type->setMapping($result);
         }
 
-        $template = $this->getObjectValue($data, ['template', '$template']);
-        if ($template instanceof \stdClass) {
-            $result = [];
-            foreach ($template as $templateName => $templateType) {
-                if ($namespace !== null) {
-                    $result[$templateName] = $namespace . ':' . $templateType;
-                } else {
-                    $result[$templateName] = $templateType;
-                }
-            }
-
-            $type->setTemplate($result);
-        }
-
         $parent = $this->getStringValue($data, ['parent', '$extends', '$ref']);
         if (!empty($parent)) {
-            if ($namespace !== null) {
-                $type->setParent($namespace . ':' . $parent);
-            } else {
-                $type->setParent($parent);
+            $legacyParent = (object) [
+                'type' => 'reference',
+                'target' => $parent,
+                'template' => $this->getObjectValue($data, ['template', '$template']),
+            ];
+
+            $parentType = $this->parsePropertyType($legacyParent, $namespace);
+            if (!$parentType instanceof ReferencePropertyType) {
+                throw new ParserException('Parent must be an reference type');
             }
+
+            $type->setParent($parentType);
+        }
+
+        $parent = $this->getObjectValue($data, ['parent']);
+        if ($parent instanceof \stdClass) {
+            $parentType = $this->parsePropertyType($parent, $namespace);
+            if (!$parentType instanceof ReferencePropertyType) {
+                throw new ParserException('Parent must be an reference type');
+            }
+
+            $type->setParent($parentType);
         }
 
         $properties = $this->getObjectValue($data, ['properties']);
@@ -344,6 +347,20 @@ class TypeSchema implements ParserInterface
             $type->setTarget($namespace . ':' . $target);
         } else {
             $type->setTarget($target);
+        }
+
+        $template = $this->getObjectValue($data, ['template', '$template']);
+        if ($template instanceof \stdClass) {
+            $result = [];
+            foreach ($template as $templateName => $templateType) {
+                if ($namespace !== null) {
+                    $result[$templateName] = $namespace . ':' . $templateType;
+                } else {
+                    $result[$templateName] = $templateType;
+                }
+            }
+
+            $type->setTemplate($result);
         }
     }
 

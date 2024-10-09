@@ -140,15 +140,15 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?Meta $config = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<string>|null
      */
     protected ?\PSX\Record\Record $inlineConfig = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<string>|null
      */
     protected ?\PSX\Record\Record $mapTags = null;
     /**
-     * @var \PSX\Record\Record|null
+     * @var \PSX\Record\Record<Author>|null
      */
     protected ?\PSX\Record\Record $mapReceiver = null;
     /**

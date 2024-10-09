@@ -30,6 +30,9 @@ use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\TypeInterface;
 
@@ -42,24 +45,32 @@ use PSX\Schema\TypeInterface;
  */
 class Php extends GeneratorAbstract
 {
-    public function getDocType(TypeInterface $type): string
+    public function getDocType(PropertyTypeAbstract $type): string
     {
         if ($type instanceof ArrayPropertyType) {
-            $items = $type->getSchema();
-            if ($items instanceof TypeInterface) {
-                return 'array<' . $this->getDocType($items) . '>';
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                return 'array<' . $this->getDocType($schema) . '>';
             } else {
                 return 'array';
             }
-        } elseif ($type instanceof MapDefinitionType) {
-            $additionalProperties = $type->getSchema();
-            if ($additionalProperties instanceof TypeInterface) {
-                return '\\' . Record::class . '<' . $this->getDocType($additionalProperties) . '>';
+        } elseif ($type instanceof MapPropertyType) {
+            $schema = $type->getSchema();
+            if ($schema instanceof PropertyTypeAbstract) {
+                return '\\' . Record::class . '<' . $this->getDocType($schema) . '>';
             } else {
                 return '\\' . Record::class;
             }
         } elseif ($type instanceof GenericPropertyType) {
             return $type->getName() ?? '';
+        } elseif ($type instanceof ReferencePropertyType) {
+            $return = $this->getType($type);
+            $template = $type->getTemplate();
+            if (!empty($template)) {
+                $return.= $this->getGeneric($template);
+            }
+
+            return $return;
         } else {
             return $this->getType($type);
         }

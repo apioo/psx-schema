@@ -1,88 +1,124 @@
 {
   "definitions": {
     "AnyPropertyType": {
-      "description": "Represents an any value which allows any kind of value",
-      "type": "object",
-      "parent": "PropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/PropertyType"
+        },
+        {
+          "description": "Represents an any value which allows any kind of value",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "ArrayDefinitionType": {
-      "description": "Represents an array which contains a dynamic list of values",
-      "type": "object",
-      "parent": "CollectionDefinitionType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectionDefinitionType"
+        },
+        {
+          "description": "Represents an array which contains a dynamic list of values",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "ArrayPropertyType": {
-      "description": "Represents an array which contains a dynamic list of values",
-      "type": "object",
-      "parent": "CollectionPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectionPropertyType"
+        },
+        {
+          "description": "Represents an array which contains a dynamic list of values",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "BooleanPropertyType": {
-      "description": "Represents a boolean value",
-      "type": "object",
-      "parent": "ScalarPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ScalarPropertyType"
+        },
+        {
+          "description": "Represents a boolean value",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "CollectionDefinitionType": {
-      "description": "Base type for the map and array collection type",
-      "type": "object",
-      "parent": "DefinitionType",
-      "base": true,
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/DefinitionType"
         },
-        "schema": {
-          "$ref": "#/definitions/PropertyType"
+        {
+          "description": "Base type for the map and array collection type",
+          "type": "object",
+          "base": true,
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "schema": {
+              "$ref": "#/definitions/PropertyType"
+            }
+          },
+          "discriminator": "type",
+          "mapping": {
+            "MapDefinitionType": "map",
+            "ArrayDefinitionType": "array"
+          }
         }
-      },
-      "discriminator": "type",
-      "mapping": {
-        "MapDefinitionType": "map",
-        "ArrayDefinitionType": "array"
-      }
+      ]
     },
     "CollectionPropertyType": {
-      "description": "Base collection property type",
-      "type": "object",
-      "parent": "PropertyType",
-      "base": true,
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
-        },
-        "schema": {
+      "allOf": [
+        {
           "$ref": "#/definitions/PropertyType"
+        },
+        {
+          "description": "Base collection property type",
+          "type": "object",
+          "base": true,
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "schema": {
+              "$ref": "#/definitions/PropertyType"
+            }
+          },
+          "discriminator": "type",
+          "mapping": {
+            "MapPropertyType": "map",
+            "ArrayPropertyType": "array"
+          }
         }
-      },
-      "discriminator": "type",
-      "mapping": {
-        "MapPropertyType": "map",
-        "ArrayPropertyType": "array"
-      }
+      ]
     },
     "DefinitionType": {
       "description": "Base definition type",
@@ -110,63 +146,93 @@
       }
     },
     "GenericPropertyType": {
-      "description": "Represents a generic value which can be replaced with a dynamic type",
-      "type": "object",
-      "parent": "PropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/PropertyType"
         },
-        "name": {
-          "description": "The generic name, it is recommended to use typical generics names like T or TValue",
-          "type": "string"
+        {
+          "description": "Represents a generic value which can be replaced with a dynamic type",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "name": {
+              "description": "The generic name, it is recommended to use typical generics names like T or TValue",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "IntegerPropertyType": {
-      "description": "Represents an integer value",
-      "type": "object",
-      "parent": "ScalarPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ScalarPropertyType"
+        },
+        {
+          "description": "Represents an integer value",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "MapDefinitionType": {
-      "description": "Represents a map which contains a dynamic set of key value entries",
-      "type": "object",
-      "parent": "CollectionDefinitionType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectionDefinitionType"
+        },
+        {
+          "description": "Represents a map which contains a dynamic set of key value entries",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "MapPropertyType": {
-      "description": "Represents a map which contains a dynamic set of key value entries",
-      "type": "object",
-      "parent": "CollectionPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectionPropertyType"
+        },
+        {
+          "description": "Represents a map which contains a dynamic set of key value entries",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "NumberPropertyType": {
-      "description": "Represents a float value",
-      "type": "object",
-      "parent": "ScalarPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ScalarPropertyType"
+        },
+        {
+          "description": "Represents a float value",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "PropertyType": {
       "description": "Base property type",
@@ -204,38 +270,50 @@
       }
     },
     "ReferencePropertyType": {
-      "description": "Represents a reference to a definition type",
-      "type": "object",
-      "parent": "PropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/PropertyType"
         },
-        "target": {
-          "description": "Name of the target reference, must a key from the definitions map",
-          "type": "string"
+        {
+          "description": "Represents a reference to a definition type",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "target": {
+              "description": "Name of the target reference, must a key from the definitions map",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "ScalarPropertyType": {
-      "description": "Base scalar property type",
-      "type": "object",
-      "parent": "PropertyType",
-      "base": true,
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/PropertyType"
+        },
+        {
+          "description": "Base scalar property type",
+          "type": "object",
+          "base": true,
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            }
+          },
+          "discriminator": "type",
+          "mapping": {
+            "IntegerPropertyType": "integer",
+            "NumberPropertyType": "number",
+            "StringPropertyType": "string",
+            "BooleanPropertyType": "boolean"
+          }
         }
-      },
-      "discriminator": "type",
-      "mapping": {
-        "IntegerPropertyType": "integer",
-        "NumberPropertyType": "number",
-        "StringPropertyType": "string",
-        "BooleanPropertyType": "boolean"
-      }
+      ]
     },
     "Specification": {
       "description": "",
@@ -263,64 +341,76 @@
       }
     },
     "StringPropertyType": {
-      "description": "Represents a string value",
-      "type": "object",
-      "parent": "ScalarPropertyType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/ScalarPropertyType"
         },
-        "format": {
-          "description": "",
-          "type": "string"
+        {
+          "description": "Represents a string value",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "format": {
+              "description": "",
+              "type": "string"
+            }
+          }
         }
-      }
+      ]
     },
     "StructDefinitionType": {
-      "description": "Represents a struct which contains a fixed set of defined properties",
-      "type": "object",
-      "parent": "DefinitionType",
-      "properties": {
-        "type": {
-          "description": "",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "#/definitions/DefinitionType"
         },
-        "parent": {
-          "description": "The parent type of this struct. The struct inherits all properties from the parent type",
-          "type": "string"
-        },
-        "base": {
-          "description": "Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent",
-          "type": "boolean"
-        },
-        "properties": {
-          "description": "",
-          "type": "map",
-          "schema": {
-            "type": "reference",
-            "target": "PropertyType"
-          }
-        },
-        "discriminator": {
-          "description": "In case this is a base type it is possible to specify a discriminator property",
-          "type": "string"
-        },
-        "mapping": {
-          "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
-          "type": "map",
-          "schema": {
-            "type": "string"
-          }
-        },
-        "template": {
-          "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
-          "type": "map",
-          "schema": {
-            "type": "string"
+        {
+          "description": "Represents a struct which contains a fixed set of defined properties",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "",
+              "type": "string"
+            },
+            "parent": {
+              "description": "The parent type of this struct. The struct inherits all properties from the parent type",
+              "type": "string"
+            },
+            "base": {
+              "description": "Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent",
+              "type": "boolean"
+            },
+            "properties": {
+              "description": "",
+              "type": "map",
+              "schema": {
+                "type": "reference",
+                "target": "PropertyType"
+              }
+            },
+            "discriminator": {
+              "description": "In case this is a base type it is possible to specify a discriminator property",
+              "type": "string"
+            },
+            "mapping": {
+              "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
+              "type": "map",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "template": {
+              "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
+              "type": "map",
+              "schema": {
+                "type": "string"
+              }
+            }
           }
         }
-      }
+      ]
     }
   },
   "description": "",
