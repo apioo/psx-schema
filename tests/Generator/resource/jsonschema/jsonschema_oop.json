@@ -46,15 +46,7 @@
     "Student": {
       "allOf": [
         {
-          "type": "object",
-          "properties": {
-            "firstName": {
-              "type": "string"
-            },
-            "parent": {
-              "$ref": "#/definitions/Human"
-            }
-          }
+          "$ref": "#/definitions/Human"
         },
         {
           "type": "object",

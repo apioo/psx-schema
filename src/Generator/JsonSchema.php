@@ -117,15 +117,11 @@ class JsonSchema implements GeneratorInterface
             }
 
             if ($parent instanceof ReferencePropertyType) {
-                $target = $parent->getTarget();
                 unset($data['parent']);
-
-                $parentType = $definitions->getType($target);
-                $parent = $this->generateType($parentType, $definitions, $parent->getTemplate());
 
                 return [
                     'allOf' => [
-                        $parent,
+                        $this->generateType($parent, $definitions, $template),
                         $data,
                     ]
                 ];
@@ -153,11 +149,19 @@ class JsonSchema implements GeneratorInterface
 
             return $data;
         } elseif ($type instanceof ReferencePropertyType) {
-            [$ns, $name] = TypeUtil::split($type->getTarget());
+            $targetType = $definitions->getType($type->getTarget());
+            $hasGenerics = TypeUtil::contains($targetType, GenericPropertyType::class);
 
-            return [
-                '$ref' => $this->refBase . $name
-            ];
+            if ($hasGenerics) {
+                // in case the referenced type has generics we resolve
+                return $this->generateType($targetType, $definitions, $type->getTemplate());
+            } else {
+                [$ns, $name] = TypeUtil::split($type->getTarget());
+
+                return [
+                    '$ref' => $this->refBase . $name
+                ];
+            }
         } elseif ($type instanceof AnyPropertyType) {
             return (object) [];
         } elseif ($type instanceof GenericPropertyType) {
