@@ -30,6 +30,7 @@ use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapTypeInterface;
+use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeInterface;
@@ -74,6 +75,11 @@ class JsonSchema implements GeneratorInterface
         ];
 
         return array_merge($result, $object);
+    }
+
+    public function toProperty(PropertyTypeAbstract $type, DefinitionsInterface $definitions): mixed
+    {
+        return $this->generateType($type, $definitions);
     }
 
     protected function generateDefinitions(DefinitionsInterface $definitions): array
