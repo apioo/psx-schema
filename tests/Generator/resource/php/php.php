@@ -132,7 +132,6 @@ class Meta extends \ArrayObject
 }
 
 use PSX\Schema\Attribute\Description;
-use PSX\Schema\Attribute\Format;
 use PSX\Schema\Attribute\Key;
 
 #[Description('An general news entry')]
@@ -162,9 +161,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?bool $read = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
-    #[Format('date')]
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
-    #[Format('date-time')]
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
     protected ?float $price = null;
     protected ?int $rating = null;
@@ -172,7 +169,6 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?string $content = null;
     protected ?string $question = null;
     protected ?string $version = null;
-    #[Format('time')]
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;

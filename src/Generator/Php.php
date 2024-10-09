@@ -339,13 +339,6 @@ class Php extends CodeGeneratorAbstract
             $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
         }
 
-        if ($type instanceof ScalarPropertyType) {
-            $format = $type->getFormat();
-            if ($format instanceof Format) {
-                $result[] = $this->newAttribute('Format', [$this->newScalar($format->value)], $uses);
-            }
-        }
-
         return $result;
     }
 
