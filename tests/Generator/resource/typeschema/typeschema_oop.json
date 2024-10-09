@@ -18,6 +18,7 @@
         "type": "reference",
         "target": "Map",
         "template": {
+          "P": "Human",
           "T": "Human"
         }
       }
@@ -27,6 +28,9 @@
       "properties": {
         "totalResults": {
           "type": "integer"
+        },
+        "parent": {
+          "type": "generic"
         },
         "entries": {
           "type": "array",
@@ -63,6 +67,7 @@
         "type": "reference",
         "target": "Map",
         "template": {
+          "P": "Human",
           "T": "Student"
         }
       }

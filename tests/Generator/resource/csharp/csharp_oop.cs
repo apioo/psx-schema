@@ -18,10 +18,13 @@ public class Student : Human
 }
 
 using System.Text.Json.Serialization;
-public class Map<T>
+public class Map<P, T>
 {
     [JsonPropertyName("totalResults")]
     public int? TotalResults { get; set; }
+
+    [JsonPropertyName("parent")]
+    public P? Parent { get; set; }
 
     [JsonPropertyName("entries")]
     public System.Collections.Generic.List<T>? Entries { get; set; }
@@ -29,12 +32,12 @@ public class Map<T>
 }
 
 using System.Text.Json.Serialization;
-public class StudentMap : Map<Student>
+public class StudentMap : Map<Human, Student>
 {
 }
 
 using System.Text.Json.Serialization;
-public class HumanMap : Map<Human>
+public class HumanMap : Map<Human, Human>
 {
 }
 

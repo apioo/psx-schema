@@ -27,11 +27,15 @@ pub struct Student {
 
 use serde::{Serialize, Deserialize};
 use map::Map;
+use human::Human;
 use student::Student;
 #[derive(Serialize, Deserialize)]
 pub struct StudentMap {
     #[serde(rename = "totalResults")]
     total_results: Option<u64>,
+
+    #[serde(rename = "parent")]
+    parent: Option<Human>,
 
     #[serde(rename = "entries")]
     entries: Option<Vec<Student>>,
@@ -46,6 +50,9 @@ pub struct HumanMap {
     #[serde(rename = "totalResults")]
     total_results: Option<u64>,
 
+    #[serde(rename = "parent")]
+    parent: Option<Human>,
+
     #[serde(rename = "entries")]
     entries: Option<Vec<Human>>,
 
@@ -56,6 +63,9 @@ use serde::{Serialize, Deserialize};
 pub struct Map {
     #[serde(rename = "totalResults")]
     total_results: Option<u64>,
+
+    #[serde(rename = "parent")]
+    parent: Option<P>,
 
     #[serde(rename = "entries")]
     entries: Option<Vec<T>>,

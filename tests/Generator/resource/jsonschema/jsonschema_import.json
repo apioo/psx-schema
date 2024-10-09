@@ -27,6 +27,7 @@
         "totalResults": {
           "type": "integer"
         },
+        "parent": [],
         "entries": {
           "type": "array",
           "items": []

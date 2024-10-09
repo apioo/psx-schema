@@ -25,6 +25,7 @@
       "type": "struct",
       "parent": "Map",
       "template": {
+        "P": "Human",
         "T": "Student"
       }
     },
@@ -32,6 +33,7 @@
       "type": "struct",
       "parent": "Map",
       "template": {
+        "P": "Human",
         "T": "Human"
       }
     },
@@ -40,6 +42,10 @@
       "properties": {
         "totalResults": {
           "type": "integer"
+        },
+        "parent": {
+          "type": "generic",
+          "name": "P"
         },
         "entries": {
           "type": "array",

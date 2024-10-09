@@ -43,8 +43,9 @@ public class Student extends Human {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class Map<T> {
+public class Map<P, T> {
     private Integer totalResults;
+    private P parent;
     private java.util.List<T> entries;
 
     @JsonSetter("totalResults")
@@ -55,6 +56,16 @@ public class Map<T> {
     @JsonGetter("totalResults")
     public Integer getTotalResults() {
         return this.totalResults;
+    }
+
+    @JsonSetter("parent")
+    public void setParent(P parent) {
+        this.parent = parent;
+    }
+
+    @JsonGetter("parent")
+    public P getParent() {
+        return this.parent;
     }
 
     @JsonSetter("entries")
@@ -70,12 +81,12 @@ public class Map<T> {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class StudentMap extends Map<Student> {
+public class StudentMap extends Map<Human, Student> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-public class HumanMap extends Map<Human> {
+public class HumanMap extends Map<Human, Human> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
