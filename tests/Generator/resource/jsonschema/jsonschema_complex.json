@@ -322,16 +322,15 @@
         "import": {
           "description": "",
           "type": "map",
-          "schema": {
+          "additionalProperties": {
             "type": "string"
           }
         },
         "definitions": {
           "description": "",
           "type": "map",
-          "schema": {
-            "type": "reference",
-            "target": "DefinitionType"
+          "additionalProperties": {
+            "$ref": "#/definitions/DefinitionType"
           }
         },
         "root": {
@@ -385,9 +384,8 @@
             "properties": {
               "description": "",
               "type": "map",
-              "schema": {
-                "type": "reference",
-                "target": "PropertyType"
+              "additionalProperties": {
+                "$ref": "#/definitions/PropertyType"
               }
             },
             "discriminator": {
@@ -397,14 +395,14 @@
             "mapping": {
               "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
               "type": "map",
-              "schema": {
+              "additionalProperties": {
                 "type": "string"
               }
             },
             "template": {
               "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
               "type": "map",
-              "schema": {
+              "additionalProperties": {
                 "type": "string"
               }
             }
@@ -419,16 +417,15 @@
     "import": {
       "description": "",
       "type": "map",
-      "schema": {
+      "additionalProperties": {
         "type": "string"
       }
     },
     "definitions": {
       "description": "",
       "type": "map",
-      "schema": {
-        "type": "reference",
-        "target": "DefinitionType"
+      "additionalProperties": {
+        "$ref": "#/definitions/DefinitionType"
       }
     },
     "root": {

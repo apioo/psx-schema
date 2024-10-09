@@ -29,9 +29,7 @@
         },
         "entries": {
           "type": "array",
-          "schema": {
-            "type": "generic"
-          }
+          "items": []
         }
       }
     },

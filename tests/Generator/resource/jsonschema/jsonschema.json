@@ -14,16 +14,15 @@
                 },
                 "categories": {
                     "type": "array",
-                    "schema": {
+                    "items": {
                         "type": "string"
                     }
                 },
                 "locations": {
                     "description": "Array of locations",
                     "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Location"
+                    "items": {
+                        "$ref": "#/definitions/Location"
                     }
                 },
                 "origin": {
@@ -45,7 +44,7 @@
         },
         "Meta": {
             "type": "map",
-            "schema": {
+            "additionalProperties": {
                 "type": "string"
             }
         },
@@ -58,34 +57,32 @@
                 },
                 "inlineConfig": {
                     "type": "map",
-                    "schema": {
+                    "additionalProperties": {
                         "type": "string"
                     }
                 },
                 "mapTags": {
                     "type": "map",
-                    "schema": {
+                    "additionalProperties": {
                         "type": "string"
                     }
                 },
                 "mapReceiver": {
                     "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Author"
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Author"
                     }
                 },
                 "tags": {
                     "type": "array",
-                    "schema": {
+                    "items": {
                         "type": "string"
                     }
                 },
                 "receiver": {
                     "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Author"
+                    "items": {
+                        "$ref": "#/definitions/Author"
                     }
                 },
                 "read": {
@@ -143,34 +140,32 @@
         },
         "inlineConfig": {
             "type": "map",
-            "schema": {
+            "additionalProperties": {
                 "type": "string"
             }
         },
         "mapTags": {
             "type": "map",
-            "schema": {
+            "additionalProperties": {
                 "type": "string"
             }
         },
         "mapReceiver": {
             "type": "map",
-            "schema": {
-                "type": "reference",
-                "target": "Author"
+            "additionalProperties": {
+                "$ref": "#/definitions/Author"
             }
         },
         "tags": {
             "type": "array",
-            "schema": {
+            "items": {
                 "type": "string"
             }
         },
         "receiver": {
             "type": "array",
-            "schema": {
-                "type": "reference",
-                "target": "Author"
+            "items": {
+                "$ref": "#/definitions/Author"
             }
         },
         "read": {

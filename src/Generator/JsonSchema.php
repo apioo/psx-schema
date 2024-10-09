@@ -124,16 +124,18 @@ class JsonSchema implements GeneratorInterface
         } elseif ($type instanceof MapTypeInterface) {
             $data = $type->toArray();
 
-            if (isset($data['additionalProperties']) && $data['additionalProperties'] instanceof TypeInterface) {
-                $data['additionalProperties'] = $this->generateType($data['additionalProperties'], $definitions, $template);
+            if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
+                $data['additionalProperties'] = $this->generateType($data['schema'], $definitions, $template);
+                unset($data['schema']);
             }
 
             return $data;
         } elseif ($type instanceof ArrayTypeInterface) {
             $data = $type->toArray();
 
-            if (isset($data['items']) && $data['items'] instanceof TypeInterface) {
-                $data['items'] = $this->generateType($data['items'], $definitions, $template);
+            if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
+                $data['items'] = $this->generateType($data['schema'], $definitions, $template);
+                unset($data['schema']);
             }
 
             return $data;
