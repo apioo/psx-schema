@@ -24,8 +24,10 @@ use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\DefinitionTypeFactory;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\ReferencePropertyType;
 
 /**
  * SchemaAbstract
@@ -106,9 +108,8 @@ abstract class SchemaAbstract implements SchemaInterface
      * Loads a remote schema and returns a reference to the root type
      *
      * @throws Exception\InvalidSchemaException
-     * @throws Exception\TypeNotFoundException
      */
-    protected function get(string $name): DefinitionTypeAbstract
+    protected function get(string $name): ReferencePropertyType
     {
         $schema = $this->schemaManager->getSchema($name);
 
@@ -119,7 +120,7 @@ abstract class SchemaAbstract implements SchemaInterface
             throw new Exception\InvalidSchemaException('Loaded schema ' . $name . ' contains not a reference');
         }
 
-        return clone $this->definitions->getType($root);
+        return PropertyTypeFactory::getReference($root);
     }
 
     /**
@@ -145,7 +146,7 @@ abstract class SchemaAbstract implements SchemaInterface
     {
         $existing = $this->get($existingName);
 
-        $type = clone $existing;
+        $type = clone $this->definitions->getType($existing->getTarget());
         $this->definitions->addType($newName, $type);
 
         $this->rootName = $newName;
