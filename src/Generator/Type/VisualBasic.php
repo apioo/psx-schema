@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * VisualBasic
  *
@@ -29,9 +32,30 @@ namespace PSX\Schema\Generator\Type;
  */
 class VisualBasic extends GeneratorAbstract
 {
+    public function getContentType(ContentType $contentType, int $context): string
+    {
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'Byte',
+            ContentType::FORM => 'Dictionary(Of String, String)',
+            ContentType::JSON => 'Object',
+            ContentType::MULTIPART => $this->getString(),
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
+    }
+
     protected function getString(): string
     {
         return 'String';
+    }
+
+    protected function getStringFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::DATE => 'DateString',
+            Format::DATETIME => 'DateAndTime',
+            Format::TIME => 'TimeString',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string

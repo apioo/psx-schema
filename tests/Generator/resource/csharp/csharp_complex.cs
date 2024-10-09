@@ -55,7 +55,7 @@ public class ScalarType : CommonType
     [JsonPropertyName("format")]
     public string? Format { get; set; }
     [JsonPropertyName("enum")]
-    public List<object>? Enum { get; set; }
+    public System.Collections.Generic.List<object>? Enum { get; set; }
     [JsonPropertyName("default")]
     public object? Default { get; set; }
 }
@@ -82,7 +82,7 @@ public class Discriminator
     [JsonPropertyName("propertyName")]
     public string? PropertyName { get; set; }
     [JsonPropertyName("mapping")]
-    public Dictionary<string, string>? Mapping { get; set; }
+    public System.Collections.Generic.Dictionary<string, string>? Mapping { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -106,7 +106,7 @@ public class IntersectionType
     [JsonPropertyName("description")]
     public string? Description { get; set; }
     [JsonPropertyName("allOf")]
-    public List<ReferenceType>? AllOf { get; set; }
+    public System.Collections.Generic.List<ReferenceType>? AllOf { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -158,7 +158,7 @@ public class ReferenceType
     [JsonPropertyName("$ref")]
     public string? Ref { get; set; }
     [JsonPropertyName("$template")]
-    public Dictionary<string, string>? Template { get; set; }
+    public System.Collections.Generic.Dictionary<string, string>? Template { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -193,9 +193,9 @@ public class StructType : CommonType
     [JsonPropertyName("type")]
     public string? Type { get; set; }
     [JsonPropertyName("properties")]
-    public Dictionary<string, object>? Properties { get; set; }
+    public System.Collections.Generic.Dictionary<string, object>? Properties { get; set; }
     [JsonPropertyName("required")]
-    public List<string>? Required { get; set; }
+    public System.Collections.Generic.List<string>? Required { get; set; }
 }
 
 using System.Text.Json.Serialization;
@@ -207,9 +207,9 @@ using System.Collections.Generic;
 public class TypeSchema
 {
     [JsonPropertyName("$import")]
-    public Dictionary<string, string>? Import { get; set; }
+    public System.Collections.Generic.Dictionary<string, string>? Import { get; set; }
     [JsonPropertyName("definitions")]
-    public Dictionary<string, object>? Definitions { get; set; }
+    public System.Collections.Generic.Dictionary<string, object>? Definitions { get; set; }
     [JsonPropertyName("$ref")]
     public string? Ref { get; set; }
 }
@@ -226,5 +226,5 @@ public class UnionType
     [JsonPropertyName("discriminator")]
     public Discriminator? Discriminator { get; set; }
     [JsonPropertyName("oneOf")]
-    public List<object>? OneOf { get; set; }
+    public System.Collections.Generic.List<object>? OneOf { get; set; }
 }

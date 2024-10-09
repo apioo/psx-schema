@@ -29,6 +29,15 @@ namespace PSX\Schema\Generator\Normalizer;
  */
 class TypeScript extends NormalizerAbstract
 {
+    public function import(string $name, ?string $namespace = null): string
+    {
+        if (!empty($namespace)) {
+            return $namespace . '/' . $this->file($name);
+        } else {
+            return $this->file($name);
+        }
+    }
+
     protected function hasPropertyReserved(): bool
     {
         return false;

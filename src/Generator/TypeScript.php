@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayType;
@@ -169,7 +171,17 @@ class TypeScript extends CodeGeneratorAbstract
                 continue;
             }
 
-            $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->file($name) . '";';
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $file = $this->normalizer->import($name);
+            } else {
+                if (!isset($this->mapping[$ns])) {
+                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
+                }
+
+                $file = $this->normalizer->import($name, $this->mapping[$ns]);
+            }
+
+            $imports[] = 'import {' . $typeName . '} from "./' . $file . '";';
         }
 
         return $imports;

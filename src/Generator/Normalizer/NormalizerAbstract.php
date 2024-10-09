@@ -133,6 +133,11 @@ abstract class NormalizerAbstract implements NormalizerInterface
         return $this->case($name, $this->getFileStyle());
     }
 
+    public function import(string $name, ?string $namespace = null): string
+    {
+        return $this->file($name);
+    }
+
     /**
      * This method is called in case a reserved keyword was used and it should return a legal version of the name
      */

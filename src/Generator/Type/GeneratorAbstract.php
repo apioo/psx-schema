@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
 use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
@@ -98,54 +99,24 @@ abstract class GeneratorAbstract implements GeneratorInterface
         return $this->getType($type);
     }
 
-    protected function getDate(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getDateTime(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getTime(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getPeriod(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getDuration(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getUri(): string
-    {
-        return $this->getString();
-    }
-
-    protected function getBinary(): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
         return $this->getString();
     }
 
     abstract protected function getString(): string;
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return $this->getInteger();
-    }
-
-    protected function getInteger64(): string
-    {
-        return $this->getInteger();
+        return $this->getString();
     }
 
     abstract protected function getInteger(): string;
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return $this->getNumber();
+    }
 
     abstract protected function getNumber(): string;
 
@@ -183,20 +154,8 @@ abstract class GeneratorAbstract implements GeneratorInterface
     private function getStringType(StringType $type): string
     {
         $format = $type->getFormat();
-        if ($format === Format::DATE) {
-            return $this->getDate();
-        } elseif ($format === Format::DATETIME) {
-            return  $this->getDateTime();
-        } elseif ($format === Format::TIME) {
-            return  $this->getTime();
-        } elseif ($format === Format::PERIOD) {
-            return  $this->getPeriod();
-        } elseif ($format === Format::DURATION) {
-            return  $this->getDuration();
-        } elseif ($format === Format::URI) {
-            return  $this->getUri();
-        } elseif ($format === Format::BINARY) {
-            return  $this->getBinary();
+        if ($format !== null) {
+            return $this->getStringFormat($format);
         } else {
             return $this->getString();
         }
@@ -205,10 +164,8 @@ abstract class GeneratorAbstract implements GeneratorInterface
     private function getIntegerType(IntegerType $type): string
     {
         $format = $type->getFormat();
-        if ($format === Format::INT32) {
-            return $this->getInteger32();
-        } elseif ($format === Format::INT64) {
-            return $this->getInteger64();
+        if ($format !== null) {
+            return $this->getIntegerFormat($format);
         } else {
             return $this->getInteger();
         }

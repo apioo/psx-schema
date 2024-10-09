@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\Format;
+
 /**
  * MarkupAbstract
  *
@@ -29,44 +31,24 @@ namespace PSX\Schema\Generator\Type;
  */
 abstract class MarkupAbstract extends GeneratorAbstract
 {
-    protected function getDate(): string
-    {
-        return 'Date';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'DateTime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'Time';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'Duration';
-    }
-
-    protected function getUri(): string
-    {
-        return 'URI';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'Base64';
-    }
-
     protected function getString(): string
     {
         return 'String';
     }
 
+    protected function getStringFormat(Format $format): string
+    {
+        return 'String (' . $format->value . ')';
+    }
+
     protected function getInteger(): string
     {
         return 'Integer';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return 'Integer (' . $format->value . ')';
     }
 
     protected function getNumber(): string

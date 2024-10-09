@@ -36,9 +36,9 @@ public class Author
     [JsonPropertyName("email")]
     public string? Email { get; set; }
     [JsonPropertyName("categories")]
-    public List<string>? Categories { get; set; }
+    public System.Collections.Generic.List<string>? Categories { get; set; }
     [JsonPropertyName("locations")]
-    public List<Location>? Locations { get; set; }
+    public System.Collections.Generic.List<Location>? Locations { get; set; }
     [JsonPropertyName("origin")]
     public Location? Origin { get; set; }
 }
@@ -60,21 +60,21 @@ public class News
     [JsonPropertyName("config")]
     public Meta? Config { get; set; }
     [JsonPropertyName("inlineConfig")]
-    public Dictionary<string, string>? InlineConfig { get; set; }
+    public System.Collections.Generic.Dictionary<string, string>? InlineConfig { get; set; }
     [JsonPropertyName("mapTags")]
-    public Dictionary<string, string>? MapTags { get; set; }
+    public System.Collections.Generic.Dictionary<string, string>? MapTags { get; set; }
     [JsonPropertyName("mapReceiver")]
-    public Dictionary<string, Author>? MapReceiver { get; set; }
+    public System.Collections.Generic.Dictionary<string, Author>? MapReceiver { get; set; }
     [JsonPropertyName("mapResources")]
-    public Dictionary<string, object>? MapResources { get; set; }
+    public System.Collections.Generic.Dictionary<string, object>? MapResources { get; set; }
     [JsonPropertyName("tags")]
-    public List<string>? Tags { get; set; }
+    public System.Collections.Generic.List<string>? Tags { get; set; }
     [JsonPropertyName("receiver")]
-    public List<Author>? Receiver { get; set; }
+    public System.Collections.Generic.List<Author>? Receiver { get; set; }
     [JsonPropertyName("resources")]
-    public List<object>? Resources { get; set; }
+    public System.Collections.Generic.List<object>? Resources { get; set; }
     [JsonPropertyName("profileImage")]
-    public byte[]? ProfileImage { get; set; }
+    public string? ProfileImage { get; set; }
     [JsonPropertyName("read")]
     public bool? Read { get; set; }
     [JsonPropertyName("source")]
@@ -84,13 +84,13 @@ public class News
     [JsonPropertyName("meta")]
     public Meta? Meta { get; set; }
     [JsonPropertyName("sendDate")]
-    public DateOnly? SendDate { get; set; }
+    public System.DateOnly? SendDate { get; set; }
     [JsonPropertyName("readDate")]
-    public DateTime? ReadDate { get; set; }
+    public System.DateTime? ReadDate { get; set; }
     [JsonPropertyName("expires")]
-    public TimeSpan? Expires { get; set; }
+    public string? Expires { get; set; }
     [JsonPropertyName("range")]
-    public TimeSpan? Range { get; set; }
+    public string? Range { get; set; }
     [JsonPropertyName("price")]
     public double? Price { get; set; }
     [JsonPropertyName("rating")]
@@ -102,9 +102,9 @@ public class News
     [JsonPropertyName("version")]
     public string? Version { get; set; }
     [JsonPropertyName("coffeeTime")]
-    public TimeOnly? CoffeeTime { get; set; }
+    public System.TimeOnly? CoffeeTime { get; set; }
     [JsonPropertyName("profileUri")]
-    public Uri? ProfileUri { get; set; }
+    public string? ProfileUri { get; set; }
     [JsonPropertyName("g-recaptcha-response")]
     public string? Captcha { get; set; }
     [JsonPropertyName("media.fields")]

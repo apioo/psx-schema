@@ -63,7 +63,7 @@ class News(BaseModel):
     tags: Optional[List[str]] = Field(default=None, alias="tags")
     receiver: Optional[List[Author]] = Field(default=None, alias="receiver")
     resources: Optional[List[Union[Location, Web]]] = Field(default=None, alias="resources")
-    profile_image: Optional[bytearray] = Field(default=None, alias="profileImage")
+    profile_image: Optional[str] = Field(default=None, alias="profileImage")
     read: Optional[bool] = Field(default=None, alias="read")
     source: Optional[Union[Author, Web]] = Field(default=None, alias="source")
     author: Optional[Author] = Field(default=None, alias="author")

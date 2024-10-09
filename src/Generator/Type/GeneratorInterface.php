@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
 use PSX\Schema\TypeInterface;
 
 /**
@@ -34,6 +35,11 @@ use PSX\Schema\TypeInterface;
  */
 interface GeneratorInterface
 {
+    public const CONTEXT_CLIENT = 1;
+    public const CONTEXT_SERVER = 2;
+    public const CONTEXT_REQUEST = 4;
+    public const CONTEXT_RESPONSE = 8;
+
     /**
      * Returns a type string
      */
@@ -43,4 +49,11 @@ interface GeneratorInterface
      * Returns a doc type string
      */
     public function getDocType(TypeInterface $type): string;
+
+    /**
+     * Returns a fitting type for the provided content type. If the programming language has a native type for the provided content
+     * type it should return it, i.e. for "application/xml" Java could return "org.w3c.dom.Document" and PHP "DOMDocument".
+     * As default the method should simply return a string type
+     */
+    public function getContentType(ContentType $contentType, int $context): string;
 }

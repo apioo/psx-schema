@@ -54,7 +54,6 @@ public class Web {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 
 /**
  * An simple author element with some description
@@ -62,8 +61,8 @@ import java.util.List;
 public class Author {
     private String title;
     private String email;
-    private List<String> categories;
-    private List<Location> locations;
+    private java.util.List<String> categories;
+    private java.util.List<Location> locations;
     private Location origin;
     @JsonSetter("title")
     public void setTitle(String title) {
@@ -82,19 +81,19 @@ public class Author {
         return this.email;
     }
     @JsonSetter("categories")
-    public void setCategories(List<String> categories) {
+    public void setCategories(java.util.List<String> categories) {
         this.categories = categories;
     }
     @JsonGetter("categories")
-    public List<String> getCategories() {
+    public java.util.List<String> getCategories() {
         return this.categories;
     }
     @JsonSetter("locations")
-    public void setLocations(List<Location> locations) {
+    public void setLocations(java.util.List<Location> locations) {
         this.locations = locations;
     }
     @JsonGetter("locations")
-    public List<Location> getLocations() {
+    public java.util.List<Location> getLocations() {
         return this.locations;
     }
     @JsonSetter("origin")
@@ -109,50 +108,40 @@ public class Author {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.Map;
-import java.util.HashMap;
-public class Meta extends HashMap<String, String> {
+public class Meta extends java.util.HashMap<String, String> {
 }
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.net.URI;
-import java.time.Duration;
-import java.time.Period;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An general news entry
  */
 public class News {
     private Meta config;
-    private Map<String, String> inlineConfig;
-    private Map<String, String> mapTags;
-    private Map<String, Author> mapReceiver;
-    private Map<String, Object> mapResources;
-    private List<String> tags;
-    private List<Author> receiver;
-    private List<Object> resources;
-    private byte[] profileImage;
+    private java.util.Map<String, String> inlineConfig;
+    private java.util.Map<String, String> mapTags;
+    private java.util.Map<String, Author> mapReceiver;
+    private java.util.Map<String, Object> mapResources;
+    private java.util.List<String> tags;
+    private java.util.List<Author> receiver;
+    private java.util.List<Object> resources;
+    private String profileImage;
     private Boolean read;
     private Object source;
     private Author author;
     private Meta meta;
-    private LocalDate sendDate;
-    private LocalDateTime readDate;
-    private Period expires;
-    private Duration range;
+    private java.time.LocalDate sendDate;
+    private java.time.LocalDateTime readDate;
+    private String expires;
+    private String range;
     private Double price;
     private Integer rating;
     private String content;
     private String question;
     private String version;
-    private LocalTime coffeeTime;
-    private URI profileUri;
+    private java.time.LocalTime coffeeTime;
+    private String profileUri;
     private String captcha;
     private String mediaFields;
     private Object payload;
@@ -165,67 +154,67 @@ public class News {
         return this.config;
     }
     @JsonSetter("inlineConfig")
-    public void setInlineConfig(Map<String, String> inlineConfig) {
+    public void setInlineConfig(java.util.Map<String, String> inlineConfig) {
         this.inlineConfig = inlineConfig;
     }
     @JsonGetter("inlineConfig")
-    public Map<String, String> getInlineConfig() {
+    public java.util.Map<String, String> getInlineConfig() {
         return this.inlineConfig;
     }
     @JsonSetter("mapTags")
-    public void setMapTags(Map<String, String> mapTags) {
+    public void setMapTags(java.util.Map<String, String> mapTags) {
         this.mapTags = mapTags;
     }
     @JsonGetter("mapTags")
-    public Map<String, String> getMapTags() {
+    public java.util.Map<String, String> getMapTags() {
         return this.mapTags;
     }
     @JsonSetter("mapReceiver")
-    public void setMapReceiver(Map<String, Author> mapReceiver) {
+    public void setMapReceiver(java.util.Map<String, Author> mapReceiver) {
         this.mapReceiver = mapReceiver;
     }
     @JsonGetter("mapReceiver")
-    public Map<String, Author> getMapReceiver() {
+    public java.util.Map<String, Author> getMapReceiver() {
         return this.mapReceiver;
     }
     @JsonSetter("mapResources")
-    public void setMapResources(Map<String, Object> mapResources) {
+    public void setMapResources(java.util.Map<String, Object> mapResources) {
         this.mapResources = mapResources;
     }
     @JsonGetter("mapResources")
-    public Map<String, Object> getMapResources() {
+    public java.util.Map<String, Object> getMapResources() {
         return this.mapResources;
     }
     @JsonSetter("tags")
-    public void setTags(List<String> tags) {
+    public void setTags(java.util.List<String> tags) {
         this.tags = tags;
     }
     @JsonGetter("tags")
-    public List<String> getTags() {
+    public java.util.List<String> getTags() {
         return this.tags;
     }
     @JsonSetter("receiver")
-    public void setReceiver(List<Author> receiver) {
+    public void setReceiver(java.util.List<Author> receiver) {
         this.receiver = receiver;
     }
     @JsonGetter("receiver")
-    public List<Author> getReceiver() {
+    public java.util.List<Author> getReceiver() {
         return this.receiver;
     }
     @JsonSetter("resources")
-    public void setResources(List<Object> resources) {
+    public void setResources(java.util.List<Object> resources) {
         this.resources = resources;
     }
     @JsonGetter("resources")
-    public List<Object> getResources() {
+    public java.util.List<Object> getResources() {
         return this.resources;
     }
     @JsonSetter("profileImage")
-    public void setProfileImage(byte[] profileImage) {
+    public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
     @JsonGetter("profileImage")
-    public byte[] getProfileImage() {
+    public String getProfileImage() {
         return this.profileImage;
     }
     @JsonSetter("read")
@@ -261,35 +250,35 @@ public class News {
         return this.meta;
     }
     @JsonSetter("sendDate")
-    public void setSendDate(LocalDate sendDate) {
+    public void setSendDate(java.time.LocalDate sendDate) {
         this.sendDate = sendDate;
     }
     @JsonGetter("sendDate")
-    public LocalDate getSendDate() {
+    public java.time.LocalDate getSendDate() {
         return this.sendDate;
     }
     @JsonSetter("readDate")
-    public void setReadDate(LocalDateTime readDate) {
+    public void setReadDate(java.time.LocalDateTime readDate) {
         this.readDate = readDate;
     }
     @JsonGetter("readDate")
-    public LocalDateTime getReadDate() {
+    public java.time.LocalDateTime getReadDate() {
         return this.readDate;
     }
     @JsonSetter("expires")
-    public void setExpires(Period expires) {
+    public void setExpires(String expires) {
         this.expires = expires;
     }
     @JsonGetter("expires")
-    public Period getExpires() {
+    public String getExpires() {
         return this.expires;
     }
     @JsonSetter("range")
-    public void setRange(Duration range) {
+    public void setRange(String range) {
         this.range = range;
     }
     @JsonGetter("range")
-    public Duration getRange() {
+    public String getRange() {
         return this.range;
     }
     @JsonSetter("price")
@@ -333,19 +322,19 @@ public class News {
         return this.version;
     }
     @JsonSetter("coffeeTime")
-    public void setCoffeeTime(LocalTime coffeeTime) {
+    public void setCoffeeTime(java.time.LocalTime coffeeTime) {
         this.coffeeTime = coffeeTime;
     }
     @JsonGetter("coffeeTime")
-    public LocalTime getCoffeeTime() {
+    public java.time.LocalTime getCoffeeTime() {
         return this.coffeeTime;
     }
     @JsonSetter("profileUri")
-    public void setProfileUri(URI profileUri) {
+    public void setProfileUri(String profileUri) {
         this.profileUri = profileUri;
     }
     @JsonGetter("profileUri")
-    public URI getProfileUri() {
+    public String getProfileUri() {
         return this.profileUri;
     }
     @JsonSetter("g-recaptcha-response")

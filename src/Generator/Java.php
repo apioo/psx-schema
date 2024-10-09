@@ -20,16 +20,12 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
-use PSX\Schema\Type\ArrayType;
 use PSX\Schema\Type\MapType;
 use PSX\Schema\Type\ReferenceType;
-use PSX\Schema\Type\StringType;
 use PSX\Schema\Type\StructType;
 use PSX\Schema\Type\TypeAbstract;
-use PSX\Schema\TypeUtil;
 
 /**
  * Java
@@ -96,7 +92,7 @@ class Java extends CodeGeneratorAbstract
     {
         $subType = $this->generator->getType($origin->getAdditionalProperties());
 
-        $code = 'public class ' . $name->getClass() . ' extends HashMap<String, ' . $subType . '> {' . "\n";
+        $code = 'public class ' . $name->getClass() . ' extends java.util.HashMap<String, ' . $subType . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -142,42 +138,6 @@ class Java extends CodeGeneratorAbstract
         $imports = [];
         $imports[] = 'import com.fasterxml.jackson.annotation.JsonGetter;';
         $imports[] = 'import com.fasterxml.jackson.annotation.JsonSetter;';
-
-        if (TypeUtil::contains($origin, StringType::class, Format::URI)) {
-            $imports[] = 'import java.net.URI;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DURATION)) {
-            $imports[] = 'import java.time.Duration;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::PERIOD)) {
-            $imports[] = 'import java.time.Period;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DATE)) {
-            $imports[] = 'import java.time.LocalDate;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::TIME)) {
-            $imports[] = 'import java.time.LocalTime;';
-        }
-
-        if (TypeUtil::contains($origin, StringType::class, Format::DATETIME)) {
-            $imports[] = 'import java.time.LocalDateTime;';
-        }
-
-        if (TypeUtil::contains($origin, ArrayType::class)) {
-            $imports[] = 'import java.util.List;';
-        }
-
-        if (TypeUtil::contains($origin, MapType::class)) {
-            $imports[] = 'import java.util.Map;';
-        }
-
-        if ($origin instanceof MapType) {
-            $imports[] = 'import java.util.HashMap;';
-        }
 
         return $imports;
     }

@@ -42,10 +42,9 @@ public class StudentMap extends Map<Student> {
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.List;
 public class Map<T> {
     private Integer totalResults;
-    private List<T> entries;
+    private java.util.List<T> entries;
     @JsonSetter("totalResults")
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
@@ -55,11 +54,11 @@ public class Map<T> {
         return this.totalResults;
     }
     @JsonSetter("entries")
-    public void setEntries(List<T> entries) {
+    public void setEntries(java.util.List<T> entries) {
         this.entries = entries;
     }
     @JsonGetter("entries")
-    public List<T> getEntries() {
+    public java.util.List<T> getEntries() {
         return this.entries;
     }
 }

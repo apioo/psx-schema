@@ -28,6 +28,8 @@ use PSX\Record\Record;
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
+ *
+ * @template-extends Record<mixed>
  */
 class Config extends Record
 {

@@ -54,8 +54,8 @@ class News: Codable {
     var source: Author | Web
     var author: Author
     var meta: Meta
-    var sendDate: String
-    var readDate: String
+    var sendDate: Date
+    var readDate: Date
     var expires: String
     var range: String
     var price: Float

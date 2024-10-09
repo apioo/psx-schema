@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+
 /**
  * TypeScript
  *
@@ -29,6 +31,17 @@ namespace PSX\Schema\Generator\Type;
  */
 class TypeScript extends GeneratorAbstract
 {
+    public function getContentType(ContentType $contentType, int $context): string
+    {
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'ArrayBuffer',
+            ContentType::FORM => 'URLSearchParams',
+            ContentType::JSON => 'any',
+            ContentType::MULTIPART => 'FormData',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
+    }
+
     protected function getString(): string
     {
         return 'string';
@@ -86,6 +99,6 @@ class TypeScript extends GeneratorAbstract
 
     protected function getNamespaced(string $namespace, string $name): string
     {
-        return $namespace . '.' . $name;
+        return $name;
     }
 }

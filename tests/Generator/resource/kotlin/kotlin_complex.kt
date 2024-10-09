@@ -42,14 +42,12 @@ open class BooleanType : ScalarType {
     var type: String? = null
 }
 
-import java.util.HashMap;
-
 /**
  * Adds support for polymorphism. The discriminator is an object name that is used to differentiate between other schemas which may satisfy the payload description
  */
 open class Discriminator {
     var propertyName: String? = null
-    var mapping: HashMap<String, String>? = null
+    var mapping: Map<String, String>? = null
 }
 
 /**
@@ -89,14 +87,12 @@ open class NumberType : ScalarType {
     var exclusiveMinimum: Boolean? = null
 }
 
-import java.util.HashMap;
-
 /**
  * Represents a reference type. A reference type points to a specific type at the definitions map
  */
 open class ReferenceType {
     var ref: String? = null
-    var template: HashMap<String, String>? = null
+    var template: Map<String, String>? = null
 }
 
 /**
@@ -109,8 +105,6 @@ open class StringType : ScalarType {
     var pattern: String? = null
 }
 
-import java.util.HashMap;
-
 /**
  * Represents a struct type. A struct type contains a fix set of defined properties
  */
@@ -118,18 +112,16 @@ open class StructType : CommonType {
     var final: Boolean? = null
     var extends: String? = null
     var type: String? = null
-    var properties: HashMap<String, Any>? = null
+    var properties: Map<String, Any>? = null
     var required: Array<String>? = null
 }
-
-import java.util.HashMap;
 
 /**
  * The root TypeSchema
  */
 open class TypeSchema {
-    var import: HashMap<String, String>? = null
-    var definitions: HashMap<String, Any>? = null
+    var import: Map<String, String>? = null
+    var definitions: Map<String, Any>? = null
     var ref: String? = null
 }
 

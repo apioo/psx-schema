@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Java
  *
@@ -29,39 +32,15 @@ namespace PSX\Schema\Generator\Type;
  */
 class Java extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
-        return 'LocalDate';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'LocalDateTime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'LocalTime';
-    }
-
-    protected function getPeriod(): string
-    {
-        return 'Period';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'Duration';
-    }
-
-    protected function getUri(): string
-    {
-        return 'URI';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'byte[]';
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'byte[]',
+            ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'java.util.List<org.apache.hc.core5.http.NameValuePair>' : 'org.springframework.util.MultiValueMap<String, String>',
+            ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'Object' : 'String',
+            ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder' : 'reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<String, org.springframework.http.codec.multipart.Part>>',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
     }
 
     protected function getString(): string
@@ -69,19 +48,28 @@ class Java extends GeneratorAbstract
         return 'String';
     }
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return 'Integer';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'Long';
+        return match ($format) {
+            Format::DATE => 'java.time.LocalDate',
+            Format::DATETIME => 'java.time.LocalDateTime',
+            Format::TIME => 'java.time.LocalTime',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
     {
         return 'Integer';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'Integer',
+            Format::INT64 => 'Long',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string
@@ -96,12 +84,12 @@ class Java extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return 'List<' . $type . '>';
+        return 'java.util.List<' . $type . '>';
     }
 
     protected function getMap(string $type): string
     {
-        return 'Map<String, ' . $type . '>';
+        return 'java.util.Map<String, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string

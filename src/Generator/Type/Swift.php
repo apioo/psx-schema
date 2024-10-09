@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Swift
  *
@@ -29,9 +32,29 @@ namespace PSX\Schema\Generator\Type;
  */
 class Swift extends GeneratorAbstract
 {
+    public function getContentType(ContentType $contentType, int $context): string
+    {
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'Data',
+            ContentType::FORM => 'Dictionary<String, String>',
+            ContentType::JSON => 'Any',
+            ContentType::MULTIPART => $this->getString(),
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
+    }
+
     protected function getString(): string
     {
         return 'String';
+    }
+
+    protected function getStringFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::DATE => 'Date',
+            Format::DATETIME => 'Date',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string

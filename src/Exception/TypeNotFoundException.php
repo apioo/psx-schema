@@ -31,15 +31,8 @@ use Throwable;
  */
 class TypeNotFoundException extends \Exception
 {
-    /**
-     * @var string
-     */
-    private $namespace;
-
-    /**
-     * @var string
-     */
-    private $name;
+    private string $namespace;
+    private string $name;
 
     public function __construct(string $message, string $namespace, string $name, $code = 0, Throwable $previous = null)
     {
@@ -49,17 +42,11 @@ class TypeNotFoundException extends \Exception
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;

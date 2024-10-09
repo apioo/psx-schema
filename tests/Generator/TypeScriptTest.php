@@ -82,7 +82,7 @@ class TypeScriptTest extends GeneratorTestCase
 
     public function testGenerateImport()
     {
-        $generator = new TypeScript();
+        $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
         $actual = (string) $generator->generate($this->getImportSchema());
 

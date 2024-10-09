@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * Go
  *
@@ -29,34 +32,15 @@ namespace PSX\Schema\Generator\Type;
  */
 class Go extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
-        return 'time.Time';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'time.Time';
-    }
-
-    protected function getTime(): string
-    {
-        return 'time.Time';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'time.Duration';
-    }
-
-    protected function getUri(): string
-    {
-        return 'url.URL';
-    }
-
-    protected function getBinary(): string
-    {
-        return '[]byte';
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => '[]byte',
+            ContentType::FORM => 'url.Values',
+            ContentType::JSON => 'any',
+            ContentType::MULTIPART => '*sdkgen.Multipart',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
     }
 
     protected function getString(): string
@@ -64,19 +48,18 @@ class Go extends GeneratorAbstract
         return 'string';
     }
 
-    protected function getInteger32(): string
-    {
-        return 'int32';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'int64';
-    }
-
     protected function getInteger(): string
     {
         return 'int';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'int32',
+            Format::INT64 => 'int64',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string

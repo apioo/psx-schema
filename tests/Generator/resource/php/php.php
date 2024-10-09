@@ -229,18 +229,15 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      * @var array<Location|Web>|null
      */
     protected ?array $resources = null;
-    /**
-     * @var resource|null
-     */
-    protected $profileImage = null;
+    protected ?string $profileImage = null;
     protected ?bool $read = null;
     protected Author|Web|null $source = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
-    protected ?\PSX\DateTime\Period $expires = null;
-    protected ?\PSX\DateTime\Duration $range = null;
+    protected ?string $expires = null;
+    protected ?string $range = null;
     #[Minimum(1)]
     #[Maximum(100)]
     protected ?float $price = null;
@@ -255,7 +252,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?string $question = null;
     protected ?string $version = 'http://foo.bar';
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
-    protected ?\PSX\Uri\Uri $profileUri = null;
+    protected ?string $profileUri = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;
     #[Key('media.fields')]
@@ -343,11 +340,11 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->resources;
     }
-    public function setProfileImage($profileImage) : void
+    public function setProfileImage(?string $profileImage) : void
     {
         $this->profileImage = $profileImage;
     }
-    public function getProfileImage()
+    public function getProfileImage() : ?string
     {
         return $this->profileImage;
     }
@@ -399,19 +396,19 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->readDate;
     }
-    public function setExpires(?\PSX\DateTime\Period $expires) : void
+    public function setExpires(?string $expires) : void
     {
         $this->expires = $expires;
     }
-    public function getExpires() : ?\PSX\DateTime\Period
+    public function getExpires() : ?string
     {
         return $this->expires;
     }
-    public function setRange(?\PSX\DateTime\Duration $range) : void
+    public function setRange(?string $range) : void
     {
         $this->range = $range;
     }
-    public function getRange() : ?\PSX\DateTime\Duration
+    public function getRange() : ?string
     {
         return $this->range;
     }
@@ -463,11 +460,11 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->coffeeTime;
     }
-    public function setProfileUri(?\PSX\Uri\Uri $profileUri) : void
+    public function setProfileUri(?string $profileUri) : void
     {
         $this->profileUri = $profileUri;
     }
-    public function getProfileUri() : ?\PSX\Uri\Uri
+    public function getProfileUri() : ?string
     {
         return $this->profileUri;
     }

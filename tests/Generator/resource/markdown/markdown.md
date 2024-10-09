@@ -48,22 +48,22 @@ mapResources | Map (Location &#124; Web) |  |
 tags | Array (String) |  | MinItems: `1`, MaxItems: `6`
 receiver | Array (Author) | **REQUIRED**.  | MinItems: `1`
 resources | Array (Location &#124; Web) |  | 
-profileImage | Base64 |  | 
+profileImage | String (base64) |  | 
 read | Boolean |  | 
 source | Author &#124; Web |  | 
 author | Author |  | 
 meta | Meta |  | 
-sendDate | Date |  | 
-readDate | DateTime |  | 
-expires | String |  | 
-range | Duration |  | 
+sendDate | String (date) |  | 
+readDate | String (date-time) |  | 
+expires | String (period) |  | 
+range | String (duration) |  | 
 price | Number | **REQUIRED**.  | Minimum: `1`, Maximum: `100`
 rating | Integer |  | Minimum: `1`, Maximum: `5`
 content | String | **REQUIRED**. Contains the main content of the news entry | MinLength: `3`, MaxLength: `512`
 question | String |  | 
 version | String |  | Const: `http://foo.bar`
-coffeeTime | Time |  | 
-profileUri | URI |  | 
+coffeeTime | String (time) |  | 
+profileUri | String (uri) |  | 
 captcha | String |  | 
 mediaFields | String |  | 
 payload | Any |  |

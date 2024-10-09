@@ -21,8 +21,6 @@ type Author struct {
 
 type Meta = map[string]string
 
-import "time"
-
 // An general news entry
 type News struct {
     Config *Meta `json:"config"`
@@ -33,22 +31,22 @@ type News struct {
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
     Resources []any `json:"resources"`
-    ProfileImage []byte `json:"profileImage"`
+    ProfileImage string `json:"profileImage"`
     Read bool `json:"read"`
     Source any `json:"source"`
     Author *Author `json:"author"`
     Meta *Meta `json:"meta"`
-    SendDate time.Time `json:"sendDate"`
-    ReadDate time.Time `json:"readDate"`
+    SendDate string `json:"sendDate"`
+    ReadDate string `json:"readDate"`
     Expires string `json:"expires"`
-    Range time.Duration `json:"range"`
+    Range string `json:"range"`
     Price float64 `json:"price"`
     Rating int `json:"rating"`
     Content string `json:"content"`
     Question string `json:"question"`
     Version string `json:"version"`
-    CoffeeTime time.Time `json:"coffeeTime"`
-    ProfileUri url.URL `json:"profileUri"`
+    CoffeeTime string `json:"coffeeTime"`
+    ProfileUri string `json:"profileUri"`
     Captcha string `json:"g-recaptcha-response"`
     MediaFields string `json:"media.fields"`
     Payload any `json:"payload"`

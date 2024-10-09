@@ -118,8 +118,9 @@ class Php extends CodeGeneratorAbstract
             $prop->makeProtected();
             $type = $property->getType();
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $prop->setType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $prop->setType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
@@ -130,7 +131,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $prop->setType(new Node\NullableType($type));
+                        $prop->setType('?' . $type);
                     } else {
                         $prop->setType($type);
                     }
@@ -153,8 +154,9 @@ class Php extends CodeGeneratorAbstract
             $param = $this->factory->param($property->getName()->getArgument());
             $type = $property->getType();
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $param->setType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $param->setType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a var annotation to describe which type is inside the array
@@ -162,7 +164,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $param->setType(new Node\NullableType($type));
+                        $param->setType('?' . $type);
                     } else {
                         $param->setType($type);
                     }
@@ -180,8 +182,9 @@ class Php extends CodeGeneratorAbstract
 
             $getter = $this->factory->method($property->getName()->getMethod(prefix: ['get']));
             if (!empty($type)) {
-                if (str_contains($type, '|')) {
-                    $getter->setReturnType($type . '|null');
+                $combinationType = $this->getNullableCombinationType($type);
+                if ($combinationType) {
+                    $getter->setReturnType($combinationType);
                 } else {
                     if ($type === 'array') {
                         // in case we have an array we must add a return annotation to describe which type is inside the array
@@ -189,7 +192,7 @@ class Php extends CodeGeneratorAbstract
                     }
 
                     if ($type !== 'mixed') {
-                        $getter->setReturnType(new Node\NullableType($type));
+                        $getter->setReturnType('?' . $type);
                     } else {
                         $getter->setReturnType($type);
                     }
@@ -482,5 +485,16 @@ class Php extends CodeGeneratorAbstract
         $serialize->addStmt(new Node\Stmt\Return_(new Node\Expr\Cast\Object_($toRecord)));
 
         $class->addStmt($serialize);
+    }
+
+    private function getNullableCombinationType(string $type): ?string
+    {
+        if (str_contains($type, '|')) {
+            return $type . '|null';
+        } elseif (str_contains($type, '&')) {
+            return '(' . $type . ')|null';
+        } else {
+            return null;
+        }
     }
 }

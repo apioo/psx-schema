@@ -82,13 +82,13 @@ pub struct News {
     #[serde(rename = "meta")]
     meta: Option<Meta>,
     #[serde(rename = "sendDate")]
-    send_date: Option<NaiveDate>,
+    send_date: Option<chrono::NaiveDate>,
     #[serde(rename = "readDate")]
-    read_date: Option<NaiveDateTime>,
+    read_date: Option<chrono::NaiveDateTime>,
     #[serde(rename = "expires")]
     expires: Option<String>,
     #[serde(rename = "range")]
-    range: Option<Duration>,
+    range: Option<String>,
     #[serde(rename = "price")]
     price: Option<f64>,
     #[serde(rename = "rating")]
@@ -100,7 +100,7 @@ pub struct News {
     #[serde(rename = "version")]
     version: Option<String>,
     #[serde(rename = "coffeeTime")]
-    coffee_time: Option<NaiveTime>,
+    coffee_time: Option<chrono::NaiveTime>,
     #[serde(rename = "profileUri")]
     profile_uri: Option<String>,
     #[serde(rename = "g-recaptcha-response")]

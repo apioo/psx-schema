@@ -25,7 +25,7 @@ public class Map<T>
     [JsonPropertyName("totalResults")]
     public int? TotalResults { get; set; }
     [JsonPropertyName("entries")]
-    public List<T>? Entries { get; set; }
+    public System.Collections.Generic.List<T>? Entries { get; set; }
 }
 
 using System.Text.Json.Serialization;

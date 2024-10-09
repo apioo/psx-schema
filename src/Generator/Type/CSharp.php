@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Generator\Type;
 
+use PSX\Schema\ContentType;
+use PSX\Schema\Format;
+
 /**
  * CSharp
  *
@@ -29,39 +32,15 @@ namespace PSX\Schema\Generator\Type;
  */
 class CSharp extends GeneratorAbstract
 {
-    protected function getDate(): string
+    public function getContentType(ContentType $contentType, int $context): string
     {
-        return 'DateOnly';
-    }
-
-    protected function getDateTime(): string
-    {
-        return 'DateTime';
-    }
-
-    protected function getTime(): string
-    {
-        return 'TimeOnly';
-    }
-
-    protected function getPeriod(): string
-    {
-        return 'TimeSpan';
-    }
-
-    protected function getDuration(): string
-    {
-        return 'TimeSpan';
-    }
-
-    protected function getUri(): string
-    {
-        return 'Uri';
-    }
-
-    protected function getBinary(): string
-    {
-        return 'byte[]';
+        return match ($contentType->getShape()) {
+            ContentType::BINARY => 'byte[]',
+            ContentType::FORM => 'System.Collections.Specialized.NameValueCollection',
+            ContentType::JSON => 'object',
+            ContentType::MULTIPART => 'Sdkgen.Client.Multipart',
+            ContentType::TEXT, ContentType::XML => $this->getString(),
+        };
     }
 
     protected function getString(): string
@@ -69,19 +48,28 @@ class CSharp extends GeneratorAbstract
         return 'string';
     }
 
-    protected function getInteger32(): string
+    protected function getStringFormat(Format $format): string
     {
-        return 'int';
-    }
-
-    protected function getInteger64(): string
-    {
-        return 'long';
+        return match ($format) {
+            Format::DATE => 'System.DateOnly',
+            Format::DATETIME => 'System.DateTime',
+            Format::TIME => 'System.TimeOnly',
+            default => $this->getString(),
+        };
     }
 
     protected function getInteger(): string
     {
         return 'int';
+    }
+
+    protected function getIntegerFormat(Format $format): string
+    {
+        return match ($format) {
+            Format::INT32 => 'int',
+            Format::INT64 => 'long',
+            default => $this->getInteger(),
+        };
     }
 
     protected function getNumber(): string
@@ -96,12 +84,12 @@ class CSharp extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return 'List<' . $type . '>';
+        return 'System.Collections.Generic.List<' . $type . '>';
     }
 
     protected function getMap(string $type): string
     {
-        return 'Dictionary<string, ' . $type . '>';
+        return 'System.Collections.Generic.Dictionary<string, ' . $type . '>';
     }
 
     protected function getUnion(array $types): string
