@@ -22,9 +22,7 @@ namespace PSX\Schema\Generator;
 
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**

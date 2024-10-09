@@ -29,12 +29,9 @@ use PSX\Schema\ContentType;
 use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\GenericPropertyType;
-use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
-use PSX\Schema\Type\StringPropertyType;
-use PSX\Schema\TypeInterface;
 
 /**
  * Php

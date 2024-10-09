@@ -26,11 +26,8 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
 
 /**

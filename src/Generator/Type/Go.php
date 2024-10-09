@@ -21,7 +21,6 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
-use PSX\Schema\Format;
 
 /**
  * Go

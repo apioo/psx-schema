@@ -20,12 +20,6 @@
 
 namespace PSX\Schema\Generator;
 
-use PSX\Schema\Type\ArrayPropertyType;
-use PSX\Schema\Type\NumberPropertyType;
-use PSX\Schema\Type\ScalarPropertyType;
-use PSX\Schema\Type\StringPropertyType;
-use PSX\Schema\TypeInterface;
-
 /**
  * MarkupAbstract
  *

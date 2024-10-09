@@ -30,21 +30,14 @@ use PSX\Record\HashMap;
 use PSX\Record\Record;
 use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
-use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\NumberPropertyType;
-use PSX\Schema\Type\ReferencePropertyType;
-use PSX\Schema\Type\ScalarPropertyType;
-use PSX\Schema\Type\StringPropertyType;
-use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Type\UnionType;
-use PSX\Schema\TypeInterface;
 
 /**
  * Php

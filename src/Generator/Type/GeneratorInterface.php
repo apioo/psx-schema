@@ -22,7 +22,6 @@ namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
 use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\TypeInterface;
 
 /**
  * A generator can implement this interface if it has the ability to resolve a type from a schema instance. It returns
