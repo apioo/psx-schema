@@ -22,10 +22,12 @@ namespace PSX\Schema\Generator;
 
 use PSX\Json\Parser;
 use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\AnyPropertyType;
 use PSX\Schema\Type\ArrayTypeInterface;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\ReferencePropertyType;
@@ -84,6 +86,11 @@ class JsonSchema implements GeneratorInterface
         foreach ($types as $ref => $type) {
             [$ns, $name] = TypeUtil::split($ref);
 
+            // we skip generic types, those are resolved inline
+            if (TypeUtil::contains($type, GenericPropertyType::class)) {
+                continue;
+            }
+
             $result[$name] = $this->generateType($type, $definitions);
         }
 
@@ -98,21 +105,27 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
             $data['type'] = 'object';
 
+            $parent = $type->getParent();
+            if ($parent instanceof ReferencePropertyType) {
+                $template = $parent->getTemplate();
+            }
+
             if (isset($data['properties'])) {
                 $data['properties'] = array_map(function ($property) use ($definitions, $template) {
                     return $this->generateType($property, $definitions, $template);
                 }, $data['properties']);
             }
 
-            if (isset($data['parent']) && $data['parent'] instanceof ReferencePropertyType) {
-                $target = $data['parent']->getTarget();
+            if ($parent instanceof ReferencePropertyType) {
+                $target = $parent->getTarget();
                 unset($data['parent']);
 
-                [$ns, $name] = TypeUtil::split($target);
+                $parentType = $definitions->getType($target);
+                $parent = $this->generateType($parentType, $definitions, $parent->getTemplate());
 
                 return [
                     'allOf' => [
-                        ['$ref' => $this->refBase . $name],
+                        $parent,
                         $data,
                     ]
                 ];
@@ -146,16 +159,11 @@ class JsonSchema implements GeneratorInterface
                 '$ref' => $this->refBase . $name
             ];
         } elseif ($type instanceof AnyPropertyType) {
-            return [];
+            return (object) [];
         } elseif ($type instanceof GenericPropertyType) {
-            if (!isset($template[$type->getName()])) {
-                // could not resolve generic
-                return [];
-            }
+            $target = $template[$type->getName()] ?? throw new GeneratorException('Could not resolve generic type ' . $type->getName());
 
-            $type = $definitions->getType($template[$type->getName()]);
-
-            return $this->generateType($type, $definitions, $template);
+            return $this->generateType(PropertyTypeFactory::getReference($target), $definitions, $template);
         } else {
             return $type->toArray();
         }
