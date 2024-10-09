@@ -47,4 +47,13 @@ class GenericPropertyType extends PropertyTypeAbstract
         
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'name' => $this->name,
+        ], function($value){
+            return $value !== null;
+        }));
+    }
 }

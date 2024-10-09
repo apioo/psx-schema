@@ -30,12 +30,14 @@
           "type": "integer"
         },
         "parent": {
-          "type": "generic"
+          "type": "generic",
+          "name": "P"
         },
         "entries": {
           "type": "array",
           "schema": {
-            "type": "generic"
+            "type": "generic",
+            "name": "T"
           }
         }
       }
