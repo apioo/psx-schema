@@ -16,7 +16,7 @@ class Student: Human {
     }
 }
 
-class Map: Codable {
+class Map<P, T>: Codable {
     var totalResults: Int
     var parent: P
     var entries: Array<T>
@@ -28,13 +28,13 @@ class Map: Codable {
     }
 }
 
-class StudentMap: Map {
+class StudentMap: Map<Human, Student> {
 
     enum CodingKeys: String, CodingKey {
     }
 }
 
-class HumanMap: Map {
+class HumanMap: Map<Human, Human> {
 
     enum CodingKeys: String, CodingKey {
     }

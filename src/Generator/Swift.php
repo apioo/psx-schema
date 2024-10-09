@@ -53,10 +53,20 @@ class Swift extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
-        $code = 'class ' . $name->getClass() . ': ';
+        $code = 'class ' . $name->getClass();
+
+        if (!empty($generics)) {
+            $code.= $this->generator->getGenericDefinition($generics);
+        }
+
+        $code.= ': ';
 
         if (!empty($extends)) {
-            $code.= $extends . ' ';
+            $code.= $extends;
+            if (!empty($templates)) {
+                $code.= $this->generator->getGenericDefinition($templates);
+            }
+            $code.= ' ';
         } else {
             $code.= 'Codable ';
         }
