@@ -71,7 +71,7 @@ class Hash
     {
         if ($type instanceof StructDefinitionType) {
             yield 'struct';
-            foreach ($type->getProperties() as $name => $value) {
+            foreach ($type->getProperties() ?? [] as $name => $value) {
                 yield $name;
                 yield from $this->getValuesByType($value);
             }
