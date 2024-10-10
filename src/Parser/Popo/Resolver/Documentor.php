@@ -105,8 +105,10 @@ class Documentor implements ResolverInterface
             if (!empty($tag)) {
                 $values = $this->getTemplateValues($reflection, $tag);
                 $keys = $this->getTemplateKeys($reflection);
-                $template = array_combine($keys, $values);
-                $parent->setTemplate($template);
+                if (count($keys) > 0 && count($keys) === count($values)) {
+                    $template = array_combine($keys, $values);
+                    $parent->setTemplate($template);
+                }
             }
 
             $struct->setParent($parent);
