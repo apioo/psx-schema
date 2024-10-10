@@ -62,6 +62,7 @@ abstract class DefinitionTypeAbstract implements TypeInterface
         return $this;
     }
 
+    abstract public function isEmpty(): bool;
     abstract protected function getType(): string;
 
     public function setAttribute(string $key, mixed $value): self

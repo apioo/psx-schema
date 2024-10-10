@@ -35,6 +35,11 @@ class StructDefinitionType extends DefinitionTypeAbstract
     protected ?string $discriminator = null;
     protected ?array $mapping = null;
 
+    public function isEmpty(): bool
+    {
+        return $this->base === null && $this->properties === null;
+    }
+
     protected function getType(): string
     {
         return 'struct';

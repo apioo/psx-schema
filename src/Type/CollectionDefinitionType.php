@@ -31,6 +31,11 @@ abstract class CollectionDefinitionType extends DefinitionTypeAbstract implement
 {
     protected ?PropertyTypeAbstract $schema = null;
 
+    public function isEmpty(): bool
+    {
+        return $this->schema === null;
+    }
+
     public function getSchema(): ?PropertyTypeAbstract
     {
         return $this->schema;

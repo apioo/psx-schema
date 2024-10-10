@@ -80,8 +80,10 @@ class TypeSchema implements ParserInterface
         if (empty($root)) {
             try {
                 $type = $this->parseDefinitionType($data);
-                $root = 'RootType';
-                $definitions->addType($root, $type);
+                if (!$type->isEmpty()) {
+                    $root = 'RootType';
+                    $definitions->addType($root, $type);
+                }
             } catch (UnknownTypeException) {
             }
         }
