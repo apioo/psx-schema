@@ -205,6 +205,10 @@ class Documentor implements ResolverInterface
     private function getTemplateKeys(\ReflectionClass $reflection): array
     {
         $tag = $this->getTag('template', $reflection->getDocComment());
+        if (empty($tag)) {
+            return [];
+        }
+
         $keys = array_map('trim', explode(',', $tag));
 
         // currently we can handle only one type, since we pare also only one value
