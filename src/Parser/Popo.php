@@ -79,10 +79,11 @@ class Popo implements ParserInterface
     }
 
     /**
-     * @throws \ReflectionException
      * @throws TypeNotFoundException
+     * @throws \ReflectionException
+     * @throws ParserException
      */
-    private function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null, ?string &$typeName = null): DefinitionTypeAbstract
+    protected function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null, ?string &$typeName = null): DefinitionTypeAbstract
     {
         $class = new ReflectionClass($className);
 

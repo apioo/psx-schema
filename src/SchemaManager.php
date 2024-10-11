@@ -58,6 +58,7 @@ class SchemaManager implements SchemaManagerInterface
         $this->register('https', new Parser\Http($this, $httpClient, true));
         $this->register('php', new Parser\Popo());
         $this->register('php+class', new Parser\Popo());
+        $this->register('php+doc', new Parser\Documentor());
         $this->register('php+schema', new Parser\SchemaClass($this));
         $this->register('typehub', new Parser\TypeHub($this, $httpClient));
     }
@@ -67,32 +68,24 @@ class SchemaManager implements SchemaManagerInterface
         $this->parsers[$scheme] = $parser;
     }
 
-    public function getSchema(string $schemaName, ?ContextInterface $context = null): SchemaInterface
+    public function getSchema(string|SchemaSource $source, ?ContextInterface $context = null): SchemaInterface
     {
         $item = null;
         if (!$this->debug) {
-            $item = $this->cache->getItem('psx-schema-' . md5($schemaName));
+            $item = $this->cache->getItem('psx-schema-' . md5((string) $source));
             if ($item->isHit()) {
                 return $item->get();
             }
         }
 
-        $pos = strpos($schemaName, '://');
-        if ($pos === false) {
-            $schemaName = $this->guessSchemeFromSchemaName($schemaName);
-            $pos = strpos($schemaName, '://');
+        if (is_string($source)) {
+            $source = SchemaSource::fromString($source);
         }
 
-        if ($pos === false) {
-            throw new InvalidSchemaException('Could not resolve schema uri');
-        }
-
-        $scheme = substr($schemaName, 0, $pos);
-        $value = substr($schemaName, $pos + 3);
-        if (isset($this->parsers[$scheme])) {
-            $schema = $this->parsers[$scheme]->parse($value, $context);
+        if (isset($this->parsers[$source->getScheme()])) {
+            $schema = $this->parsers[$source->getScheme()]->parse($source->getSource(), $context);
         } else {
-            throw new InvalidSchemaException('Schema ' . $schemaName . ' does not exist');
+            throw new InvalidSchemaException('Schema ' . $source . ' does not exist');
         }
 
         if (!$this->debug && $item !== null) {
@@ -104,23 +97,8 @@ class SchemaManager implements SchemaManagerInterface
         return $schema;
     }
 
-    public function clear(string $schemaName): void
+    public function clear(string|SchemaSource $source): void
     {
-        $this->cache->deleteItem('psx-schema-' . md5($schemaName));
-    }
-
-    private function guessSchemeFromSchemaName(string $schemaName): ?string
-    {
-        if (class_exists($schemaName)) {
-            if (in_array(SchemaInterface::class, class_implements($schemaName))) {
-                return 'php+schema://' . str_replace('\\', '.', $schemaName);
-            } else {
-                return 'php+class://' . str_replace('\\', '.', $schemaName);
-            }
-        } elseif (is_file($schemaName)) {
-            return 'file://' . $schemaName;
-        } else {
-            return $schemaName;
-        }
+        $this->cache->deleteItem('psx-schema-' . md5((string) $source));
     }
 }

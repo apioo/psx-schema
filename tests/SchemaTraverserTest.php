@@ -21,14 +21,11 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Exception\TraverserException;
-use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\SchemaTraverser;
 use PSX\Schema\Tests\Parser\Popo\ArrayList;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\Tests\Parser\Popo\Form_Element_Input;
 use PSX\Schema\Tests\Parser\Popo\HashMap;
-use PSX\Schema\Visitor\IncomingVisitor;
-use PSX\Schema\Visitor\OutgoingVisitor;
 use PSX\Schema\Visitor\TypeVisitor;
 
 /**

@@ -24,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use PSX\Schema\Builder;
 use PSX\Schema\ObjectMapper;
 use PSX\Schema\SchemaManager;
+use PSX\Schema\SchemaSource;
 use PSX\Schema\Tests\Parser\Popo\Attribute\News;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
@@ -47,7 +48,7 @@ class ObjectMapperTest extends TestCase
 JSON;
 
         $objectMapper = $this->newObjectMapper();
-        $news = $objectMapper->readJson($json, News::class);
+        $news = $objectMapper->readJson($json, SchemaSource::fromClass(News::class));
 
         $this->assertInstanceOf(News::class, $news);
         $this->assertEquals('foobar', $news->getContent());

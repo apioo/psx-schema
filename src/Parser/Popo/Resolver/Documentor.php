@@ -27,8 +27,6 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\Record\ArrayList;
-use PSX\Record\HashMap;
 use PSX\Record\RecordInterface;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\Popo\ResolverInterface;
@@ -129,7 +127,7 @@ class Documentor implements ResolverInterface
         return $this->buildPropertyType($this->typeResolver->resolve($tag, $context));
     }
 
-    private function buildPropertyType(Type $type): ?PropertyTypeAbstract
+    public function buildPropertyType(Type $type): ?PropertyTypeAbstract
     {
         if ($type instanceof Types\Object_) {
             $fqsen = (string) $type->getFqsen();

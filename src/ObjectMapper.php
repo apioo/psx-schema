@@ -49,30 +49,24 @@ class ObjectMapper
     }
 
     /**
-     * @template T
-     * @psalm-param class-string<T> $class
-     * @return T
      * @throws MappingException
      */
-    public function readJson(string $json, string $class): mixed
+    public function readJson(string $json, SchemaSource $source): mixed
     {
         try {
-            return $this->read(Parser::decode($json), $class);
+            return $this->read(Parser::decode($json), $source);
         } catch (\JsonException $e) {
             throw new MappingException($e->getMessage(), previous: $e);
         }
     }
 
     /**
-     * @template T
-     * @psalm-param class-string<T> $class
-     * @return T
      * @throws MappingException
      */
-    public function read(mixed $data, string $class): mixed
+    public function read(mixed $data, SchemaSource $source): mixed
     {
         try {
-            $schema = $this->schemaManager->getSchema($class);
+            $schema = $this->schemaManager->getSchema($source);
 
             return $this->schemaTraverser->traverse($data, $schema, new TypeVisitor());
         } catch (InvalidSchemaException|TraverserException $e) {

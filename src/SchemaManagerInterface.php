@@ -38,12 +38,14 @@ interface SchemaManagerInterface
     public function register(string $scheme, ParserInterface $parser): void;
 
     /**
-     * The schema manager knows how to create a schema instance from the given schema name. Returns a schema interface
+     * The schema manager knows how to create a schema instance from the given source, it returns a schema interface
      * or throws an exception.
      *
-     * The schema name can be an uri format where you can specify a fitting parser i.e.
+     * The source must be an uri format where you can specify a fitting parser i.e.
      * - php://My.Acme.Dto
      *   Resolves the schema as PHP DTO class by looking at the properties and attributes through reflection
+     * - php+doc://array<string>
+     *   Resolves the schema as PHP doc type
      * - php+schema://My.Acme.Schema
      *   Resolves the schema as schema class, this means the class must be an instance of SchemaInterface
      * - file:///path/to/a/file.json
@@ -54,14 +56,15 @@ interface SchemaManagerInterface
      * - typehub://apioo:software@0.1.2
      *   Resolves the schema directly from TypeHub, this would i.e. resolve the schema https://typehub.cloud/d/apioo/software
      *
-     * If the schema name is a simple string the manager tries to guess the fitting schema uri format
+     * If the source is a simple string the manager tries to guess the fitting schema uri format otherwise
+     * it is also possible to provide a concrete {@see SchemaSource} object
      *
      * @throws InvalidSchemaException
      */
-    public function getSchema(string $schemaName, ?ContextInterface $context = null): SchemaInterface;
+    public function getSchema(string|SchemaSource $source, ?ContextInterface $context = null): SchemaInterface;
 
     /**
      * Clears the cache for a specific schema
      */
-    public function clear(string $schemaName): void;
+    public function clear(string|SchemaSource $source): void;
 }

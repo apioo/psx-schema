@@ -27,11 +27,35 @@ JSON;
 
 $objectMapper = new ObjectMapper(new SchemaManager());
 
-$person = $objectMapper->readJson($json, Person::class);
+$person = $objectMapper->readJson($json, SchemaSource::fromClass(Person::class));
 
 assert('Ludwig' === $person->getFirstName());
 assert('Beethoven' === $person->getLastName());
 assert(254 === $person->getAge());
+
+$json = $objectMapper->writeJson($person);
+```
+
+Besides a simple class there are multiple ways to specify a source, for example to parse
+an array of persons s.
+
+```php
+$json = <<<'JSON'
+[
+    {
+        "firstName": "Ludwig",
+        "lastName": "Beethoven",
+        "age": 254
+    }
+]
+JSON;
+
+$objectMapper = new ObjectMapper(new SchemaManager());
+
+$personList = $objectMapper->readJson($json, SchemaSource::fromType('array<Person>'));
+
+assert(1 === count($personList));
+assert('Ludwig' === $personList[0]->getFirstName());
 
 $json = $objectMapper->writeJson($person);
 ```
