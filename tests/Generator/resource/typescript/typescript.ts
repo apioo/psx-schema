@@ -1,7 +1,7 @@
 /**
  * Location of the person
  */
-export class Location {
+export interface Location {
     lat?: number
     long?: number
 }
@@ -11,7 +11,7 @@ import {Location} from "./Location";
 /**
  * An simple author element with some description
  */
-export class Author {
+export interface Author {
     title?: string
     email?: string
     categories?: Array<string>
@@ -19,7 +19,7 @@ export class Author {
     origin?: Location
 }
 
-export class Meta extends Map<string, string> {
+export interface Meta extends Record<string, string> {
 }
 
 import {Meta} from "./Meta";
@@ -28,7 +28,7 @@ import {Author} from "./Author";
 /**
  * An general news entry
  */
-export class News {
+export interface News {
     config?: Meta
     inlineConfig?: Map<string, string>
     mapTags?: Map<string, string>

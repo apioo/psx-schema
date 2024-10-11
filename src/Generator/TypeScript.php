@@ -56,7 +56,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
-        $code = 'export ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
+        $code = 'export interface ' . $name->getClass();
 
         if (!empty($generics)) {
             $code.= $this->generator->getGenericDefinition($generics);
@@ -98,15 +98,7 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $code ='export class ' . $name->getClass() . ' extends Map<string, ' . $type . '> {' . "\n";
-        $code.= '}' . "\n";
-
-        return $code;
-    }
-
-    protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
-    {
-        $code ='export class ' . $name->getClass() . ' extends Array<' . $type . '> {' . "\n";
+        $code ='export interface ' . $name->getClass() . ' extends Record<string, ' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
