@@ -21,6 +21,8 @@
 namespace PSX\Schema\Parser;
 
 use phpDocumentor\Reflection\TypeResolver;
+use phpDocumentor\Reflection\Types\Context;
+use phpDocumentor\Reflection\Types\ContextFactory;
 use PSX\Schema\Definitions;
 use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\TypeNotFoundException;
@@ -41,6 +43,7 @@ use PSX\Schema\Type\ReferencePropertyType;
  */
 class Documentor extends Popo
 {
+    private ContextFactory $contextFactory;
     private TypeResolver $typeResolver;
     private Popo\Resolver\Documentor $documentor;
 
@@ -48,6 +51,7 @@ class Documentor extends Popo
     {
         parent::__construct();
 
+        $this->contextFactory = new ContextFactory();
         $this->typeResolver = new TypeResolver();
         $this->documentor = new Popo\Resolver\Documentor();
     }
@@ -62,7 +66,12 @@ class Documentor extends Popo
         try {
             $typeName = 'InlineType' . substr(md5($schema), 0, 8);
 
-            $result = $this->documentor->buildPropertyType($this->typeResolver->resolve($schema));
+            $parts = explode('@', $schema, 2);
+            $type = $parts[0] ?? null;
+            $namespace = $parts[1] ?? null;
+
+            $typeContext = !empty($namespace) ? new Context($namespace) : null;
+            $result = $this->documentor->buildPropertyType($this->typeResolver->resolve($type, $typeContext));
 
             if ($result instanceof MapPropertyType) {
                 $schema = $result->getSchema();

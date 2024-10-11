@@ -91,9 +91,9 @@ class SchemaSource
     /**
      * A PHP doc type i.e. array<string>
      */
-    public static function fromType(string $type): self
+    public static function fromType(string $type, ?string $namespace = null): self
     {
-        return new self('php+doc', $type);
+        return new self('php+doc', $type . (!empty($namespace) ? '@' . $namespace : ''));
     }
 
     public static function fromTypeHub(string $user, string $document, string $version): self
