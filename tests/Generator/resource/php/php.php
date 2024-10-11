@@ -125,9 +125,9 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 }
 
 /**
- * @extends \ArrayObject<string, string>
+ * @extends \PSX\Record\Record<string>
  */
-class Meta extends \ArrayObject
+class Meta extends \PSX\Record\Record
 {
 }
 

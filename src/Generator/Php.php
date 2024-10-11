@@ -208,8 +208,8 @@ class Php extends CodeGeneratorAbstract
         $uses = [];
 
         $class = $this->factory->class($name->getClass());
-        $class->setDocComment($this->buildComment(['extends' => '\\ArrayObject<string, ' . $type . '>']));
-        $class->extend('\\ArrayObject');
+        $class->setDocComment($this->buildComment(['extends' => '\\' . Record::class . '<' . $type . '>']));
+        $class->extend('\\' . Record::class);
 
         $attributes = $this->getAttributesForDefinition($origin, $uses);
         foreach ($attributes as $attribute) {

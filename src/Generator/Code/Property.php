@@ -21,7 +21,6 @@
 namespace PSX\Schema\Generator\Code;
 
 use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\TypeInterface;
 
 /**
  * Property
@@ -35,9 +34,9 @@ class Property
     private Name $name;
     private string $type;
     private string $docType;
-    private TypeInterface $origin;
+    private PropertyTypeAbstract $origin;
 
-    public function __construct(Name $name, string $type, string $docType, TypeInterface $origin)
+    public function __construct(Name $name, string $type, string $docType, PropertyTypeAbstract $origin)
     {
         $this->name = $name;
         $this->type = $type;
@@ -62,20 +61,20 @@ class Property
 
     public function getComment(): ?string
     {
-        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->getDescription() : null;
+        return $this->origin->getDescription();
     }
 
     public function isDeprecated(): ?bool
     {
-        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isDeprecated() : null;
+        return $this->origin->isDeprecated();
     }
 
     public function isNullable(): ?bool
     {
-        return $this->origin instanceof PropertyTypeAbstract ? $this->origin->isNullable() : null;
+        return $this->origin->isNullable();
     }
 
-    public function getOrigin(): TypeInterface
+    public function getOrigin(): PropertyTypeAbstract
     {
         return $this->origin;
     }
