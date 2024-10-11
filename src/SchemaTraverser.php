@@ -158,7 +158,7 @@ class SchemaTraverser
             foreach ($properties as $key => $subType) {
                 array_push($this->pathStack, $key);
 
-                if (array_key_exists($key, $data)) {
+                if (isset($data[$key])) {
                     $result->{$key} = $this->traverseProperty($data[$key], $subType, $definitions, $visitor, $context);
                 }
 
