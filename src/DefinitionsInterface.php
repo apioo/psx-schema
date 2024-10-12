@@ -68,10 +68,9 @@ interface DefinitionsInterface
      * Returns all available types for a specific namespace. The key contains
      * the name of the type
      *
-     * @param string $namespace
-     * @return array<DefinitionTypeAbstract>
+     * @return iterable<DefinitionTypeAbstract>
      */
-    public function getTypes(string $namespace): iterable;
+    public function getTypes(string $namespace = self::SELF_NAMESPACE): iterable;
 
     /**
      * Returns all types registered at this container
@@ -93,6 +92,11 @@ interface DefinitionsInterface
      * @return array<string>
      */
     public function getNamespaces(): iterable;
+
+    /**
+     * Returns whether at least one type is registered for a specific namespace
+     */
+    public function isEmpty(string $namespace = self::SELF_NAMESPACE): bool;
 
     /**
      * Merges the provided type definitions

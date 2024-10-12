@@ -39,9 +39,6 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         $this->container = [];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function addType(string $name, DefinitionTypeAbstract $type): void
     {
         [$ns, $alias] = TypeUtil::split($name);
@@ -57,9 +54,6 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         $this->container[$ns][$alias] = $type;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function hasType(string $name): bool
     {
         [$ns, $alias] = TypeUtil::split($name);
@@ -67,9 +61,6 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         return isset($this->container[$ns][$alias]);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getType(string $name): DefinitionTypeAbstract
     {
         [$ns, $alias] = TypeUtil::split($name);
@@ -85,9 +76,6 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         return $this->container[$ns][$alias];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function removeType(string $name): void
     {
         [$ns, $alias] = TypeUtil::split($name);
@@ -97,21 +85,11 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getTypes(string $namespace): iterable
+    public function getTypes(string $namespace = self::SELF_NAMESPACE): iterable
     {
-        if (isset($this->container[$namespace])) {
-            return $this->container[$namespace];
-        } else {
-            return [];
-        }
+        return $this->container[$namespace] ?? [];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getAllTypes(): iterable
     {
         $result = [];
@@ -124,17 +102,16 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         return $result;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getNamespaces(): iterable
     {
         return array_keys($this->container);
     }
 
-    /**
-     * @inheritDoc
-     */
+    public function isEmpty(string $namespace = self::SELF_NAMESPACE): bool
+    {
+        return count($this->container[$namespace] ?? []) === 0;
+    }
+
     public function merge(DefinitionsInterface $definitions): void
     {
         $namespaces = $definitions->getNamespaces();
@@ -151,17 +128,11 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function addSchema(string $name, SchemaInterface $schema): void
     {
         $this->merge($schema->getDefinitions());
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): iterable
     {
         return $this->getAllTypes();
