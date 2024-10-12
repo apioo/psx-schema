@@ -23,6 +23,7 @@ namespace PSX\Schema\Generator;
 use PSX\Json\Parser;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\GeneratorInterface;
 use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\AnyPropertyType;
@@ -54,34 +55,50 @@ class JsonSchema implements GeneratorInterface
 
     public function generate(SchemaInterface $schema): Code\Chunks|string
     {
-        $data = $this->toArray(
-            $schema->getDefinitions(),
-            $schema->getRoot()
-        );
+        try {
+            $data = $this->toArray($schema->getDefinitions(), $schema->getRoot());
 
-        return Parser::encode($data);
+            return Parser::encode($data);
+        } catch (TypeNotFoundException|\JsonException $e) {
+            throw new GeneratorException($e->getMessage(), previous: $e);
+        }
     }
 
+    /**
+     * @throws GeneratorException
+     * @throws TypeNotFoundException
+     */
     public function toArray(DefinitionsInterface $definitions, ?string $root): array
     {
-        if ($root !== null) {
+        $result = [];
+
+        if ($root !== null && $definitions->hasType($root)) {
             $object = $this->generateType($definitions->getType($root), $definitions);
+            $definitions->removeType($root);
         } else {
             $object = [];
         }
 
-        $result = [
-            'definitions' => $this->generateDefinitions($definitions),
-        ];
+        if (!$definitions->isEmpty()) {
+            $result['definitions'] = $this->generateDefinitions($definitions);
+        }
 
         return array_merge($result, $object);
     }
 
+    /**
+     * @throws GeneratorException
+     * @throws TypeNotFoundException
+     */
     public function toProperty(PropertyTypeAbstract $type, DefinitionsInterface $definitions): mixed
     {
         return $this->generateType($type, $definitions);
     }
 
+    /**
+     * @throws GeneratorException
+     * @throws TypeNotFoundException
+     */
     protected function generateDefinitions(DefinitionsInterface $definitions): array
     {
         $result = [];
@@ -103,6 +120,10 @@ class JsonSchema implements GeneratorInterface
         return $result;
     }
 
+    /**
+     * @throws GeneratorException
+     * @throws TypeNotFoundException
+     */
     protected function generateType(TypeInterface $type, DefinitionsInterface $definitions, ?array $template = null)
     {
         TypeUtil::normalize($type);

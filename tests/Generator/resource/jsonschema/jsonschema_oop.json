@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
     "Human": {
       "type": "object",
@@ -34,14 +35,6 @@
           "type": "object"
         }
       ]
-    },
-    "RootSchema": {
-      "type": "object",
-      "properties": {
-        "students": {
-          "$ref": "#/definitions/StudentMap"
-        }
-      }
     },
     "Student": {
       "allOf": [

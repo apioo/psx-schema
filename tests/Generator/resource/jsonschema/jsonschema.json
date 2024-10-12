@@ -1,4 +1,5 @@
 {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
         "Author": {
             "description": "An simple author element with some description",
@@ -46,89 +47,6 @@
             "type": "object",
             "additionalProperties": {
                 "type": "string"
-            }
-        },
-        "News": {
-            "description": "An general news entry",
-            "type": "object",
-            "properties": {
-                "config": {
-                    "$ref": "#/definitions/Meta"
-                },
-                "inlineConfig": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "mapTags": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "mapReceiver": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/Author"
-                    }
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "receiver": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Author"
-                    }
-                },
-                "read": {
-                    "type": "boolean"
-                },
-                "author": {
-                    "$ref": "#/definitions/Author"
-                },
-                "meta": {
-                    "$ref": "#/definitions/Meta"
-                },
-                "sendDate": {
-                    "type": "string",
-                    "format": "date"
-                },
-                "readDate": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "rating": {
-                    "type": "integer"
-                },
-                "content": {
-                    "description": "Contains the main content of the news entry",
-                    "type": "string"
-                },
-                "question": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "coffeeTime": {
-                    "type": "string",
-                    "format": "time"
-                },
-                "g-recaptcha-response": {
-                    "type": "string"
-                },
-                "media.fields": {
-                    "type": "string"
-                },
-                "payload": {}
             }
         }
     },

@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
     "AnyPropertyType": {
       "allOf": [
@@ -314,30 +315,6 @@
           }
         }
       ]
-    },
-    "Specification": {
-      "description": "",
-      "type": "object",
-      "properties": {
-        "import": {
-          "description": "",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "definitions": {
-          "description": "",
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/DefinitionType"
-          }
-        },
-        "root": {
-          "description": "",
-          "type": "string"
-        }
-      }
     },
     "StringPropertyType": {
       "allOf": [

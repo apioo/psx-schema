@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
     "Human": {
       "type": "object",
@@ -81,17 +82,6 @@
           "type": "object"
         }
       ]
-    },
-    "Import": {
-      "type": "object",
-      "properties": {
-        "students": {
-          "$ref": "#/definitions/StudentMap"
-        },
-        "student": {
-          "$ref": "#/definitions/Student"
-        }
-      }
     },
     "MyMap": {
       "allOf": [
