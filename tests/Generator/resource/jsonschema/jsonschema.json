@@ -1,5 +1,4 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
     "definitions": {
         "Author": {
             "description": "An simple author element with some description",
