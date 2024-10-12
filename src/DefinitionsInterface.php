@@ -22,7 +22,6 @@ namespace PSX\Schema;
 
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\DefinitionTypeAbstract;
-use PSX\Schema\Type\DefinitionType;
 
 /**
  * DefinitionsInterface
@@ -40,17 +39,9 @@ interface DefinitionsInterface
      * it is used as namespace i.e. acme:my_type adds the type "my_type" to
      * the namespace "acme". If not namespace is used the type is added to
      * the "self" namespace
-     * 
-     * @param string $name
-     * @param DefinitionTypeAbstract $type
-     * @return void
      */
     public function addType(string $name, DefinitionTypeAbstract $type): void;
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function hasType(string $name): bool;
 
     /**
@@ -59,7 +50,6 @@ interface DefinitionsInterface
      * "my_type" from the namespace "acme". If no colon is provided the self
      * namespace is used
      *
-     * @param string $name
      * @throws TypeNotFoundException
      */
     public function getType(string $name): DefinitionTypeAbstract;
@@ -81,8 +71,6 @@ interface DefinitionsInterface
 
     /**
      * Removes a type from the definition
-     * 
-     * @param string $name
      */
     public function removeType(string $name): void;
 
@@ -100,8 +88,6 @@ interface DefinitionsInterface
 
     /**
      * Merges the provided type definitions
-     *
-     * @param DefinitionsInterface $definitions
      */
     public function merge(DefinitionsInterface $definitions): void;
 
@@ -109,9 +95,6 @@ interface DefinitionsInterface
      * Adds a schema to the definition. It merges all definitions into the
      * current definition and also adds the root type in case it is not already
      * available
-     *
-     * @param string $name
-     * @param SchemaInterface $schema
      */
     public function addSchema(string $name, SchemaInterface $schema): void;
 }
