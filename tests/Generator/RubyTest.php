@@ -36,59 +36,49 @@ class RubyTest extends GeneratorTestCase
     {
         $generator = new Ruby();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/ruby/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/ruby/default/news.rb');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Ruby();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/ruby/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_complex.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/ruby/complex/specification.rb');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Ruby();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/ruby/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_oop.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/ruby/oop/root_schema.rb');
     }
 
     public function testGenerateImport()
     {
         $generator = new Ruby();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/ruby/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_import.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/ruby/import/import.rb');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Ruby(Config::of('FooBar', ['my_import' => 'My::Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/ruby/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/ruby/ruby_import_ns.rb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/ruby/namespace/import.rb');
     }
 }

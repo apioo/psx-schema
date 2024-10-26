@@ -36,59 +36,49 @@ class VisualBasicTest extends GeneratorTestCase
     {
         $generator = new VisualBasic();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/visualbasic/visualbasic.vb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/default/News.vb');
     }
 
     public function testGenerateComplex()
     {
         $generator = new VisualBasic();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/visualbasic/visualbasic_complex.vb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/complex/Specification.vb');
     }
 
     public function testGenerateOOP()
     {
         $generator = new VisualBasic();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/visualbasic/visualbasic_oop.vb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/oop/RootSchema.vb');
     }
 
     public function testGenerateImport()
     {
         $generator = new VisualBasic();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/visualbasic/visualbasic_import.vb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/import/Import.vb');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new VisualBasic(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/visualbasic/visualbasic_import_ns.vb');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/namespace/Import.vb');
     }
 }

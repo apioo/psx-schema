@@ -36,59 +36,49 @@ class PythonTest extends GeneratorTestCase
     {
         $generator = new Python();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/python/python.py');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/python/default/news.py');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Python();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/python/python_complex.py');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/python/complex/specification.py');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Python();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/python/python_oop.py');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/python/oop/root_schema.py');
     }
 
     public function testGenerateImport()
     {
         $generator = new Python();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/python/python_import.py');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/python/import/import.py');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Python(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/python/python_import_ns.py');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/python/namespace/import.py');
     }
 }

@@ -36,59 +36,49 @@ class CSharpTest extends GeneratorTestCase
     {
         $generator = new CSharp();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/csharp/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp.cs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/csharp/default/News.cs');
     }
 
     public function testGenerateComplex()
     {
         $generator = new CSharp();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/csharp/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_complex.cs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/csharp/complex/Specification.cs');
     }
 
     public function testGenerateOOP()
     {
         $generator = new CSharp();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/csharp/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_oop.cs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/csharp/oop/RootSchema.cs');
     }
 
     public function testGenerateImport()
     {
         $generator = new CSharp();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/csharp/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_import.cs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/csharp/import/Import.cs');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new CSharp(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/csharp/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/csharp/csharp_import_ns.cs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/csharp/namespace/Import.cs');
     }
 }

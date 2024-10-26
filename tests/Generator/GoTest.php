@@ -36,59 +36,49 @@ class GoTest extends GeneratorTestCase
     {
         $generator = new Go();
 
-        $actual = (string) $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/go/go.go');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/go/default/news.go');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Go();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/go/go_complex.go');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/go/complex/specification.go');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Go();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/go/go_oop.go');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/go/oop/root_schema.go');
     }
 
     public function testGenerateImport()
     {
         $generator = new Go();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/go/go_import.go');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/go/import/import.go');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Go(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/go/go_import_ns.go');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/go/namespace/import.go');
     }
 }

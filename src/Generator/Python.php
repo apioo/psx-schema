@@ -90,7 +90,6 @@ class Python extends CodeGeneratorAbstract
 
         $code.= '    pass' . "\n";
         $code.= "\n";
-        $code.= "\n";
 
         return $code;
     }
@@ -101,7 +100,6 @@ class Python extends CodeGeneratorAbstract
         $code.= '    @classmethod' . "\n";
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
         $code.= '        return core_schema.dict_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
-        $code.= "\n";
         $code.= "\n";
 
         return $code;
@@ -114,7 +112,6 @@ class Python extends CodeGeneratorAbstract
         $code.= '    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:' . "\n";
         $code.= '        return core_schema.list_schema(handler.generate_schema(str), handler.generate_schema(' . $type . '))' . "\n";
         $code.= "\n";
-        $code.= "\n";
 
         return $code;
     }
@@ -123,23 +120,17 @@ class Python extends CodeGeneratorAbstract
     {
         $code = '';
 
-        if (!empty($this->namespace)) {
-            // TODO can we namespace?
-        }
-
         $imports = $this->getImports($origin);
         if (!empty($imports)) {
-            $code.= "\n";
             $code.= implode("\n", $imports);
             $code.= "\n";
+            $code.= "\n";
         }
-
-        $code.= "\n";
-        $code.= "\n";
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '# ' . $comment . "\n";
+            $code.= "\n";
+            $code.= '# ' . $comment;
         }
 
         return $code;

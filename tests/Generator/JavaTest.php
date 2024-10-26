@@ -36,59 +36,49 @@ class JavaTest extends GeneratorTestCase
     {
         $generator = new Java();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/java/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/java/java.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/java/default/News.java');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Java();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/java/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/java/java_complex.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/java/complex/Specification.java');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Java();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/java/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/java/java_oop.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/java/oop/RootSchema.java');
     }
 
     public function testGenerateImport()
     {
         $generator = new Java();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/java/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/java/java_import.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/java/import/Import.java');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Java(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/java/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/java/java_import_ns.java');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/java/namespace/Import.java');
     }
 }

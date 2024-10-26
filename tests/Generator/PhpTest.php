@@ -36,59 +36,49 @@ class PhpTest extends GeneratorTestCase
     {
         $generator = new Php();
 
-        $actual = (string) $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/php/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/php/php.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/php/default/News.php');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Php();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/php/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/php/php_complex.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/php/complex/Specification.php');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Php();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/php/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/php/php_oop.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/php/oop/RootSchema.php');
     }
 
     public function testGenerateImport()
     {
         $generator = new Php();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/php/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/php/php_import.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/php/import/Import.php');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Php(Config::of('Foo\\Bar', ['my_import' => 'My\\Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/php/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/php/php_import_ns.php');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/php/namespace/Import.php');
     }
 }

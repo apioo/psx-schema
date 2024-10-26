@@ -255,11 +255,11 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     private function wrap(string $code, DefinitionTypeAbstract $type, Code\Name $className): string
     {
-        return implode("\n", array_filter(array_map('trim', [
+        return implode("\n", array_filter([
             $this->writeHeader($type, $className),
             $code,
             $this->writeFooter($type, $className)
-        ]))) . "\n";
+        ])) . "\n";
     }
 
     abstract protected function newTypeGenerator(array $mapping): TypeGeneratorInterface;

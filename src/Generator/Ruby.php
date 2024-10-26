@@ -88,12 +88,12 @@ class Ruby extends CodeGeneratorAbstract
 
         if (!empty($this->namespace)) {
             $code.= 'module ' . $this->namespace . "\n";
-            $code.= "\n";
         }
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '# ' . $comment . "\n";
+            $code.= "\n";
+            $code.= '# ' . $comment;
         }
 
         return $code;

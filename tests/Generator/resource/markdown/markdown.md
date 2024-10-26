@@ -5,7 +5,8 @@ Location of the person
 Field | Type | Description
 ----- | ---- | -----------
 lat | Number | 
-long | Number |
+long | Number | 
+
 
 # Author
 
@@ -17,13 +18,15 @@ title | String |
 email | String | We will send no spam to this address
 categories | Array (String) | 
 locations | Array (Location) | Array of locations
-origin | Location |
+origin | Location | 
+
 
 # Meta
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
-* | String |  |
+* | String |  | 
+
 
 # News
 
@@ -50,4 +53,5 @@ version | String |
 coffeeTime | String (time) | 
 captcha | String | 
 mediaFields | String | 
-payload | Any |
+payload | Any | 
+

@@ -139,13 +139,12 @@ class Java extends CodeGeneratorAbstract
             $code.= "\n";
         }
 
-        $code.= "\n";
-
         $comment = $origin->getDescription();
         if (!empty($comment)) {
+            $code.= "\n";
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
-            $code.= ' */' . "\n";
+            $code.= ' */';
         }
 
         return $code;

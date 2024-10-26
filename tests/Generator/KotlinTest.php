@@ -36,59 +36,49 @@ class KotlinTest extends GeneratorTestCase
     {
         $generator = new Kotlin();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin.kt');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/default/News.kt');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Kotlin();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_complex.kt');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/complex/Specification.kt');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Kotlin();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_oop.kt');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/oop/RootSchema.kt');
     }
 
     public function testGenerateImport()
     {
         $generator = new Kotlin();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_import.kt');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/import/Import.kt');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Kotlin(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/kotlin/kotlin_import_ns.kt');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/namespace/Import.kt');
     }
 }

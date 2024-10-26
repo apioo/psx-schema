@@ -20,7 +20,12 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Code\Chunks;
+use PSX\Schema\Generator\FileAwareInterface;
+use PSX\Schema\GeneratorInterface;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\Tests\SchemaTestCase;
+use SebastianBergmann\Diff\Chunk;
 
 /**
  * GeneratorTestCase
@@ -31,18 +36,32 @@ use PSX\Schema\Tests\SchemaTestCase;
  */
 abstract class GeneratorTestCase extends SchemaTestCase
 {
-    protected function getComplexSchema()
+    protected function getComplexSchema(): SchemaInterface
     {
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_typeschema.json');
     }
 
-    protected function getOOPSchema()
+    protected function getOOPSchema(): SchemaInterface
     {
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_oop.json');
     }
 
-    protected function getImportSchema()
+    protected function getImportSchema(): SchemaInterface
     {
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_import.json');
+    }
+
+    protected function write(GeneratorInterface $generator, string|Chunks $result, string $baseDir): void
+    {
+        if ($generator instanceof FileAwareInterface && $result instanceof Chunks) {
+            $chunks = new Chunks();
+            foreach ($result->getChunks() as $identifier => $code) {
+                $chunks->append($generator->getFileName($identifier), $generator->getFileContent($code));
+            }
+
+            iterator_to_array($chunks->writeToFolder($baseDir));
+        } else {
+            file_put_contents($baseDir . '/output.txt', (string) $result);
+        }
     }
 }

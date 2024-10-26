@@ -110,7 +110,7 @@ class Swift extends CodeGeneratorAbstract
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '// ' . $comment . "\n";
+            $code.= '// ' . $comment;
         }
 
         return $code;

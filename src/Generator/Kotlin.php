@@ -64,7 +64,7 @@ class Kotlin extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . '? = null' . "\n";
+            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '") var ' . $property->getName()->getProperty() . ': ' . $property->getType() . '? = null' . "\n";
         }
 
         $code.= '}' . "\n";
@@ -94,22 +94,14 @@ class Kotlin extends CodeGeneratorAbstract
 
         if (!empty($this->namespace)) {
             $code.= 'package ' . $this->namespace . ';' . "\n";
-        }
-
-        $imports = $this->getImports($origin);
-        if (!empty($imports)) {
-            $code.= "\n";
-            $code.= implode("\n", $imports);
             $code.= "\n";
         }
-
-        $code.= "\n";
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
-            $code.= ' */' . "\n";
+            $code.= ' */';
         }
 
         return $code;

@@ -37,59 +37,49 @@ class SwiftTest extends GeneratorTestCase
     {
         $generator = new Swift();
 
-        $actual = (string) $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/swift/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/swift/default/News.swift');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Swift();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/swift/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_complex.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/swift/complex/Specification.swift');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Swift();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/swift/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_oop.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/swift/oop/RootSchema.swift');
     }
 
     public function testGenerateImport()
     {
         $generator = new Swift();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/swift/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_import.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/swift/import/Import.swift');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Swift(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/swift/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/swift/swift_import_ns.swift');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/swift/namespace/Import.swift');
     }
 }

@@ -36,59 +36,49 @@ class TypeScriptTest extends GeneratorTestCase
     {
         $generator = new TypeScript();
 
-        $actual = (string) $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/typescript/default/News.ts');
     }
 
     public function testGenerateComplex()
     {
         $generator = new TypeScript();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_complex.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/typescript/complex/Specification.ts');
     }
 
     public function testGenerateOOP()
     {
         $generator = new TypeScript();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_oop.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/typescript/oop/RootSchema.ts');
     }
 
     public function testGenerateImport()
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_import.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/typescript/import/Import.ts');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/typescript/typescript_import_ns.ts');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/typescript/namespace/Import.ts');
     }
 }

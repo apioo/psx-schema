@@ -3,6 +3,7 @@ type Location {
     long: Float
 }
 
+
 type Author {
     title: String
     email: String
@@ -10,6 +11,7 @@ type Author {
     locations: [Location]
     origin: Location
 }
+
 
 type News {
     config: [String]
@@ -33,3 +35,4 @@ type News {
     mediaFields: String
     payload: Any
 }
+

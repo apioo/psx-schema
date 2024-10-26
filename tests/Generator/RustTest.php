@@ -36,59 +36,49 @@ class RustTest extends GeneratorTestCase
     {
         $generator = new Rust();
 
-        $actual = $generator->generate($this->getSchema());
+        $chunks = $generator->generate($this->getSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/rust/default');
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust/rust.rs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/rust/default/news.rs');
     }
 
     public function testGenerateComplex()
     {
         $generator = new Rust();
 
-        $actual = (string) $generator->generate($this->getComplexSchema());
+        $chunks = $generator->generate($this->getComplexSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/rust/complex');
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_complex.rs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/rust/complex/specification.rs');
     }
 
     public function testGenerateOOP()
     {
         $generator = new Rust();
 
-        $actual = (string) $generator->generate($this->getOOPSchema());
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/rust/oop');
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_oop.rs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/rust/oop/root_schema.rs');
     }
 
     public function testGenerateImport()
     {
         $generator = new Rust();
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/rust/import');
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_import.rs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/rust/import/import.rs');
     }
 
     public function testGenerateImportNamespace()
     {
         $generator = new Rust(Config::of('FooBar', ['my_import' => 'My::Import']));
 
-        $actual = (string) $generator->generate($this->getImportSchema());
+        $chunks = $generator->generate($this->getImportSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/rust/namespace');
 
-        $expect = file_get_contents(__DIR__ . '/resource/rust/rust_import_ns.rs');
-        $expect = str_replace(["\r\n", "\n", "\r"], "\n", $expect);
-
-        $this->assertEquals($expect, $actual, $actual);
+        $this->assertFileExists(__DIR__ . '/resource/rust/namespace/import.rs');
     }
 }

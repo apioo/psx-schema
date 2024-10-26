@@ -97,17 +97,16 @@ class Go extends CodeGeneratorAbstract
 
     protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
     {
-        $code = "\n";
+        $code = '';
 
         if (!empty($this->namespace)) {
             $code.= 'package ' . $this->namespace . "\n";
         }
 
-        $code.= "\n";
-
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '// ' . $comment . "\n";
+            $code.= "\n";
+            $code.= '// ' . $comment;
         }
 
         return $code;

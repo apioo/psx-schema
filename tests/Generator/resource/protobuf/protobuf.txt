@@ -3,6 +3,7 @@ message Location {
     optional float long = 2 [json_name="long"];
 }
 
+
 message Author {
     optional string title = 1 [json_name="title"];
     optional string email = 2 [json_name="email"];
@@ -10,6 +11,7 @@ message Author {
     optional repeated Location locations = 4 [json_name="locations"];
     optional Location origin = 5 [json_name="origin"];
 }
+
 
 message News {
     optional map<string, string> config = 1 [json_name="config"];
@@ -33,3 +35,4 @@ message News {
     optional string mediaFields = 19 [json_name="media.fields"];
     optional Any payload = 20 [json_name="payload"];
 }
+

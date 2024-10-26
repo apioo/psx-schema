@@ -120,22 +120,21 @@ class CSharp extends CodeGeneratorAbstract
 
         $imports = $this->getImports($origin);
         if (!empty($imports)) {
-            $code.= "\n";
             $code.= implode("\n", $imports);
             $code.= "\n";
         }
 
         if (!empty($this->namespace)) {
+            $code.= "\n";
             $code.= 'namespace ' . $this->namespace . ';' . "\n";
         }
 
-        $code.= "\n";
-
         $comment = $origin->getDescription();
         if (!empty($comment)) {
+            $code.= "\n";
             $code.= '/// <summary>' . "\n";
             $code.= '/// ' . $comment . "\n";
-            $code.= '/// </summary>' . "\n";
+            $code.= '/// </summary>';
         }
 
         return $code;

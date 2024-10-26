@@ -3,11 +3,13 @@ message Human {
     optional Human parent = 2 [json_name="parent"];
 }
 
+
 message Student {
     optional string firstName = 1 [json_name="firstName"];
     optional Human parent = 2 [json_name="parent"];
     optional string matricleNumber = 3 [json_name="matricleNumber"];
 }
+
 
 message StudentMap {
     optional int64 totalResults = 1 [json_name="totalResults"];
@@ -15,11 +17,13 @@ message StudentMap {
     optional repeated Student entries = 3 [json_name="entries"];
 }
 
+
 message HumanMap {
     optional int64 totalResults = 1 [json_name="totalResults"];
     optional Human parent = 2 [json_name="parent"];
     optional repeated Human entries = 3 [json_name="entries"];
 }
+
 
 message Map {
     optional int64 totalResults = 1 [json_name="totalResults"];
@@ -27,6 +31,8 @@ message Map {
     optional repeated T entries = 3 [json_name="entries"];
 }
 
+
 message RootSchema {
     optional StudentMap students = 1 [json_name="students"];
 }
+

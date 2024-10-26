@@ -110,18 +110,19 @@ class TypeScript extends CodeGeneratorAbstract
 
         $imports = $this->getImports($origin, $className);
         if (!empty($imports)) {
-            $code.= "\n";
             $code.= implode("\n", $imports);
             $code.= "\n";
         }
 
-        $code.= "\n";
-
         $comment = $origin->getDescription();
         if (!empty($comment)) {
+            if (!empty($imports)) {
+                $code.= "\n";
+            }
+
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
-            $code.= ' */' . "\n";
+            $code.= ' */';
         }
 
         return $code;

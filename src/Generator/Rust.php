@@ -92,20 +92,19 @@ class Rust extends CodeGeneratorAbstract
 
         if (!empty($this->namespace)) {
             $code.= 'mod ' . $this->namespace . ';' . "\n";
+            $code.= "\n";
         }
 
         $imports = $this->getImports($origin);
         if (!empty($imports)) {
-            $code.= "\n";
             $code.= implode("\n", $imports);
             $code.= "\n";
         }
 
-        $code.= "\n";
-
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '// ' . $comment . "\n";
+            $code.= "\n";
+            $code.= '// ' . $comment;
         }
 
         return $code;
