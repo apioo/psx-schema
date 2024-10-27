@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace TypeAPI.Model;
+
 /// <summary>
 /// TypeSchema specification
 /// </summary>

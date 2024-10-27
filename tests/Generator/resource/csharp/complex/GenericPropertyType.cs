@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace TypeAPI.Model;
+
 /// <summary>
 /// Represents a generic value which can be replaced with a dynamic type
 /// </summary>

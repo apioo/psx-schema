@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+namespace TypeAPI\Model;
+
 use PSX\Schema\Attribute\DerivedType;
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Discriminator;

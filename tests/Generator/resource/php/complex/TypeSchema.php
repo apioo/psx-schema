@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+namespace TypeAPI\Model;
+
 use PSX\Schema\Attribute\Description;
 
 #[Description('TypeSchema specification')]
