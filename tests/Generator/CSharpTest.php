@@ -44,7 +44,7 @@ class CSharpTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new CSharp();
+        $generator = new CSharp(Config::of('TypeAPI.Model'));
 
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/csharp/complex');

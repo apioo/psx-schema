@@ -44,7 +44,7 @@ class JavaTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new Java();
+        $generator = new Java(Config::of('org.typeapi.model'));
 
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/java/complex');

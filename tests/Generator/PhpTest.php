@@ -44,7 +44,7 @@ class PhpTest extends GeneratorTestCase
 
     public function testGenerateComplex()
     {
-        $generator = new Php();
+        $generator = new Php(Config::of('TypeAPI\\Model'));
 
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/php/complex');
