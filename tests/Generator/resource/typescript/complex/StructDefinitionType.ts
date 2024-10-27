@@ -1,16 +1,15 @@
 import {DefinitionType} from "./DefinitionType";
+import {ReferencePropertyType} from "./ReferencePropertyType";
 import {PropertyType} from "./PropertyType";
 
 /**
- * Represents a struct which contains a fixed set of defined properties
+ * A struct represents a class/structure with a fix set of defined properties.
  */
 export interface StructDefinitionType extends DefinitionType {
-    type?: string
-    parent?: string
+    parent?: ReferencePropertyType
     base?: boolean
     properties?: Map<string, PropertyType>
     discriminator?: string
     mapping?: Map<string, string>
-    template?: Map<string, string>
 }
 

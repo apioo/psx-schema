@@ -6,40 +6,22 @@
             "parent": {
                 "type": "reference",
                 "target": "PropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "ArrayDefinitionType": {
-            "description": "Represents an array which contains a dynamic list of values",
+            "description": "Represents an array which contains a dynamic list of values of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
                 "target": "CollectionDefinitionType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "ArrayPropertyType": {
-            "description": "Represents an array which contains a dynamic list of values",
+            "description": "Represents an array which contains a dynamic list of values of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
                 "target": "CollectionPropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "BooleanPropertyType": {
@@ -48,16 +30,10 @@
             "parent": {
                 "type": "reference",
                 "target": "ScalarPropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "CollectionDefinitionType": {
-            "description": "Base type for the map and array collection type",
+            "description": "Base collection type",
             "type": "struct",
             "parent": {
                 "type": "reference",
@@ -65,10 +41,6 @@
             },
             "base": true,
             "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "schema": {
                     "description": "",
                     "type": "reference",
@@ -90,20 +62,11 @@
             },
             "base": true,
             "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "schema": {
                     "description": "",
                     "type": "reference",
                     "target": "PropertyType"
                 }
-            },
-            "discriminator": "type",
-            "mapping": {
-                "MapPropertyType": "map",
-                "ArrayPropertyType": "array"
             }
         },
         "DefinitionType": {
@@ -112,16 +75,13 @@
             "base": true,
             "properties": {
                 "description": {
-                    "description": "",
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 },
                 "deprecated": {
-                    "description": "",
                     "type": "boolean"
-                },
-                "type": {
-                    "description": "",
-                    "type": "string"
                 }
             },
             "discriminator": "type",
@@ -139,12 +99,8 @@
                 "target": "PropertyType"
             },
             "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "name": {
-                    "description": "The generic name, it is recommended to use typical generics names like T or TValue",
+                    "description": "The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference.",
                     "type": "string"
                 }
             }
@@ -155,40 +111,22 @@
             "parent": {
                 "type": "reference",
                 "target": "ScalarPropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "MapDefinitionType": {
-            "description": "Represents a map which contains a dynamic set of key value entries",
+            "description": "Represents a map which contains a dynamic set of key value entries of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
                 "target": "CollectionDefinitionType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "MapPropertyType": {
-            "description": "Represents a map which contains a dynamic set of key value entries",
+            "description": "Represents a map which contains a dynamic set of key value entries of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
                 "target": "CollectionPropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "NumberPropertyType": {
@@ -197,12 +135,6 @@
             "parent": {
                 "type": "reference",
                 "target": "ScalarPropertyType"
-            },
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "PropertyType": {
@@ -211,27 +143,23 @@
             "base": true,
             "properties": {
                 "description": {
-                    "description": "",
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 },
                 "deprecated": {
-                    "description": "",
                     "type": "boolean"
                 },
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "nullable": {
-                    "description": "",
                     "type": "boolean"
                 }
             },
             "discriminator": "type",
             "mapping": {
+                "StringPropertyType": "string",
                 "IntegerPropertyType": "integer",
                 "NumberPropertyType": "number",
-                "StringPropertyType": "string",
                 "BooleanPropertyType": "boolean",
                 "MapPropertyType": "map",
                 "ArrayPropertyType": "array",
@@ -248,13 +176,16 @@
                 "target": "PropertyType"
             },
             "properties": {
-                "type": {
-                    "description": "",
+                "target": {
+                    "description": "The target type, this must be a key which is available under the definitions keyword.",
                     "type": "string"
                 },
-                "target": {
-                    "description": "Name of the target reference, must a key from the definitions map",
-                    "type": "string"
+                "template": {
+                    "description": "A map where the key is the name of the generic and the value must point to a key under the definitions keyword. This can be used in case the target points to a type which contains generics, then it is possible to replace those generics with a concrete type.",
+                    "type": "map",
+                    "schema": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -266,43 +197,12 @@
                 "target": "PropertyType"
             },
             "base": true,
-            "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                }
-            },
             "discriminator": "type",
             "mapping": {
+                "StringPropertyType": "string",
                 "IntegerPropertyType": "integer",
                 "NumberPropertyType": "number",
-                "StringPropertyType": "string",
                 "BooleanPropertyType": "boolean"
-            }
-        },
-        "Specification": {
-            "description": "",
-            "type": "struct",
-            "properties": {
-                "import": {
-                    "description": "",
-                    "type": "map",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "definitions": {
-                    "description": "",
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "DefinitionType"
-                    }
-                },
-                "root": {
-                    "description": "",
-                    "type": "string"
-                }
             }
         },
         "StringPropertyType": {
@@ -313,38 +213,31 @@
                 "target": "ScalarPropertyType"
             },
             "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "format": {
-                    "description": "",
+                    "description": "Optional describes the format of the string. Supported are the following types: date, date-time and time. A code generator may use a fitting data type to represent such a format, if not supported it should fall back to a string.",
                     "type": "string"
                 }
             }
         },
         "StructDefinitionType": {
-            "description": "Represents a struct which contains a fixed set of defined properties",
+            "description": "A struct represents a class/structure with a fix set of defined properties.",
             "type": "struct",
             "parent": {
                 "type": "reference",
                 "target": "DefinitionType"
             },
             "properties": {
-                "type": {
-                    "description": "",
-                    "type": "string"
-                },
                 "parent": {
-                    "description": "The parent type of this struct. The struct inherits all properties from the parent type",
-                    "type": "string"
+                    "description": "Defines a parent type for this structure. Some programming languages like Go do not support the concept of an extends, in this case the code generator simply copies all properties into this structure.",
+                    "type": "reference",
+                    "target": "ReferencePropertyType"
                 },
                 "base": {
-                    "description": "Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent",
+                    "description": "Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure.",
                     "type": "boolean"
                 },
                 "properties": {
-                    "description": "",
+                    "description": "Contains a map of available properties for this struct.",
                     "type": "map",
                     "schema": {
                         "type": "reference",
@@ -352,25 +245,42 @@
                     }
                 },
                 "discriminator": {
-                    "description": "In case this is a base type it is possible to specify a discriminator property",
+                    "description": "Optional the property name of a discriminator property. This should be only used in case this is also a base structure.",
                     "type": "string"
                 },
                 "mapping": {
-                    "description": "In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type",
-                    "type": "map",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "template": {
-                    "description": "In case the parent type contains generics it is possible to set a concrete type for each generic type",
+                    "description": "In case a discriminator is configured it is required to configure a mapping. The mapping is a map where the key is the type name and the value the actual discriminator type value.",
                     "type": "map",
                     "schema": {
                         "type": "string"
                     }
                 }
             }
+        },
+        "TypeSchema": {
+            "description": "TypeSchema specification",
+            "type": "struct",
+            "properties": {
+                "import": {
+                    "description": "Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.",
+                    "type": "map",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                "definitions": {
+                    "type": "map",
+                    "schema": {
+                        "type": "reference",
+                        "target": "DefinitionType"
+                    }
+                },
+                "root": {
+                    "description": "Specifies the root type of your specification.",
+                    "type": "string"
+                }
+            }
         }
     },
-    "root": "Specification"
+    "root": "TypeSchema"
 }

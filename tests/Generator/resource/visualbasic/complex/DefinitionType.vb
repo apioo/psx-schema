@@ -5,11 +5,11 @@ Public Class DefinitionType
     <JsonPropertyName("description")>
     Public Property Description As String
 
-    <JsonPropertyName("deprecated")>
-    Public Property Deprecated As Boolean
-
     <JsonPropertyName("type")>
     Public Property Type As String
+
+    <JsonPropertyName("deprecated")>
+    Public Property Deprecated As Boolean
 
 End Class
 

@@ -7,17 +7,20 @@ pub struct ReferencePropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
 
-    #[serde(rename = "deprecated")]
-    deprecated: Option<bool>,
-
     #[serde(rename = "type")]
     _type: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
 
     #[serde(rename = "nullable")]
     nullable: Option<bool>,
 
     #[serde(rename = "target")]
     target: Option<String>,
+
+    #[serde(rename = "template")]
+    template: Option<HashMap<String, String>>,
 
 }
 

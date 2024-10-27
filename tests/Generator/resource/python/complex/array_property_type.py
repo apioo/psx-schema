@@ -4,9 +4,8 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDi
 from .collection_property_type import CollectionPropertyType
 
 
-# Represents an array which contains a dynamic list of values
+# Represents an array which contains a dynamic list of values of the same type
 class ArrayPropertyType(CollectionPropertyType):
-    type: Optional[str] = Field(default=None, alias="type")
     pass
 
 

@@ -6,18 +6,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * Represents a reference to a definition type
  */
 public class ReferencePropertyType extends PropertyType {
-    private String type;
     private String target;
-
-    @JsonSetter("type")
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @JsonGetter("type")
-    public String getType() {
-        return this.type;
-    }
+    private java.util.Map<String, String> template;
 
     @JsonSetter("target")
     public void setTarget(String target) {
@@ -27,6 +17,16 @@ public class ReferencePropertyType extends PropertyType {
     @JsonGetter("target")
     public String getTarget() {
         return this.target;
+    }
+
+    @JsonSetter("template")
+    public void setTemplate(java.util.Map<String, String> template) {
+        this.template = template;
+    }
+
+    @JsonGetter("template")
+    public java.util.Map<String, String> getTemplate() {
+        return this.template;
     }
 }
 

@@ -1,12 +1,12 @@
 
 # Base definition type
 class DefinitionType
-  attr_accessor :description, :deprecated, :type
+  attr_accessor :description, :type, :deprecated
 
-  def initialize(description, deprecated, type)
+  def initialize(description, type, deprecated)
     @description = description
-    @deprecated = deprecated
     @type = type
+    @deprecated = deprecated
   end
 end
 

@@ -1,6 +1,6 @@
+import {StringPropertyType} from "./StringPropertyType";
 import {IntegerPropertyType} from "./IntegerPropertyType";
 import {NumberPropertyType} from "./NumberPropertyType";
-import {StringPropertyType} from "./StringPropertyType";
 import {BooleanPropertyType} from "./BooleanPropertyType";
 import {MapPropertyType} from "./MapPropertyType";
 import {ArrayPropertyType} from "./ArrayPropertyType";
@@ -13,8 +13,8 @@ import {ReferencePropertyType} from "./ReferencePropertyType";
  */
 export interface PropertyType {
     description?: string
-    deprecated?: boolean
     type?: string
+    deprecated?: boolean
     nullable?: boolean
 }
 

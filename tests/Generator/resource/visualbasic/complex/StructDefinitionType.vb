@@ -1,13 +1,10 @@
 Imports System.Text.Json.Serialization
 
-' Represents a struct which contains a fixed set of defined properties
+' A struct represents a class/structure with a fix set of defined properties.
 Public Class StructDefinitionType
     Inherits DefinitionType
-    <JsonPropertyName("type")>
-    Public Property Type As String
-
     <JsonPropertyName("parent")>
-    Public Property Parent As String
+    Public Property Parent As ReferencePropertyType
 
     <JsonPropertyName("base")>
     Public Property Base As Boolean
@@ -20,9 +17,6 @@ Public Class StructDefinitionType
 
     <JsonPropertyName("mapping")>
     Public Property Mapping As Dictionary(Of String, String)
-
-    <JsonPropertyName("template")>
-    Public Property Template As Dictionary(Of String, String)
 
 End Class
 

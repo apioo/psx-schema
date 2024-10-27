@@ -4,9 +4,8 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDi
 from .collection_definition_type import CollectionDefinitionType
 
 
-# Represents an array which contains a dynamic list of values
+# Represents an array which contains a dynamic list of values of the same type
 class ArrayDefinitionType(CollectionDefinitionType):
-    type: Optional[str] = Field(default=None, alias="type")
     pass
 
 

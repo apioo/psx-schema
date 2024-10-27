@@ -1,15 +1,12 @@
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// Represents a struct which contains a fixed set of defined properties
+/// A struct represents a class/structure with a fix set of defined properties.
 /// </summary>
 public class StructDefinitionType : DefinitionType
 {
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
     [JsonPropertyName("parent")]
-    public string? Parent { get; set; }
+    public ReferencePropertyType? Parent { get; set; }
 
     [JsonPropertyName("base")]
     public bool? Base { get; set; }
@@ -22,9 +19,6 @@ public class StructDefinitionType : DefinitionType
 
     [JsonPropertyName("mapping")]
     public System.Collections.Generic.Dictionary<string, string>? Mapping { get; set; }
-
-    [JsonPropertyName("template")]
-    public System.Collections.Generic.Dictionary<string, string>? Template { get; set; }
 
 }
 

@@ -6,7 +6,6 @@ from .scalar_property_type import ScalarPropertyType
 
 # Represents an integer value
 class IntegerPropertyType(ScalarPropertyType):
-    type: Optional[str] = Field(default=None, alias="type")
     pass
 
 

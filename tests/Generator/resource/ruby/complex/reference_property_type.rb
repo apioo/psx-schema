@@ -2,11 +2,11 @@
 # Represents a reference to a definition type
 class ReferencePropertyType
   extend PropertyType
-  attr_accessor :type, :target
+  attr_accessor :target, :template
 
-  def initialize(type, target)
-    @type = type
+  def initialize(target, template)
     @target = target
+    @template = template
   end
 end
 

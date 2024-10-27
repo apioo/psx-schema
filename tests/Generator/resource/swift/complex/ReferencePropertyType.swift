@@ -1,11 +1,11 @@
 // Represents a reference to a definition type
 class ReferencePropertyType: PropertyType {
-    var _type: String
     var target: String
+    var template: Dictionary<String, String>
 
     enum CodingKeys: String, CodingKey {
-        case _type = "type"
         case target = "target"
+        case template = "template"
     }
 }
 

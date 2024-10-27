@@ -3,34 +3,22 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Represents a struct which contains a fixed set of defined properties
+ * A struct represents a class/structure with a fix set of defined properties.
  */
 public class StructDefinitionType extends DefinitionType {
-    private String type;
-    private String parent;
+    private ReferencePropertyType parent;
     private Boolean base;
     private java.util.Map<String, PropertyType> properties;
     private String discriminator;
     private java.util.Map<String, String> mapping;
-    private java.util.Map<String, String> template;
-
-    @JsonSetter("type")
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @JsonGetter("type")
-    public String getType() {
-        return this.type;
-    }
 
     @JsonSetter("parent")
-    public void setParent(String parent) {
+    public void setParent(ReferencePropertyType parent) {
         this.parent = parent;
     }
 
     @JsonGetter("parent")
-    public String getParent() {
+    public ReferencePropertyType getParent() {
         return this.parent;
     }
 
@@ -72,16 +60,6 @@ public class StructDefinitionType extends DefinitionType {
     @JsonGetter("mapping")
     public java.util.Map<String, String> getMapping() {
         return this.mapping;
-    }
-
-    @JsonSetter("template")
-    public void setTemplate(java.util.Map<String, String> template) {
-        this.template = template;
-    }
-
-    @JsonGetter("template")
-    public java.util.Map<String, String> getTemplate() {
-        return this.template;
     }
 }
 

@@ -7,11 +7,11 @@ pub struct BooleanPropertyType {
     #[serde(rename = "description")]
     description: Option<String>,
 
-    #[serde(rename = "deprecated")]
-    deprecated: Option<bool>,
-
     #[serde(rename = "type")]
     _type: Option<String>,
+
+    #[serde(rename = "deprecated")]
+    deprecated: Option<bool>,
 
     #[serde(rename = "nullable")]
     nullable: Option<bool>,

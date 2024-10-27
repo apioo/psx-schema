@@ -1,9 +1,9 @@
 
-// Base type for the map and array collection type
+// Base collection type
 type CollectionDefinitionType struct {
     Description string `json:"description"`
-    Deprecated bool `json:"deprecated"`
     Type string `json:"type"`
+    Deprecated bool `json:"deprecated"`
     Schema *PropertyType `json:"schema"`
 }
 

@@ -6,8 +6,8 @@ from .property_type import PropertyType
 
 # Represents a reference to a definition type
 class ReferencePropertyType(PropertyType):
-    type: Optional[str] = Field(default=None, alias="type")
     target: Optional[str] = Field(default=None, alias="target")
+    template: Optional[Dict[str, str]] = Field(default=None, alias="template")
     pass
 
 

@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
+    @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
     @JsonSubTypes.Type(value = IntegerPropertyType.class, name = "integer"),
     @JsonSubTypes.Type(value = NumberPropertyType.class, name = "number"),
-    @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
     @JsonSubTypes.Type(value = BooleanPropertyType.class, name = "boolean"),
     @JsonSubTypes.Type(value = MapPropertyType.class, name = "map"),
     @JsonSubTypes.Type(value = ArrayPropertyType.class, name = "array"),
@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 })
 public abstract class PropertyType {
     private String description;
-    private Boolean deprecated;
     private String type;
+    private Boolean deprecated;
     private Boolean nullable;
 
     @JsonSetter("description")
@@ -33,16 +33,6 @@ public abstract class PropertyType {
         return this.description;
     }
 
-    @JsonSetter("deprecated")
-    public void setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-    }
-
-    @JsonGetter("deprecated")
-    public Boolean getDeprecated() {
-        return this.deprecated;
-    }
-
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -51,6 +41,16 @@ public abstract class PropertyType {
     @JsonGetter("type")
     public String getType() {
         return this.type;
+    }
+
+    @JsonSetter("deprecated")
+    public void setDeprecated(Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+    @JsonGetter("deprecated")
+    public Boolean getDeprecated() {
+        return this.deprecated;
     }
 
     @JsonSetter("nullable")

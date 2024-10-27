@@ -5,8 +5,5 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class NumberPropertyType : ScalarPropertyType
 {
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
 }
 

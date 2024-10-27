@@ -4,45 +4,30 @@ declare(strict_types = 1);
 
 use PSX\Schema\Attribute\Description;
 
-#[Description('Represents a struct which contains a fixed set of defined properties')]
+#[Description('A struct represents a class/structure with a fix set of defined properties.')]
 class StructDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('')]
-    protected ?string $type = null;
-    #[Description('The parent type of this struct. The struct inherits all properties from the parent type')]
-    protected ?string $parent = null;
-    #[Description('Indicates that this struct is a base type, this means it is an abstract type which is used by different types as parent')]
+    #[Description('Defines a parent type for this structure. Some programming languages like Go do not support the concept of an extends, in this case the code generator simply copies all properties into this structure.')]
+    protected ?ReferencePropertyType $parent = null;
+    #[Description('Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure.')]
     protected ?bool $base = null;
     /**
      * @var \PSX\Record\Record<PropertyType>|null
      */
-    #[Description('')]
+    #[Description('Contains a map of available properties for this struct.')]
     protected ?\PSX\Record\Record $properties = null;
-    #[Description('In case this is a base type it is possible to specify a discriminator property')]
+    #[Description('Optional the property name of a discriminator property. This should be only used in case this is also a base structure.')]
     protected ?string $discriminator = null;
     /**
      * @var \PSX\Record\Record<string>|null
      */
-    #[Description('In case a discriminator property was set it is possible to specify a mapping. The key is the type name and the value the concrete value which is mapped to the type')]
+    #[Description('In case a discriminator is configured it is required to configure a mapping. The mapping is a map where the key is the type name and the value the actual discriminator type value.')]
     protected ?\PSX\Record\Record $mapping = null;
-    /**
-     * @var \PSX\Record\Record<string>|null
-     */
-    #[Description('In case the parent type contains generics it is possible to set a concrete type for each generic type')]
-    protected ?\PSX\Record\Record $template = null;
-    public function setType(?string $type) : void
-    {
-        $this->type = $type;
-    }
-    public function getType() : ?string
-    {
-        return $this->type;
-    }
-    public function setParent(?string $parent) : void
+    public function setParent(?ReferencePropertyType $parent) : void
     {
         $this->parent = $parent;
     }
-    public function getParent() : ?string
+    public function getParent() : ?ReferencePropertyType
     {
         return $this->parent;
     }
@@ -90,31 +75,15 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
     {
         return $this->mapping;
     }
-    /**
-     * @param \PSX\Record\Record<string>|null $template
-     */
-    public function setTemplate(?\PSX\Record\Record $template) : void
-    {
-        $this->template = $template;
-    }
-    /**
-     * @return \PSX\Record\Record<string>|null
-     */
-    public function getTemplate() : ?\PSX\Record\Record
-    {
-        return $this->template;
-    }
     public function toRecord() : \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
-        $record->put('type', $this->type);
         $record->put('parent', $this->parent);
         $record->put('base', $this->base);
         $record->put('properties', $this->properties);
         $record->put('discriminator', $this->discriminator);
         $record->put('mapping', $this->mapping);
-        $record->put('template', $this->template);
         return $record;
     }
     public function jsonSerialize() : object

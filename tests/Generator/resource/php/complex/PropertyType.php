@@ -8,9 +8,9 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base property type')]
 #[Discriminator('type')]
+#[DerivedType('StringPropertyType', 'string')]
 #[DerivedType('IntegerPropertyType', 'integer')]
 #[DerivedType('NumberPropertyType', 'number')]
-#[DerivedType('StringPropertyType', 'string')]
 #[DerivedType('BooleanPropertyType', 'boolean')]
 #[DerivedType('MapPropertyType', 'map')]
 #[DerivedType('ArrayPropertyType', 'array')]
@@ -19,13 +19,9 @@ use PSX\Schema\Attribute\Discriminator;
 #[DerivedType('ReferencePropertyType', 'reference')]
 abstract class PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('')]
     protected ?string $description = null;
-    #[Description('')]
-    protected ?bool $deprecated = null;
-    #[Description('')]
     protected ?string $type = null;
-    #[Description('')]
+    protected ?bool $deprecated = null;
     protected ?bool $nullable = null;
     public function setDescription(?string $description) : void
     {
@@ -35,14 +31,6 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
     {
         return $this->description;
     }
-    public function setDeprecated(?bool $deprecated) : void
-    {
-        $this->deprecated = $deprecated;
-    }
-    public function getDeprecated() : ?bool
-    {
-        return $this->deprecated;
-    }
     public function setType(?string $type) : void
     {
         $this->type = $type;
@@ -50,6 +38,14 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
     public function getType() : ?string
     {
         return $this->type;
+    }
+    public function setDeprecated(?bool $deprecated) : void
+    {
+        $this->deprecated = $deprecated;
+    }
+    public function getDeprecated() : ?bool
+    {
+        return $this->deprecated;
     }
     public function setNullable(?bool $nullable) : void
     {
@@ -64,8 +60,8 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
         $record->put('description', $this->description);
-        $record->put('deprecated', $this->deprecated);
         $record->put('type', $this->type);
+        $record->put('deprecated', $this->deprecated);
         $record->put('nullable', $this->nullable);
         return $record;
     }

@@ -7,7 +7,7 @@ import {ArrayDefinitionType} from "./ArrayDefinitionType";
  */
 export interface DefinitionType {
     description?: string
-    deprecated?: boolean
     type?: string
+    deprecated?: boolean
 }
 

@@ -1,7 +1,6 @@
 /**
- * Represents an array which contains a dynamic list of values
+ * Represents an array which contains a dynamic list of values of the same type
  */
 open class ArrayPropertyType : CollectionPropertyType {
-    @JsonProperty("type") var type: String? = null
 }
 

@@ -6,7 +6,6 @@ from .property_type import PropertyType
 
 # Represents a generic value which can be replaced with a dynamic type
 class GenericPropertyType(PropertyType):
-    type: Optional[str] = Field(default=None, alias="type")
     name: Optional[str] = Field(default=None, alias="name")
     pass
 

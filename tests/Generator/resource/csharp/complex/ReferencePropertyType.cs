@@ -5,11 +5,11 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class ReferencePropertyType : PropertyType
 {
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
     [JsonPropertyName("target")]
     public string? Target { get; set; }
+
+    [JsonPropertyName("template")]
+    public System.Collections.Generic.Dictionary<string, string>? Template { get; set; }
 
 }
 

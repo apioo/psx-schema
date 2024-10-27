@@ -1,12 +1,12 @@
 
 # Base property type
 class PropertyType
-  attr_accessor :description, :deprecated, :type, :nullable
+  attr_accessor :description, :type, :deprecated, :nullable
 
-  def initialize(description, deprecated, type, nullable)
+  def initialize(description, type, deprecated, nullable)
     @description = description
-    @deprecated = deprecated
     @type = type
+    @deprecated = deprecated
     @nullable = nullable
   end
 end

@@ -7,18 +7,8 @@ use PSX\Schema\Attribute\Description;
 #[Description('Represents a string value')]
 class StringPropertyType extends ScalarPropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('')]
-    protected ?string $type = null;
-    #[Description('')]
+    #[Description('Optional describes the format of the string. Supported are the following types: date, date-time and time. A code generator may use a fitting data type to represent such a format, if not supported it should fall back to a string.')]
     protected ?string $format = null;
-    public function setType(?string $type) : void
-    {
-        $this->type = $type;
-    }
-    public function getType() : ?string
-    {
-        return $this->type;
-    }
     public function setFormat(?string $format) : void
     {
         $this->format = $format;
@@ -31,7 +21,6 @@ class StringPropertyType extends ScalarPropertyType implements \JsonSerializable
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
-        $record->put('type', $this->type);
         $record->put('format', $this->format);
         return $record;
     }

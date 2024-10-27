@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 })
 public abstract class DefinitionType {
     private String description;
-    private Boolean deprecated;
     private String type;
+    private Boolean deprecated;
 
     @JsonSetter("description")
     public void setDescription(String description) {
@@ -26,16 +26,6 @@ public abstract class DefinitionType {
         return this.description;
     }
 
-    @JsonSetter("deprecated")
-    public void setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-    }
-
-    @JsonGetter("deprecated")
-    public Boolean getDeprecated() {
-        return this.deprecated;
-    }
-
     @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
@@ -44,6 +34,16 @@ public abstract class DefinitionType {
     @JsonGetter("type")
     public String getType() {
         return this.type;
+    }
+
+    @JsonSetter("deprecated")
+    public void setDeprecated(Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+    @JsonGetter("deprecated")
+    public Boolean getDeprecated() {
+        return this.deprecated;
     }
 }
 

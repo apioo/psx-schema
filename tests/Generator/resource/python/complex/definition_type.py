@@ -9,8 +9,8 @@ from .array_definition_type import ArrayDefinitionType
 # Base definition type
 class DefinitionType(BaseModel):
     description: Optional[str] = Field(default=None, alias="description")
-    deprecated: Optional[bool] = Field(default=None, alias="deprecated")
     type: Optional[str] = Field(default=None, alias="type")
+    deprecated: Optional[bool] = Field(default=None, alias="deprecated")
     pass
 
 

@@ -2,10 +2,9 @@
 # Represents a string value
 class StringPropertyType
   extend ScalarPropertyType
-  attr_accessor :type, :format
+  attr_accessor :format
 
-  def initialize(type, format)
-    @type = type
+  def initialize(format)
     @format = format
   end
 end

@@ -1,11 +1,10 @@
 
-# Base type for the map and array collection type
+# Base collection type
 class CollectionDefinitionType
   extend DefinitionType
-  attr_accessor :type, :schema
+  attr_accessor :schema
 
-  def initialize(type, schema)
-    @type = type
+  def initialize(schema)
     @schema = schema
   end
 end
