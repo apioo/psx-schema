@@ -50,7 +50,7 @@ class SwiftTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/swift/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/swift/complex/Specification.swift');
+        $this->assertFileExists(__DIR__ . '/resource/swift/complex/TypeSchema.swift');
     }
 
     public function testGenerateOOP()

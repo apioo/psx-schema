@@ -49,7 +49,7 @@ class GoTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/go/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/go/complex/specification.go');
+        $this->assertFileExists(__DIR__ . '/resource/go/complex/type_schema.go');
     }
 
     public function testGenerateOOP()

@@ -49,7 +49,7 @@ class CSharpTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/csharp/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/csharp/complex/Specification.cs');
+        $this->assertFileExists(__DIR__ . '/resource/csharp/complex/TypeSchema.cs');
     }
 
     public function testGenerateOOP()

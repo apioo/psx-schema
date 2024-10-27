@@ -49,7 +49,7 @@ class PythonTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/python/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/python/complex/specification.py');
+        $this->assertFileExists(__DIR__ . '/resource/python/complex/type_schema.py');
     }
 
     public function testGenerateOOP()

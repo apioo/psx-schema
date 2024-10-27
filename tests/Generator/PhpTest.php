@@ -49,7 +49,7 @@ class PhpTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/php/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/php/complex/Specification.php');
+        $this->assertFileExists(__DIR__ . '/resource/php/complex/TypeSchema.php');
     }
 
     public function testGenerateOOP()

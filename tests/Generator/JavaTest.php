@@ -49,7 +49,7 @@ class JavaTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/java/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/java/complex/Specification.java');
+        $this->assertFileExists(__DIR__ . '/resource/java/complex/TypeSchema.java');
     }
 
     public function testGenerateOOP()

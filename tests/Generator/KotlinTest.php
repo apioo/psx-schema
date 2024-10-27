@@ -49,7 +49,7 @@ class KotlinTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/kotlin/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/kotlin/complex/Specification.kt');
+        $this->assertFileExists(__DIR__ . '/resource/kotlin/complex/TypeSchema.kt');
     }
 
     public function testGenerateOOP()

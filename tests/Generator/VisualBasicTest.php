@@ -49,7 +49,7 @@ class VisualBasicTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/visualbasic/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/visualbasic/complex/Specification.vb');
+        $this->assertFileExists(__DIR__ . '/resource/visualbasic/complex/TypeSchema.vb');
     }
 
     public function testGenerateOOP()

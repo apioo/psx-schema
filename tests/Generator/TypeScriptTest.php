@@ -49,7 +49,7 @@ class TypeScriptTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/typescript/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/typescript/complex/Specification.ts');
+        $this->assertFileExists(__DIR__ . '/resource/typescript/complex/TypeSchema.ts');
     }
 
     public function testGenerateOOP()

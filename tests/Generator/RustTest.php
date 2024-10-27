@@ -49,7 +49,7 @@ class RustTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/rust/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/rust/complex/specification.rs');
+        $this->assertFileExists(__DIR__ . '/resource/rust/complex/type_schema.rs');
     }
 
     public function testGenerateOOP()

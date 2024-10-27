@@ -49,7 +49,7 @@ class RubyTest extends GeneratorTestCase
         $chunks = $generator->generate($this->getComplexSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/ruby/complex');
 
-        $this->assertFileExists(__DIR__ . '/resource/ruby/complex/specification.rb');
+        $this->assertFileExists(__DIR__ . '/resource/ruby/complex/type_schema.rb');
     }
 
     public function testGenerateOOP()
