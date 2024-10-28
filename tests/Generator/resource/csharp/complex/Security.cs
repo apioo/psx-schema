@@ -6,7 +6,7 @@ namespace TypeAPI.Model;
 [JsonDerivedType(typeof(SecurityHttpBasic), typeDiscriminator: "httpBasic")]
 [JsonDerivedType(typeof(SecurityHttpBearer), typeDiscriminator: "httpBearer")]
 [JsonDerivedType(typeof(SecurityApiKey), typeDiscriminator: "apiKey")]
-[JsonDerivedType(typeof(SecurityOAuth2), typeDiscriminator: "oauth2")]
+[JsonDerivedType(typeof(SecurityOAuth), typeDiscriminator: "oauth2")]
 public abstract class Security
 {
     [JsonPropertyName("type")]

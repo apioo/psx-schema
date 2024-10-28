@@ -4,7 +4,7 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDi
 from .security_http_basic import SecurityHttpBasic
 from .security_http_bearer import SecurityHttpBearer
 from .security_api_key import SecurityApiKey
-from .security_o_auth2 import SecurityOAuth
+from .security_o_auth import SecurityOAuth
 
 
 class Security(BaseModel):

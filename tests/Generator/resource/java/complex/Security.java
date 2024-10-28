@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
     @JsonSubTypes.Type(value = SecurityHttpBasic.class, name = "httpBasic"),
     @JsonSubTypes.Type(value = SecurityHttpBearer.class, name = "httpBearer"),
     @JsonSubTypes.Type(value = SecurityApiKey.class, name = "apiKey"),
-    @JsonSubTypes.Type(value = SecurityOAuth2.class, name = "oauth2"),
+    @JsonSubTypes.Type(value = SecurityOAuth.class, name = "oauth2"),
 })
 public abstract class Security {
     private String type;
