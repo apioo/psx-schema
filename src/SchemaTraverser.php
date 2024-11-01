@@ -148,6 +148,13 @@ class SchemaTraverser
                 break;
             }
 
+            $template = $parent->getTemplate();
+            if (!empty($template)) {
+                foreach ($template as $templateName => $templateType) {
+                    $context[$templateName] = $templateType;
+                }
+            }
+
             $properties = array_merge($properties, $parentType->getProperties() ?? []);
             $parent = $parentType->getParent();
         }
