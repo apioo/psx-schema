@@ -26,6 +26,7 @@ use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\BooleanPropertyType;
+use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
 use PSX\Schema\Type\MapPropertyType;
@@ -64,9 +65,9 @@ abstract class GeneratorAbstract implements GeneratorInterface
         } elseif ($type instanceof BooleanPropertyType) {
             return $this->getBoolean();
         } elseif ($type instanceof ArrayPropertyType) {
-            return $this->getArray($this->getType($type->getSchema()));
+            return $this->getArray($this->getType($type->getSchema() ?? PropertyTypeFactory::getAny()));
         } elseif ($type instanceof MapPropertyType) {
-            return $this->getMap($this->getType($type->getSchema()));
+            return $this->getMap($this->getType($type->getSchema() ?? PropertyTypeFactory::getAny()));
         } elseif ($type instanceof ReferencePropertyType) {
             return $this->getReference($type->getTarget());
         } elseif ($type instanceof GenericPropertyType) {
