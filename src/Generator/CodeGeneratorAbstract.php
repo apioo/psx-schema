@@ -178,7 +178,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
-        $code = $this->writeMap($className, $this->generator->getType($type->getSchema()), $type);
+        $code = $this->writeMap($className, $this->generator->getType($type->getSchema() ?? PropertyTypeFactory::getAny()), $type);
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
@@ -188,7 +188,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     {
         $className = new Code\Name($className, $className, $this->normalizer);
 
-        $code = $this->writeArray($className, $this->generator->getType($type->getSchema()), $type);
+        $code = $this->writeArray($className, $this->generator->getType($type->getSchema() ?? PropertyTypeFactory::getAny()), $type);
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
         }
