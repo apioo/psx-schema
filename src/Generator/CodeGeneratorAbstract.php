@@ -281,12 +281,22 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
 
     private function supportsMap(Code\Name $name, MapDefinitionType $type): bool
     {
-        return !!$this->writeMap($name, $this->generator->getType($type->getSchema()), $type);
+        $schema = $type->getSchema();
+        if (!$schema instanceof PropertyTypeAbstract) {
+            return false;
+        }
+
+        return !!$this->writeMap($name, $this->generator->getType($schema), $type);
     }
 
     private function supportsArray(Code\Name $name, ArrayDefinitionType $type): bool
     {
-        return !!$this->writeArray($name, $this->generator->getType($type->getSchema()), $type);
+        $schema = $type->getSchema();
+        if (!$schema instanceof PropertyTypeAbstract) {
+            return false;
+        }
+
+        return !!$this->writeArray($name, $this->generator->getType($schema), $type);
     }
 
     abstract protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string;
