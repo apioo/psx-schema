@@ -64,7 +64,7 @@ class Java extends CodeGeneratorAbstract
         if ($mapping !== null) {
             $code.= '@JsonSubTypes({' . "\n";
             foreach ($mapping as $class => $value) {
-                $code.= $this->indent . '@JsonSubTypes.Type(value = ' . $class . '.class, name = "' . $value . '"),' . "\n";
+                $code.= $this->indent . '@JsonSubTypes.Type(value = ' . $this->normalizer->class($class) . '.class, name = "' . $value . '"),' . "\n";
             }
             $code.= '})' . "\n";
         }

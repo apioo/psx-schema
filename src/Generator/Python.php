@@ -179,7 +179,7 @@ class Python extends CodeGeneratorAbstract
 
         $subTypes = [];
         foreach ($mapping as $class => $value) {
-            $subTypes[] = 'Annotated[' . $class . ', Tag(\'' . $value . '\')]';
+            $subTypes[] = 'Annotated[' . $this->normalizer->class($class) . ', Tag(\'' . $value . '\')]';
         }
 
         return 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator=\'' . $discriminator . '\')]' . "\n";

@@ -301,7 +301,7 @@ class Php extends CodeGeneratorAbstract
             $mapping = $type->getMapping();
             if ($mapping !== null) {
                 foreach ($mapping as $class => $value) {
-                    $result[] = $this->newAttribute('DerivedType', [$this->newScalar($class), $this->newScalar($value)], $uses);
+                    $result[] = $this->newAttribute('DerivedType', [$this->newScalar($this->normalizer->class($class)), $this->newScalar($value)], $uses);
                 }
             }
         }

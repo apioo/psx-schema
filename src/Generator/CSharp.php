@@ -64,7 +64,7 @@ class CSharp extends CodeGeneratorAbstract
         $mapping = $origin->getMapping();
         if ($mapping !== null) {
             foreach ($mapping as $class => $value) {
-                $code.= '[JsonDerivedType(typeof(' . $class . '), typeDiscriminator: "' . $value . '")]' . "\n";
+                $code.= '[JsonDerivedType(typeof(' . $this->normalizer->class($class) . '), typeDiscriminator: "' . $value . '")]' . "\n";
             }
         }
 
