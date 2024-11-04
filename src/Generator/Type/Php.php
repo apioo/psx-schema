@@ -26,6 +26,7 @@ use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
 use PSX\Record\Record;
 use PSX\Schema\ContentType;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\GenericPropertyType;
@@ -46,18 +47,18 @@ class Php extends GeneratorAbstract
     {
         if ($type instanceof ArrayPropertyType) {
             $schema = $type->getSchema();
-            if ($schema instanceof PropertyTypeAbstract) {
-                return 'array<' . $this->getDocType($schema) . '>';
-            } else {
-                return 'array';
+            if (!$schema instanceof PropertyTypeAbstract) {
+                throw new GeneratorException('Provided array contains no type');
             }
+
+            return 'array<' . $this->getDocType($schema) . '>';
         } elseif ($type instanceof MapPropertyType) {
             $schema = $type->getSchema();
-            if ($schema instanceof PropertyTypeAbstract) {
-                return '\\' . Record::class . '<' . $this->getDocType($schema) . '>';
-            } else {
-                return '\\' . Record::class;
+            if (!$schema instanceof PropertyTypeAbstract) {
+                throw new GeneratorException('Provided map contains no type');
             }
+
+            return '\\' . Record::class . '<' . $this->getDocType($schema) . '>';
         } elseif ($type instanceof GenericPropertyType) {
             return $type->getName() ?? '';
         } elseif ($type instanceof ReferencePropertyType) {

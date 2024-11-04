@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Type;
 
 use PSX\Schema\ContentType;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Type\PropertyTypeAbstract;
 
 /**
@@ -42,11 +43,15 @@ interface GeneratorInterface
 
     /**
      * Returns a type string
+     *
+     * @throws GeneratorException
      */
     public function getType(PropertyTypeAbstract $type): string;
 
     /**
      * Returns a doc type string
+     *
+     * @throws GeneratorException
      */
     public function getDocType(PropertyTypeAbstract $type): string;
 
