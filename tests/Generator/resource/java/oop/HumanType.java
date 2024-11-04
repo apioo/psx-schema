@@ -2,9 +2,9 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-public class Human {
+public class HumanType {
     private String firstName;
-    private Human parent;
+    private HumanType parent;
 
     @JsonSetter("firstName")
     public void setFirstName(String firstName) {
@@ -17,12 +17,12 @@ public class Human {
     }
 
     @JsonSetter("parent")
-    public void setParent(Human parent) {
+    public void setParent(HumanType parent) {
         this.parent = parent;
     }
 
     @JsonGetter("parent")
-    public Human getParent() {
+    public HumanType getParent() {
         return this.parent;
     }
 }

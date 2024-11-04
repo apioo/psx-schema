@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 use map::Map;
-use human::Human;
+use human_type::HumanType;
 
 #[derive(Serialize, Deserialize)]
 pub struct HumanMap {
@@ -8,10 +8,10 @@ pub struct HumanMap {
     total_results: Option<u64>,
 
     #[serde(rename = "parent")]
-    parent: Option<Human>,
+    parent: Option<HumanType>,
 
     #[serde(rename = "entries")]
-    entries: Option<Vec<Human>>,
+    entries: Option<Vec<HumanType>>,
 
 }
 

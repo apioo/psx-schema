@@ -1,5 +1,4 @@
-type MyMap struct {
-    MatricleNumber string `json:"matricleNumber"`
+type HumanType struct {
     FirstName string `json:"firstName"`
     Parent *HumanType `json:"parent"`
 }

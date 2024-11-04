@@ -1,6 +1,17 @@
 {
   "definitions": {
-    "my_import:Human": {
+    "my_import:HumanMap": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "my_import:Map",
+        "template": {
+          "P": "my_import:Human_Type",
+          "T": "my_import:Human_Type"
+        }
+      }
+    },
+    "my_import:Human_Type": {
       "type": "struct",
       "properties": {
         "firstName": {
@@ -8,18 +19,7 @@
         },
         "parent": {
           "type": "reference",
-          "target": "my_import:Human"
-        }
-      }
-    },
-    "my_import:HumanMap": {
-      "type": "struct",
-      "parent": {
-        "type": "reference",
-        "target": "my_import:Map",
-        "template": {
-          "P": "my_import:Human",
-          "T": "my_import:Human"
+          "target": "my_import:Human_Type"
         }
       }
     },
@@ -55,7 +55,7 @@
       "type": "struct",
       "parent": {
         "type": "reference",
-        "target": "my_import:Human"
+        "target": "my_import:Human_Type"
       },
       "properties": {
         "matricleNumber": {
@@ -69,7 +69,7 @@
         "type": "reference",
         "target": "my_import:Map",
         "template": {
-          "P": "my_import:Human",
+          "P": "my_import:Human_Type",
           "T": "my_import:Student"
         }
       }

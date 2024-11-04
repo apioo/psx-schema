@@ -1,5 +1,5 @@
 class Student
-  extend Human
+  extend HumanType
   attr_accessor :matricle_number
 
   def initialize(matricle_number)

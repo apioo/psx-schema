@@ -1,6 +1,17 @@
 {
   "definitions": {
-    "Human": {
+    "HumanMap": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Map",
+        "template": {
+          "P": "Human_Type",
+          "T": "Human_Type"
+        }
+      }
+    },
+    "Human_Type": {
       "type": "struct",
       "properties": {
         "firstName": {
@@ -8,18 +19,7 @@
         },
         "parent": {
           "type": "reference",
-          "target": "Human"
-        }
-      }
-    },
-    "HumanMap": {
-      "type": "struct",
-      "parent": {
-        "type": "reference",
-        "target": "Map",
-        "template": {
-          "P": "Human",
-          "T": "Human"
+          "target": "Human_Type"
         }
       }
     },
@@ -55,7 +55,7 @@
       "type": "struct",
       "parent": {
         "type": "reference",
-        "target": "Human"
+        "target": "Human_Type"
       },
       "properties": {
         "matricleNumber": {
@@ -69,7 +69,7 @@
         "type": "reference",
         "target": "Map",
         "template": {
-          "P": "Human",
+          "P": "Human_Type",
           "T": "Student"
         }
       }

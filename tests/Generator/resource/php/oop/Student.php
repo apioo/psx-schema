@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-class Student extends Human implements \JsonSerializable, \PSX\Record\RecordableInterface
+class Student extends HumanType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $matricleNumber = null;
     public function setMatricleNumber(?string $matricleNumber) : void

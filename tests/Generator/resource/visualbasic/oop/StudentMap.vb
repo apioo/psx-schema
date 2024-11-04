@@ -1,6 +1,6 @@
 Imports System.Text.Json.Serialization
 
 Public Class StudentMap
-    Inherits Map(Of Human, Student)
+    Inherits Map(Of HumanType, Student)
 End Class
 

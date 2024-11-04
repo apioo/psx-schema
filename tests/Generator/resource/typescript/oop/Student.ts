@@ -1,6 +1,6 @@
-import {Human} from "./Human";
+import {HumanType} from "./HumanType";
 
-export interface Student extends Human {
+export interface Student extends HumanType {
     matricleNumber?: string
 }
 

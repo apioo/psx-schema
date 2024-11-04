@@ -1,27 +1,27 @@
-message Human {
+message HumanType {
     optional string firstName = 1 [json_name="firstName"];
-    optional Human parent = 2 [json_name="parent"];
+    optional HumanType parent = 2 [json_name="parent"];
 }
 
 
 message Student {
     optional string firstName = 1 [json_name="firstName"];
-    optional Human parent = 2 [json_name="parent"];
+    optional HumanType parent = 2 [json_name="parent"];
     optional string matricleNumber = 3 [json_name="matricleNumber"];
 }
 
 
 message StudentMap {
     optional int64 totalResults = 1 [json_name="totalResults"];
-    optional Human parent = 2 [json_name="parent"];
+    optional HumanType parent = 2 [json_name="parent"];
     optional repeated Student entries = 3 [json_name="entries"];
 }
 
 
 message HumanMap {
     optional int64 totalResults = 1 [json_name="totalResults"];
-    optional Human parent = 2 [json_name="parent"];
-    optional repeated Human entries = 3 [json_name="entries"];
+    optional HumanType parent = 2 [json_name="parent"];
+    optional repeated HumanType entries = 3 [json_name="entries"];
 }
 
 

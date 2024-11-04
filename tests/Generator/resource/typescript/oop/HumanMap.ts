@@ -1,6 +1,6 @@
 import {Map} from "./Map";
-import {Human} from "./Human";
+import {HumanType} from "./HumanType";
 
-export interface HumanMap extends Map<Human, Human> {
+export interface HumanMap extends Map<HumanType, HumanType> {
 }
 

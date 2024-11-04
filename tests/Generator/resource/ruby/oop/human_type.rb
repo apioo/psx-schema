@@ -1,4 +1,4 @@
-class Human
+class HumanType
   attr_accessor :first_name, :parent
 
   def initialize(first_name, parent)

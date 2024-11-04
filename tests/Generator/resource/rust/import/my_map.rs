@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 use student::Student;
-use human::Human;
+use human_type::HumanType;
 
 #[derive(Serialize, Deserialize)]
 pub struct MyMap {
@@ -11,7 +11,7 @@ pub struct MyMap {
     first_name: Option<String>,
 
     #[serde(rename = "parent")]
-    parent: Option<Human>,
+    parent: Option<HumanType>,
 
 }
 

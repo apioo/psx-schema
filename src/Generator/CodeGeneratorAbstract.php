@@ -167,7 +167,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
             $type->setProperties($properties);
         }
 
-        $code = $this->writeStruct($className, $props, $parent, $generics, $templates, $type);
+        $code = $this->writeStruct($className, $props, $parent, $generics, $this->buildTemplates($templates), $type);
 
         if (!empty($code)) {
             $this->chunks->append($className->getFile(), $this->wrap($code, $type, $className));
@@ -251,6 +251,20 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
         }
 
         return $type;
+    }
+
+    private function buildTemplates(?array $templates): ?array
+    {
+        if (empty($templates)) {
+            return null;
+        }
+
+        $result = [];
+        foreach ($templates as $name => $type) {
+            $result[$name] = $this->normalizer->class($type);
+        }
+
+        return $result;
     }
 
     private function wrap(string $code, DefinitionTypeAbstract $type, Code\Name $className): string

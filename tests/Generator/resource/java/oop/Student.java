@@ -2,7 +2,7 @@
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-public class Student extends Human {
+public class Student extends HumanType {
     private String matricleNumber;
 
     @JsonSetter("matricleNumber")

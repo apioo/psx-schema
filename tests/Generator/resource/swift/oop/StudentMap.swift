@@ -1,4 +1,4 @@
-class StudentMap: Map<Human, Student> {
+class StudentMap: Map<HumanType, Student> {
 
     enum CodingKeys: String, CodingKey {
     }

@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use human::Human;
+use human_type::HumanType;
 
 #[derive(Serialize, Deserialize)]
 pub struct Student {
@@ -7,7 +7,7 @@ pub struct Student {
     first_name: Option<String>,
 
     #[serde(rename = "parent")]
-    parent: Option<Human>,
+    parent: Option<HumanType>,
 
     #[serde(rename = "matricleNumber")]
     matricle_number: Option<String>,

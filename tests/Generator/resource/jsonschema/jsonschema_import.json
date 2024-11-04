@@ -1,16 +1,5 @@
 {
   "definitions": {
-    "Human": {
-      "type": "object",
-      "properties": {
-        "firstName": {
-          "type": "string"
-        },
-        "parent": {
-          "$ref": "#/definitions/Human"
-        }
-      }
-    },
     "HumanMap": {
       "allOf": [
         {
@@ -20,12 +9,12 @@
               "type": "integer"
             },
             "parent": {
-              "$ref": "#/definitions/Human"
+              "$ref": "#/definitions/Human_Type"
             },
             "entries": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Human"
+                "$ref": "#/definitions/Human_Type"
               }
             }
           }
@@ -34,6 +23,17 @@
           "type": "object"
         }
       ]
+    },
+    "Human_Type": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "parent": {
+          "$ref": "#/definitions/Human_Type"
+        }
+      }
     },
     "RootSchema": {
       "type": "object",
@@ -46,7 +46,7 @@
     "Student": {
       "allOf": [
         {
-          "$ref": "#/definitions/Human"
+          "$ref": "#/definitions/Human_Type"
         },
         {
           "type": "object",
@@ -67,7 +67,7 @@
               "type": "integer"
             },
             "parent": {
-              "$ref": "#/definitions/Human"
+              "$ref": "#/definitions/Human_Type"
             },
             "entries": {
               "type": "array",

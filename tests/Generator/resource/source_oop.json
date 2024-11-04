@@ -1,6 +1,6 @@
 {
   "definitions": {
-    "Human": {
+    "Human_Type": {
       "type": "object",
       "properties": {
         "firstName": {
@@ -8,12 +8,12 @@
         },
         "parent": {
           "type": "reference",
-          "target": "Human"
+          "target": "Human_Type"
         }
       }
     },
     "Student": {
-      "parent": "Human",
+      "parent": "Human_Type",
       "type": "object",
       "properties": {
         "matricleNumber": {
@@ -27,7 +27,7 @@
         "type": "reference",
         "target": "Map",
         "template": {
-          "P": "Human",
+          "P": "Human_Type",
           "T": "Student"
         }
       }
@@ -38,8 +38,8 @@
         "type": "reference",
         "target": "Map",
         "template": {
-          "P": "Human",
-          "T": "Human"
+          "P": "Human_Type",
+          "T": "Human_Type"
         }
       }
     },

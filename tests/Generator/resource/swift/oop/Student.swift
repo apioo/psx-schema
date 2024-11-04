@@ -1,4 +1,4 @@
-class Student: Human {
+class Student: HumanType {
     var matricleNumber: String
 
     enum CodingKeys: String, CodingKey {

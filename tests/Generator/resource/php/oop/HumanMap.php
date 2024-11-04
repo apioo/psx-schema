@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 
 /**
- * @extends Map<Human, Human>
+ * @extends Map<HumanType, HumanType>
  */
 class HumanMap extends Map implements \JsonSerializable, \PSX\Record\RecordableInterface
 {

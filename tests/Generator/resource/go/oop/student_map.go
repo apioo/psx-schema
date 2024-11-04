@@ -1,6 +1,6 @@
 type StudentMap struct {
     TotalResults int `json:"totalResults"`
-    Parent *Human `json:"parent"`
+    Parent *HumanType `json:"parent"`
     Entries []Student `json:"entries"`
 }
 

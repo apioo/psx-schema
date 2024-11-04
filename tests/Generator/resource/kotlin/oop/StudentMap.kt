@@ -1,3 +1,3 @@
-open class StudentMap : Map<Human, Student> {
+open class StudentMap : Map<HumanType, Student> {
 }
 

@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-class Human implements \JsonSerializable, \PSX\Record\RecordableInterface
+class HumanType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $firstName = null;
-    protected ?Human $parent = null;
+    protected ?HumanType $parent = null;
     public function setFirstName(?string $firstName) : void
     {
         $this->firstName = $firstName;
@@ -14,11 +14,11 @@ class Human implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->firstName;
     }
-    public function setParent(?Human $parent) : void
+    public function setParent(?HumanType $parent) : void
     {
         $this->parent = $parent;
     }
-    public function getParent() : ?Human
+    public function getParent() : ?HumanType
     {
         return $this->parent;
     }
