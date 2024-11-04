@@ -67,9 +67,7 @@ class BCLayer
         } else {
             if ($data->type === 'object' && isset($data->additionalProperties)) {
                 $data->type = 'map';
-            } elseif ($data->type === 'array' && isset($data->items)) {
-                $data->type = 'array';
-            } else {
+            } elseif ($data->type !== 'map' && $data->type !== 'array') {
                 $data->type = 'struct';
             }
         }
