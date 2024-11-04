@@ -10,8 +10,8 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base collection type')]
 #[Discriminator('type')]
-#[DerivedType('MapDefinitionType', 'map')]
-#[DerivedType('ArrayDefinitionType', 'array')]
+#[DerivedType(MapDefinitionType::class, 'map')]
+#[DerivedType(ArrayDefinitionType::class, 'array')]
 abstract class CollectionDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]

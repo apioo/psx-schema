@@ -10,15 +10,15 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base property type')]
 #[Discriminator('type')]
-#[DerivedType('StringPropertyType', 'string')]
-#[DerivedType('IntegerPropertyType', 'integer')]
-#[DerivedType('NumberPropertyType', 'number')]
-#[DerivedType('BooleanPropertyType', 'boolean')]
-#[DerivedType('MapPropertyType', 'map')]
-#[DerivedType('ArrayPropertyType', 'array')]
-#[DerivedType('AnyPropertyType', 'any')]
-#[DerivedType('GenericPropertyType', 'generic')]
-#[DerivedType('ReferencePropertyType', 'reference')]
+#[DerivedType(StringPropertyType::class, 'string')]
+#[DerivedType(IntegerPropertyType::class, 'integer')]
+#[DerivedType(NumberPropertyType::class, 'number')]
+#[DerivedType(BooleanPropertyType::class, 'boolean')]
+#[DerivedType(MapPropertyType::class, 'map')]
+#[DerivedType(ArrayPropertyType::class, 'array')]
+#[DerivedType(AnyPropertyType::class, 'any')]
+#[DerivedType(GenericPropertyType::class, 'generic')]
+#[DerivedType(ReferencePropertyType::class, 'reference')]
 abstract class PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $description = null;

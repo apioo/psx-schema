@@ -10,9 +10,9 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base definition type')]
 #[Discriminator('type')]
-#[DerivedType('StructDefinitionType', 'struct')]
-#[DerivedType('MapDefinitionType', 'map')]
-#[DerivedType('ArrayDefinitionType', 'array')]
+#[DerivedType(StructDefinitionType::class, 'struct')]
+#[DerivedType(MapDefinitionType::class, 'map')]
+#[DerivedType(ArrayDefinitionType::class, 'array')]
 abstract class DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $description = null;

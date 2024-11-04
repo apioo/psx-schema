@@ -10,10 +10,10 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('')]
 #[Discriminator('type')]
-#[DerivedType('SecurityHttpBasic', 'httpBasic')]
-#[DerivedType('SecurityHttpBearer', 'httpBearer')]
-#[DerivedType('SecurityApiKey', 'apiKey')]
-#[DerivedType('SecurityOAuth', 'oauth2')]
+#[DerivedType(SecurityHttpBasic::class, 'httpBasic')]
+#[DerivedType(SecurityHttpBearer::class, 'httpBearer')]
+#[DerivedType(SecurityApiKey::class, 'apiKey')]
+#[DerivedType(SecurityOAuth::class, 'oauth2')]
 abstract class Security implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('The global security type of the API must be one of: httpBasic, httpBearer, apiKey or oauth2')]

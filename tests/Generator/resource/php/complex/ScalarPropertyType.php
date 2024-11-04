@@ -10,10 +10,10 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base scalar property type')]
 #[Discriminator('type')]
-#[DerivedType('StringPropertyType', 'string')]
-#[DerivedType('IntegerPropertyType', 'integer')]
-#[DerivedType('NumberPropertyType', 'number')]
-#[DerivedType('BooleanPropertyType', 'boolean')]
+#[DerivedType(StringPropertyType::class, 'string')]
+#[DerivedType(IntegerPropertyType::class, 'integer')]
+#[DerivedType(NumberPropertyType::class, 'number')]
+#[DerivedType(BooleanPropertyType::class, 'boolean')]
 abstract class ScalarPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
 }
