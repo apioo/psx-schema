@@ -145,6 +145,7 @@ class TypeSchema implements ParserInterface
 
     /**
      * @throws UnknownTypeException
+     * @throws ParserException
      */
     public function parseDefinitionType(\stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
     {
