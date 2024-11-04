@@ -42,6 +42,10 @@ class BCLayer
                     'type' => 'any',
                 ];
             }
+        } elseif (isset($data->additionalProperties) && $data->additionalProperties === true) {
+            $data->additionalProperties = (object) [
+                'type' => 'any',
+            ];
         }
 
         if (isset($data->{'$ref'}) && is_string($data->{'$ref'})) {
