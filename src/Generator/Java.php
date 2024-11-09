@@ -57,7 +57,7 @@ class Java extends CodeGeneratorAbstract
 
         $discriminator = $origin->getDiscriminator();
         if ($discriminator !== null) {
-            $code.= '@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "' . $discriminator . '")' . "\n";
+            $code.= '@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "' . $discriminator . '")' . "\n";
         }
 
         $mapping = $origin->getMapping();
@@ -153,8 +153,7 @@ class Java extends CodeGeneratorAbstract
     private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'import com.fasterxml.jackson.annotation.JsonGetter;';
-        $imports[] = 'import com.fasterxml.jackson.annotation.JsonSetter;';
+        $imports[] = 'import com.fasterxml.jackson.annotation.*;';
 
         return $imports;
     }
