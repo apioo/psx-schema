@@ -1,9 +1,8 @@
 package org.typeapi.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = SecurityHttpBasic.class, name = "httpBasic"),
     @JsonSubTypes.Type(value = SecurityHttpBearer.class, name = "httpBearer"),

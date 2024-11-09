@@ -1,7 +1,6 @@
 package org.typeapi.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 
 /**
  * A struct represents a class/structure with a fix set of defined properties.

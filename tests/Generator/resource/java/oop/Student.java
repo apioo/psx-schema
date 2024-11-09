@@ -1,6 +1,5 @@
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 
 public class Student extends HumanType {
     private String matricleNumber;
