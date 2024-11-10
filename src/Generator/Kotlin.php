@@ -106,6 +106,7 @@ class Kotlin extends CodeGeneratorAbstract
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
+            $code.= "\n";
             $code.= '/**' . "\n";
             $code.= ' * ' . $comment . "\n";
             $code.= ' */';
