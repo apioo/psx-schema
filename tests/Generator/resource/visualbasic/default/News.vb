@@ -30,10 +30,10 @@ Public Class News
     Public Property Meta As Meta
 
     <JsonPropertyName("sendDate")>
-    Public Property SendDate As DateString
+    Public Property SendDate As DateAndTime.DateString
 
     <JsonPropertyName("readDate")>
-    Public Property ReadDate As DateAndTime
+    Public Property ReadDate As DateAndTime.DateAndTime
 
     <JsonPropertyName("price")>
     Public Property Price As Double
@@ -51,7 +51,7 @@ Public Class News
     Public Property Version As String
 
     <JsonPropertyName("coffeeTime")>
-    Public Property CoffeeTime As TimeString
+    Public Property CoffeeTime As DateAndTime.TimeString
 
     <JsonPropertyName("g-recaptcha-response")>
     Public Property Captcha As String

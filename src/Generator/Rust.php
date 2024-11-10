@@ -113,7 +113,10 @@ class Rust extends CodeGeneratorAbstract
     private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'use serde::{Serialize, Deserialize};';
+
+        if ($origin instanceof StructDefinitionType) {
+            $imports[] = 'use serde::{Serialize, Deserialize};';
+        }
 
         $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
