@@ -1,3 +1,3 @@
-open class Meta : HashMap<String, String> {
+open class Meta : HashMap<String, String>() {
 }
 

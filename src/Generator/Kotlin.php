@@ -74,7 +74,7 @@ class Kotlin extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        $code = 'open class ' . $name->getClass() . ' : HashMap<String, ' . $type . '> {' . "\n";
+        $code = 'open class ' . $name->getClass() . ' : HashMap<String, ' . $type . '>() {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -82,7 +82,7 @@ class Kotlin extends CodeGeneratorAbstract
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        $code = 'open class ' . $name->getClass() . ' : ArrayList<' . $type . '> {' . "\n";
+        $code = 'open class ' . $name->getClass() . ' : ArrayList<' . $type . '>() {' . "\n";
         $code.= '}' . "\n";
 
         return $code;
@@ -94,6 +94,13 @@ class Kotlin extends CodeGeneratorAbstract
 
         if (!empty($this->namespace)) {
             $code.= 'package ' . $this->namespace . ';' . "\n";
+            $code.= "\n";
+        }
+
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
             $code.= "\n";
         }
 
@@ -109,6 +116,12 @@ class Kotlin extends CodeGeneratorAbstract
 
     private function getImports(DefinitionTypeAbstract $origin): array
     {
-        return [];
+        $imports = [];
+
+        if ($origin instanceof StructDefinitionType) {
+            $imports[] = 'import com.fasterxml.jackson.annotation.*';
+        }
+
+        return $imports;
     }
 }

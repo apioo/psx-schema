@@ -1,13 +1,15 @@
+
+import com.fasterxml.jackson.annotation.*
 /**
  * An general news entry
  */
 open class News {
     @JsonProperty("config") var config: Meta? = null
-    @JsonProperty("inlineConfig") var inlineConfig: Map<String, String>? = null
-    @JsonProperty("mapTags") var mapTags: Map<String, String>? = null
-    @JsonProperty("mapReceiver") var mapReceiver: Map<String, Author>? = null
-    @JsonProperty("tags") var tags: Array<String>? = null
-    @JsonProperty("receiver") var receiver: Array<Author>? = null
+    @JsonProperty("inlineConfig") var inlineConfig: HashMap<String, String>? = null
+    @JsonProperty("mapTags") var mapTags: HashMap<String, String>? = null
+    @JsonProperty("mapReceiver") var mapReceiver: HashMap<String, Author>? = null
+    @JsonProperty("tags") var tags: ArrayList<String>? = null
+    @JsonProperty("receiver") var receiver: ArrayList<Author>? = null
     @JsonProperty("read") var read: Boolean? = null
     @JsonProperty("author") var author: Author? = null
     @JsonProperty("meta") var meta: Meta? = null

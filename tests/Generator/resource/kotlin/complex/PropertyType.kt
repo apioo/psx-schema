@@ -1,3 +1,5 @@
+
+import com.fasterxml.jackson.annotation.*
 /**
  * Base property type
  */

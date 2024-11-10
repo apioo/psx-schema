@@ -80,12 +80,12 @@ class Kotlin extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
-        return 'Array<' . $type . '>';
+        return 'ArrayList<' . $type . '>';
     }
 
     protected function getMap(string $type): string
     {
-        return 'Map<String, ' . $type . '>';
+        return 'HashMap<String, ' . $type . '>';
     }
 
     protected function getGroup(string $type): string

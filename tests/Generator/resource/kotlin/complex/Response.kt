@@ -1,3 +1,6 @@
+
+import com.fasterxml.jackson.annotation.*
+
 open class Response {
     @JsonProperty("code") var code: Int? = null
     @JsonProperty("contentType") var contentType: String? = null

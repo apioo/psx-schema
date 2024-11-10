@@ -153,7 +153,10 @@ class Java extends CodeGeneratorAbstract
     private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
-        $imports[] = 'import com.fasterxml.jackson.annotation.*;';
+
+        if ($origin instanceof StructDefinitionType) {
+            $imports[] = 'import com.fasterxml.jackson.annotation.*;';
+        }
 
         return $imports;
     }
