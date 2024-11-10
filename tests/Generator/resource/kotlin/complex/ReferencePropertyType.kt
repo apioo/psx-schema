@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.annotation.*
+
 /**
  * Represents a reference to a definition type
  */

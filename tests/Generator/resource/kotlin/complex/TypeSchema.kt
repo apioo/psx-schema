@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.annotation.*
+
 /**
  * TypeSchema specification
  */

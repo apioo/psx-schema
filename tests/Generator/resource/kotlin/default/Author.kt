@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.annotation.*
+
 /**
  * An simple author element with some description
  */

@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.annotation.*
+
 /**
  * Represents a generic value which can be replaced with a dynamic type
  */

@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.annotation.*
+
 /**
  * A struct represents a class/structure with a fix set of defined properties.
  */
