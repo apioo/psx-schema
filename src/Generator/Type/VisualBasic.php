@@ -56,9 +56,9 @@ class VisualBasic extends GeneratorAbstract
     protected function getStringFormat(Format $format): string
     {
         return match ($format) {
-            Format::DATE => 'DateAndTime.DateString',
-            Format::DATETIME => 'DateAndTime.DateAndTime',
-            Format::TIME => 'DateAndTime.TimeString',
+            Format::DATE => 'DateOnly',
+            Format::DATETIME => 'DateTime',
+            Format::TIME => 'TimeOnly',
             default => $this->getString(),
         };
     }
