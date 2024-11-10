@@ -20,7 +20,7 @@ pub struct ReferencePropertyType {
     target: Option<String>,
 
     #[serde(rename = "template")]
-    template: Option<HashMap<String, String>>,
+    template: Option<std::collections::HashMap<String, String>>,
 
 }
 

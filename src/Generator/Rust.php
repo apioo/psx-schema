@@ -78,12 +78,12 @@ class Rust extends CodeGeneratorAbstract
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
-        return 'pub type ' . $name->getClass() . ' = HashMap<String, ' . $type . '>;' . "\n";
+        return 'pub type ' . $name->getClass() . ' = std::collections::HashMap<String, ' . $type . '>;' . "\n";
     }
 
     protected function writeArray(Code\Name $name, string $type, ArrayDefinitionType $origin): string
     {
-        return 'pub type ' . $name->getClass() . ' = LinkedList<' . $type . '>;' . "\n";
+        return 'pub type ' . $name->getClass() . ' = std::collections::LinkedList<' . $type . '>;' . "\n";
     }
 
     protected function writeHeader(DefinitionTypeAbstract $origin, Code\Name $className): string
@@ -113,26 +113,7 @@ class Rust extends CodeGeneratorAbstract
     private function getImports(DefinitionTypeAbstract $origin): array
     {
         $imports = [];
-
-        if ($origin instanceof StructDefinitionType) {
-            $imports[] = 'use serde::{Serialize, Deserialize};';
-        }
-
-        if (TypeUtil::contains($origin, MapDefinitionType::class)) {
-            $imports[] = 'use std::collections::HashMap;';
-        }
-
-        if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
-            $imports[] = 'use chrono::NaiveDate;';
-        }
-
-        if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATETIME)) {
-            $imports[] = 'use chrono::NaiveDateTime;';
-        }
-
-        if (TypeUtil::contains($origin, StringPropertyType::class, Format::TIME)) {
-            $imports[] = 'use chrono::NaiveTime;';
-        }
+        $imports[] = 'use serde::{Serialize, Deserialize};';
 
         $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {

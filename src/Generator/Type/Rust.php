@@ -36,7 +36,7 @@ class Rust extends GeneratorAbstract
     {
         return match ($contentType->getShape()) {
             ContentType::BINARY => 'Bytes',
-            ContentType::FORM => 'HashMap<string, string>',
+            ContentType::FORM => 'std::collections::HashMap<string, string>',
             ContentType::JSON => 'serde_json::Value',
             ContentType::MULTIPART => $this->getString(),
             ContentType::TEXT, ContentType::XML => $this->getString(),
@@ -85,7 +85,7 @@ class Rust extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'HashMap<String, ' . $type . '>';
+        return 'std::collections::HashMap<String, ' . $type . '>';
     }
 
     protected function getGroup(string $type): string

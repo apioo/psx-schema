@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use serde::{Serialize, Deserialize};
 
-pub type Meta = HashMap<String, String>;
+pub type Meta = std::collections::HashMap<String, String>;
 

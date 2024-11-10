@@ -22,13 +22,13 @@ pub struct StructDefinitionType {
     base: Option<bool>,
 
     #[serde(rename = "properties")]
-    properties: Option<HashMap<String, PropertyType>>,
+    properties: Option<std::collections::HashMap<String, PropertyType>>,
 
     #[serde(rename = "discriminator")]
     discriminator: Option<String>,
 
     #[serde(rename = "mapping")]
-    mapping: Option<HashMap<String, String>>,
+    mapping: Option<std::collections::HashMap<String, String>>,
 
 }
 

@@ -1,7 +1,4 @@
 use serde::{Serialize, Deserialize};
-use chrono::NaiveDate;
-use chrono::NaiveDateTime;
-use chrono::NaiveTime;
 use meta::Meta;
 use author::Author;
 
@@ -12,13 +9,13 @@ pub struct News {
     config: Option<Meta>,
 
     #[serde(rename = "inlineConfig")]
-    inline_config: Option<HashMap<String, String>>,
+    inline_config: Option<std::collections::HashMap<String, String>>,
 
     #[serde(rename = "mapTags")]
-    map_tags: Option<HashMap<String, String>>,
+    map_tags: Option<std::collections::HashMap<String, String>>,
 
     #[serde(rename = "mapReceiver")]
-    map_receiver: Option<HashMap<String, Author>>,
+    map_receiver: Option<std::collections::HashMap<String, Author>>,
 
     #[serde(rename = "tags")]
     tags: Option<Vec<String>>,

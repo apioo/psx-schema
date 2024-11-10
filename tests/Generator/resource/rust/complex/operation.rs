@@ -14,7 +14,7 @@ pub struct Operation {
     _return: Option<Response>,
 
     #[serde(rename = "arguments")]
-    arguments: Option<HashMap<String, Argument>>,
+    arguments: Option<std::collections::HashMap<String, Argument>>,
 
     #[serde(rename = "throws")]
     throws: Option<Vec<Response>>,

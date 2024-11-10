@@ -8,10 +8,10 @@ use operation::Operation;
 #[derive(Serialize, Deserialize)]
 pub struct TypeAPI {
     #[serde(rename = "import")]
-    import: Option<HashMap<String, String>>,
+    import: Option<std::collections::HashMap<String, String>>,
 
     #[serde(rename = "definitions")]
-    definitions: Option<HashMap<String, DefinitionType>>,
+    definitions: Option<std::collections::HashMap<String, DefinitionType>>,
 
     #[serde(rename = "root")]
     root: Option<String>,
@@ -23,7 +23,7 @@ pub struct TypeAPI {
     security: Option<Security>,
 
     #[serde(rename = "operations")]
-    operations: Option<HashMap<String, Operation>>,
+    operations: Option<std::collections::HashMap<String, Operation>>,
 
 }
 

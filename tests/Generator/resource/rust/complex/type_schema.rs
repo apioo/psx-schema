@@ -5,10 +5,10 @@ use definition_type::DefinitionType;
 #[derive(Serialize, Deserialize)]
 pub struct TypeSchema {
     #[serde(rename = "import")]
-    import: Option<HashMap<String, String>>,
+    import: Option<std::collections::HashMap<String, String>>,
 
     #[serde(rename = "definitions")]
-    definitions: Option<HashMap<String, DefinitionType>>,
+    definitions: Option<std::collections::HashMap<String, DefinitionType>>,
 
     #[serde(rename = "root")]
     root: Option<String>,
