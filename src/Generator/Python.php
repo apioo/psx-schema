@@ -149,7 +149,13 @@ class Python extends CodeGeneratorAbstract
 
         $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar';
+
+        if ($origin instanceof MapDefinitionType) {
+            $imports[] = 'from collections import UserDict';
+        } elseif ($origin instanceof ArrayDefinitionType) {
+            $imports[] = 'from collections import UserList';
+        }
 
         if (TypeUtil::contains($origin, StringPropertyType::class, Format::DATE)) {
             $imports[] = 'import datetime';

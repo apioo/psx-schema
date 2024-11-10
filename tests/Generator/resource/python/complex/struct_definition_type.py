@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, UserList, UserDict
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 from .definition_type import DefinitionType
 from .reference_property_type import ReferencePropertyType
 from .property_type import PropertyType
