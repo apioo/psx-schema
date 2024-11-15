@@ -68,6 +68,7 @@ class Protobuf extends CodeGeneratorAbstract
             $result+= ord($name[$i]);
         }
 
+        /** @psalm-suppress TypeDoesNotContainType */
         if ($result >= 19_000 && $result <= 19_999) {
             // Field numbers 19,000 to 19,999 are reserved for the Protocol Buffers implementation
             $result += (19_999 - $result) + 1;
