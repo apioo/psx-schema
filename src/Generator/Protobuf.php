@@ -51,16 +51,28 @@ class Protobuf extends CodeGeneratorAbstract
     {
         $code = 'message ' . $name->getClass() . ' {' . "\n";
 
-        $index = 1;
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'optional ' . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $index . ' [json_name="' . $property->getName()->getRaw() . '"];' . "\n";
-
-            $index++;
+            $code.= $this->indent . 'optional ' . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $this->generateNumber($property->getName()->getRaw()) . ' [json_name="' . $property->getName()->getRaw() . '"];' . "\n";
         }
 
         $code.= '}' . "\n";
 
         return $code;
+    }
+
+    private function generateNumber(string $name): int
+    {
+        $result = 0;
+        for ($i = 0; $i < strlen($name); $i++) {
+            $result+= ord($name[$i]);
+        }
+
+        if ($result >= 19_000 && $result <= 19_999) {
+            // Field numbers 19,000 to 19,999 are reserved for the Protocol Buffers implementation
+            $result += (19_999 - $result) + 1;
+        }
+
+        return $result;
     }
 }
