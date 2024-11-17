@@ -7,7 +7,7 @@ This library helps you to work with fully typed objects, it provides the followi
 * Parse PHP classes into a [TypeSchema](https://typeschema.org/) specification
 * Generate DTOs in different languages like TypeScript, Java, C# etc.
 
-We provide also a hosted version of this [code generator](https://typeschema.org/generator/schema).
+We provide also a hosted version of this [code generator](https://typeschema.org/generator).
 For more integration options you can also take a look at the [SDKgen](https://sdkgen.app/) project
 which provides a CLI binary or GitHub action to integrate the code generator.
 
