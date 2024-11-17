@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\StructDefinitionType;
 
@@ -63,15 +64,20 @@ class Protobuf extends CodeGeneratorAbstract
 
     private function generateNumber(string $name): int
     {
+        $hash = sha1($name);
         $result = 0;
-        for ($i = 0; $i < strlen($name); $i++) {
-            $result+= ord($name[$i]);
+        for ($i = 0; $i < 7; $i++) {
+            $result+= (hexdec($hash[$i]) << ($i * 4));
         }
 
         /** @psalm-suppress TypeDoesNotContainType */
         if ($result >= 19_000 && $result <= 19_999) {
             // Field numbers 19,000 to 19,999 are reserved for the Protocol Buffers implementation
             $result += (19_999 - $result) + 1;
+        }
+
+        if ($result > 536_870_911) {
+            throw new GeneratorException('Generated index is too large');
         }
 
         return $result;

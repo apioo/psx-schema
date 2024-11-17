@@ -1,38 +1,38 @@
 message Location {
-    optional float lat = 321 [json_name="lat"];
-    optional float long = 432 [json_name="long"];
+    optional float lat = 210819871 [json_name="lat"];
+    optional float long = 259130331 [json_name="long"];
 }
 
 
 message Author {
-    optional string title = 546 [json_name="title"];
-    optional string email = 520 [json_name="email"];
-    optional repeated string categories = 1062 [json_name="categories"];
-    optional repeated Location locations = 972 [json_name="locations"];
-    optional Location origin = 648 [json_name="origin"];
+    optional string title = 186570435 [json_name="title"];
+    optional string email = 215464074 [json_name="email"];
+    optional repeated string categories = 142514949 [json_name="categories"];
+    optional repeated Location locations = 170963641 [json_name="locations"];
+    optional Location origin = 77547563 [json_name="origin"];
 }
 
 
 message News {
-    optional map<string, string> config = 630 [json_name="config"];
-    optional map<string, string> inlineConfig = 1237 [json_name="inlineConfig"];
-    optional map<string, string> mapTags = 717 [json_name="mapTags"];
-    optional map<string, Author> mapReceiver = 1139 [json_name="mapReceiver"];
-    optional repeated string tags = 431 [json_name="tags"];
-    optional repeated Author receiver = 853 [json_name="receiver"];
-    optional bool read = 412 [json_name="read"];
-    optional Author author = 659 [json_name="author"];
-    optional map<string, string> meta = 423 [json_name="meta"];
-    optional Timestamp sendDate = 808 [json_name="sendDate"];
-    optional Timestamp readDate = 794 [json_name="readDate"];
-    optional float price = 531 [json_name="price"];
-    optional int64 rating = 645 [json_name="rating"];
-    optional string content = 763 [json_name="content"];
-    optional string question = 888 [json_name="question"];
-    optional string version = 774 [json_name="version"];
-    optional string coffeeTime = 1015 [json_name="coffeeTime"];
-    optional string captcha = 2011 [json_name="g-recaptcha-response"];
-    optional string mediaFields = 1189 [json_name="media.fields"];
-    optional Any payload = 746 [json_name="payload"];
+    optional map<string, string> config = 178760701 [json_name="config"];
+    optional map<string, string> inlineConfig = 215698315 [json_name="inlineConfig"];
+    optional map<string, string> mapTags = 14364631 [json_name="mapTags"];
+    optional map<string, Author> mapReceiver = 167282547 [json_name="mapReceiver"];
+    optional repeated string tags = 174057145 [json_name="tags"];
+    optional repeated Author receiver = 176067080 [json_name="receiver"];
+    optional bool read = 199096954 [json_name="read"];
+    optional Author author = 244171887 [json_name="author"];
+    optional map<string, string> meta = 155201724 [json_name="meta"];
+    optional Timestamp sendDate = 133269890 [json_name="sendDate"];
+    optional Timestamp readDate = 10547211 [json_name="readDate"];
+    optional float price = 54294786 [json_name="price"];
+    optional int64 rating = 126276291 [json_name="rating"];
+    optional string content = 258011200 [json_name="content"];
+    optional string question = 237941427 [json_name="question"];
+    optional string version = 57813356 [json_name="version"];
+    optional string coffeeTime = 145564454 [json_name="coffeeTime"];
+    optional string captcha = 21415284 [json_name="g-recaptcha-response"];
+    optional string mediaFields = 83269706 [json_name="media.fields"];
+    optional Any payload = 145090319 [json_name="payload"];
 }
 
