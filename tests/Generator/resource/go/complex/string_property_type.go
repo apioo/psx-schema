@@ -1,10 +1,10 @@
 
 // Represents a string value
 type StringPropertyType struct {
-    Description string `json:"description"`
-    Type string `json:"type"`
     Deprecated bool `json:"deprecated"`
+    Description string `json:"description"`
     Nullable bool `json:"nullable"`
+    Type string `json:"type"`
     Format string `json:"format"`
 }
 

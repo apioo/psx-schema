@@ -6,21 +6,11 @@ import com.fasterxml.jackson.annotation.*;
  * A struct represents a class/structure with a fix set of defined properties.
  */
 public class StructDefinitionType extends DefinitionType {
-    private ReferencePropertyType parent;
     private Boolean base;
-    private java.util.Map<String, PropertyType> properties;
     private String discriminator;
     private java.util.Map<String, String> mapping;
-
-    @JsonSetter("parent")
-    public void setParent(ReferencePropertyType parent) {
-        this.parent = parent;
-    }
-
-    @JsonGetter("parent")
-    public ReferencePropertyType getParent() {
-        return this.parent;
-    }
+    private ReferencePropertyType parent;
+    private java.util.Map<String, PropertyType> properties;
 
     @JsonSetter("base")
     public void setBase(Boolean base) {
@@ -30,16 +20,6 @@ public class StructDefinitionType extends DefinitionType {
     @JsonGetter("base")
     public Boolean getBase() {
         return this.base;
-    }
-
-    @JsonSetter("properties")
-    public void setProperties(java.util.Map<String, PropertyType> properties) {
-        this.properties = properties;
-    }
-
-    @JsonGetter("properties")
-    public java.util.Map<String, PropertyType> getProperties() {
-        return this.properties;
     }
 
     @JsonSetter("discriminator")
@@ -60,6 +40,26 @@ public class StructDefinitionType extends DefinitionType {
     @JsonGetter("mapping")
     public java.util.Map<String, String> getMapping() {
         return this.mapping;
+    }
+
+    @JsonSetter("parent")
+    public void setParent(ReferencePropertyType parent) {
+        this.parent = parent;
+    }
+
+    @JsonGetter("parent")
+    public ReferencePropertyType getParent() {
+        return this.parent;
+    }
+
+    @JsonSetter("properties")
+    public void setProperties(java.util.Map<String, PropertyType> properties) {
+        this.properties = properties;
+    }
+
+    @JsonGetter("properties")
+    public java.util.Map<String, PropertyType> getProperties() {
+        return this.properties;
     }
 }
 

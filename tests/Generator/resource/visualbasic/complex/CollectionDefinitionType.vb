@@ -6,5 +6,8 @@ Public Class CollectionDefinitionType
     <JsonPropertyName("schema")>
     Public Property Schema As PropertyType
 
+    <JsonPropertyName("type")>
+    Public Property Type As String
+
 End Class
 

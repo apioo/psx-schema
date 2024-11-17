@@ -10,12 +10,14 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base collection type')]
 #[Discriminator('type')]
-#[DerivedType(MapDefinitionType::class, 'map')]
 #[DerivedType(ArrayDefinitionType::class, 'array')]
+#[DerivedType(MapDefinitionType::class, 'map')]
 abstract class CollectionDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
     protected ?PropertyType $schema = null;
+    #[Description('')]
+    protected ?string $type = null;
     public function setSchema(?PropertyType $schema) : void
     {
         $this->schema = $schema;
@@ -24,11 +26,20 @@ abstract class CollectionDefinitionType extends DefinitionType implements \JsonS
     {
         return $this->schema;
     }
+    public function setType(?string $type) : void
+    {
+        $this->type = $type;
+    }
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
     public function toRecord() : \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
         $record->put('schema', $this->schema);
+        $record->put('type', $this->type);
         return $record;
     }
     public function jsonSerialize() : object

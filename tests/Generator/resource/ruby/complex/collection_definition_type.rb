@@ -2,10 +2,11 @@
 # Base collection type
 class CollectionDefinitionType
   extend DefinitionType
-  attr_accessor :schema
+  attr_accessor :schema, :type
 
-  def initialize(schema)
+  def initialize(schema, type)
     @schema = schema
+    @type = type
   end
 end
 

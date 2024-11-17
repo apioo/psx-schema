@@ -1,9 +1,9 @@
 
 // Represents a float value
 type NumberPropertyType struct {
-    Description string `json:"description"`
     Type string `json:"type"`
     Deprecated bool `json:"deprecated"`
+    Description string `json:"description"`
     Nullable bool `json:"nullable"`
 }
 

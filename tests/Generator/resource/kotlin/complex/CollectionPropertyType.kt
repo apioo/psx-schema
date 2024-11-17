@@ -6,5 +6,6 @@ import com.fasterxml.jackson.annotation.*
  */
 open abstract class CollectionPropertyType : PropertyType {
     @JsonProperty("schema") var schema: PropertyType? = null
+    @JsonProperty("type") var type: String? = null
 }
 

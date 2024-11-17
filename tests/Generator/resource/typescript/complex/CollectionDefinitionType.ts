@@ -1,5 +1,5 @@
-import {MapDefinitionType} from "./MapDefinitionType";
 import {ArrayDefinitionType} from "./ArrayDefinitionType";
+import {MapDefinitionType} from "./MapDefinitionType";
 import {DefinitionType} from "./DefinitionType";
 import {PropertyType} from "./PropertyType";
 
@@ -8,5 +8,6 @@ import {PropertyType} from "./PropertyType";
  */
 export interface CollectionDefinitionType extends DefinitionType {
     schema?: PropertyType
+    type?: string
 }
 

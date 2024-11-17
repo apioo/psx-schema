@@ -1,3 +1,5 @@
+import {ArrayPropertyType} from "./ArrayPropertyType";
+import {MapPropertyType} from "./MapPropertyType";
 import {PropertyType} from "./PropertyType";
 
 /**
@@ -5,5 +7,6 @@ import {PropertyType} from "./PropertyType";
  */
 export interface CollectionPropertyType extends PropertyType {
     schema?: PropertyType
+    type?: string
 }
 

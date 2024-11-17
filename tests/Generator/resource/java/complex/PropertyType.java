@@ -7,41 +7,21 @@ import com.fasterxml.jackson.annotation.*;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
-    @JsonSubTypes.Type(value = IntegerPropertyType.class, name = "integer"),
-    @JsonSubTypes.Type(value = NumberPropertyType.class, name = "number"),
-    @JsonSubTypes.Type(value = BooleanPropertyType.class, name = "boolean"),
-    @JsonSubTypes.Type(value = MapPropertyType.class, name = "map"),
-    @JsonSubTypes.Type(value = ArrayPropertyType.class, name = "array"),
     @JsonSubTypes.Type(value = AnyPropertyType.class, name = "any"),
+    @JsonSubTypes.Type(value = ArrayPropertyType.class, name = "array"),
+    @JsonSubTypes.Type(value = BooleanPropertyType.class, name = "boolean"),
     @JsonSubTypes.Type(value = GenericPropertyType.class, name = "generic"),
+    @JsonSubTypes.Type(value = IntegerPropertyType.class, name = "integer"),
+    @JsonSubTypes.Type(value = MapPropertyType.class, name = "map"),
+    @JsonSubTypes.Type(value = NumberPropertyType.class, name = "number"),
     @JsonSubTypes.Type(value = ReferencePropertyType.class, name = "reference"),
+    @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
 })
 public abstract class PropertyType {
-    private String description;
-    private String type;
     private Boolean deprecated;
+    private String description;
     private Boolean nullable;
-
-    @JsonSetter("description")
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @JsonGetter("description")
-    public String getDescription() {
-        return this.description;
-    }
-
-    @JsonSetter("type")
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @JsonGetter("type")
-    public String getType() {
-        return this.type;
-    }
+    private String type;
 
     @JsonSetter("deprecated")
     public void setDeprecated(Boolean deprecated) {
@@ -53,6 +33,16 @@ public abstract class PropertyType {
         return this.deprecated;
     }
 
+    @JsonSetter("description")
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @JsonGetter("description")
+    public String getDescription() {
+        return this.description;
+    }
+
     @JsonSetter("nullable")
     public void setNullable(Boolean nullable) {
         this.nullable = nullable;
@@ -61,6 +51,16 @@ public abstract class PropertyType {
     @JsonGetter("nullable")
     public Boolean getNullable() {
         return this.nullable;
+    }
+
+    @JsonSetter("type")
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @JsonGetter("type")
+    public String getType() {
+        return this.type;
     }
 }
 

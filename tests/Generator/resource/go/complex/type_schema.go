@@ -1,8 +1,8 @@
 
 // TypeSchema specification
 type TypeSchema struct {
-    Import map[string]string `json:"import"`
     Definitions map[string]DefinitionType `json:"definitions"`
+    Import map[string]string `json:"import"`
     Root string `json:"root"`
 }
 

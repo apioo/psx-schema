@@ -2,14 +2,14 @@
 # A struct represents a class/structure with a fix set of defined properties.
 class StructDefinitionType
   extend DefinitionType
-  attr_accessor :parent, :base, :properties, :discriminator, :mapping
+  attr_accessor :base, :discriminator, :mapping, :parent, :properties
 
-  def initialize(parent, base, properties, discriminator, mapping)
-    @parent = parent
+  def initialize(base, discriminator, mapping, parent, properties)
     @base = base
-    @properties = properties
     @discriminator = discriminator
     @mapping = mapping
+    @parent = parent
+    @properties = properties
   end
 end
 

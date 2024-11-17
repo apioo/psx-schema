@@ -6,8 +6,8 @@ from .definition_type import DefinitionType
 
 # TypeSchema specification
 class TypeSchema(BaseModel):
-    import_: Optional[Dict[str, str]] = Field(default=None, alias="import")
     definitions: Optional[Dict[str, DefinitionType]] = Field(default=None, alias="definitions")
+    import_: Optional[Dict[str, str]] = Field(default=None, alias="import")
     root: Optional[str] = Field(default=None, alias="root")
     pass
 

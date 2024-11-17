@@ -4,13 +4,20 @@ declare(strict_types = 1);
 
 namespace TypeAPI\Model;
 
+use PSX\Schema\Attribute\DerivedType;
 use PSX\Schema\Attribute\Description;
+use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base collection property type')]
+#[Discriminator('type')]
+#[DerivedType(ArrayPropertyType::class, 'array')]
+#[DerivedType(MapPropertyType::class, 'map')]
 abstract class CollectionPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('')]
     protected ?PropertyType $schema = null;
+    #[Description('')]
+    protected ?string $type = null;
     public function setSchema(?PropertyType $schema) : void
     {
         $this->schema = $schema;
@@ -19,11 +26,20 @@ abstract class CollectionPropertyType extends PropertyType implements \JsonSeria
     {
         return $this->schema;
     }
+    public function setType(?string $type) : void
+    {
+        $this->type = $type;
+    }
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
     public function toRecord() : \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
         $record->put('schema', $this->schema);
+        $record->put('type', $this->type);
         return $record;
     }
     public function jsonSerialize() : object

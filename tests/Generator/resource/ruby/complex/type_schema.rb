@@ -1,11 +1,11 @@
 
 # TypeSchema specification
 class TypeSchema
-  attr_accessor :import, :definitions, :root
+  attr_accessor :definitions, :import, :root
 
-  def initialize(import, definitions, root)
-    @import = import
+  def initialize(definitions, import, root)
     @definitions = definitions
+    @import = import
     @root = root
   end
 end

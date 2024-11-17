@@ -1,10 +1,10 @@
 
 // Represents an array which contains a dynamic list of values of the same type
 type ArrayPropertyType struct {
-    Description string `json:"description"`
+    Schema *PropertyType `json:"schema"`
     Type string `json:"type"`
     Deprecated bool `json:"deprecated"`
+    Description string `json:"description"`
     Nullable bool `json:"nullable"`
-    Schema *PropertyType `json:"schema"`
 }
 

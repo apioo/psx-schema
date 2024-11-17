@@ -8,29 +8,6 @@
                 "target": "PropertyType"
             }
         },
-        "Argument": {
-            "description": "",
-            "type": "struct",
-            "properties": {
-                "in": {
-                    "description": "The location where the value can be found either in the path, query, header or body. If you choose path, then your path must have a fitting variable path fragment",
-                    "type": "string"
-                },
-                "schema": {
-                    "description": "",
-                    "type": "reference",
-                    "target": "PropertyType"
-                },
-                "contentType": {
-                    "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Optional the actual path, query or header name. If not provided the key of the argument map is used",
-                    "type": "string"
-                }
-            }
-        },
         "ArrayDefinitionType": {
             "description": "Represents an array which contains a dynamic list of values of the same type",
             "type": "struct",
@@ -68,12 +45,16 @@
                     "description": "",
                     "type": "reference",
                     "target": "PropertyType"
+                },
+                "type": {
+                    "description": "",
+                    "type": "string"
                 }
             },
             "discriminator": "type",
             "mapping": {
-                "MapDefinitionType": "map",
-                "ArrayDefinitionType": "array"
+                "ArrayDefinitionType": "array",
+                "MapDefinitionType": "map"
             }
         },
         "CollectionPropertyType": {
@@ -89,7 +70,16 @@
                     "description": "",
                     "type": "reference",
                     "target": "PropertyType"
+                },
+                "type": {
+                    "description": "",
+                    "type": "string"
                 }
+            },
+            "discriminator": "type",
+            "mapping": {
+                "ArrayPropertyType": "array",
+                "MapPropertyType": "map"
             }
         },
         "DefinitionType": {
@@ -97,21 +87,24 @@
             "type": "struct",
             "base": true,
             "properties": {
+                "deprecated": {
+                    "description": "",
+                    "type": "boolean"
+                },
                 "description": {
+                    "description": "",
                     "type": "string"
                 },
                 "type": {
+                    "description": "",
                     "type": "string"
-                },
-                "deprecated": {
-                    "type": "boolean"
                 }
             },
             "discriminator": "type",
             "mapping": {
-                "StructDefinitionType": "struct",
+                "ArrayDefinitionType": "array",
                 "MapDefinitionType": "map",
-                "ArrayDefinitionType": "array"
+                "StructDefinitionType": "struct"
             }
         },
         "GenericPropertyType": {
@@ -160,96 +153,39 @@
                 "target": "ScalarPropertyType"
             }
         },
-        "Operation": {
-            "description": "",
-            "type": "struct",
-            "properties": {
-                "method": {
-                    "description": "The HTTP method which is associated with this operation, must be a valid HTTP method i.e. GET, POST, PUT etc.",
-                    "type": "string"
-                },
-                "path": {
-                    "description": "The HTTP path which is associated with this operation. A path can also include variable path fragments i.e. /my/path/:year then you can map the variable year path fragment to a specific argument",
-                    "type": "string"
-                },
-                "return": {
-                    "description": "The return type of this operation. The return has also an assigned HTTP success status code which is by default 200",
-                    "type": "reference",
-                    "target": "Response"
-                },
-                "arguments": {
-                    "description": "All arguments provided to this operation. Each argument is mapped to a location from the HTTP request i.e. query or body",
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Argument"
-                    }
-                },
-                "throws": {
-                    "description": "All exceptional states which can occur in case the operation fails. Each exception is assigned to an HTTP error status code",
-                    "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Response"
-                    }
-                },
-                "description": {
-                    "description": "A short description of this operation. The generated code will include this description at the method so it is recommend to use simple alphanumeric characters and no new lines",
-                    "type": "string"
-                },
-                "stability": {
-                    "description": "Indicates the stability of this operation: 0 - Deprecated, 1 - Experimental, 2 - Stable, 3 - Legacy. If not explicit provided the operation is by default experimental.",
-                    "type": "integer"
-                },
-                "security": {
-                    "description": "An array of scopes which are required to access this operation",
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "authorization": {
-                    "description": "Indicates whether this operation needs authorization, if set to false the client will not send an authorization header, default it is true",
-                    "type": "boolean"
-                },
-                "tags": {
-                    "description": "Optional an array of tags to group operations",
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "PropertyType": {
             "description": "Base property type",
             "type": "struct",
             "base": true,
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
                 "deprecated": {
+                    "description": "",
                     "type": "boolean"
+                },
+                "description": {
+                    "description": "",
+                    "type": "string"
                 },
                 "nullable": {
+                    "description": "",
                     "type": "boolean"
+                },
+                "type": {
+                    "description": "",
+                    "type": "string"
                 }
             },
             "discriminator": "type",
             "mapping": {
-                "StringPropertyType": "string",
-                "IntegerPropertyType": "integer",
-                "NumberPropertyType": "number",
-                "BooleanPropertyType": "boolean",
-                "MapPropertyType": "map",
-                "ArrayPropertyType": "array",
                 "AnyPropertyType": "any",
+                "ArrayPropertyType": "array",
+                "BooleanPropertyType": "boolean",
                 "GenericPropertyType": "generic",
-                "ReferencePropertyType": "reference"
+                "IntegerPropertyType": "integer",
+                "MapPropertyType": "map",
+                "NumberPropertyType": "number",
+                "ReferencePropertyType": "reference",
+                "StringPropertyType": "string"
             }
         },
         "ReferencePropertyType": {
@@ -273,25 +209,6 @@
                 }
             }
         },
-        "Response": {
-            "description": "",
-            "type": "struct",
-            "properties": {
-                "code": {
-                    "description": "The associated HTTP response code. For error responses it is possible to use the 499, 599 or 999 status code to catch all errors",
-                    "type": "integer"
-                },
-                "contentType": {
-                    "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-                    "type": "string"
-                },
-                "schema": {
-                    "description": "",
-                    "type": "reference",
-                    "target": "PropertyType"
-                }
-            }
-        },
         "ScalarPropertyType": {
             "description": "Base scalar property type",
             "type": "struct",
@@ -300,85 +217,18 @@
                 "target": "PropertyType"
             },
             "base": true,
-            "discriminator": "type",
-            "mapping": {
-                "StringPropertyType": "string",
-                "IntegerPropertyType": "integer",
-                "NumberPropertyType": "number",
-                "BooleanPropertyType": "boolean"
-            }
-        },
-        "Security": {
-            "description": "",
-            "type": "struct",
-            "base": true,
             "properties": {
                 "type": {
-                    "description": "The global security type of the API must be one of: httpBasic, httpBearer, apiKey or oauth2",
+                    "description": "",
                     "type": "string"
                 }
             },
             "discriminator": "type",
             "mapping": {
-                "SecurityHttpBasic": "httpBasic",
-                "SecurityHttpBearer": "httpBearer",
-                "SecurityApiKey": "apiKey",
-                "SecurityOAuth": "oauth2"
-            }
-        },
-        "SecurityApiKey": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            },
-            "properties": {
-                "name": {
-                    "description": "The name of the header or query parameter i.e. \"X-Api-Key\"",
-                    "type": "string"
-                },
-                "in": {
-                    "description": "Must be either \"header\" or \"query\"",
-                    "type": "string"
-                }
-            }
-        },
-        "SecurityHttpBasic": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            }
-        },
-        "SecurityHttpBearer": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            }
-        },
-        "SecurityOAuth": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            },
-            "properties": {
-                "tokenUrl": {
-                    "description": "The OAuth2 token endpoint",
-                    "type": "string"
-                },
-                "authorizationUrl": {
-                    "description": "Optional the OAuth2 authorization endpoint",
-                    "type": "string"
-                },
-                "scopes": {
-                    "description": "Optional OAuth2 scopes",
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                }
+                "BooleanPropertyType": "boolean",
+                "IntegerPropertyType": "integer",
+                "NumberPropertyType": "number",
+                "StringPropertyType": "string"
             }
         },
         "StringPropertyType": {
@@ -403,22 +253,9 @@
                 "target": "DefinitionType"
             },
             "properties": {
-                "parent": {
-                    "description": "Defines a parent type for this structure. Some programming languages like Go do not support the concept of an extends, in this case the code generator simply copies all properties into this structure.",
-                    "type": "reference",
-                    "target": "ReferencePropertyType"
-                },
                 "base": {
                     "description": "Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure.",
                     "type": "boolean"
-                },
-                "properties": {
-                    "description": "Contains a map of available properties for this struct.",
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "PropertyType"
-                    }
                 },
                 "discriminator": {
                     "description": "Optional the property name of a discriminator property. This should be only used in case this is also a base structure.",
@@ -430,32 +267,18 @@
                     "schema": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "TypeAPI": {
-            "description": "The TypeAPI Root",
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "TypeSchema"
-            },
-            "properties": {
-                "baseUrl": {
-                    "description": "Optional the base url of the service, if provided the user does not need to provide a base url for your client",
-                    "type": "string"
                 },
-                "security": {
-                    "description": "Describes the authorization mechanism which is used by your API",
+                "parent": {
+                    "description": "Defines a parent type for this structure. Some programming languages like Go do not support the concept of an extends, in this case the code generator simply copies all properties into this structure.",
                     "type": "reference",
-                    "target": "Security"
+                    "target": "ReferencePropertyType"
                 },
-                "operations": {
-                    "description": "A map of operations which are provided by the API. The key of the operation should be separated by a dot to group operations into logical units i.e. product.getAll or enterprise.product.execute",
+                "properties": {
+                    "description": "Contains a map of available properties for this struct.",
                     "type": "map",
                     "schema": {
                         "type": "reference",
-                        "target": "Operation"
+                        "target": "PropertyType"
                     }
                 }
             }
@@ -464,18 +287,19 @@
             "description": "TypeSchema specification",
             "type": "struct",
             "properties": {
+                "definitions": {
+                    "description": "",
+                    "type": "map",
+                    "schema": {
+                        "type": "reference",
+                        "target": "DefinitionType"
+                    }
+                },
                 "import": {
                     "description": "Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.",
                     "type": "map",
                     "schema": {
                         "type": "string"
-                    }
-                },
-                "definitions": {
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "DefinitionType"
                     }
                 },
                 "root": {
@@ -484,6 +308,5 @@
                 }
             }
         }
-    },
-    "root": "TypeAPI"
+    }
 }

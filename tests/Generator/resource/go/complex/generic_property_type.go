@@ -1,10 +1,10 @@
 
 // Represents a generic value which can be replaced with a dynamic type
 type GenericPropertyType struct {
-    Description string `json:"description"`
-    Type string `json:"type"`
     Deprecated bool `json:"deprecated"`
+    Description string `json:"description"`
     Nullable bool `json:"nullable"`
+    Type string `json:"type"`
     Name string `json:"name"`
 }
 

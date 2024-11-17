@@ -20,11 +20,13 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
@@ -86,8 +88,15 @@ class CSharp extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
+            // in case we override an existing property we need to use the new keyword s.
+            // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier
+            $override = '';
+            if ($this->hasPropertyInParent($property->getName()->getRaw(), $origin->getParent())) {
+                $override = 'new ';
+            }
+
             $code.= $this->indent . '[JsonPropertyName("' . $property->getName()->getRaw() . '")]' . "\n";
-            $code.= $this->indent . 'public ' . $property->getType() . '? ' . $property->getName()->getProperty() . ' { get; set; }' . "\n";
+            $code.= $this->indent . 'public ' . $override . $property->getType() . '? ' . $property->getName()->getProperty() . ' { get; set; }' . "\n";
             $code.= "\n";
         }
 
@@ -150,5 +159,27 @@ class CSharp extends CodeGeneratorAbstract
         }
 
         return $imports;
+    }
+
+    /**
+     * @throws TypeNotFoundException
+     */
+    private function hasPropertyInParent(string $propertyName, ?ReferencePropertyType $reference): bool
+    {
+        $target = $reference?->getTarget();
+        if (empty($target)) {
+            return false;
+        }
+
+        $parent = $this->definitions->getType($target);
+        if (!$parent instanceof StructDefinitionType) {
+            return false;
+        }
+
+        if ($parent->hasProperty($propertyName)) {
+            return true;
+        }
+
+        return $this->hasPropertyInParent($propertyName, $parent->getParent());
     }
 }

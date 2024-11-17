@@ -10,30 +10,17 @@ use PSX\Schema\Attribute\Description;
 class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     /**
+     * @var \PSX\Record\Record<DefinitionType>|null
+     */
+    #[Description('')]
+    protected ?\PSX\Record\Record $definitions = null;
+    /**
      * @var \PSX\Record\Record<string>|null
      */
     #[Description('Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.')]
     protected ?\PSX\Record\Record $import = null;
-    /**
-     * @var \PSX\Record\Record<DefinitionType>|null
-     */
-    protected ?\PSX\Record\Record $definitions = null;
     #[Description('Specifies the root type of your specification.')]
     protected ?string $root = null;
-    /**
-     * @param \PSX\Record\Record<string>|null $import
-     */
-    public function setImport(?\PSX\Record\Record $import) : void
-    {
-        $this->import = $import;
-    }
-    /**
-     * @return \PSX\Record\Record<string>|null
-     */
-    public function getImport() : ?\PSX\Record\Record
-    {
-        return $this->import;
-    }
     /**
      * @param \PSX\Record\Record<DefinitionType>|null $definitions
      */
@@ -48,6 +35,20 @@ class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->definitions;
     }
+    /**
+     * @param \PSX\Record\Record<string>|null $import
+     */
+    public function setImport(?\PSX\Record\Record $import) : void
+    {
+        $this->import = $import;
+    }
+    /**
+     * @return \PSX\Record\Record<string>|null
+     */
+    public function getImport() : ?\PSX\Record\Record
+    {
+        return $this->import;
+    }
     public function setRoot(?string $root) : void
     {
         $this->root = $root;
@@ -60,8 +61,8 @@ class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
-        $record->put('import', $this->import);
         $record->put('definitions', $this->definitions);
+        $record->put('import', $this->import);
         $record->put('root', $this->root);
         return $record;
     }

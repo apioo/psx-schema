@@ -10,37 +10,25 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base property type')]
 #[Discriminator('type')]
-#[DerivedType(StringPropertyType::class, 'string')]
-#[DerivedType(IntegerPropertyType::class, 'integer')]
-#[DerivedType(NumberPropertyType::class, 'number')]
-#[DerivedType(BooleanPropertyType::class, 'boolean')]
-#[DerivedType(MapPropertyType::class, 'map')]
-#[DerivedType(ArrayPropertyType::class, 'array')]
 #[DerivedType(AnyPropertyType::class, 'any')]
+#[DerivedType(ArrayPropertyType::class, 'array')]
+#[DerivedType(BooleanPropertyType::class, 'boolean')]
 #[DerivedType(GenericPropertyType::class, 'generic')]
+#[DerivedType(IntegerPropertyType::class, 'integer')]
+#[DerivedType(MapPropertyType::class, 'map')]
+#[DerivedType(NumberPropertyType::class, 'number')]
 #[DerivedType(ReferencePropertyType::class, 'reference')]
+#[DerivedType(StringPropertyType::class, 'string')]
 abstract class PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $description = null;
-    protected ?string $type = null;
+    #[Description('')]
     protected ?bool $deprecated = null;
+    #[Description('')]
+    protected ?string $description = null;
+    #[Description('')]
     protected ?bool $nullable = null;
-    public function setDescription(?string $description) : void
-    {
-        $this->description = $description;
-    }
-    public function getDescription() : ?string
-    {
-        return $this->description;
-    }
-    public function setType(?string $type) : void
-    {
-        $this->type = $type;
-    }
-    public function getType() : ?string
-    {
-        return $this->type;
-    }
+    #[Description('')]
+    protected ?string $type = null;
     public function setDeprecated(?bool $deprecated) : void
     {
         $this->deprecated = $deprecated;
@@ -48,6 +36,14 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
     public function getDeprecated() : ?bool
     {
         return $this->deprecated;
+    }
+    public function setDescription(?string $description) : void
+    {
+        $this->description = $description;
+    }
+    public function getDescription() : ?string
+    {
+        return $this->description;
     }
     public function setNullable(?bool $nullable) : void
     {
@@ -57,14 +53,22 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
     {
         return $this->nullable;
     }
+    public function setType(?string $type) : void
+    {
+        $this->type = $type;
+    }
+    public function getType() : ?string
+    {
+        return $this->type;
+    }
     public function toRecord() : \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
-        $record->put('description', $this->description);
-        $record->put('type', $this->type);
         $record->put('deprecated', $this->deprecated);
+        $record->put('description', $this->description);
         $record->put('nullable', $this->nullable);
+        $record->put('type', $this->type);
         return $record;
     }
     public function jsonSerialize() : object

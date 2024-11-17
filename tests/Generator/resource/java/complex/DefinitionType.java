@@ -7,14 +7,24 @@ import com.fasterxml.jackson.annotation.*;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = StructDefinitionType.class, name = "struct"),
-    @JsonSubTypes.Type(value = MapDefinitionType.class, name = "map"),
     @JsonSubTypes.Type(value = ArrayDefinitionType.class, name = "array"),
+    @JsonSubTypes.Type(value = MapDefinitionType.class, name = "map"),
+    @JsonSubTypes.Type(value = StructDefinitionType.class, name = "struct"),
 })
 public abstract class DefinitionType {
+    private Boolean deprecated;
     private String description;
     private String type;
-    private Boolean deprecated;
+
+    @JsonSetter("deprecated")
+    public void setDeprecated(Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+    @JsonGetter("deprecated")
+    public Boolean getDeprecated() {
+        return this.deprecated;
+    }
 
     @JsonSetter("description")
     public void setDescription(String description) {
@@ -34,16 +44,6 @@ public abstract class DefinitionType {
     @JsonGetter("type")
     public String getType() {
         return this.type;
-    }
-
-    @JsonSetter("deprecated")
-    public void setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-    }
-
-    @JsonGetter("deprecated")
-    public Boolean getDeprecated() {
-        return this.deprecated;
     }
 }
 

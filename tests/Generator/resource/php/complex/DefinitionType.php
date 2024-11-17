@@ -10,14 +10,25 @@ use PSX\Schema\Attribute\Discriminator;
 
 #[Description('Base definition type')]
 #[Discriminator('type')]
-#[DerivedType(StructDefinitionType::class, 'struct')]
-#[DerivedType(MapDefinitionType::class, 'map')]
 #[DerivedType(ArrayDefinitionType::class, 'array')]
+#[DerivedType(MapDefinitionType::class, 'map')]
+#[DerivedType(StructDefinitionType::class, 'struct')]
 abstract class DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    protected ?string $description = null;
-    protected ?string $type = null;
+    #[Description('')]
     protected ?bool $deprecated = null;
+    #[Description('')]
+    protected ?string $description = null;
+    #[Description('')]
+    protected ?string $type = null;
+    public function setDeprecated(?bool $deprecated) : void
+    {
+        $this->deprecated = $deprecated;
+    }
+    public function getDeprecated() : ?bool
+    {
+        return $this->deprecated;
+    }
     public function setDescription(?string $description) : void
     {
         $this->description = $description;
@@ -34,21 +45,13 @@ abstract class DefinitionType implements \JsonSerializable, \PSX\Record\Recordab
     {
         return $this->type;
     }
-    public function setDeprecated(?bool $deprecated) : void
-    {
-        $this->deprecated = $deprecated;
-    }
-    public function getDeprecated() : ?bool
-    {
-        return $this->deprecated;
-    }
     public function toRecord() : \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
+        $record->put('deprecated', $this->deprecated);
         $record->put('description', $this->description);
         $record->put('type', $this->type);
-        $record->put('deprecated', $this->deprecated);
         return $record;
     }
     public function jsonSerialize() : object
