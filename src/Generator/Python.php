@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
@@ -147,9 +149,9 @@ class Python extends CodeGeneratorAbstract
     {
         $imports = [];
 
-        $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler';
+        $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler, Tag';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union';
 
         if ($origin instanceof MapDefinitionType) {
             $imports[] = 'from collections import UserDict';
@@ -168,7 +170,16 @@ class Python extends CodeGeneratorAbstract
         $refs = TypeUtil::findRefs($origin);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
-            $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
+
+            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
+                $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
+            } else {
+                if (!isset($this->mapping[$ns])) {
+                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
+                }
+
+                $imports[] = 'from ' . $this->mapping[$ns] . ' import ' . $this->normalizer->class($name);
+            }
         }
 
         return array_merge($imports, $this->getDiscriminatorImports($origin));

@@ -64,7 +64,7 @@ class PythonTest extends GeneratorTestCase
 
     public function testGenerateImport()
     {
-        $generator = new Python();
+        $generator = new Python(Config::of('app', ['my_import' => 'my.import']));
 
         $chunks = $generator->generate($this->getImportSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/python/import');
@@ -74,7 +74,7 @@ class PythonTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Python(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
+        $generator = new Python(Config::of('app', ['my_import' => 'my.import']));
 
         $chunks = $generator->generate($this->getImportSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/python/namespace');

@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Field, GetCoreSchemaHandler
+from pydantic import BaseModel, Field, GetCoreSchemaHandler, Tag
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar
-from .student_map import StudentMap
-from .student import Student
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
+from my.import import StudentMap
+from my.import import Student
 
 
 class Import(BaseModel):
