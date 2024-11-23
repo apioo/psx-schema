@@ -1,4 +1,4 @@
-import {Student} from "./My.Import/Student";
+import {Student} from "My.Import";
 
 export interface MyMap extends Student {
 }

@@ -1,5 +1,5 @@
-import {StudentMap} from "./My.Import/StudentMap";
-import {Student} from "./My.Import/Student";
+import {StudentMap} from "My.Import";
+import {Student} from "My.Import";
 
 export interface Import {
     students?: StudentMap
