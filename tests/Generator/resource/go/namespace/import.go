@@ -1,7 +1,9 @@
-package Foo.Bar
+package app
+
+import "github.com/apioo/my/import"
 
 type Import struct {
-    Students *My.Import.StudentMap `json:"students"`
-    Student *My.Import.Student `json:"student"`
+    Students *StudentMap `json:"students"`
+    Student *Student `json:"student"`
 }
 

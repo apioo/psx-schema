@@ -64,7 +64,7 @@ class GoTest extends GeneratorTestCase
 
     public function testGenerateImport()
     {
-        $generator = new Go();
+        $generator = new Go(Config::of('app', ['my_import' => 'github.com/apioo/my/import']));
 
         $chunks = $generator->generate($this->getImportSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/go/import');
@@ -74,7 +74,7 @@ class GoTest extends GeneratorTestCase
 
     public function testGenerateImportNamespace()
     {
-        $generator = new Go(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
+        $generator = new Go(Config::of('app', ['my_import' => 'github.com/apioo/my/import']));
 
         $chunks = $generator->generate($this->getImportSchema());
         $this->write($generator, $chunks, __DIR__ . '/resource/go/namespace');

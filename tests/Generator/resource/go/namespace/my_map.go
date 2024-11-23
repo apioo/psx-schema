@@ -1,8 +1,10 @@
-package Foo.Bar
+package app
+
+import "github.com/apioo/my/import"
 
 type MyMap struct {
     MatricleNumber string `json:"matricleNumber"`
     FirstName string `json:"firstName"`
-    Parent *My.Import.HumanType `json:"parent"`
+    Parent *HumanType `json:"parent"`
 }
 

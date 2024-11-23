@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\DefinitionsInterface;
+use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
@@ -27,6 +29,7 @@ use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
+use PSX\Schema\TypeUtil;
 
 /**
  * Go
@@ -103,6 +106,13 @@ class Go extends CodeGeneratorAbstract
             $code.= 'package ' . $this->namespace . "\n";
         }
 
+        $imports = $this->getImports($origin, $className);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
             $code.= "\n";
@@ -110,5 +120,30 @@ class Go extends CodeGeneratorAbstract
         }
 
         return $code;
+    }
+
+    private function getImports(DefinitionTypeAbstract $origin, Code\Name $className): array
+    {
+        $imports = [];
+        $refs = TypeUtil::findRefs($origin);
+        foreach ($refs as $ref) {
+            [$ns, $name] = TypeUtil::split($ref);
+
+            $typeName = $this->normalizer->class($name);
+            if ($typeName === $className->getClass()) {
+                // we dont need to include the same class
+                continue;
+            }
+
+            if ($ns !== DefinitionsInterface::SELF_NAMESPACE) {
+                if (!isset($this->mapping[$ns])) {
+                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
+                }
+
+                $imports[$ns] = 'import "' . $this->mapping[$ns] . '"';
+            }
+        }
+
+        return array_values($imports);
     }
 }
