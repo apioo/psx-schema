@@ -1,13 +1,13 @@
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * An simple author element with some description
- */
+@JsonClassDescription("An simple author element with some description")
 public class Author {
     private String title;
+    @JsonPropertyDescription("We will send no spam to this address")
     private String email;
     private java.util.List<String> categories;
+    @JsonPropertyDescription("Array of locations")
     private java.util.List<Location> locations;
     private Location origin;
 

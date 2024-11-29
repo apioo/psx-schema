@@ -2,15 +2,13 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * Base definition type
- */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ArrayDefinitionType.class, name = "array"),
     @JsonSubTypes.Type(value = MapDefinitionType.class, name = "map"),
     @JsonSubTypes.Type(value = StructDefinitionType.class, name = "struct"),
 })
+@JsonClassDescription("Base definition type")
 public abstract class DefinitionType {
     private Boolean deprecated;
     private String description;

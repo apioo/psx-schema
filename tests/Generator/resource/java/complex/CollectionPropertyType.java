@@ -2,14 +2,12 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * Base collection property type
- */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ArrayPropertyType.class, name = "array"),
     @JsonSubTypes.Type(value = MapPropertyType.class, name = "map"),
 })
+@JsonClassDescription("Base collection property type")
 public abstract class CollectionPropertyType extends PropertyType {
     private PropertyType schema;
     private String type;

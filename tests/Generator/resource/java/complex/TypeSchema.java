@@ -2,12 +2,12 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * TypeSchema specification
- */
+@JsonClassDescription("TypeSchema specification")
 public class TypeSchema {
     private java.util.Map<String, DefinitionType> definitions;
+    @JsonPropertyDescription("Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.")
     private java.util.Map<String, String> _import;
+    @JsonPropertyDescription("Specifies the root type of your specification.")
     private String root;
 
     @JsonSetter("definitions")

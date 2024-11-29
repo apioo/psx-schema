@@ -1,9 +1,7 @@
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * An general news entry
- */
+@JsonClassDescription("An general news entry")
 public class News {
     private Meta config;
     private java.util.Map<String, String> inlineConfig;
@@ -18,6 +16,7 @@ public class News {
     private java.time.LocalDateTime readDate;
     private Double price;
     private Integer rating;
+    @JsonPropertyDescription("Contains the main content of the news entry")
     private String content;
     private String question;
     private String version;

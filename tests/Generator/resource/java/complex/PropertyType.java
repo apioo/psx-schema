@@ -2,9 +2,6 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * Base property type
- */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AnyPropertyType.class, name = "any"),
@@ -17,6 +14,7 @@ import com.fasterxml.jackson.annotation.*;
     @JsonSubTypes.Type(value = ReferencePropertyType.class, name = "reference"),
     @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
 })
+@JsonClassDescription("Base property type")
 public abstract class PropertyType {
     private Boolean deprecated;
     private String description;

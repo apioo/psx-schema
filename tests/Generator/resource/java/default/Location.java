@@ -1,9 +1,7 @@
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * Location of the person
- */
+@JsonClassDescription("Location of the person")
 public class Location {
     private Double lat;
     private Double _long;

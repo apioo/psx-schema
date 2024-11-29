@@ -2,9 +2,6 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-/**
- * Base scalar property type
- */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = BooleanPropertyType.class, name = "boolean"),
@@ -12,6 +9,7 @@ import com.fasterxml.jackson.annotation.*;
     @JsonSubTypes.Type(value = NumberPropertyType.class, name = "number"),
     @JsonSubTypes.Type(value = StringPropertyType.class, name = "string"),
 })
+@JsonClassDescription("Base scalar property type")
 public abstract class ScalarPropertyType extends PropertyType {
     private String type;
 
