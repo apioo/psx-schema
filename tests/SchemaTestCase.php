@@ -22,6 +22,7 @@ namespace PSX\Schema\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Generator\TypeSchema;
+use PSX\Schema\SchemaInterface;
 use PSX\Schema\SchemaManager;
 
 /**
@@ -40,12 +41,12 @@ abstract class SchemaTestCase extends TestCase
         $this->schemaManager = new SchemaManager();
     }
 
-    protected function getSchema()
+    protected function getSchema(): SchemaInterface
     {
         return $this->schemaManager->getSchema(TestSchema::class);
     }
 
-    protected function assertSchema($leftSchema, $rightSchema)
+    protected function assertSchema(SchemaInterface $leftSchema, SchemaInterface $rightSchema): void
     {
         $generator = new TypeSchema();
 
@@ -53,5 +54,13 @@ abstract class SchemaTestCase extends TestCase
         $actual = $generator->generate($rightSchema);
 
         $this->assertJsonStringEqualsJsonString($expect, $actual);
+    }
+
+    protected function assertSchemaAttributes(SchemaInterface $leftSchema, SchemaInterface $rightSchema): void
+    {
+        foreach ($leftSchema->getDefinitions()->getTypes() as $typeName => $leftType) {
+            $rightType = $rightSchema->getDefinitions()->getType($typeName);
+            $this->assertSame($leftType->getAttributes(), $rightType->getAttributes());
+        }
     }
 }

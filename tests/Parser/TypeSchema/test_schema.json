@@ -30,7 +30,8 @@
           "type": "reference",
           "target": "Location"
         }
-      }
+      },
+      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Author"
     },
     "Location": {
       "description": "Location of the person",
@@ -42,13 +43,15 @@
         "long": {
           "type": "number"
         }
-      }
+      },
+      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Location"
     },
     "Meta": {
       "type": "object",
       "additionalProperties": {
         "type": "string"
-      }
+      },
+      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\Meta"
     },
     "News": {
       "description": "An general news entry",
@@ -133,6 +136,10 @@
         "payload": {
           "type": "any"
         }
+      },
+      "x-psx-class": "PSX\\Schema\\Tests\\Parser\\Popo\\News",
+      "x-psx-mapping": {
+        "g-recaptcha-response": "captcha"
       }
     }
   },

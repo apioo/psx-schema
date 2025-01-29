@@ -52,6 +52,10 @@ class BCLayer
             $data->type = 'struct';
         }
 
+        if (isset($data->{'x-psx-mapping'}) && $data->{'x-psx-mapping'} instanceof \stdClass) {
+            $data->{'x-psx-mapping'} = (array) $data->{'x-psx-mapping'};
+        }
+
         if (!isset($data->type)) {
             if (isset($data->additionalProperties) || isset($data->schema)) {
                 $data->type = 'map';

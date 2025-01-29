@@ -47,6 +47,7 @@ class TypeSchemaTest extends ParserTestCase
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema.json');
 
         $this->assertSchema($this->getSchema(), $schema);
+        $this->assertSchemaAttributes($this->getSchema(), $schema);
     }
 
     public function testParseTypeSchema()
