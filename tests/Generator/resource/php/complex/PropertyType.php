@@ -29,39 +29,39 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
     protected ?bool $nullable = null;
     #[Description('')]
     protected ?string $type = null;
-    public function setDeprecated(?bool $deprecated) : void
+    public function setDeprecated(?bool $deprecated): void
     {
         $this->deprecated = $deprecated;
     }
-    public function getDeprecated() : ?bool
+    public function getDeprecated(): ?bool
     {
         return $this->deprecated;
     }
-    public function setDescription(?string $description) : void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
-    public function getDescription() : ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
-    public function setNullable(?bool $nullable) : void
+    public function setNullable(?bool $nullable): void
     {
         $this->nullable = $nullable;
     }
-    public function getNullable() : ?bool
+    public function getNullable(): ?bool
     {
         return $this->nullable;
     }
-    public function setType(?string $type) : void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
-    public function getType() : ?string
+    public function getType(): ?string
     {
         return $this->type;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -71,7 +71,7 @@ abstract class PropertyType implements \JsonSerializable, \PSX\Record\Recordable
         $record->put('type', $this->type);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

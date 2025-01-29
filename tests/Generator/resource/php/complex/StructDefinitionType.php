@@ -25,59 +25,59 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
      */
     #[Description('Contains a map of available properties for this struct.')]
     protected ?\PSX\Record\Record $properties = null;
-    public function setBase(?bool $base) : void
+    public function setBase(?bool $base): void
     {
         $this->base = $base;
     }
-    public function getBase() : ?bool
+    public function getBase(): ?bool
     {
         return $this->base;
     }
-    public function setDiscriminator(?string $discriminator) : void
+    public function setDiscriminator(?string $discriminator): void
     {
         $this->discriminator = $discriminator;
     }
-    public function getDiscriminator() : ?string
+    public function getDiscriminator(): ?string
     {
         return $this->discriminator;
     }
     /**
      * @param \PSX\Record\Record<string>|null $mapping
      */
-    public function setMapping(?\PSX\Record\Record $mapping) : void
+    public function setMapping(?\PSX\Record\Record $mapping): void
     {
         $this->mapping = $mapping;
     }
     /**
      * @return \PSX\Record\Record<string>|null
      */
-    public function getMapping() : ?\PSX\Record\Record
+    public function getMapping(): ?\PSX\Record\Record
     {
         return $this->mapping;
     }
-    public function setParent(?ReferencePropertyType $parent) : void
+    public function setParent(?ReferencePropertyType $parent): void
     {
         $this->parent = $parent;
     }
-    public function getParent() : ?ReferencePropertyType
+    public function getParent(): ?ReferencePropertyType
     {
         return $this->parent;
     }
     /**
      * @param \PSX\Record\Record<PropertyType>|null $properties
      */
-    public function setProperties(?\PSX\Record\Record $properties) : void
+    public function setProperties(?\PSX\Record\Record $properties): void
     {
         $this->properties = $properties;
     }
     /**
      * @return \PSX\Record\Record<PropertyType>|null
      */
-    public function getProperties() : ?\PSX\Record\Record
+    public function getProperties(): ?\PSX\Record\Record
     {
         return $this->properties;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
@@ -88,7 +88,7 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
         $record->put('properties', $this->properties);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

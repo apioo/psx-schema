@@ -9,23 +9,23 @@ class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?float $lat = null;
     protected ?float $long = null;
-    public function setLat(?float $lat) : void
+    public function setLat(?float $lat): void
     {
         $this->lat = $lat;
     }
-    public function getLat() : ?float
+    public function getLat(): ?float
     {
         return $this->lat;
     }
-    public function setLong(?float $long) : void
+    public function setLong(?float $long): void
     {
         $this->long = $long;
     }
-    public function getLong() : ?float
+    public function getLong(): ?float
     {
         return $this->long;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -33,7 +33,7 @@ class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('long', $this->long);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

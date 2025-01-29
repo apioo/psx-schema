@@ -22,59 +22,59 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     #[Description('Array of locations')]
     protected ?array $locations = null;
     protected ?Location $origin = null;
-    public function setTitle(?string $title) : void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
-    public function getTitle() : ?string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
-    public function setEmail(?string $email) : void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
-    public function getEmail() : ?string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
     /**
      * @param array<string>|null $categories
      */
-    public function setCategories(?array $categories) : void
+    public function setCategories(?array $categories): void
     {
         $this->categories = $categories;
     }
     /**
      * @return array<string>|null
      */
-    public function getCategories() : ?array
+    public function getCategories(): ?array
     {
         return $this->categories;
     }
     /**
      * @param array<Location>|null $locations
      */
-    public function setLocations(?array $locations) : void
+    public function setLocations(?array $locations): void
     {
         $this->locations = $locations;
     }
     /**
      * @return array<Location>|null
      */
-    public function getLocations() : ?array
+    public function getLocations(): ?array
     {
         return $this->locations;
     }
-    public function setOrigin(?Location $origin) : void
+    public function setOrigin(?Location $origin): void
     {
         $this->origin = $origin;
     }
-    public function getOrigin() : ?Location
+    public function getOrigin(): ?Location
     {
         return $this->origin;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -85,7 +85,7 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('origin', $this->origin);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

@@ -21,31 +21,31 @@ abstract class DefinitionType implements \JsonSerializable, \PSX\Record\Recordab
     protected ?string $description = null;
     #[Description('')]
     protected ?string $type = null;
-    public function setDeprecated(?bool $deprecated) : void
+    public function setDeprecated(?bool $deprecated): void
     {
         $this->deprecated = $deprecated;
     }
-    public function getDeprecated() : ?bool
+    public function getDeprecated(): ?bool
     {
         return $this->deprecated;
     }
-    public function setDescription(?string $description) : void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
-    public function getDescription() : ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
-    public function setType(?string $type) : void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
-    public function getType() : ?string
+    public function getType(): ?string
     {
         return $this->type;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -54,7 +54,7 @@ abstract class DefinitionType implements \JsonSerializable, \PSX\Record\Recordab
         $record->put('type', $this->type);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

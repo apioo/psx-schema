@@ -46,197 +46,197 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     #[Key('media.fields')]
     protected ?string $mediaFields = null;
     protected mixed $payload = null;
-    public function setConfig(?Meta $config) : void
+    public function setConfig(?Meta $config): void
     {
         $this->config = $config;
     }
-    public function getConfig() : ?Meta
+    public function getConfig(): ?Meta
     {
         return $this->config;
     }
     /**
      * @param \PSX\Record\Record<string>|null $inlineConfig
      */
-    public function setInlineConfig(?\PSX\Record\Record $inlineConfig) : void
+    public function setInlineConfig(?\PSX\Record\Record $inlineConfig): void
     {
         $this->inlineConfig = $inlineConfig;
     }
     /**
      * @return \PSX\Record\Record<string>|null
      */
-    public function getInlineConfig() : ?\PSX\Record\Record
+    public function getInlineConfig(): ?\PSX\Record\Record
     {
         return $this->inlineConfig;
     }
     /**
      * @param \PSX\Record\Record<string>|null $mapTags
      */
-    public function setMapTags(?\PSX\Record\Record $mapTags) : void
+    public function setMapTags(?\PSX\Record\Record $mapTags): void
     {
         $this->mapTags = $mapTags;
     }
     /**
      * @return \PSX\Record\Record<string>|null
      */
-    public function getMapTags() : ?\PSX\Record\Record
+    public function getMapTags(): ?\PSX\Record\Record
     {
         return $this->mapTags;
     }
     /**
      * @param \PSX\Record\Record<Author>|null $mapReceiver
      */
-    public function setMapReceiver(?\PSX\Record\Record $mapReceiver) : void
+    public function setMapReceiver(?\PSX\Record\Record $mapReceiver): void
     {
         $this->mapReceiver = $mapReceiver;
     }
     /**
      * @return \PSX\Record\Record<Author>|null
      */
-    public function getMapReceiver() : ?\PSX\Record\Record
+    public function getMapReceiver(): ?\PSX\Record\Record
     {
         return $this->mapReceiver;
     }
     /**
      * @param array<string>|null $tags
      */
-    public function setTags(?array $tags) : void
+    public function setTags(?array $tags): void
     {
         $this->tags = $tags;
     }
     /**
      * @return array<string>|null
      */
-    public function getTags() : ?array
+    public function getTags(): ?array
     {
         return $this->tags;
     }
     /**
      * @param array<Author>|null $receiver
      */
-    public function setReceiver(?array $receiver) : void
+    public function setReceiver(?array $receiver): void
     {
         $this->receiver = $receiver;
     }
     /**
      * @return array<Author>|null
      */
-    public function getReceiver() : ?array
+    public function getReceiver(): ?array
     {
         return $this->receiver;
     }
-    public function setRead(?bool $read) : void
+    public function setRead(?bool $read): void
     {
         $this->read = $read;
     }
-    public function getRead() : ?bool
+    public function getRead(): ?bool
     {
         return $this->read;
     }
-    public function setAuthor(?Author $author) : void
+    public function setAuthor(?Author $author): void
     {
         $this->author = $author;
     }
-    public function getAuthor() : ?Author
+    public function getAuthor(): ?Author
     {
         return $this->author;
     }
-    public function setMeta(?Meta $meta) : void
+    public function setMeta(?Meta $meta): void
     {
         $this->meta = $meta;
     }
-    public function getMeta() : ?Meta
+    public function getMeta(): ?Meta
     {
         return $this->meta;
     }
-    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate) : void
+    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate): void
     {
         $this->sendDate = $sendDate;
     }
-    public function getSendDate() : ?\PSX\DateTime\LocalDate
+    public function getSendDate(): ?\PSX\DateTime\LocalDate
     {
         return $this->sendDate;
     }
-    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate) : void
+    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate): void
     {
         $this->readDate = $readDate;
     }
-    public function getReadDate() : ?\PSX\DateTime\LocalDateTime
+    public function getReadDate(): ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
     }
-    public function setPrice(?float $price) : void
+    public function setPrice(?float $price): void
     {
         $this->price = $price;
     }
-    public function getPrice() : ?float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
-    public function setRating(?int $rating) : void
+    public function setRating(?int $rating): void
     {
         $this->rating = $rating;
     }
-    public function getRating() : ?int
+    public function getRating(): ?int
     {
         return $this->rating;
     }
-    public function setContent(?string $content) : void
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
-    public function getContent() : ?string
+    public function getContent(): ?string
     {
         return $this->content;
     }
-    public function setQuestion(?string $question) : void
+    public function setQuestion(?string $question): void
     {
         $this->question = $question;
     }
-    public function getQuestion() : ?string
+    public function getQuestion(): ?string
     {
         return $this->question;
     }
-    public function setVersion(?string $version) : void
+    public function setVersion(?string $version): void
     {
         $this->version = $version;
     }
-    public function getVersion() : ?string
+    public function getVersion(): ?string
     {
         return $this->version;
     }
-    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime) : void
+    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime): void
     {
         $this->coffeeTime = $coffeeTime;
     }
-    public function getCoffeeTime() : ?\PSX\DateTime\LocalTime
+    public function getCoffeeTime(): ?\PSX\DateTime\LocalTime
     {
         return $this->coffeeTime;
     }
-    public function setCaptcha(?string $captcha) : void
+    public function setCaptcha(?string $captcha): void
     {
         $this->captcha = $captcha;
     }
-    public function getCaptcha() : ?string
+    public function getCaptcha(): ?string
     {
         return $this->captcha;
     }
-    public function setMediaFields(?string $mediaFields) : void
+    public function setMediaFields(?string $mediaFields): void
     {
         $this->mediaFields = $mediaFields;
     }
-    public function getMediaFields() : ?string
+    public function getMediaFields(): ?string
     {
         return $this->mediaFields;
     }
-    public function setPayload(mixed $payload) : void
+    public function setPayload(mixed $payload): void
     {
         $this->payload = $payload;
     }
-    public function getPayload() : mixed
+    public function getPayload(): mixed
     {
         return $this->payload;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -262,7 +262,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('payload', $this->payload);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

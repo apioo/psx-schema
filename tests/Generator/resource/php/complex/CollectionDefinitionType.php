@@ -18,23 +18,23 @@ abstract class CollectionDefinitionType extends DefinitionType implements \JsonS
     protected ?PropertyType $schema = null;
     #[Description('')]
     protected ?string $type = null;
-    public function setSchema(?PropertyType $schema) : void
+    public function setSchema(?PropertyType $schema): void
     {
         $this->schema = $schema;
     }
-    public function getSchema() : ?PropertyType
+    public function getSchema(): ?PropertyType
     {
         return $this->schema;
     }
-    public function setType(?string $type) : void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
-    public function getType() : ?string
+    public function getType(): ?string
     {
         return $this->type;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
@@ -42,7 +42,7 @@ abstract class CollectionDefinitionType extends DefinitionType implements \JsonS
         $record->put('type', $this->type);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

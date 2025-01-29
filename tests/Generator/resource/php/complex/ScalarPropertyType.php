@@ -18,22 +18,22 @@ abstract class ScalarPropertyType extends PropertyType implements \JsonSerializa
 {
     #[Description('')]
     protected ?string $type = null;
-    public function setType(?string $type) : void
+    public function setType(?string $type): void
     {
         $this->type = $type;
     }
-    public function getType() : ?string
+    public function getType(): ?string
     {
         return $this->type;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
         $record->put('type', $this->type);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

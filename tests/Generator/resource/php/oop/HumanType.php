@@ -6,23 +6,23 @@ class HumanType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     protected ?string $firstName = null;
     protected ?HumanType $parent = null;
-    public function setFirstName(?string $firstName) : void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
-    public function getFirstName() : ?string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
-    public function setParent(?HumanType $parent) : void
+    public function setParent(?HumanType $parent): void
     {
         $this->parent = $parent;
     }
-    public function getParent() : ?HumanType
+    public function getParent(): ?HumanType
     {
         return $this->parent;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -30,7 +30,7 @@ class HumanType implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('parent', $this->parent);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }
