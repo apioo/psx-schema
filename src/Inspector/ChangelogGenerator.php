@@ -69,7 +69,7 @@ class ChangelogGenerator
         yield from $this->generateDefinition($leftType, $rightType, $typeName, $propertyName);
 
         if ($leftType instanceof StructDefinitionType && $rightType instanceof StructDefinitionType) {
-            yield from $this->generateStruct($leftType, $rightType, $typeName, $propertyName);
+            yield from $this->generateStruct($leftType, $rightType, $typeName);
         } elseif ($leftType instanceof MapDefinitionType && $rightType instanceof MapDefinitionType) {
             yield from $this->generateMap($leftType, $rightType, $typeName, $propertyName);
         } elseif ($leftType instanceof ArrayDefinitionType && $rightType instanceof ArrayDefinitionType) {
@@ -88,7 +88,7 @@ class ChangelogGenerator
         }
     }
 
-    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName, ?string $propertyName = null): \Generator
+    private function generateStruct(StructDefinitionType $leftType, StructDefinitionType $rightType, string $typeName): \Generator
     {
         $left = $leftType->getProperties() ?? [];
         $right = $rightType->getProperties() ?? [];

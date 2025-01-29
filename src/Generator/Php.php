@@ -383,7 +383,7 @@ class Php extends CodeGeneratorAbstract
         }
     }
 
-    private function buildToRecord(\PhpParser\Builder\Class_ $class, array $properties, bool $hasParent): void
+    private function buildToRecord(Class_ $class, array $properties, bool $hasParent): void
     {
         $stmts = [];
         if ($hasParent) {
@@ -400,10 +400,10 @@ class Php extends CodeGeneratorAbstract
 
         foreach ($properties as $name => $property) {
             /** @var Code\Property $property */
-            $stmts[] = new Node\Expr\MethodCall(new Node\Expr\Variable('record'), new Node\Identifier('put'), [
+            $stmts[] = new Node\Stmt\Expression(new Node\Expr\MethodCall(new Node\Expr\Variable('record'), new Node\Identifier('put'), [
                 new Node\Arg(new Node\Scalar\String_($property->getName()->getRaw())),
                 new Node\Arg(new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $name)),
-            ]);
+            ]));
         }
 
         $stmts[] = new Node\Stmt\Return_(new Node\Expr\Variable('record'));

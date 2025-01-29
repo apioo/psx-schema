@@ -168,7 +168,7 @@ abstract class NormalizerAbstract implements NormalizerInterface
             return $name;
         }
 
-        return preg_replace('/[^a-zA-Z_]/', '_', $name);
+        return (string) preg_replace('/[^a-zA-Z_]/', '_', $name);
     }
 
     private function case(string $name, int $style): string

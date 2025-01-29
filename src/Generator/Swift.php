@@ -78,7 +78,6 @@ class Swift extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $keys[$property->getName()->getProperty()] = $property->getName()->getRaw();
 
-            /** @var Code\Property $property */
             $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
         }
 

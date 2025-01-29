@@ -43,7 +43,6 @@ use PSX\Schema\Type\ReferencePropertyType;
  */
 class Documentor extends Popo
 {
-    private ContextFactory $contextFactory;
     private TypeResolver $typeResolver;
     private Popo\Resolver\Documentor $documentor;
 
@@ -51,7 +50,6 @@ class Documentor extends Popo
     {
         parent::__construct();
 
-        $this->contextFactory = new ContextFactory();
         $this->typeResolver = new TypeResolver();
         $this->documentor = new Popo\Resolver\Documentor();
     }

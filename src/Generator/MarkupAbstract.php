@@ -30,7 +30,6 @@ namespace PSX\Schema\Generator;
 abstract class MarkupAbstract extends CodeGeneratorAbstract
 {
     protected int $heading;
-    protected string $prefix;
 
     public function __construct(?Config $config = null)
     {
@@ -39,6 +38,5 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
         $heading = (int) $config?->get('heading');
 
         $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
-        $this->prefix  = $config?->get('prefix') ?? 'psx_model_';
     }
 }
