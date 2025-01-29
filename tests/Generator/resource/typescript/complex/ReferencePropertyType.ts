@@ -5,6 +5,6 @@ import {PropertyType} from "./PropertyType";
  */
 export interface ReferencePropertyType extends PropertyType {
     target?: string
-    template?: Map<string, string>
+    template?: Record<string, string>
 }
 

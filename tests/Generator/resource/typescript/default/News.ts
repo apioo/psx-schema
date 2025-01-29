@@ -6,9 +6,9 @@ import {Author} from "./Author";
  */
 export interface News {
     config?: Meta
-    inlineConfig?: Map<string, string>
-    mapTags?: Map<string, string>
-    mapReceiver?: Map<string, Author>
+    inlineConfig?: Record<string, string>
+    mapTags?: Record<string, string>
+    mapReceiver?: Record<string, Author>
     tags?: Array<string>
     receiver?: Array<Author>
     read?: boolean

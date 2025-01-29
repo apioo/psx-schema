@@ -8,8 +8,8 @@ import {PropertyType} from "./PropertyType";
 export interface StructDefinitionType extends DefinitionType {
     base?: boolean
     discriminator?: string
-    mapping?: Map<string, string>
+    mapping?: Record<string, string>
     parent?: ReferencePropertyType
-    properties?: Map<string, PropertyType>
+    properties?: Record<string, PropertyType>
 }
 
