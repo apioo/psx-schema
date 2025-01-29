@@ -70,7 +70,7 @@ class SchemaTraverser
      *
      * @throws TraverserException
      */
-    public function traverse(mixed $data, SchemaInterface $schema, VisitorInterface $visitor = null): mixed
+    public function traverse(mixed $data, SchemaInterface $schema, ?VisitorInterface $visitor = null): mixed
     {
         $this->pathStack = [];
 
