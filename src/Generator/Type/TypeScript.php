@@ -74,7 +74,7 @@ class TypeScript extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        return 'Map<string, ' . $type . '>';
+        return 'Record<string, ' . $type . '>';
     }
 
     protected function getGroup(string $type): string
