@@ -20,15 +20,12 @@
 
 namespace PSX\Schema\Visitor;
 
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
 use PSX\Record\Record;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Type\ArrayDefinitionType;
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
@@ -40,7 +37,6 @@ use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
-use PSX\Uri\Uri;
 
 /**
  * TypeVisitor
@@ -53,7 +49,7 @@ class TypeVisitor implements VisitorInterface
 {
     private ?ValidatorInterface $validator;
 
-    public function __construct(ValidatorInterface $validator = null)
+    public function __construct(?ValidatorInterface $validator = null)
     {
         $this->validator = $validator;
     }

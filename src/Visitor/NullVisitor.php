@@ -20,11 +20,9 @@
 
 namespace PSX\Schema\Visitor;
 
-use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\ArrayTypeInterface;
 use PSX\Schema\Type\BooleanPropertyType;
 use PSX\Schema\Type\IntegerPropertyType;
-use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\StringPropertyType;
