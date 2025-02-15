@@ -23,6 +23,9 @@ pub struct News {
     #[serde(rename = "receiver")]
     receiver: Option<Vec<Author>>,
 
+    #[serde(rename = "data")]
+    data: Option<Vec<Vec<f64>>>,
+
     #[serde(rename = "read")]
     read: Option<bool>,
 

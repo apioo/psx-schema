@@ -85,6 +85,15 @@
                 "$ref": "#/definitions/Author"
             }
         },
+        "data": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+        },
         "read": {
             "type": "boolean"
         },

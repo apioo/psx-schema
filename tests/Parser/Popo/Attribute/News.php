@@ -36,6 +36,11 @@ class News
      */
     protected ?array $receiver = null;
 
+    /**
+     * @var array<array<float>>|null
+     */
+    protected ?array $data = null;
+
     protected ?bool $read = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
@@ -82,6 +87,16 @@ class News
     public function getReceiver() : ?array
     {
         return $this->receiver;
+    }
+
+    public function getData(): ?array
+    {
+        return $this->data;
+    }
+
+    public function setData(?array $data): void
+    {
+        $this->data = $data;
     }
 
     public function setProfileImage($profileImage)

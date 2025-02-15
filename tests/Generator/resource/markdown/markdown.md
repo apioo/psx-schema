@@ -40,6 +40,7 @@ mapTags | Map (String) |
 mapReceiver | Map (Author) | 
 tags | Array (String) | 
 receiver | Array (Author) | 
+data | Array (Array (Number)) | 
 read | Boolean | 
 author | Author | 
 meta | Meta | 

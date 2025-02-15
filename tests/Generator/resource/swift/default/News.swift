@@ -6,6 +6,7 @@ class News: Codable {
     var mapReceiver: Dictionary<String, Author>
     var tags: Array<String>
     var receiver: Array<Author>
+    var data: Array<Array<Float>>
     var read: Bool
     var author: Author
     var meta: Meta
@@ -28,6 +29,7 @@ class News: Codable {
         case mapReceiver = "mapReceiver"
         case tags = "tags"
         case receiver = "receiver"
+        case data = "data"
         case read = "read"
         case author = "author"
         case meta = "meta"

@@ -1,15 +1,16 @@
 
 # An general news entry
 class News
-  attr_accessor :config, :inline_config, :map_tags, :map_receiver, :tags, :receiver, :read, :author, :meta, :send_date, :read_date, :price, :rating, :content, :question, :version, :coffee_time, :captcha, :media_fields, :payload
+  attr_accessor :config, :inline_config, :map_tags, :map_receiver, :tags, :receiver, :data, :read, :author, :meta, :send_date, :read_date, :price, :rating, :content, :question, :version, :coffee_time, :captcha, :media_fields, :payload
 
-  def initialize(config, inline_config, map_tags, map_receiver, tags, receiver, read, author, meta, send_date, read_date, price, rating, content, question, version, coffee_time, captcha, media_fields, payload)
+  def initialize(config, inline_config, map_tags, map_receiver, tags, receiver, data, read, author, meta, send_date, read_date, price, rating, content, question, version, coffee_time, captcha, media_fields, payload)
     @config = config
     @inline_config = inline_config
     @map_tags = map_tags
     @map_receiver = map_receiver
     @tags = tags
     @receiver = receiver
+    @data = data
     @read = read
     @author = author
     @meta = meta

@@ -67,6 +67,7 @@ class TestSchema extends SchemaAbstract
 
         $news->addArray('tags', PropertyTypeFactory::getString());
         $news->addArray('receiver', PropertyTypeFactory::getReference('Author'));
+        $news->addArray('data', PropertyTypeFactory::getArray(PropertyTypeFactory::getNumber()));
 
         $news->addBoolean('read');
         $news->addReference('author', 'Author');

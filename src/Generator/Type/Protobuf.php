@@ -67,6 +67,11 @@ class Protobuf extends GeneratorAbstract
 
     protected function getArray(string $type): string
     {
+        if (str_starts_with($type, 'repeated')) {
+            // array of array are currently not supported at protobuf
+            return $type;
+        }
+
         return 'repeated ' . $type;
     }
 

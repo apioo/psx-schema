@@ -20,6 +20,7 @@ message News {
     optional map<string, Author> mapReceiver = 167282547 [json_name="mapReceiver"];
     optional repeated string tags = 174057145 [json_name="tags"];
     optional repeated Author receiver = 176067080 [json_name="receiver"];
+    optional repeated float data = 178898714 [json_name="data"];
     optional bool read = 199096954 [json_name="read"];
     optional Author author = 244171887 [json_name="author"];
     optional map<string, string> meta = 155201724 [json_name="meta"];

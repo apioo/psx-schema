@@ -11,6 +11,7 @@ export interface News {
     mapReceiver?: Record<string, Author>
     tags?: Array<string>
     receiver?: Array<Author>
+    data?: Array<Array<number>>
     read?: boolean
     author?: Author
     meta?: Meta

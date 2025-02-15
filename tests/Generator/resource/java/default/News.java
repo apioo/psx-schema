@@ -9,6 +9,7 @@ public class News {
     private java.util.Map<String, Author> mapReceiver;
     private java.util.List<String> tags;
     private java.util.List<Author> receiver;
+    private java.util.List<java.util.List<Double>> data;
     private Boolean read;
     private Author author;
     private Meta meta;
@@ -83,6 +84,16 @@ public class News {
     @JsonGetter("receiver")
     public java.util.List<Author> getReceiver() {
         return this.receiver;
+    }
+
+    @JsonSetter("data")
+    public void setData(java.util.List<java.util.List<Double>> data) {
+        this.data = data;
+    }
+
+    @JsonGetter("data")
+    public java.util.List<java.util.List<Double>> getData() {
+        return this.data;
     }
 
     @JsonSetter("read")

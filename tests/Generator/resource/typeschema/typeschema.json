@@ -90,6 +90,15 @@
                         "target": "Author"
                     }
                 },
+                "data": {
+                    "type": "array",
+                    "schema": {
+                        "type": "array",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                },
                 "read": {
                     "type": "boolean"
                 },

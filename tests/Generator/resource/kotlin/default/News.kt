@@ -11,6 +11,7 @@ open class News {
     @JsonProperty("mapReceiver") var mapReceiver: HashMap<String, Author>? = null
     @JsonProperty("tags") var tags: ArrayList<String>? = null
     @JsonProperty("receiver") var receiver: ArrayList<Author>? = null
+    @JsonProperty("data") var data: ArrayList<ArrayList<Float>>? = null
     @JsonProperty("read") var read: Boolean? = null
     @JsonProperty("author") var author: Author? = null
     @JsonProperty("meta") var meta: Meta? = null

@@ -20,6 +20,9 @@ Public Class News
     <JsonPropertyName("receiver")>
     Public Property Receiver As Author()
 
+    <JsonPropertyName("data")>
+    Public Property Data As Double()()
+
     <JsonPropertyName("read")>
     Public Property Read As Boolean
 

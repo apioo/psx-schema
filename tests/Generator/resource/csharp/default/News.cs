@@ -23,6 +23,9 @@ public class News
     [JsonPropertyName("receiver")]
     public System.Collections.Generic.List<Author>? Receiver { get; set; }
 
+    [JsonPropertyName("data")]
+    public System.Collections.Generic.List<System.Collections.Generic.List<double>>? Data { get; set; }
+
     [JsonPropertyName("read")]
     public bool? Read { get; set; }
 

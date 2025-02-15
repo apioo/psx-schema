@@ -29,6 +29,10 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      * @var array<Author>|null
      */
     protected ?array $receiver = null;
+    /**
+     * @var array<array<float>>|null
+     */
+    protected ?array $data = null;
     protected ?bool $read = null;
     protected ?Author $author = null;
     protected ?Meta $meta = null;
@@ -123,6 +127,20 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     public function getReceiver(): ?array
     {
         return $this->receiver;
+    }
+    /**
+     * @param array<array<float>>|null $data
+     */
+    public function setData(?array $data): void
+    {
+        $this->data = $data;
+    }
+    /**
+     * @return array<array<float>>|null
+     */
+    public function getData(): ?array
+    {
+        return $this->data;
     }
     public function setRead(?bool $read): void
     {
@@ -246,6 +264,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('mapReceiver', $this->mapReceiver);
         $record->put('tags', $this->tags);
         $record->put('receiver', $this->receiver);
+        $record->put('data', $this->data);
         $record->put('read', $this->read);
         $record->put('author', $this->author);
         $record->put('meta', $this->meta);

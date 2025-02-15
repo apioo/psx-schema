@@ -14,6 +14,7 @@ class News(BaseModel):
     map_receiver: Optional[Dict[str, Author]] = Field(default=None, alias="mapReceiver")
     tags: Optional[List[str]] = Field(default=None, alias="tags")
     receiver: Optional[List[Author]] = Field(default=None, alias="receiver")
+    data: Optional[List[List[float]]] = Field(default=None, alias="data")
     read: Optional[bool] = Field(default=None, alias="read")
     author: Optional[Author] = Field(default=None, alias="author")
     meta: Optional[Meta] = Field(default=None, alias="meta")

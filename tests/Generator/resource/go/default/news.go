@@ -7,6 +7,7 @@ type News struct {
     MapReceiver map[string]Author `json:"mapReceiver"`
     Tags []string `json:"tags"`
     Receiver []Author `json:"receiver"`
+    Data [][]float64 `json:"data"`
     Read bool `json:"read"`
     Author *Author `json:"author"`
     Meta *Meta `json:"meta"`
