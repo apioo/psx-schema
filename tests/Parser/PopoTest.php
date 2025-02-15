@@ -21,8 +21,12 @@
 namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\Parser;
+use PSX\Schema\Tests\Parser\Popo\ArrayInArray;
 use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\Tests\Parser\Popo\Form_Element;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\StructDefinitionType;
 
 /**
  * PopoTest
@@ -47,5 +51,21 @@ class PopoTest extends ParserTestCase
         $schema = $parser->parse(Form_Element::class);
 
         $this->assertDiscriminator($schema);
+    }
+
+    public function testArrayInArray()
+    {
+        $parser = new Parser\Popo();
+        $schema = $parser->parse(ArrayInArray::class);
+
+        $object = $schema->getDefinitions()->getType($schema->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $object);
+
+        $items = $object->getProperty('items');
+        $this->assertInstanceOf(ArrayPropertyType::class, $items);
+
+        $array = $items->getSchema();
+        $this->assertInstanceOf(ArrayPropertyType::class, $array);
+        $this->assertInstanceOf(NumberPropertyType::class, $array->getSchema());
     }
 }
