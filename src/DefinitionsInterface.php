@@ -58,16 +58,16 @@ interface DefinitionsInterface
      * Returns all available types for a specific namespace. The key contains
      * the name of the type
      *
-     * @return iterable<DefinitionTypeAbstract>
+     * @return array<DefinitionTypeAbstract>
      */
-    public function getTypes(string $namespace = self::SELF_NAMESPACE): iterable;
+    public function getTypes(string $namespace = self::SELF_NAMESPACE): array;
 
     /**
      * Returns all types registered at this container
      *
      * @return array<DefinitionTypeAbstract>
      */
-    public function getAllTypes(): iterable;
+    public function getAllTypes(): array;
 
     /**
      * Removes a type from the definition

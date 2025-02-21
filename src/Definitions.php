@@ -85,12 +85,12 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
         }
     }
 
-    public function getTypes(string $namespace = self::SELF_NAMESPACE): iterable
+    public function getTypes(string $namespace = self::SELF_NAMESPACE): array
     {
         return $this->container[$namespace] ?? [];
     }
 
-    public function getAllTypes(): iterable
+    public function getAllTypes(): array
     {
         $result = [];
         foreach ($this->container as $namespace => $types) {
