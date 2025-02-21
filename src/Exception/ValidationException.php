@@ -36,7 +36,7 @@ class ValidationException extends SchemaException
     protected string $keyword;
     protected array $path;
 
-    public function __construct(string $message, string $keyword, array $path, int $code = 0, Throwable $previous = null)
+    public function __construct(string $message, string $keyword, array $path, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

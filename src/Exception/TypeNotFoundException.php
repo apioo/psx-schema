@@ -34,7 +34,7 @@ class TypeNotFoundException extends SchemaException
     private string $namespace;
     private string $name;
 
-    public function __construct(string $message, string $namespace, string $name, $code = 0, Throwable $previous = null)
+    public function __construct(string $message, string $namespace, string $name, $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
