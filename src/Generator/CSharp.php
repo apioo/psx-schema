@@ -95,8 +95,14 @@ class CSharp extends CodeGeneratorAbstract
                 $override = 'new ';
             }
 
+            $propertyName = $property->getName()->getProperty();
+            if ($name->getClass() === $propertyName) {
+                // fix: member names cannot be the same as their enclosing type (CS0542)
+                $propertyName = $propertyName . '_';
+            }
+
             $code.= $this->indent . '[JsonPropertyName("' . $property->getName()->getRaw() . '")]' . "\n";
-            $code.= $this->indent . 'public ' . $override . $property->getType() . '? ' . $property->getName()->getProperty() . ' { get; set; }' . "\n";
+            $code.= $this->indent . 'public ' . $override . $property->getType() . '? ' . $propertyName . ' { get; set; }' . "\n";
             $code.= "\n";
         }
 
