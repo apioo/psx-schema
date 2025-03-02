@@ -77,7 +77,7 @@ class TestSchema extends SchemaAbstract
         $news->addNumber('price');
         $news->addInteger('rating');
         $news->addString('content')
-            ->setDescription('Contains the main content of the news entry');
+            ->setDescription('Contains the "main" content of the news entry');
         $news->addString('question');
         $news->addString('version');
         $news->addTime('coffeeTime');

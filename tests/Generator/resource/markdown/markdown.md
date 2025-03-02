@@ -48,7 +48,7 @@ sendDate | String (date) |
 readDate | String (date-time) | 
 price | Number | 
 rating | Integer | 
-content | String | Contains the main content of the news entry
+content | String | Contains the "main" content of the news entry
 question | String | 
 version | String | 
 coffeeTime | String (time) | 

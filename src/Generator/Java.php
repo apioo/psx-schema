@@ -71,7 +71,7 @@ class Java extends CodeGeneratorAbstract
 
         $comment = $origin->getDescription();
         if (!empty($comment)) {
-            $code.= '@JsonClassDescription("' . $comment . '")' . "\n";
+            $code.= '@JsonClassDescription("' . $this->normalizer->comment($comment) . '")' . "\n";
         }
 
         $code.= 'public ' . ($origin->getBase() === true ? 'abstract ' : '') . 'class ' . $name->getClass();
@@ -93,7 +93,7 @@ class Java extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $comment = $property->getComment();
             if (!empty($comment)) {
-                $code.= $this->indent . '@JsonPropertyDescription("' . $comment . '")' . "\n";
+                $code.= $this->indent . '@JsonPropertyDescription("' . $this->normalizer->comment($comment) . '")' . "\n";
             }
 
             $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . ';' . "\n";

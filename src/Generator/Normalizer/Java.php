@@ -98,4 +98,9 @@ class Java extends NormalizerAbstract
             'while',
         ];
     }
+
+    public function comment(string $comment): string
+    {
+        return str_replace('"', '\\"', $comment);
+    }
 }

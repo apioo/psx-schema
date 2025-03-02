@@ -40,7 +40,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
     protected ?float $price = null;
     protected ?int $rating = null;
-    #[Description('Contains the main content of the news entry')]
+    #[Description('Contains the "main" content of the news entry')]
     protected ?string $content = null;
     protected ?string $question = null;
     protected ?string $version = null;

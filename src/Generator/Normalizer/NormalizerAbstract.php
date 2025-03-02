@@ -138,6 +138,11 @@ abstract class NormalizerAbstract implements NormalizerInterface
         return $this->file($name);
     }
 
+    public function comment(string $comment): string
+    {
+        return $comment;
+    }
+
     /**
      * This method is called in case a reserved keyword was used and it should return a legal version of the name
      */

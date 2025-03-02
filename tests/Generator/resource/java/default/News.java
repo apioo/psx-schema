@@ -17,7 +17,7 @@ public class News {
     private java.time.LocalDateTime readDate;
     private Double price;
     private Integer rating;
-    @JsonPropertyDescription("Contains the main content of the news entry")
+    @JsonPropertyDescription("Contains the \"main\" content of the news entry")
     private String content;
     private String question;
     private String version;
