@@ -117,13 +117,13 @@ class TypeUtil
     /**
      * Collects and returns all refs
      */
-    public static function findRefs(TypeInterface $type): array
+    public static function findRefs(TypeInterface $type, bool $ignoreMapping = false): array
     {
         $refs = [];
         self::refs($type, function(string $ns, string $name) use (&$refs){
             $refs[$ns . ':' . $name] = $ns . ':' . $name;
             return null;
-        });
+        }, $ignoreMapping);
 
         return $refs;
     }
@@ -131,9 +131,9 @@ class TypeUtil
     /**
      * Goes through all refs and replaces the ref using a specific callback
      */
-    public static function refs(TypeInterface $type, \Closure $callback): void
+    public static function refs(TypeInterface $type, \Closure $callback, bool $ignoreMapping = false): void
     {
-        self::walk($type, function(TypeInterface $type) use ($callback){
+        self::walk($type, function(TypeInterface $type) use ($callback, $ignoreMapping){
             if ($type instanceof ReferencePropertyType) {
                 [$ns, $name] = self::split($type->getTarget());
                 $return = $callback($ns, $name);
@@ -157,7 +157,7 @@ class TypeUtil
                 }
             } elseif ($type instanceof StructDefinitionType) {
                 $mapping = $type->getMapping();
-                if (!empty($mapping)) {
+                if ($ignoreMapping === false && !empty($mapping)) {
                     $result = [];
                     foreach ($mapping as $mappingType => $mappingValue) {
                         [$ns, $name] = self::split($mappingType);

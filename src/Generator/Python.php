@@ -26,8 +26,11 @@ use PSX\Schema\Format;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayPropertyType;
+use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
@@ -167,7 +170,7 @@ class Python extends CodeGeneratorAbstract
             $imports[] = 'import datetime';
         }
 
-        $refs = TypeUtil::findRefs($origin);
+        $refs = TypeUtil::findRefs($origin, true);
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
 
@@ -199,7 +202,15 @@ class Python extends CodeGeneratorAbstract
             $subTypes[] = 'Annotated[' . $this->normalizer->class($class) . ', Tag(\'' . $value . '\')]';
         }
 
-        return 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator=\'' . $discriminator . '\')]' . "\n";
+        $unionType = 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator=\'' . $discriminator . '\')]';
+
+        if ($property->getOrigin() instanceof ArrayPropertyType) {
+            return 'List[' . $unionType . ']';
+        } elseif ($property->getOrigin() instanceof MapPropertyType) {
+            return 'Dict[str, ' . $unionType . ']';
+        } else {
+            return $unionType;
+        }
     }
 
     private function getDiscriminatorImports(DefinitionTypeAbstract $origin): array
@@ -233,6 +244,10 @@ class Python extends CodeGeneratorAbstract
 
     private function getDiscriminatorConfig(PropertyTypeAbstract $property): ?array
     {
+        if ($property instanceof CollectionPropertyType) {
+            $property = $property->getSchema();
+        }
+
         if (!$property instanceof ReferencePropertyType) {
             return null;
         }

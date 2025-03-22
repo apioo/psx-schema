@@ -81,4 +81,14 @@ class PythonTest extends GeneratorTestCase
 
         $this->assertFileExists(__DIR__ . '/resource/python/namespace/import.py');
     }
+
+    public function testGenerateUnion()
+    {
+        $generator = new Python();
+
+        $chunks = $generator->generate($this->getUnionSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/python/union');
+
+        $this->assertFileExists(__DIR__ . '/resource/python/union/common_form_container.py');
+    }
 }

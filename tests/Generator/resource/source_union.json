@@ -1,0 +1,97 @@
+{
+  "definitions": {
+    "Common_FormContainer": {
+      "type": "struct",
+      "properties": {
+        "element": {
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "Common_FormElement"
+          }
+        }
+      }
+    },
+    "Common_FormElement": {
+      "type": "struct",
+      "base": true,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "element": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        }
+      },
+      "discriminator": "type",
+      "mapping": {
+        "Common_FormElementInput": "http://fusio-project.org/ns/2015/form/input",
+        "Common_FormElementSelect": "http://fusio-project.org/ns/2015/form/select",
+        "Common_FormElementTag": "http://fusio-project.org/ns/2015/form/tag",
+        "Common_FormElementTextArea": "http://fusio-project.org/ns/2015/form/textarea"
+      }
+    },
+    "Common_FormElementInput": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Common_FormElement"
+      }
+    },
+    "Common_FormElementSelect": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Common_FormElement"
+      },
+      "properties": {
+        "options": {
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "Common_FormElementSelectOption"
+          }
+        }
+      }
+    },
+    "Common_FormElementSelectOption": {
+      "type": "struct",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Common_FormElementTag": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Common_FormElement"
+      }
+    },
+    "Common_FormElementTextArea": {
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Common_FormElement"
+      },
+      "properties": {
+        "mode": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
