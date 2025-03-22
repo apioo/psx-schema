@@ -1,0 +1,24 @@
+{
+  "definitions": {
+    "Backend_Test": {
+      "type": "struct",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "operationName": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "response": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

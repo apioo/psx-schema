@@ -42,6 +42,11 @@ class Go extends CodeGeneratorAbstract
 {
     public function getFileName(string $file): string
     {
+        if (str_ends_with($file, '_test')) {
+            // in case the file ends with _test we rename it to _test_ so that go does not interpret this file as test
+            $file .= '_';
+        }
+
         return $file . '.go';
     }
 

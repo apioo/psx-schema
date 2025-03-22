@@ -56,6 +56,11 @@ abstract class GeneratorTestCase extends SchemaTestCase
         return $this->schemaManager->getSchema(__DIR__ . '/resource/source_union.json');
     }
 
+    protected function getTestSchema(): SchemaInterface
+    {
+        return $this->schemaManager->getSchema(__DIR__ . '/resource/source_test.json');
+    }
+
     protected function write(GeneratorInterface $generator, string|Chunks $result, string $baseDir): void
     {
         if ($generator instanceof FileAwareInterface && $result instanceof Chunks) {

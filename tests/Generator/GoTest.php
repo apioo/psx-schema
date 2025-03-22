@@ -81,4 +81,14 @@ class GoTest extends GeneratorTestCase
 
         $this->assertFileExists(__DIR__ . '/resource/go/namespace/import.go');
     }
+
+    public function testGenerateTest()
+    {
+        $generator = new Go();
+
+        $chunks = $generator->generate($this->getTestSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/go/test');
+
+        $this->assertFileExists(__DIR__ . '/resource/go/test/backend_test_.go');
+    }
 }
