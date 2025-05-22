@@ -5,7 +5,8 @@
             "type": "object",
             "properties": {
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": false
                 },
                 "email": {
                     "description": "We will send no spam to this address",
@@ -28,7 +29,10 @@
                 "origin": {
                     "$ref": "#/definitions/Location"
                 }
-            }
+            },
+            "required": [
+                "title"
+            ]
         },
         "Location": {
             "description": "Location of the person",

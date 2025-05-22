@@ -44,7 +44,8 @@ class TestSchema extends SchemaAbstract
 
         $author = $this->newStruct('Author');
         $author->setDescription('An simple author element with some description');
-        $author->addString('title');
+        $author->addString('title')
+            ->setNullable(false);
         $author->addString('email')
             ->setDescription('We will send no spam to this address')
             ->setNullable(true);

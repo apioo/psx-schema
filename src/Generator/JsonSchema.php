@@ -138,9 +138,21 @@ class JsonSchema implements GeneratorInterface
             }
 
             if (isset($data['properties'])) {
-                $data['properties'] = array_map(function ($property) use ($definitions, $template) {
-                    return $this->generateType($property, $definitions, $template);
-                }, $data['properties']);
+                $properties = [];
+                $required = [];
+                foreach ($data['properties'] as $key => $property) {
+                    $properties[$key] = $this->generateType($property, $definitions, $template);
+
+                    if ($property instanceof PropertyTypeAbstract && $property->isNullable() === false) {
+                        $required[] = $key;
+                    }
+                }
+
+                $data['properties'] = $properties;
+
+                if (count($required) > 0) {
+                    $data['required'] = $required;
+                }
             }
 
             if ($parent instanceof ReferencePropertyType) {

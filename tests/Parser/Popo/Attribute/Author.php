@@ -8,6 +8,7 @@ use PSX\Schema\Attribute\Nullable;
 #[Description('An simple author element with some description')]
 class Author
 {
+    #[Nullable(false)]
     protected ?string $title = null;
 
     #[Description('We will send no spam to this address')]

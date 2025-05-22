@@ -5,12 +5,13 @@
       "type": "struct",
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "nullable": false
         },
         "email": {
           "description": "We will send no spam to this address",
-          "nullable": true,
-          "type": "string"
+          "type": "string",
+          "nullable": true
         },
         "categories": {
           "type": "array",
