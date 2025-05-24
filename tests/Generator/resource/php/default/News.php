@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Key;
+use PSX\Schema\Attribute\Nullable;
 
 #[Description('An general news entry')]
 class News implements \JsonSerializable, \PSX\Record\RecordableInterface
@@ -34,6 +35,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
      */
     protected ?array $data = null;
     protected ?bool $read = null;
+    #[Nullable(false)]
     protected ?Author $author = null;
     protected ?Meta $meta = null;
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
@@ -41,6 +43,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?float $price = null;
     protected ?int $rating = null;
     #[Description('Contains the "main" content of the news entry')]
+    #[Nullable(false)]
     protected ?string $content = null;
     protected ?string $question = null;
     protected ?string $version = null;

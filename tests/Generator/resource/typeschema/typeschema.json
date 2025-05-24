@@ -105,7 +105,8 @@
                 },
                 "author": {
                     "type": "reference",
-                    "target": "Author"
+                    "target": "Author",
+                    "nullable": false
                 },
                 "meta": {
                     "type": "reference",
@@ -127,7 +128,8 @@
                 },
                 "content": {
                     "description": "Contains the \"main\" content of the news entry",
-                    "type": "string"
+                    "type": "string",
+                    "nullable": false
                 },
                 "question": {
                     "type": "string"

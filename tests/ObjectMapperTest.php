@@ -43,6 +43,9 @@ class ObjectMapperTest extends TestCase
     {
         $json = <<<'JSON'
 {
+  "author": {
+    "title": "John Doe"
+  },
   "content": "foobar"
 }
 JSON;

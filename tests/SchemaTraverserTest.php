@@ -112,6 +112,42 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
+    public function testTraverseNullable()
+    {
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('/content must not be null');
+
+        $data = $this->getData();
+        $data->content = null;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse($data, $this->getSchema());
+    }
+
+    public function testTraverseNullableNested()
+    {
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('/author/title must not be null');
+
+        $data = $this->getData();
+        $data->author->title = null;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse($data, $this->getSchema());
+    }
+
+    public function testTraverseNullableObject()
+    {
+        $this->expectException(TraverserException::class);
+        $this->expectExceptionMessage('/content must not be null');
+
+        $data = $this->getData();
+        $data->content = null;
+
+        $traverser = new SchemaTraverser();
+        $traverser->traverse($data, $this->getSchema());
+    }
+
     public function testTraverseDiscriminator()
     {
         $schema = $this->schemaManager->getSchema(Form_Container::class);

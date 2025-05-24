@@ -71,14 +71,16 @@ class TestSchema extends SchemaAbstract
         $news->addArray('data', PropertyTypeFactory::getArray(PropertyTypeFactory::getNumber()));
 
         $news->addBoolean('read');
-        $news->addReference('author', 'Author');
+        $news->addReference('author', 'Author')
+            ->setNullable(false);
         $news->addReference('meta', 'Meta');
         $news->addDate('sendDate');
         $news->addDateTime('readDate');
         $news->addNumber('price');
         $news->addInteger('rating');
         $news->addString('content')
-            ->setDescription('Contains the "main" content of the news entry');
+            ->setDescription('Contains the "main" content of the news entry')
+            ->setNullable(false);
         $news->addString('question');
         $news->addString('version');
         $news->addTime('coffeeTime');

@@ -93,6 +93,10 @@ class SchemaTraverser
      */
     protected function traverseDefinition(mixed $data, DefinitionTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): mixed
     {
+        if ($data === null) {
+            return null;
+        }
+
         if ($type instanceof StructDefinitionType) {
             if ($this->assertConstraints) {
                 $this->assertObject($data);
@@ -165,8 +169,9 @@ class SchemaTraverser
             foreach ($properties as $key => $subType) {
                 array_push($this->pathStack, $key);
 
-                if (isset($data[$key])) {
-                    $result->{$key} = $this->traverseProperty($data[$key], $subType, $definitions, $visitor, $context);
+                $value = $this->traverseProperty($data[$key] ?? null, $subType, $definitions, $visitor, $context);
+                if ($value !== null) {
+                    $result->{$key} = $value;
                 }
 
                 array_pop($this->pathStack);
@@ -198,7 +203,7 @@ class SchemaTraverser
             foreach ($data as $key => $value) {
                 array_push($this->pathStack, $key);
 
-                $result->{$key} = $this->traverseProperty($data[$key], $schema, $definitions, $visitor, $context);
+                $result->{$key} = $this->traverseProperty($value, $schema, $definitions, $visitor, $context);
 
                 array_pop($this->pathStack);
             }
@@ -215,47 +220,76 @@ class SchemaTraverser
     {
         if ($type instanceof MapPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertObject($data);
+                if ($data !== null) {
+                    $this->assertObject($data);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return $data instanceof \stdClass ? $this->traverseMap($data, $type, $definitions, $visitor, $context) : null;
         } elseif ($type instanceof ArrayPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertArray($data);
+                if ($data !== null) {
+                    $this->assertArray($data);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return is_array($data) ? $this->traverseArray($data, $type, $definitions, $visitor, $context) : null;
         } elseif ($type instanceof StringPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertString($data);
-                $this->assertScalarConstraints($data, $type);
+                if ($data !== null) {
+                    $this->assertString($data);
+                    $this->assertScalarConstraints($data, $type);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return is_string($data) ? $this->traverseString($data, $type, $visitor) : null;
         } elseif ($type instanceof IntegerPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertNumber($data, $type);
-                $this->assertScalarConstraints($data, $type);
+                if ($data !== null) {
+                    $this->assertNumber($data, $type);
+                    $this->assertScalarConstraints($data, $type);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return is_int($data) ? $visitor->visitInteger($data, $type, $this->getCurrentPath()) : null;
         } elseif ($type instanceof NumberPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertNumber($data, $type);
-                $this->assertScalarConstraints($data, $type);
+                if ($data !== null) {
+                    $this->assertNumber($data, $type);
+                    $this->assertScalarConstraints($data, $type);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return is_int($data) || is_float($data) ? $visitor->visitNumber($data, $type, $this->getCurrentPath()) : null;
         } elseif ($type instanceof BooleanPropertyType) {
             if ($this->assertConstraints) {
-                $this->assertBoolean($data);
+                if ($data !== null) {
+                    $this->assertBoolean($data);
+                } else {
+                    $this->assertNull($type);
+                }
             }
 
             return is_bool($data) ? $visitor->visitBoolean($data, $type, $this->getCurrentPath()) : null;
         } elseif ($type instanceof ReferencePropertyType) {
             $targetType = $definitions->getType($type->getTarget());
-
             $result = $this->traverseDefinition($data, $targetType, $definitions, $visitor, $context);
+
+            if ($result === null) {
+                $this->assertNull($type);
+            }
+
+            return $result;
         } elseif ($type instanceof GenericPropertyType) {
             if (!isset($context[$type->getName()])) {
                 throw new TraverserException('Could not resolve generic type from context');
@@ -263,13 +297,21 @@ class SchemaTraverser
 
             $subType = $definitions->getType($context[$type->getName()]);
             $result = $this->traverseDefinition($data, $subType, $definitions, $visitor, $context);
-        } elseif ($type instanceof AnyPropertyType) {
-            $result = $data;
-        } else {
-            $result = null;
-        }
 
-        return $result;
+            if ($result === null) {
+                $this->assertNull($type);
+            }
+
+            return $result;
+        } elseif ($type instanceof AnyPropertyType) {
+            if ($data === null) {
+                $this->assertNull($type);
+            }
+
+            return $data;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -378,6 +420,16 @@ class SchemaTraverser
     {
         if (!is_string($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type string', 'type', $this->pathStack);
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function assertNull(PropertyTypeAbstract $property): void
+    {
+        if ($property->isNullable() === false) {
+            throw new ValidationException($this->getCurrentPath() . ' must not be null', 'type', $this->pathStack);
         }
     }
 

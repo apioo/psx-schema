@@ -104,7 +104,8 @@
           "type": "boolean"
         },
         "author": {
-          "$ref": "Author"
+          "$ref": "Author",
+          "nullable": false
         },
         "meta": {
           "$ref": "Meta"
@@ -125,7 +126,8 @@
         },
         "content": {
           "description": "Contains the \"main\" content of the news entry",
-          "type": "string"
+          "type": "string",
+          "nullable": false
         },
         "question": {
           "type": "string"

@@ -258,13 +258,13 @@ class Popo implements ParserInterface
     /**
      * @throws \ReflectionException
      * @throws TypeNotFoundException
+     * @throws ParserException
      */
     private function transform(PropertyTypeAbstract $type, DefinitionsInterface $definitions, ?ContextInterface $context): PropertyTypeAbstract
     {
         if ($type instanceof ReferencePropertyType) {
             $this->parseClass($type->getTarget(), $definitions, $context, $typeName);
-
-            return PropertyTypeFactory::getReference($typeName);
+            $type->setTarget($typeName);
         } elseif ($type instanceof CollectionPropertyType) {
             $type->setSchema($this->transform($type->getSchema(), $definitions, $context));
         }
