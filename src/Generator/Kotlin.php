@@ -64,7 +64,9 @@ class Kotlin extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '") var ' . $property->getName()->getProperty() . ': ' . $property->getType() . '? = null' . "\n";
+            $nullable = $property->isNullable() === false ? '' : '? = null';
+
+            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '") var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . "\n";
         }
 
         $code.= '}' . "\n";

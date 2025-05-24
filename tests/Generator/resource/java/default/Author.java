@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.*;
 
 @JsonClassDescription("An simple author element with some description")
 public class Author {
+    @NotNull
     private String title;
     @JsonPropertyDescription("We will send no spam to this address")
     private String email;
@@ -12,11 +13,12 @@ public class Author {
     private Location origin;
 
     @JsonSetter("title")
-    public void setTitle(String title) {
+    public void setTitle(@NotNull String title) {
         this.title = title;
     }
 
     @JsonGetter("title")
+    @NotNull
     public String getTitle() {
         return this.title;
     }

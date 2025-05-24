@@ -130,12 +130,14 @@ class Php extends CodeGeneratorAbstract
                 }
 
                 if ($type !== 'mixed') {
-                    $prop->setType('?' . $type);
+                    $nullable = $property->isNullable() === false ? '' : '?';
+                    $prop->setType($nullable . $type);
                 } else {
                     $prop->setType($type);
                 }
             } else {
-                $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . '|null']));
+                $nullable = $property->isNullable() === false ? '' : '|null';
+                $prop->setDocComment($this->buildComment(['var' => $property->getDocType() . $nullable]));
             }
 
             $attributes = $this->getAttributesForProperty($property->getOrigin(), $uses, $realKey);
@@ -143,7 +145,9 @@ class Php extends CodeGeneratorAbstract
                 $prop->addAttribute($attribute);
             }
 
-            $prop->setDefault(null);
+            if ($property->isNullable() !== false) {
+                $prop->setDefault(null);
+            }
 
             $class->addStmt($prop);
 
@@ -158,7 +162,8 @@ class Php extends CodeGeneratorAbstract
                 }
 
                 if ($type !== 'mixed') {
-                    $param->setType('?' . $type);
+                    $nullable = $property->isNullable() === false ? '' : '?';
+                    $param->setType($nullable . $type);
                 } else {
                     $param->setType($type);
                 }
@@ -181,7 +186,8 @@ class Php extends CodeGeneratorAbstract
                 }
 
                 if ($type !== 'mixed') {
-                    $getter->setReturnType('?' . $type);
+                    $nullable = $property->isNullable() === false ? '' : '?';
+                    $getter->setReturnType($nullable . $type);
                 } else {
                     $getter->setReturnType($type);
                 }
@@ -238,12 +244,14 @@ class Php extends CodeGeneratorAbstract
     private function getDocComment(string $type, string $tag, Code\Property $property, ?string $argumentName = null): ?string
     {
         $docType = $property->getDocType();
+        $nullable = $property->isNullable() === false ? '' : '|null';
+
         if ($type === 'array') {
             // in case we have an array we must add a var annotation to describe which type is inside the array
-            return $this->buildComment([$tag => $docType . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
+            return $this->buildComment([$tag => $docType . $nullable . ($argumentName !== null ? ' $' . $argumentName : '')]);
         } elseif ($type === '\\' . Record::class) {
             // in case we have an inline map we need to provide the inner type
-            return $this->buildComment([$tag => $property->getDocType() . '|null' . ($argumentName !== null ? ' $' . $argumentName : '')]);
+            return $this->buildComment([$tag => $property->getDocType() . $nullable . ($argumentName !== null ? ' $' . $argumentName : '')]);
         } elseif ($type === 'mixed' && $docType !== 'mixed') {
             return $this->buildComment([$tag => $docType . ($argumentName !== null ? ' $' . $argumentName : '')]);
         }

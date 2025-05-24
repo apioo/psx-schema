@@ -30,7 +30,7 @@ pub struct News {
     read: Option<bool>,
 
     #[serde(rename = "author")]
-    author: Option<Author>,
+    author: Author,
 
     #[serde(rename = "meta")]
     meta: Option<Meta>,
@@ -48,7 +48,7 @@ pub struct News {
     rating: Option<u64>,
 
     #[serde(rename = "content")]
-    content: Option<String>,
+    content: String,
 
     #[serde(rename = "question")]
     question: Option<String>,

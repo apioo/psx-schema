@@ -94,10 +94,18 @@ class Python extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $discriminator = $this->getDiscriminatorType($property);
             if (!empty($discriminator)) {
-                $code.= $this->indent . $property->getName()->getProperty() . ': Optional[' . $discriminator . '] = Field(default=None, alias="' . $property->getName()->getRaw() . '")' . "\n";
+                $type = $discriminator;
             } else {
-                $code.= $this->indent . $property->getName()->getProperty() . ': Optional[' . $property->getType() . '] = Field(default=None, alias="' . $property->getName()->getRaw() . '")' . "\n";
+                $type = $property->getType();
             }
+
+            $default = '';
+            if ($property->isNullable() !== false) {
+                $type = 'Optional[' . $type . ']';
+                $default = 'default=None, ';
+            }
+
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $type . ' = Field(' . $default . 'alias="' . $property->getName()->getRaw() . '")' . "\n";
         }
 
         $code.= '    pass' . "\n";

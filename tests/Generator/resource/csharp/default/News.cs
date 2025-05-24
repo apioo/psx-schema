@@ -30,7 +30,7 @@ public class News
     public bool? Read { get; set; }
 
     [JsonPropertyName("author")]
-    public Author? Author { get; set; }
+    public Author Author { get; set; }
 
     [JsonPropertyName("meta")]
     public Meta? Meta { get; set; }
@@ -48,7 +48,7 @@ public class News
     public int? Rating { get; set; }
 
     [JsonPropertyName("content")]
-    public string? Content { get; set; }
+    public string Content { get; set; }
 
     [JsonPropertyName("question")]
     public string? Question { get; set; }

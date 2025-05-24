@@ -4,19 +4,19 @@ Imports System.Text.Json.Serialization
 Public Class StructDefinitionType
     Inherits DefinitionType
     <JsonPropertyName("base")>
-    Public Property Base As Boolean
+    Public Property Base As Nullable(Boolean)
 
     <JsonPropertyName("discriminator")>
-    Public Property Discriminator As String
+    Public Property Discriminator As Nullable(String)
 
     <JsonPropertyName("mapping")>
-    Public Property Mapping As Dictionary(Of String, String)
+    Public Property Mapping As Nullable(Dictionary(Of String, String))
 
     <JsonPropertyName("parent")>
-    Public Property Parent As ReferencePropertyType
+    Public Property Parent As Nullable(ReferencePropertyType)
 
     <JsonPropertyName("properties")>
-    Public Property Properties As Dictionary(Of String, PropertyType)
+    Public Property Properties As Nullable(Dictionary(Of String, PropertyType))
 
 End Class
 

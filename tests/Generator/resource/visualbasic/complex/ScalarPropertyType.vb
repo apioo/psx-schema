@@ -4,7 +4,7 @@ Imports System.Text.Json.Serialization
 Public Class ScalarPropertyType
     Inherits PropertyType
     <JsonPropertyName("type")>
-    Public Property Type As String
+    Public Property Type As Nullable(String)
 
 End Class
 

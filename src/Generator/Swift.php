@@ -78,7 +78,9 @@ class Swift extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $keys[$property->getName()->getProperty()] = $property->getName()->getRaw();
 
-            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . "\n";
+            $nullable = $property->isNullable() === false ? '' : '?';
+
+            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . "\n";
         }
 
         $code.= "\n";

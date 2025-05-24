@@ -71,8 +71,13 @@ class VisualBasic extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
+            $type = $property->getType();
+            if ($property->isNullable() !== false) {
+                $type = 'Nullable(' . $type . ')';
+            }
+
             $code.= $this->indent . '<JsonPropertyName("' . $property->getName()->getRaw() . '")>' . "\n";
-            $code.= $this->indent . 'Public Property ' . $property->getName()->getProperty() . ' As ' . $property->getType() . "\n";
+            $code.= $this->indent . 'Public Property ' . $property->getName()->getProperty() . ' As ' . $type . "\n";
             $code.= "\n";
         }
 

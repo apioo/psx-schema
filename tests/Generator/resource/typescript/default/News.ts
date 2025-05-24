@@ -13,13 +13,13 @@ export interface News {
     receiver?: Array<Author>
     data?: Array<Array<number>>
     read?: boolean
-    author?: Author
+    author: Author
     meta?: Meta
     sendDate?: string
     readDate?: string
     price?: number
     rating?: number
-    content?: string
+    content: string
     question?: string
     version?: string
     coffeeTime?: string

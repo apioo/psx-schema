@@ -6,16 +6,16 @@ Public Class Author
     Public Property Title As String
 
     <JsonPropertyName("email")>
-    Public Property Email As String
+    Public Property Email As Nullable(String)
 
     <JsonPropertyName("categories")>
-    Public Property Categories As String()
+    Public Property Categories As Nullable(String())
 
     <JsonPropertyName("locations")>
-    Public Property Locations As Location()
+    Public Property Locations As Nullable(Location())
 
     <JsonPropertyName("origin")>
-    Public Property Origin As Location
+    Public Property Origin As Nullable(Location)
 
 End Class
 

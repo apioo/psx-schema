@@ -54,7 +54,9 @@ class Protobuf extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $code.= $this->indent . 'optional ' . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $this->generateNumber($property->getName()->getRaw()) . ' [json_name="' . $property->getName()->getRaw() . '"];' . "\n";
+            $nullable = $property->isNullable() === false ? '' : 'optional ';
+
+            $code.= $this->indent . $nullable . $property->getType() . ' ' . $property->getName()->getProperty() . ' = ' . $this->generateNumber($property->getName()->getRaw()) . ' [json_name="' . $property->getName()->getRaw() . '"];' . "\n";
         }
 
         $code.= '}' . "\n";

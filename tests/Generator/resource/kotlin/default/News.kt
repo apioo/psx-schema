@@ -13,13 +13,13 @@ open class News {
     @JsonProperty("receiver") var receiver: ArrayList<Author>? = null
     @JsonProperty("data") var data: ArrayList<ArrayList<Float>>? = null
     @JsonProperty("read") var read: Boolean? = null
-    @JsonProperty("author") var author: Author? = null
+    @JsonProperty("author") var author: Author
     @JsonProperty("meta") var meta: Meta? = null
     @JsonProperty("sendDate") var sendDate: java.time.LocalDate? = null
     @JsonProperty("readDate") var readDate: java.time.LocalDateTime? = null
     @JsonProperty("price") var price: Float? = null
     @JsonProperty("rating") var rating: Int? = null
-    @JsonProperty("content") var content: String? = null
+    @JsonProperty("content") var content: String
     @JsonProperty("question") var question: String? = null
     @JsonProperty("version") var version: String? = null
     @JsonProperty("coffeeTime") var coffeeTime: java.time.LocalTime? = null

@@ -66,8 +66,13 @@ class Rust extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
+            $type = $property->getType();
+            if ($property->isNullable() !== false) {
+                $type = 'Option<' . $type . '>';
+            }
+
             $code.= $this->indent . '#[serde(rename = "' . $property->getName()->getRaw() . '")]' . "\n";
-            $code.= $this->indent . $property->getName()->getProperty() . ': Option<' . $property->getType() . '>,' . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $type . ',' . "\n";
             $code.= "\n";
         }
 

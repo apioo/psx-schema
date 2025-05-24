@@ -4,10 +4,10 @@ Imports System.Text.Json.Serialization
 Public Class CollectionDefinitionType
     Inherits DefinitionType
     <JsonPropertyName("schema")>
-    Public Property Schema As PropertyType
+    Public Property Schema As Nullable(PropertyType)
 
     <JsonPropertyName("type")>
-    Public Property Type As String
+    Public Property Type As Nullable(String)
 
 End Class
 

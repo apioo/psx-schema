@@ -1,6 +1,6 @@
 class HumanType: Codable {
-    var firstName: String
-    var parent: HumanType
+    var firstName: String?
+    var parent: HumanType?
 
     enum CodingKeys: String, CodingKey {
         case firstName = "firstName"

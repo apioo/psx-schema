@@ -36,7 +36,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?array $data = null;
     protected ?bool $read = null;
     #[Nullable(false)]
-    protected ?Author $author = null;
+    protected Author $author;
     protected ?Meta $meta = null;
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
@@ -44,7 +44,7 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     protected ?int $rating = null;
     #[Description('Contains the "main" content of the news entry')]
     #[Nullable(false)]
-    protected ?string $content = null;
+    protected string $content;
     protected ?string $question = null;
     protected ?string $version = null;
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
@@ -153,11 +153,11 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->read;
     }
-    public function setAuthor(?Author $author): void
+    public function setAuthor(Author $author): void
     {
         $this->author = $author;
     }
-    public function getAuthor(): ?Author
+    public function getAuthor(): Author
     {
         return $this->author;
     }
@@ -201,11 +201,11 @@ class News implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->rating;
     }
-    public function setContent(?string $content): void
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }

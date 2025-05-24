@@ -1,26 +1,26 @@
 // An general news entry
 class News: Codable {
-    var config: Meta
-    var inlineConfig: Dictionary<String, String>
-    var mapTags: Dictionary<String, String>
-    var mapReceiver: Dictionary<String, Author>
-    var tags: Array<String>
-    var receiver: Array<Author>
-    var data: Array<Array<Float>>
-    var read: Bool
+    var config: Meta?
+    var inlineConfig: Dictionary<String, String>?
+    var mapTags: Dictionary<String, String>?
+    var mapReceiver: Dictionary<String, Author>?
+    var tags: Array<String>?
+    var receiver: Array<Author>?
+    var data: Array<Array<Float>>?
+    var read: Bool?
     var author: Author
-    var meta: Meta
-    var sendDate: Date
-    var readDate: Date
-    var price: Float
-    var rating: Int
+    var meta: Meta?
+    var sendDate: Date?
+    var readDate: Date?
+    var price: Float?
+    var rating: Int?
     var content: String
-    var question: String
-    var version: String
-    var coffeeTime: String
-    var captcha: String
-    var mediaFields: String
-    var payload: Any
+    var question: String?
+    var version: String?
+    var coffeeTime: String?
+    var captcha: String?
+    var mediaFields: String?
+    var payload: Any?
 
     enum CodingKeys: String, CodingKey {
         case config = "config"

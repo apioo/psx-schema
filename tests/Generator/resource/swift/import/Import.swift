@@ -1,6 +1,6 @@
 class Import: Codable {
-    var students: StudentMap
-    var student: Student
+    var students: StudentMap?
+    var student: Student?
 
     enum CodingKeys: String, CodingKey {
         case students = "students"

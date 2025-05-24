@@ -4,7 +4,7 @@ Imports System.Text.Json.Serialization
 Public Class StringPropertyType
     Inherits ScalarPropertyType
     <JsonPropertyName("format")>
-    Public Property Format As String
+    Public Property Format As Nullable(String)
 
 End Class
 

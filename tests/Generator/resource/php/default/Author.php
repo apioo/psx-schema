@@ -9,7 +9,7 @@ use PSX\Schema\Attribute\Nullable;
 class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Nullable(false)]
-    protected ?string $title = null;
+    protected string $title;
     #[Description('We will send no spam to this address')]
     #[Nullable(true)]
     protected ?string $email = null;
@@ -23,11 +23,11 @@ class Author implements \JsonSerializable, \PSX\Record\RecordableInterface
     #[Description('Array of locations')]
     protected ?array $locations = null;
     protected ?Location $origin = null;
-    public function setTitle(?string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }

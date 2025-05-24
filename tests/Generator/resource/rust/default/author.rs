@@ -5,7 +5,7 @@ use location::Location;
 #[derive(Serialize, Deserialize)]
 pub struct Author {
     #[serde(rename = "title")]
-    title: Option<String>,
+    title: String,
 
     #[serde(rename = "email")]
     email: Option<String>,

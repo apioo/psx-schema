@@ -96,6 +96,10 @@ class Java extends CodeGeneratorAbstract
                 $code.= $this->indent . '@JsonPropertyDescription("' . $this->normalizer->comment($comment) . '")' . "\n";
             }
 
+            if ($property->isNullable() === false) {
+                $code.= $this->indent . '@NotNull' . "\n";
+            }
+
             $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . ';' . "\n";
         }
 
@@ -103,11 +107,14 @@ class Java extends CodeGeneratorAbstract
             /** @var Code\Property $property */
             $code.= "\n";
             $code.= $this->indent . '@JsonSetter("' . $property->getName()->getRaw() . '")' . "\n";
-            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
+            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . ($property->isNullable() === false ? '@NotNull ' : '') . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
             $code.= "\n";
             $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
+            if ($property->isNullable() === false) {
+                $code.= $this->indent . '@NotNull' . "\n";
+            }
             $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getMethod(prefix: ['get']) . '() {' . "\n";
             $code.= $this->indent . $this->indent . 'return this.' . $property->getName()->getProperty() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";

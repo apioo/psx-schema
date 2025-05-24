@@ -5,7 +5,7 @@ message Location {
 
 
 message Author {
-    optional string title = 186570435 [json_name="title"];
+    string title = 186570435 [json_name="title"];
     optional string email = 215464074 [json_name="email"];
     optional repeated string categories = 142514949 [json_name="categories"];
     optional repeated Location locations = 170963641 [json_name="locations"];
@@ -22,13 +22,13 @@ message News {
     optional repeated Author receiver = 176067080 [json_name="receiver"];
     optional repeated float data = 178898714 [json_name="data"];
     optional bool read = 199096954 [json_name="read"];
-    optional Author author = 244171887 [json_name="author"];
+    Author author = 244171887 [json_name="author"];
     optional map<string, string> meta = 155201724 [json_name="meta"];
     optional Timestamp sendDate = 133269890 [json_name="sendDate"];
     optional Timestamp readDate = 10547211 [json_name="readDate"];
     optional float price = 54294786 [json_name="price"];
     optional int64 rating = 126276291 [json_name="rating"];
-    optional string content = 258011200 [json_name="content"];
+    string content = 258011200 [json_name="content"];
     optional string question = 237941427 [json_name="question"];
     optional string version = 57813356 [json_name="version"];
     optional string coffeeTime = 145564454 [json_name="coffeeTime"];

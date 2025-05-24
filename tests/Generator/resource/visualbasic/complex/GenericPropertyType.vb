@@ -4,7 +4,7 @@ Imports System.Text.Json.Serialization
 Public Class GenericPropertyType
     Inherits PropertyType
     <JsonPropertyName("name")>
-    Public Property Name As String
+    Public Property Name As Nullable(String)
 
 End Class
 

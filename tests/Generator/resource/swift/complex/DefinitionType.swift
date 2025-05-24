@@ -1,8 +1,8 @@
 // Base definition type
 class DefinitionType: Codable {
-    var deprecated: Bool
-    var description: String
-    var _type: String
+    var deprecated: Bool?
+    var description: String?
+    var _type: String?
 
     enum CodingKeys: String, CodingKey {
         case deprecated = "deprecated"

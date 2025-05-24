@@ -101,8 +101,10 @@ class CSharp extends CodeGeneratorAbstract
                 $propertyName = $propertyName . '_';
             }
 
+            $nullable = $property->isNullable() === false ? '' : '?';
+
             $code.= $this->indent . '[JsonPropertyName("' . $property->getName()->getRaw() . '")]' . "\n";
-            $code.= $this->indent . 'public ' . $override . $property->getType() . '? ' . $propertyName . ' { get; set; }' . "\n";
+            $code.= $this->indent . 'public ' . $override . $property->getType() . $nullable . ' ' . $propertyName . ' { get; set; }' . "\n";
             $code.= "\n";
         }
 

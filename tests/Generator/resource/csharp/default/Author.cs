@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 public class Author
 {
     [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    public string Title { get; set; }
 
     [JsonPropertyName("email")]
     public string? Email { get; set; }

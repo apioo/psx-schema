@@ -88,7 +88,8 @@ class TypeScript extends CodeGeneratorAbstract
                 $type = $this->appendGlobalThis($type, $reservedClassNames);
             }
 
-            $code.= $this->indent . $propertyName . '?: ' . $type . "\n";
+            $nullable = $property->isNullable() === false ? '' : '?';
+            $code.= $this->indent . $propertyName . $nullable . ': ' . $type . "\n";
         }
 
         $code.= '}' . "\n";
