@@ -1,13 +1,12 @@
 type Operation struct {
+    Arguments map[string]Argument `json:"arguments"`
+    Authorization bool `json:"authorization"`
+    Description string `json:"description"`
     Method string `json:"method"`
     Path string `json:"path"`
     Return *Response `json:"return"`
-    Arguments map[string]Argument `json:"arguments"`
-    Throws []Response `json:"throws"`
-    Description string `json:"description"`
-    Stability int `json:"stability"`
     Security []string `json:"security"`
-    Authorization bool `json:"authorization"`
-    Tags []string `json:"tags"`
+    Stability int `json:"stability"`
+    Throws []Response `json:"throws"`
 }
 

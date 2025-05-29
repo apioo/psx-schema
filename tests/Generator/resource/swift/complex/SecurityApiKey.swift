@@ -1,10 +1,10 @@
 class SecurityApiKey: Security {
-    var name: String
-    var _in: String
+    var _in: String?
+    var name: String?
 
     enum CodingKeys: String, CodingKey {
-        case name = "name"
         case _in = "in"
+        case name = "name"
     }
 }
 

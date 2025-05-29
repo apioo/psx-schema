@@ -1,10 +1,10 @@
 class SecurityApiKey
   extend Security
-  attr_accessor :name, :in
+  attr_accessor :in, :name
 
-  def initialize(name, in)
-    @name = name
+  def initialize(in, name)
     @in = in
+    @name = name
   end
 end
 

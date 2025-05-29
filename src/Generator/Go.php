@@ -140,11 +140,7 @@ class Go extends CodeGeneratorAbstract
                 continue;
             }
 
-            if ($ns !== DefinitionsInterface::SELF_NAMESPACE) {
-                if (!isset($this->mapping[$ns])) {
-                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
-                }
-
+            if ($ns !== DefinitionsInterface::SELF_NAMESPACE && $this->mapping[$ns]) {
                 $imports[$ns] = 'import "' . $this->mapping[$ns] . '"';
             }
         }

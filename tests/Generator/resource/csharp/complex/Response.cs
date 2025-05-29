@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace TypeAPI.Model;
 
+/// <summary>
+/// Describes the response of the operation
+/// </summary>
 public class Response
 {
     [JsonPropertyName("code")]

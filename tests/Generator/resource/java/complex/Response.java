@@ -2,9 +2,13 @@ package org.typeapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+@JsonClassDescription("Describes the response of the operation")
 public class Response {
+    @JsonPropertyDescription("The associated HTTP response code. For error responses it is possible to use the 499, 599 or 999 status code to catch all errors")
     private Integer code;
+    @JsonPropertyDescription("In case the data is not a JSON payload which you can describe with a schema you can select a content type")
     private String contentType;
+    @JsonPropertyDescription("Schema of the JSON payload")
     private PropertyType schema;
 
     @JsonSetter("code")

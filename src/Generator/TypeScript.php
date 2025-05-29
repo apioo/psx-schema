@@ -142,14 +142,10 @@ class TypeScript extends CodeGeneratorAbstract
                 continue;
             }
 
-            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->import($name) . '";';
-            } else {
-                if (!isset($this->mapping[$ns])) {
-                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
-                }
-
+            if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
                 $imports[] = 'import {' . $typeName . '} from "' . $this->mapping[$ns] . '";';
+            } else {
+                $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->import($name) . '";';
             }
         }
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.*
  */
 open class TypeAPI : TypeSchema {
     @JsonProperty("baseUrl") var baseUrl: String? = null
-    @JsonProperty("security") var security: Security? = null
     @JsonProperty("operations") var operations: HashMap<String, Operation>? = null
+    @JsonProperty("security") var security: Security? = null
 }
 

@@ -182,14 +182,10 @@ class Python extends CodeGeneratorAbstract
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
 
-            if ($ns === DefinitionsInterface::SELF_NAMESPACE) {
-                $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
-            } else {
-                if (!isset($this->mapping[$ns])) {
-                    throw new GeneratorException('Provided namespace "' . $ns . '" is not configured');
-                }
-
+            if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
                 $imports[] = 'from ' . $this->mapping[$ns] . ' import ' . $this->normalizer->class($name);
+            } else {
+                $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
             }
         }
 

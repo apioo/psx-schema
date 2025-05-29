@@ -3,18 +3,10 @@ package org.typeapi.model;
 import com.fasterxml.jackson.annotation.*;
 
 public class SecurityApiKey extends Security {
-    private String name;
+    @JsonPropertyDescription("Must be either \"header\" or \"query\"")
     private String in;
-
-    @JsonSetter("name")
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @JsonGetter("name")
-    public String getName() {
-        return this.name;
-    }
+    @JsonPropertyDescription("The name of the header or query parameter i.e. \"X-Api-Key\"")
+    private String name;
 
     @JsonSetter("in")
     public void setIn(String in) {
@@ -24,6 +16,16 @@ public class SecurityApiKey extends Security {
     @JsonGetter("in")
     public String getIn() {
         return this.in;
+    }
+
+    @JsonSetter("name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @JsonGetter("name")
+    public String getName() {
+        return this.name;
     }
 }
 

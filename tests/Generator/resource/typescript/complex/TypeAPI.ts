@@ -1,13 +1,13 @@
 import {TypeSchema} from "./TypeSchema";
-import {Security} from "./Security";
 import {Operation} from "./Operation";
+import {Security} from "./Security";
 
 /**
  * The TypeAPI Root
  */
 export interface TypeAPI extends TypeSchema {
     baseUrl?: string
+    operations?: Record<string, Operation>
     security?: Security
-    operations?: Map<string, Operation>
 }
 

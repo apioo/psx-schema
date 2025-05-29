@@ -1,3 +1,5 @@
+
+# Describes the response of the operation
 class Response
   attr_accessor :code, :content_type, :schema
 

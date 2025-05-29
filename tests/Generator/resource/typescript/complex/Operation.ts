@@ -1,16 +1,15 @@
-import {Response} from "./Response";
 import {Argument} from "./Argument";
+import {Response} from "./Response";
 
 export interface Operation {
+    arguments?: Record<string, Argument>
+    authorization?: boolean
+    description?: string
     method?: string
     path?: string
     return?: Response
-    arguments?: Map<string, Argument>
-    throws?: Array<Response>
-    description?: string
-    stability?: number
     security?: Array<string>
-    authorization?: boolean
-    tags?: Array<string>
+    stability?: number
+    throws?: Array<Response>
 }
 

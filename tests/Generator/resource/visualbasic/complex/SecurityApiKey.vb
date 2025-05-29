@@ -2,11 +2,11 @@ Imports System.Text.Json.Serialization
 
 Public Class SecurityApiKey
     Inherits Security
-    <JsonPropertyName("name")>
-    Public Property Name As String
-
     <JsonPropertyName("in")>
-    Public Property _In As String
+    Public Property _In As Nullable(String)
+
+    <JsonPropertyName("name")>
+    Public Property Name As Nullable(String)
 
 End Class
 

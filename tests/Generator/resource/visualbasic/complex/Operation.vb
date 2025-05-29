@@ -1,35 +1,32 @@
 Imports System.Text.Json.Serialization
 
 Public Class Operation
-    <JsonPropertyName("method")>
-    Public Property Method As String
-
-    <JsonPropertyName("path")>
-    Public Property Path As String
-
-    <JsonPropertyName("return")>
-    Public Property _Return As Response
-
     <JsonPropertyName("arguments")>
-    Public Property Arguments As Dictionary(Of String, Argument)
-
-    <JsonPropertyName("throws")>
-    Public Property Throws As Response()
-
-    <JsonPropertyName("description")>
-    Public Property Description As String
-
-    <JsonPropertyName("stability")>
-    Public Property Stability As Integer
-
-    <JsonPropertyName("security")>
-    Public Property Security As String()
+    Public Property Arguments As Nullable(Dictionary(Of String, Argument))
 
     <JsonPropertyName("authorization")>
-    Public Property Authorization As Boolean
+    Public Property Authorization As Nullable(Boolean)
 
-    <JsonPropertyName("tags")>
-    Public Property Tags As String()
+    <JsonPropertyName("description")>
+    Public Property Description As Nullable(String)
+
+    <JsonPropertyName("method")>
+    Public Property Method As Nullable(String)
+
+    <JsonPropertyName("path")>
+    Public Property Path As Nullable(String)
+
+    <JsonPropertyName("return")>
+    Public Property _Return As Nullable(Response)
+
+    <JsonPropertyName("security")>
+    Public Property Security As Nullable(String())
+
+    <JsonPropertyName("stability")>
+    Public Property Stability As Nullable(Integer)
+
+    <JsonPropertyName("throws")>
+    Public Property Throws As Nullable(Response())
 
 End Class
 

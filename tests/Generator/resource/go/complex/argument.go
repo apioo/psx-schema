@@ -1,7 +1,9 @@
+
+// Describes arguments of the operation
 type Argument struct {
-    In string `json:"in"`
-    Schema *PropertyType `json:"schema"`
     ContentType string `json:"contentType"`
+    In string `json:"in"`
     Name string `json:"name"`
+    Schema *PropertyType `json:"schema"`
 }
 

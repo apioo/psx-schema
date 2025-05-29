@@ -8,8 +8,6 @@ use PSX\Schema\Attribute\Description;
 
 class SecurityOAuth extends Security implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('The OAuth2 token endpoint')]
-    protected ?string $tokenUrl = null;
     #[Description('Optional the OAuth2 authorization endpoint')]
     protected ?string $authorizationUrl = null;
     /**
@@ -17,46 +15,48 @@ class SecurityOAuth extends Security implements \JsonSerializable, \PSX\Record\R
      */
     #[Description('Optional OAuth2 scopes')]
     protected ?array $scopes = null;
-    public function setTokenUrl(?string $tokenUrl) : void
-    {
-        $this->tokenUrl = $tokenUrl;
-    }
-    public function getTokenUrl() : ?string
-    {
-        return $this->tokenUrl;
-    }
-    public function setAuthorizationUrl(?string $authorizationUrl) : void
+    #[Description('The OAuth2 token endpoint')]
+    protected ?string $tokenUrl = null;
+    public function setAuthorizationUrl(?string $authorizationUrl): void
     {
         $this->authorizationUrl = $authorizationUrl;
     }
-    public function getAuthorizationUrl() : ?string
+    public function getAuthorizationUrl(): ?string
     {
         return $this->authorizationUrl;
     }
     /**
      * @param array<string>|null $scopes
      */
-    public function setScopes(?array $scopes) : void
+    public function setScopes(?array $scopes): void
     {
         $this->scopes = $scopes;
     }
     /**
      * @return array<string>|null
      */
-    public function getScopes() : ?array
+    public function getScopes(): ?array
     {
         return $this->scopes;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function setTokenUrl(?string $tokenUrl): void
+    {
+        $this->tokenUrl = $tokenUrl;
+    }
+    public function getTokenUrl(): ?string
+    {
+        return $this->tokenUrl;
+    }
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
-        $record->put('tokenUrl', $this->tokenUrl);
         $record->put('authorizationUrl', $this->authorizationUrl);
         $record->put('scopes', $this->scopes);
+        $record->put('tokenUrl', $this->tokenUrl);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

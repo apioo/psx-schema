@@ -1,14 +1,15 @@
+// Describes arguments of the operation
 class Argument: Codable {
-    var _in: String
-    var schema: PropertyType
-    var contentType: String
-    var name: String
+    var contentType: String?
+    var _in: String?
+    var name: String?
+    var schema: PropertyType?
 
     enum CodingKeys: String, CodingKey {
-        case _in = "in"
-        case schema = "schema"
         case contentType = "contentType"
+        case _in = "in"
         case name = "name"
+        case schema = "schema"
     }
 }
 

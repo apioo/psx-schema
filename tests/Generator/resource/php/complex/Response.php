@@ -6,40 +6,40 @@ namespace TypeAPI\Model;
 
 use PSX\Schema\Attribute\Description;
 
-#[Description('')]
+#[Description('Describes the response of the operation')]
 class Response implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
     #[Description('The associated HTTP response code. For error responses it is possible to use the 499, 599 or 999 status code to catch all errors')]
     protected ?int $code = null;
     #[Description('In case the data is not a JSON payload which you can describe with a schema you can select a content type')]
     protected ?string $contentType = null;
-    #[Description('')]
+    #[Description('Schema of the JSON payload')]
     protected ?PropertyType $schema = null;
-    public function setCode(?int $code) : void
+    public function setCode(?int $code): void
     {
         $this->code = $code;
     }
-    public function getCode() : ?int
+    public function getCode(): ?int
     {
         return $this->code;
     }
-    public function setContentType(?string $contentType) : void
+    public function setContentType(?string $contentType): void
     {
         $this->contentType = $contentType;
     }
-    public function getContentType() : ?string
+    public function getContentType(): ?string
     {
         return $this->contentType;
     }
-    public function setSchema(?PropertyType $schema) : void
+    public function setSchema(?PropertyType $schema): void
     {
         $this->schema = $schema;
     }
-    public function getSchema() : ?PropertyType
+    public function getSchema(): ?PropertyType
     {
         return $this->schema;
     }
-    public function toRecord() : \PSX\Record\RecordInterface
+    public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = new \PSX\Record\Record();
@@ -48,7 +48,7 @@ class Response implements \JsonSerializable, \PSX\Record\RecordableInterface
         $record->put('schema', $this->schema);
         return $record;
     }
-    public function jsonSerialize() : object
+    public function jsonSerialize(): object
     {
         return (object) $this->toRecord()->getAll();
     }

@@ -4,13 +4,13 @@ Imports System.Text.Json.Serialization
 Public Class TypeAPI
     Inherits TypeSchema
     <JsonPropertyName("baseUrl")>
-    Public Property BaseUrl As String
-
-    <JsonPropertyName("security")>
-    Public Property Security As Security
+    Public Property BaseUrl As Nullable(String)
 
     <JsonPropertyName("operations")>
-    Public Property Operations As Dictionary(Of String, Operation)
+    Public Property Operations As Nullable(Dictionary(Of String, Operation))
+
+    <JsonPropertyName("security")>
+    Public Property Security As Nullable(Security)
 
 End Class
 

@@ -3,19 +3,12 @@ package org.typeapi.model;
 import com.fasterxml.jackson.annotation.*;
 
 public class SecurityOAuth extends Security {
-    private String tokenUrl;
+    @JsonPropertyDescription("Optional the OAuth2 authorization endpoint")
     private String authorizationUrl;
+    @JsonPropertyDescription("Optional OAuth2 scopes")
     private java.util.List<String> scopes;
-
-    @JsonSetter("tokenUrl")
-    public void setTokenUrl(String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-    }
-
-    @JsonGetter("tokenUrl")
-    public String getTokenUrl() {
-        return this.tokenUrl;
-    }
+    @JsonPropertyDescription("The OAuth2 token endpoint")
+    private String tokenUrl;
 
     @JsonSetter("authorizationUrl")
     public void setAuthorizationUrl(String authorizationUrl) {
@@ -35,6 +28,16 @@ public class SecurityOAuth extends Security {
     @JsonGetter("scopes")
     public java.util.List<String> getScopes() {
         return this.scopes;
+    }
+
+    @JsonSetter("tokenUrl")
+    public void setTokenUrl(String tokenUrl) {
+        this.tokenUrl = tokenUrl;
+    }
+
+    @JsonGetter("tokenUrl")
+    public String getTokenUrl() {
+        return this.tokenUrl;
     }
 }
 

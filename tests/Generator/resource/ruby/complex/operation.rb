@@ -1,17 +1,16 @@
 class Operation
-  attr_accessor :method, :path, :_return, :arguments, :throws, :description, :stability, :security, :authorization, :tags
+  attr_accessor :arguments, :authorization, :description, :method, :path, :_return, :security, :stability, :throws
 
-  def initialize(method, path, _return, arguments, throws, description, stability, security, authorization, tags)
+  def initialize(arguments, authorization, description, method, path, _return, security, stability, throws)
+    @arguments = arguments
+    @authorization = authorization
+    @description = description
     @method = method
     @path = path
     @_return = _return
-    @arguments = arguments
-    @throws = throws
-    @description = description
-    @stability = stability
     @security = security
-    @authorization = authorization
-    @tags = tags
+    @stability = stability
+    @throws = throws
   end
 end
 
