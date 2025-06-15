@@ -36,6 +36,18 @@ class ContentType implements \Stringable, \JsonSerializable
     public const TEXT = 'text/plain';
     public const XML = 'application/xml';
 
+    private const TOP_LEVEL_MEDIA_TYPES = [
+        'application',
+        'audio',
+        'example',
+        'image',
+        'message',
+        'model',
+        'multipart',
+        'text',
+        'video',
+    ];
+
     private string $type;
 
     public function __construct(string $contentType)
@@ -108,5 +120,28 @@ class ContentType implements \Stringable, \JsonSerializable
     public static function from(string $value): static
     {
         return new static($value);
+    }
+
+    public static function isValid(string $contentType): bool
+    {
+        if (str_contains($contentType, ';')) {
+            $contentType = strstr($contentType, ';', true);
+        }
+
+        if (!str_contains($contentType, '/')) {
+            return false;
+        }
+
+        $parts = explode('/', $contentType);
+        if (count($parts) !== 2) {
+            return false;
+        }
+
+        $topLevelType = $parts[0] ?? '';
+        if (!in_array($topLevelType, self::TOP_LEVEL_MEDIA_TYPES)) {
+            return false;
+        }
+
+        return true;
     }
 }
