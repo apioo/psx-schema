@@ -70,4 +70,14 @@ class JsonSchemaTest extends GeneratorTestCase
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
+
+    public function testGenerateResolveRefs()
+    {
+        $generator = new JsonSchema(inlineDefinitions: true);
+
+        $actual = $generator->generate($this->getSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_resolve_refs.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
 }

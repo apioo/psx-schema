@@ -47,10 +47,12 @@ use PSX\Schema\TypeUtil;
 class JsonSchema implements GeneratorInterface
 {
     private string $refBase;
+    private bool $inlineDefinitions;
 
-    public function __construct(?Config $config = null)
+    public function __construct(?Config $config = null, bool $inlineDefinitions = false)
     {
         $this->refBase = $config?->get('ref_base') ?? '#/definitions/';
+        $this->inlineDefinitions = $inlineDefinitions;
     }
 
     public function generate(SchemaInterface $schema): Code\Chunks|string
@@ -79,7 +81,7 @@ class JsonSchema implements GeneratorInterface
             $object = [];
         }
 
-        if (!$definitions->isEmpty()) {
+        if ($this->inlineDefinitions === false && !$definitions->isEmpty()) {
             $result['definitions'] = $this->generateDefinitions($definitions);
         }
 
@@ -158,12 +160,17 @@ class JsonSchema implements GeneratorInterface
             if ($parent instanceof ReferencePropertyType) {
                 unset($data['parent']);
 
-                return [
-                    'allOf' => [
-                        $this->generateType($parent, $definitions, $template),
-                        $data,
-                    ]
-                ];
+                if (count($data) === 1) {
+                    // in case $data is of type object and has no other properties we can simply return the type
+                    return $this->generateType($parent, $definitions, $template);
+                } else {
+                    return [
+                        'allOf' => [
+                            $this->generateType($parent, $definitions, $template),
+                            $data,
+                        ]
+                    ];
+                }
             } else {
                 return $data;
             }
@@ -195,11 +202,14 @@ class JsonSchema implements GeneratorInterface
                 // in case the referenced type has generics we resolve
                 return $this->generateType($targetType, $definitions, $type->getTemplate());
             } else {
-                [$ns, $name] = TypeUtil::split($type->getTarget());
-
-                return [
-                    '$ref' => $this->refBase . $name
-                ];
+                if ($this->inlineDefinitions === false) {
+                    [$ns, $name] = TypeUtil::split($type->getTarget());
+                    return [
+                        '$ref' => $this->refBase . $name
+                    ];
+                } else {
+                    return $this->generateType($targetType, $definitions);
+                }
             }
         } elseif ($type instanceof AnyPropertyType) {
             return (object) [];

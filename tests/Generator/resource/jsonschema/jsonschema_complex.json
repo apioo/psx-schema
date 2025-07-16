@@ -127,24 +127,10 @@
       ]
     },
     "SecurityHttpBasic": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Security"
-        },
-        {
-          "type": "object"
-        }
-      ]
+      "$ref": "#/definitions/Security"
     },
     "SecurityHttpBearer": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Security"
-        },
-        {
-          "type": "object"
-        }
-      ]
+      "$ref": "#/definitions/Security"
     },
     "SecurityOAuth": {
       "allOf": [

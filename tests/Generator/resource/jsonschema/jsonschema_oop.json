@@ -1,28 +1,21 @@
 {
   "definitions": {
     "HumanMap": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "totalResults": {
-              "type": "integer"
-            },
-            "parent": {
-              "$ref": "#/definitions/Human_Type"
-            },
-            "entries": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Human_Type"
-              }
-            }
-          }
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
         },
-        {
-          "type": "object"
+        "parent": {
+          "$ref": "#/definitions/Human_Type"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Human_Type"
+          }
         }
-      ]
+      }
     },
     "Human_Type": {
       "type": "object",
@@ -51,28 +44,21 @@
       ]
     },
     "StudentMap": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "totalResults": {
-              "type": "integer"
-            },
-            "parent": {
-              "$ref": "#/definitions/Human_Type"
-            },
-            "entries": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Student"
-              }
-            }
-          }
+      "type": "object",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
         },
-        {
-          "type": "object"
+        "parent": {
+          "$ref": "#/definitions/Human_Type"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Student"
+          }
         }
-      ]
+      }
     }
   },
   "type": "object",
