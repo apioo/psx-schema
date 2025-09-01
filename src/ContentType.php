@@ -33,6 +33,7 @@ class ContentType implements \Stringable, \JsonSerializable
     public const FORM = 'application/x-www-form-urlencoded';
     public const JSON = 'application/json';
     public const MULTIPART = 'multipart/form-data';
+    public const STREAM = 'text/event-stream';
     public const TEXT = 'text/plain';
     public const XML = 'application/xml';
 
@@ -70,6 +71,8 @@ class ContentType implements \Stringable, \JsonSerializable
             return self::FORM;
         } elseif ($this->isMultipart()) {
             return self::MULTIPART;
+        } elseif ($this->isStream()) {
+            return self::STREAM;
         } elseif ($this->isText()) {
             return self::TEXT;
         } else {
@@ -100,6 +103,11 @@ class ContentType implements \Stringable, \JsonSerializable
     private function isMultipart(): bool
     {
         return $this->type === 'multipart/form-data';
+    }
+
+    private function isStream(): bool
+    {
+        return $this->type === 'text/event-stream';
     }
 
     private function isText(): bool
