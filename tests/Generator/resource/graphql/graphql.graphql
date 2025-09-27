@@ -14,16 +14,16 @@ type Author {
 
 
 type News {
-    config: [String]
-    inlineConfig: [String]
-    mapTags: [String]
-    mapReceiver: [Author]
+    config: JSONObject
+    inlineConfig: JSONObject
+    mapTags: JSONObject
+    mapReceiver: JSONObject
     tags: [String]
     receiver: [Author]
     data: [[Float]]
     read: Boolean
     author: Author
-    meta: [String]
+    meta: JSONObject
     sendDate: String
     readDate: String
     price: Float
@@ -34,6 +34,6 @@ type News {
     coffeeTime: String
     captcha: String
     mediaFields: String
-    payload: Any
+    payload: JSON
 }
 
