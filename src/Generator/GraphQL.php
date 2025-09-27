@@ -61,4 +61,9 @@ class GraphQL extends CodeGeneratorAbstract
 
         return $code;
     }
+
+    protected function supportsExtends(): bool
+    {
+        return false;
+    }
 }

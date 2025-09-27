@@ -61,8 +61,7 @@ class GraphQL extends GeneratorAbstract
 
     protected function getMap(string $type): string
     {
-        // in GraphQL there is no map type
-        return '[' . $type . ']';
+        return 'JSONObject';
     }
 
     protected function getGroup(string $type): string
@@ -72,11 +71,18 @@ class GraphQL extends GeneratorAbstract
 
     protected function getAny(): string
     {
-        return 'Any';
+        return 'JSON';
     }
 
     protected function getNamespaced(string $namespace, string $name): string
     {
         return $namespace . '/' . $name;
+    }
+
+    protected function getReference(string $ref): string
+    {
+        $name = parent::getReference($ref);
+
+        return $name === 'Passthru' ? 'JSONObject' : $name;
     }
 }
