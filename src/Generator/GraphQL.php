@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\StructDefinitionType;
 
@@ -40,6 +41,11 @@ class GraphQL extends CodeGeneratorAbstract
     protected function newTypeGenerator(array $mapping): GeneratorInterface
     {
         return new Type\GraphQL($mapping, $this->normalizer);
+    }
+
+    protected function newNormalizer(): NormalizerInterface
+    {
+        return new Normalizer\GraphQL();
     }
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
