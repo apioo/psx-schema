@@ -21,7 +21,7 @@
 namespace PSX\Schema\Generator\Normalizer;
 
 /**
- * Php
+ * GraphQL
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
