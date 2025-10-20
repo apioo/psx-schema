@@ -24,7 +24,7 @@ class News(BaseModel):
     rating: Optional[int] = Field(default=None, alias="rating")
     content: str = Field(alias="content")
     question: Optional[str] = Field(default=None, alias="question")
-    version: Optional[str] = Field(default=None, alias="version")
+    version: Optional[str] = Field(default="1.0", alias="version")
     coffee_time: Optional[datetime.time] = Field(default=None, alias="coffeeTime")
     captcha: Optional[str] = Field(default=None, alias="g-recaptcha-response")
     media_fields: Optional[str] = Field(default=None, alias="media.fields")

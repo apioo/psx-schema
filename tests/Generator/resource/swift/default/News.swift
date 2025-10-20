@@ -12,11 +12,12 @@ class News: Codable {
     var meta: Meta?
     var sendDate: Date?
     var readDate: Date?
+    @available(*, deprecated)
     var price: Float?
     var rating: Int?
     var content: String
     var question: String?
-    var version: String?
+    var version: String? = "1.0"
     var coffeeTime: String?
     var captcha: String?
     var mediaFields: String?

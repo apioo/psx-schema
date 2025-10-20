@@ -42,6 +42,7 @@ public class News
     public System.DateTime? ReadDate { get; set; }
 
     [JsonPropertyName("price")]
+    [ObsoleteAttribute()]
     public double? Price { get; set; }
 
     [JsonPropertyName("rating")]
@@ -54,7 +55,7 @@ public class News
     public string? Question { get; set; }
 
     [JsonPropertyName("version")]
-    public string? Version { get; set; }
+    public string? Version { get; set; } = "1.0";
 
     [JsonPropertyName("coffeeTime")]
     public System.TimeOnly? CoffeeTime { get; set; }

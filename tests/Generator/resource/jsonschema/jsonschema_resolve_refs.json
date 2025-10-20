@@ -1,250 +1,252 @@
 {
-    "description": "An general news entry",
-    "type": "object",
-    "properties": {
-        "config": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "string"
+  "description": "An general news entry",
+  "type": "object",
+  "properties": {
+    "config": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "inlineConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapTags": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapReceiver": {
+      "type": "object",
+      "additionalProperties": {
+        "description": "An simple author element with some description",
+        "type": "object",
+        "properties": {
+          "title": {
+            "nullable": false,
+            "type": "string"
+          },
+          "email": {
+            "description": "We will send no spam to this address",
+            "nullable": true,
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
-        },
-        "inlineConfig": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "string"
-            }
-        },
-        "mapTags": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "string"
-            }
-        },
-        "mapReceiver": {
-            "type": "object",
-            "additionalProperties": {
-                "description": "An simple author element with some description",
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "email": {
-                        "description": "We will send no spam to this address",
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "categories": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "locations": {
-                        "description": "Array of locations",
-                        "type": "array",
-                        "items": {
-                            "description": "Location of the person",
-                            "type": "object",
-                            "properties": {
-                                "lat": {
-                                    "type": "number"
-                                },
-                                "long": {
-                                    "type": "number"
-                                }
-                            }
-                        }
-                    },
-                    "origin": {
-                        "description": "Location of the person",
-                        "type": "object",
-                        "properties": {
-                            "lat": {
-                                "type": "number"
-                            },
-                            "long": {
-                                "type": "number"
-                            }
-                        }
-                    }
+          },
+          "locations": {
+            "description": "Array of locations",
+            "type": "array",
+            "items": {
+              "description": "Location of the person",
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number"
                 },
-                "required": [
-                    "title"
-                ]
-            }
-        },
-        "tags": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "receiver": {
-            "type": "array",
-            "items": {
-                "description": "An simple author element with some description",
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "email": {
-                        "description": "We will send no spam to this address",
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "categories": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "locations": {
-                        "description": "Array of locations",
-                        "type": "array",
-                        "items": {
-                            "description": "Location of the person",
-                            "type": "object",
-                            "properties": {
-                                "lat": {
-                                    "type": "number"
-                                },
-                                "long": {
-                                    "type": "number"
-                                }
-                            }
-                        }
-                    },
-                    "origin": {
-                        "description": "Location of the person",
-                        "type": "object",
-                        "properties": {
-                            "lat": {
-                                "type": "number"
-                            },
-                            "long": {
-                                "type": "number"
-                            }
-                        }
-                    }
-                },
-                "required": [
-                    "title"
-                ]
-            }
-        },
-        "data": {
-            "type": "array",
-            "items": {
-                "type": "array",
-                "items": {
-                    "type": "number"
+                "long": {
+                  "type": "number"
                 }
+              }
             }
-        },
-        "read": {
-            "type": "boolean"
-        },
-        "author": {
-            "description": "An simple author element with some description",
+          },
+          "origin": {
+            "description": "Location of the person",
             "type": "object",
             "properties": {
-                "title": {
-                    "type": "string",
-                    "nullable": false
-                },
-                "email": {
-                    "description": "We will send no spam to this address",
-                    "type": "string",
-                    "nullable": true
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "locations": {
-                    "description": "Array of locations",
-                    "type": "array",
-                    "items": {
-                        "description": "Location of the person",
-                        "type": "object",
-                        "properties": {
-                            "lat": {
-                                "type": "number"
-                            },
-                            "long": {
-                                "type": "number"
-                            }
-                        }
-                    }
-                },
-                "origin": {
-                    "description": "Location of the person",
-                    "type": "object",
-                    "properties": {
-                        "lat": {
-                            "type": "number"
-                        },
-                        "long": {
-                            "type": "number"
-                        }
-                    }
-                }
-            },
-            "required": [
-                "title"
-            ]
-        },
-        "meta": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "string"
+              "lat": {
+                "type": "number"
+              },
+              "long": {
+                "type": "number"
+              }
             }
+          }
         },
-        "sendDate": {
-            "type": "string",
-            "format": "date"
-        },
-        "readDate": {
-            "type": "string",
-            "format": "date-time"
-        },
-        "price": {
-            "type": "number"
-        },
-        "rating": {
-            "type": "integer"
-        },
-        "content": {
-            "description": "Contains the \"main\" content of the news entry",
-            "type": "string",
-            "nullable": false
-        },
-        "question": {
-            "type": "string"
-        },
-        "version": {
-            "type": "string"
-        },
-        "coffeeTime": {
-            "type": "string",
-            "format": "time"
-        },
-        "g-recaptcha-response": {
-            "type": "string"
-        },
-        "media.fields": {
-            "type": "string"
-        },
-        "payload": {}
+        "required": [
+          "title"
+        ]
+      }
     },
-    "required": [
-        "author",
-        "content"
-    ]
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "receiver": {
+      "type": "array",
+      "items": {
+        "description": "An simple author element with some description",
+        "type": "object",
+        "properties": {
+          "title": {
+            "nullable": false,
+            "type": "string"
+          },
+          "email": {
+            "description": "We will send no spam to this address",
+            "nullable": true,
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locations": {
+            "description": "Array of locations",
+            "type": "array",
+            "items": {
+              "description": "Location of the person",
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number"
+                },
+                "long": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "origin": {
+            "description": "Location of the person",
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number"
+              },
+              "long": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "read": {
+      "type": "boolean"
+    },
+    "author": {
+      "description": "An simple author element with some description",
+      "type": "object",
+      "properties": {
+        "title": {
+          "nullable": false,
+          "type": "string"
+        },
+        "email": {
+          "description": "We will send no spam to this address",
+          "nullable": true,
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "description": "Array of locations",
+          "type": "array",
+          "items": {
+            "description": "Location of the person",
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number"
+              },
+              "long": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "origin": {
+          "description": "Location of the person",
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number"
+            },
+            "long": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "sendDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "readDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "price": {
+      "deprecated": true,
+      "type": "number"
+    },
+    "rating": {
+      "type": "integer"
+    },
+    "content": {
+      "description": "Contains the \"main\" content of the news entry",
+      "nullable": false,
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "coffeeTime": {
+      "type": "string",
+      "format": "time"
+    },
+    "g-recaptcha-response": {
+      "type": "string"
+    },
+    "media.fields": {
+      "type": "string"
+    },
+    "payload": {}
+  },
+  "required": [
+    "author",
+    "content"
+  ]
 }

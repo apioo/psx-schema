@@ -1,157 +1,159 @@
 {
-    "definitions": {
-        "Author": {
-            "description": "An simple author element with some description",
-            "type": "struct",
-            "properties": {
-                "title": {
-                    "type": "string",
-                    "nullable": false
-                },
-                "email": {
-                    "description": "We will send no spam to this address",
-                    "type": "string",
-                    "nullable": true
-                },
-                "categories": {
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "locations": {
-                    "description": "Array of locations",
-                    "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Location"
-                    }
-                },
-                "origin": {
-                    "type": "reference",
-                    "target": "Location"
-                }
-            }
+  "definitions": {
+    "Author": {
+      "description": "An simple author element with some description",
+      "type": "struct",
+      "properties": {
+        "title": {
+          "nullable": false,
+          "type": "string"
         },
-        "Location": {
-            "description": "Location of the person",
-            "type": "struct",
-            "properties": {
-                "lat": {
-                    "type": "number"
-                },
-                "long": {
-                    "type": "number"
-                }
-            }
+        "email": {
+          "description": "We will send no spam to this address",
+          "nullable": true,
+          "type": "string"
         },
-        "Meta": {
-            "type": "map",
-            "schema": {
-                "type": "string"
-            }
+        "categories": {
+          "type": "array",
+          "schema": {
+            "type": "string"
+          }
         },
-        "News": {
-            "description": "An general news entry",
-            "type": "struct",
-            "properties": {
-                "config": {
-                    "type": "reference",
-                    "target": "Meta"
-                },
-                "inlineConfig": {
-                    "type": "map",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "mapTags": {
-                    "type": "map",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "mapReceiver": {
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Author"
-                    }
-                },
-                "tags": {
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "receiver": {
-                    "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Author"
-                    }
-                },
-                "data": {
-                    "type": "array",
-                    "schema": {
-                        "type": "array",
-                        "schema": {
-                            "type": "number"
-                        }
-                    }
-                },
-                "read": {
-                    "type": "boolean"
-                },
-                "author": {
-                    "type": "reference",
-                    "target": "Author",
-                    "nullable": false
-                },
-                "meta": {
-                    "type": "reference",
-                    "target": "Meta"
-                },
-                "sendDate": {
-                    "type": "string",
-                    "format": "date"
-                },
-                "readDate": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "rating": {
-                    "type": "integer"
-                },
-                "content": {
-                    "description": "Contains the \"main\" content of the news entry",
-                    "type": "string",
-                    "nullable": false
-                },
-                "question": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "coffeeTime": {
-                    "type": "string",
-                    "format": "time"
-                },
-                "g-recaptcha-response": {
-                    "type": "string"
-                },
-                "media.fields": {
-                    "type": "string"
-                },
-                "payload": {
-                    "type": "any"
-                }
-            }
+        "locations": {
+          "description": "Array of locations",
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "Location"
+          }
+        },
+        "origin": {
+          "type": "reference",
+          "target": "Location"
         }
+      }
     },
-    "root": "News"
+    "Location": {
+      "description": "Location of the person",
+      "type": "struct",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      }
+    },
+    "Meta": {
+      "type": "map",
+      "schema": {
+        "type": "string"
+      }
+    },
+    "News": {
+      "description": "An general news entry",
+      "type": "struct",
+      "properties": {
+        "config": {
+          "type": "reference",
+          "target": "Meta"
+        },
+        "inlineConfig": {
+          "type": "map",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "mapTags": {
+          "type": "map",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "mapReceiver": {
+          "type": "map",
+          "schema": {
+            "type": "reference",
+            "target": "Author"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "schema": {
+            "type": "string"
+          }
+        },
+        "receiver": {
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "Author"
+          }
+        },
+        "data": {
+          "type": "array",
+          "schema": {
+            "type": "array",
+            "schema": {
+              "type": "number"
+            }
+          }
+        },
+        "read": {
+          "type": "boolean"
+        },
+        "author": {
+          "nullable": false,
+          "type": "reference",
+          "target": "Author"
+        },
+        "meta": {
+          "type": "reference",
+          "target": "Meta"
+        },
+        "sendDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "readDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "price": {
+          "deprecated": true,
+          "type": "number"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "content": {
+          "description": "Contains the \"main\" content of the news entry",
+          "nullable": false,
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "default": "1.0"
+        },
+        "coffeeTime": {
+          "type": "string",
+          "format": "time"
+        },
+        "g-recaptcha-response": {
+          "type": "string"
+        },
+        "media.fields": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "any"
+        }
+      }
+    }
+  },
+  "root": "News"
 }

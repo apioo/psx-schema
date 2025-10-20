@@ -76,13 +76,15 @@ class TestSchema extends SchemaAbstract
         $news->addReference('meta', 'Meta');
         $news->addDate('sendDate');
         $news->addDateTime('readDate');
-        $news->addNumber('price');
+        $news->addNumber('price')
+            ->setDeprecated(true);
         $news->addInteger('rating');
         $news->addString('content')
             ->setDescription('Contains the "main" content of the news entry')
             ->setNullable(false);
         $news->addString('question');
-        $news->addString('version');
+        $news->addString('version')
+            ->setDefault('1.0');
         $news->addTime('coffeeTime');
         $news->addString('g-recaptcha-response');
         $news->addString('media.fields');

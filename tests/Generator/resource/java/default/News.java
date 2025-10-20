@@ -22,7 +22,7 @@ public class News {
     @NotNull
     private String content;
     private String question;
-    private String version;
+    private String version = "1.0";
     private java.time.LocalTime coffeeTime;
     private String captcha;
     private String mediaFields;
@@ -150,11 +150,13 @@ public class News {
     }
 
     @JsonSetter("price")
+    @Deprecated
     public void setPrice(Double price) {
         this.price = price;
     }
 
     @JsonGetter("price")
+    @Deprecated
     public Double getPrice() {
         return this.price;
     }
