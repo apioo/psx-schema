@@ -59,8 +59,6 @@ abstract class PropertyTypeAbstract implements TypeInterface
         return $this;
     }
 
-    abstract protected function getType(): string;
-
     public function isNullable(): ?bool
     {
         return $this->nullable;
@@ -73,13 +71,15 @@ abstract class PropertyTypeAbstract implements TypeInterface
         return $this;
     }
 
+    abstract protected function getType(): string;
+
     public function toArray(): array
     {
         return array_filter([
             'description' => $this->description,
             'deprecated' => $this->deprecated,
-            'type' => $this->getType(),
             'nullable' => $this->nullable,
+            'type' => $this->getType(),
         ], function($value){
             return $value !== null;
         });

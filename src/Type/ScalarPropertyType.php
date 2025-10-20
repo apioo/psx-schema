@@ -32,6 +32,7 @@ use PSX\Schema\Format;
 abstract class ScalarPropertyType extends PropertyTypeAbstract
 {
     protected ?Format $format = null;
+    protected ?string $default = null;
 
     public function getFormat(): ?Format
     {
@@ -45,10 +46,21 @@ abstract class ScalarPropertyType extends PropertyTypeAbstract
         return $this;
     }
 
+    public function getDefault(): ?string
+    {
+        return $this->default;
+    }
+
+    public function setDefault(?string $default): void
+    {
+        $this->default = $default;
+    }
+
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
             'format' => $this->format?->value,
+            'default' => $this->default,
         ], function($value){
             return $value !== null;
         }));
