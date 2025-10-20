@@ -25,6 +25,7 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -80,7 +81,17 @@ class Swift extends CodeGeneratorAbstract
 
             $nullable = $property->isNullable() === false ? '' : '?';
 
-            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . "\n";
+            $default = '';
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $default = ' = "' . addcslashes($defaultValue, '"\\') . '"';
+            }
+
+            if ($property->isDeprecated() === true) {
+                $code.= $this->indent . '@available(*, deprecated)' . "\n";
+            }
+
+            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . $default . "\n";
         }
 
         $code.= "\n";

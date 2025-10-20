@@ -99,9 +99,15 @@ class Python extends CodeGeneratorAbstract
                 $type = $property->getType();
             }
 
-            $default = '';
             if ($property->isNullable() !== false) {
                 $type = 'Optional[' . $type . ']';
+            }
+
+            $default = '';
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $default = 'default="' . addcslashes($defaultValue, '"\\') . '", ';
+            } elseif ($property->isNullable() !== false) {
                 $default = 'default=None, ';
             }
 

@@ -21,6 +21,7 @@
 namespace PSX\Schema\Generator\Code;
 
 use PSX\Schema\Type\PropertyTypeAbstract;
+use PSX\Schema\Type\StringPropertyType;
 
 /**
  * Property
@@ -72,6 +73,11 @@ class Property
     public function isNullable(): ?bool
     {
         return $this->origin->isNullable();
+    }
+
+    public function getDefault(): ?string
+    {
+        return $this->origin instanceof StringPropertyType ? $this->origin->getDefault() : null;
     }
 
     public function getOrigin(): PropertyTypeAbstract

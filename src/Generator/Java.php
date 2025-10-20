@@ -25,6 +25,7 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -100,21 +101,39 @@ class Java extends CodeGeneratorAbstract
                 $code.= $this->indent . '@NotNull' . "\n";
             }
 
-            $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . ';' . "\n";
+            $default = '';
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $default = ' = "' . addcslashes($defaultValue, '"\\') . '"';
+            }
+
+            $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . $default . ';' . "\n";
         }
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
             $code.= "\n";
             $code.= $this->indent . '@JsonSetter("' . $property->getName()->getRaw() . '")' . "\n";
+
+            if ($property->isDeprecated() === true) {
+                $code.= $this->indent . '@Deprecated' . "\n";
+            }
+
             $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . ($property->isNullable() === false ? '@NotNull ' : '') . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
             $code.= "\n";
+
             $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
+
             if ($property->isNullable() === false) {
                 $code.= $this->indent . '@NotNull' . "\n";
             }
+
+            if ($property->isDeprecated() === true) {
+                $code.= $this->indent . '@Deprecated' . "\n";
+            }
+
             $code.= $this->indent . 'public ' . $property->getType() . ' ' . $property->getName()->getMethod(prefix: ['get']) . '() {' . "\n";
             $code.= $this->indent . $this->indent . 'return this.' . $property->getName()->getProperty() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";

@@ -160,12 +160,18 @@ class Html extends MarkupAbstract
         $html.= '<tbody>';
 
         foreach ($rows as $row) {
+            /** @var Code\Property $property */
             [$name, $property] = $row;
 
             $classes = $this->getPropertyCssClasses($property);
 
+            $keyName = htmlspecialchars($name);
+            if ($property->isDeprecated() === true) {
+                $keyName = '<s>' . $keyName . '</s>';
+            }
+
             $html.= '<tr>';
-            $html.= '<td><span class="psx-property-name ' . implode(' ', $classes) . '">' . htmlspecialchars($name) . '</span></td>';
+            $html.= '<td><span class="psx-property-name ' . implode(' ', $classes) . '">' . $keyName . '</span></td>';
             $html.= '<td>';
             $html.= '<span class="psx-property-type"><a class="psx-type-link" data-name="' . $property->getType() . '">' . $property->getType() . '</a></span><br />';
             $html.= '<div class="psx-property-description">' . htmlspecialchars((string) $property->getComment()) . '</div>';
@@ -184,12 +190,25 @@ class Html extends MarkupAbstract
         $html = '<span class="psx-object-json-pun">{</span>' . "\n";
 
         foreach ($rows as $row) {
+            /** @var Code\Property $property */
             [$name, $property] = $row;
 
+            $keyName = htmlspecialchars($name);
+            if ($property->isDeprecated() === true) {
+                $keyName = '<s>' . $keyName . '</s>';
+            }
+
             $html.= '  ';
-            $html.= '<span class="psx-object-json-key">"' . htmlspecialchars($name) . '"</span>';
+            $html.= '<span class="psx-object-json-key">"' . $keyName . '"</span>';
             $html.= '<span class="psx-object-json-pun">: </span>';
             $html.= '<span class="psx-property-type">' . $property->getType() . '</span>';
+
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $html.= '<span class="psx-object-json-pun"> = </span>';
+                $html.= '<span class="psx-object-json-key">"' . htmlspecialchars($defaultValue) . '"</span>';
+            }
+
             $html.= '<span class="psx-object-json-pun">,</span>';
             $html.= "\n";
         }

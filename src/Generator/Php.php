@@ -25,8 +25,6 @@ use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter;
-use PSX\Record\ArrayList;
-use PSX\Record\HashMap;
 use PSX\Record\Record;
 use PSX\Record\RecordableInterface;
 use PSX\Record\RecordInterface;
@@ -37,7 +35,6 @@ use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\StructDefinitionType;
-use PSX\Schema\Type\UnionType;
 
 /**
  * Php
@@ -147,6 +144,11 @@ class Php extends CodeGeneratorAbstract
 
             if ($property->isNullable() !== false) {
                 $prop->setDefault(null);
+            }
+
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $prop->setDefault($defaultValue);
             }
 
             $class->addStmt($prop);
@@ -332,9 +334,11 @@ class Php extends CodeGeneratorAbstract
         if ($type->getDescription() !== null) {
             $result[] = $this->newAttribute('Description', [$this->newScalar($type->getDescription())], $uses);
         }
+
         if ($type->isDeprecated() !== null) {
             $result[] = $this->newAttribute('Deprecated', [$this->newScalar($type->isDeprecated())], $uses);
         }
+
         if ($type->isNullable() !== null) {
             $result[] = $this->newAttribute('Nullable', [$this->newScalar($type->isNullable())], $uses);
         }

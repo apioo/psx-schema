@@ -24,6 +24,7 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -64,9 +65,23 @@ class Kotlin extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $nullable = $property->isNullable() === false ? '' : '? = null';
+            $nullable = $property->isNullable() === false ? '' : '?';
 
-            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '") var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . "\n";
+            $default = '';
+            $defaultValue = $property->getDefault();
+            if ($defaultValue !== null) {
+                $default = ' = "' . addcslashes($defaultValue, '"\\') . '"';
+            } elseif ($property->isNullable() !== false)  {
+                $default = ' = null';
+            }
+
+            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '")' . "\n";
+
+            if ($property->isDeprecated() === true) {
+                $code.= $this->indent . '@Deprecated(message = "Deprecated", level = DeprecationLevel.WARNING)' . "\n";
+            }
+
+            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . $default . "\n";
         }
 
         $code.= '}' . "\n";
