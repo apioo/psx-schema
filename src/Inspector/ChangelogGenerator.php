@@ -198,6 +198,10 @@ class ChangelogGenerator
         if ($leftType->getFormat() !== $rightType->getFormat()) {
             yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'format', $leftType->getFormat(), $rightType->getFormat());
         }
+
+        if ($leftType->getDefault() !== $rightType->getDefault()) {
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'default', $leftType->getDefault(), $rightType->getDefault());
+        }
     }
 
     private function generateNumber(NumberPropertyType $leftType, NumberPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
