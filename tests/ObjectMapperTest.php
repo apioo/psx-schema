@@ -67,7 +67,8 @@ JSON;
 
         $expect = <<<'JSON'
 {
-  "content": "foobar"
+  "content": "foobar",
+  "version": "1.0"
 }
 JSON;
 

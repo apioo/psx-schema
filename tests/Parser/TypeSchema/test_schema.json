@@ -119,6 +119,7 @@
           "type": "string"
         },
         "price": {
+          "deprecated": true,
           "type": "number"
         },
         "rating": {
@@ -133,7 +134,8 @@
           "type": "string"
         },
         "version": {
-          "type": "string"
+          "type": "string",
+          "default": "1.0"
         },
         "coffeeTime": {
           "format": "time",

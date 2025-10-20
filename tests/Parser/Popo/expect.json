@@ -63,5 +63,6 @@
   "rating": 4,
   "content": "foobar",
   "question": "foo",
+  "version": "1.0",
   "coffeeTime": "10:49:00"
 }

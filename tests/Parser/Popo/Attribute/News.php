@@ -3,6 +3,7 @@
 namespace PSX\Schema\Tests\Parser\Popo\Attribute;
 
 use PSX\Record\Record;
+use PSX\Schema\Attribute\Deprecated;
 use PSX\Schema\Attribute\Description;
 use PSX\Schema\Attribute\Key;
 use PSX\Schema\Attribute\Nullable;
@@ -48,13 +49,14 @@ class News
     protected ?Meta $meta = null;
     protected ?\PSX\DateTime\LocalDate $sendDate = null;
     protected ?\PSX\DateTime\LocalDateTime $readDate = null;
+    #[Deprecated(true)]
     protected ?float $price = null;
     protected ?int $rating = null;
     #[Description('Contains the "main" content of the news entry')]
     #[Nullable(false)]
     protected ?string $content = null;
     protected ?string $question = null;
-    protected ?string $version = null;
+    protected ?string $version = '1.0';
     protected ?\PSX\DateTime\LocalTime $coffeeTime = null;
     #[Key('g-recaptcha-response')]
     protected ?string $captcha = null;

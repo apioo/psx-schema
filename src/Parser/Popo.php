@@ -35,11 +35,11 @@ use PSX\Schema\SchemaInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\CollectionPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
-use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\MapDefinitionType;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\ScalarPropertyType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use ReflectionClass;
 
@@ -200,6 +200,11 @@ class Popo implements ParserInterface
 
         if ($type instanceof ScalarPropertyType) {
             $this->parseScalarAnnotations($annotations, $type);
+        }
+
+        $defaultValue = $reflection->getDefaultValue();
+        if ($type instanceof StringPropertyType && is_string($defaultValue) && $defaultValue !== '') {
+            $type->setDefault($defaultValue);
         }
 
         return $type;

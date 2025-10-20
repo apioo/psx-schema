@@ -328,6 +328,11 @@ class TypeSchema implements ParserInterface
         if ($format instanceof Format) {
             $property->setFormat($format);
         }
+
+        $defaultValue = $this->getStringValue($data, ['default']);
+        if (!empty($defaultValue)) {
+            $property->setDefault($defaultValue);
+        }
     }
 
     protected function parseReference(ReferencePropertyType $type, \stdClass $data, ?string $namespace): void

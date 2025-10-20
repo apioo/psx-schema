@@ -22,7 +22,6 @@ namespace PSX\Schema\Tests\Parser;
 
 use PSX\Schema\Parser;
 use PSX\Schema\Tests\Parser\Popo\ArrayInArray;
-use PSX\Schema\Tests\Parser\Popo\Form_Container;
 use PSX\Schema\Tests\Parser\Popo\Form_Element;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\NumberPropertyType;
