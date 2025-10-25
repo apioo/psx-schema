@@ -25,7 +25,6 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -97,10 +96,6 @@ class Java extends CodeGeneratorAbstract
                 $code.= $this->indent . '@JsonPropertyDescription("' . $this->normalizer->comment($comment) . '")' . "\n";
             }
 
-            if ($property->isNullable() === false) {
-                $code.= $this->indent . '@NotNull' . "\n";
-            }
-
             $default = '';
             $defaultValue = $property->getDefault();
             if ($defaultValue !== null) {
@@ -119,16 +114,12 @@ class Java extends CodeGeneratorAbstract
                 $code.= $this->indent . '@Deprecated' . "\n";
             }
 
-            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . ($property->isNullable() === false ? '@NotNull ' : '') . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
+            $code.= $this->indent . 'public void ' . $property->getName()->getMethod(prefix: ['set']) . '(' . $property->getType() . ' ' . $property->getName()->getArgument() . ') {' . "\n";
             $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
             $code.= "\n";
 
             $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
-
-            if ($property->isNullable() === false) {
-                $code.= $this->indent . '@NotNull' . "\n";
-            }
 
             if ($property->isDeprecated() === true) {
                 $code.= $this->indent . '@Deprecated' . "\n";
