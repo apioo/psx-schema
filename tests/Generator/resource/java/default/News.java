@@ -11,7 +11,6 @@ public class News {
     private java.util.List<Author> receiver;
     private java.util.List<java.util.List<Double>> data;
     private Boolean read;
-    @NotNull
     private Author author;
     private Meta meta;
     private java.time.LocalDate sendDate;
@@ -19,7 +18,6 @@ public class News {
     private Double price;
     private Integer rating;
     @JsonPropertyDescription("Contains the \"main\" content of the news entry")
-    @NotNull
     private String content;
     private String question;
     private String version = "1.0";
@@ -109,12 +107,11 @@ public class News {
     }
 
     @JsonSetter("author")
-    public void setAuthor(@NotNull Author author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
     @JsonGetter("author")
-    @NotNull
     public Author getAuthor() {
         return this.author;
     }
@@ -172,12 +169,11 @@ public class News {
     }
 
     @JsonSetter("content")
-    public void setContent(@NotNull String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
     @JsonGetter("content")
-    @NotNull
     public String getContent() {
         return this.content;
     }
