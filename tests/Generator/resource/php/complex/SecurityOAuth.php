@@ -47,6 +47,9 @@ class SecurityOAuth extends Security implements \JsonSerializable, \PSX\Record\R
     {
         return $this->tokenUrl;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

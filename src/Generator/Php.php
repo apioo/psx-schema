@@ -423,6 +423,7 @@ class Php extends CodeGeneratorAbstract
         $toRecord = $this->factory->method('toRecord');
         $toRecord->makePublic();
         $toRecord->setReturnType('\\' . RecordInterface::class);
+        $toRecord->setDocComment($this->buildComment(['return' => '\\' . RecordInterface::class . '<mixed>']));
         $toRecord->addStmts($stmts);
 
         $class->addStmt($toRecord);

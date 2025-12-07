@@ -48,6 +48,9 @@ class TypeAPI extends TypeSchema implements \JsonSerializable, \PSX\Record\Recor
     {
         return $this->security;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

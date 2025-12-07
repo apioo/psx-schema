@@ -28,6 +28,9 @@ class SecurityApiKey extends Security implements \JsonSerializable, \PSX\Record\
     {
         return $this->name;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

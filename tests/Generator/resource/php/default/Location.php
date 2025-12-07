@@ -25,6 +25,9 @@ class Location implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->long;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

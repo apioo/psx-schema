@@ -126,6 +126,9 @@ class Operation implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->throws;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
