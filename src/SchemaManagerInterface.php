@@ -21,6 +21,7 @@
 namespace PSX\Schema;
 
 use PSX\Schema\Exception\InvalidSchemaException;
+use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Parser\ContextInterface;
 
 /**
@@ -60,6 +61,7 @@ interface SchemaManagerInterface
      * it is also possible to provide a concrete {@see SchemaSource} object
      *
      * @throws InvalidSchemaException
+     * @throws ParserException
      */
     public function getSchema(string|SchemaSource $source, ?ContextInterface $context = null): SchemaInterface;
 
