@@ -37,6 +37,10 @@ use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
+use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
+use stdClass;
 
 /**
  * TypeVisitor
@@ -54,7 +58,7 @@ class TypeVisitor implements VisitorInterface
         $this->validator = $validator;
     }
 
-    public function visitStruct(\stdClass $data, StructDefinitionType $type, string $path): object
+    public function visitStruct(stdClass $data, StructDefinitionType $type, string $path): object
     {
         $discriminator = $type->getDiscriminator();
         $mapping = $type->getMapping();
@@ -67,17 +71,17 @@ class TypeVisitor implements VisitorInterface
         }
 
         if (!empty($className) && class_exists($className)) {
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
             $record = $class->newInstance();
 
             $mapping = $type->getAttribute(DefinitionTypeAbstract::ATTR_MAPPING) ?: [];
-            foreach ($data as $key => $value) {
+            foreach (get_object_vars($data) as $key => $value) {
                 try {
                     $name = $mapping[$key] ?? $key;
 
                     $method = $class->getMethod('set' . ucfirst($name));
                     $method->invokeArgs($record, [$value]);
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException) {
                     // method does not exist
                 }
             }
@@ -92,18 +96,18 @@ class TypeVisitor implements VisitorInterface
         return $record;
     }
 
-    public function visitMap(\stdClass $data, MapTypeInterface $type, string $path): object
+    public function visitMap(stdClass $data, MapTypeInterface $type, string $path): object
     {
         $className = $type instanceof MapDefinitionType ? $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS) : null;
         if (!empty($className)) {
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
             $record = $class->newInstance();
 
             if (!$record instanceof \ArrayAccess) {
-                throw new \RuntimeException('Map implementation must implement the ArrayAccess interface');
+                throw new RuntimeException('Map implementation must implement the ArrayAccess interface');
             }
 
-            foreach ($data as $key => $value) {
+            foreach (get_object_vars($data) as $key => $value) {
                 $record->offsetSet($key, $value);
             }
         } else {
@@ -121,11 +125,11 @@ class TypeVisitor implements VisitorInterface
     {
         $className = $type instanceof ArrayDefinitionType ? $type->getAttribute(DefinitionTypeAbstract::ATTR_CLASS) : null;
         if (!empty($className)) {
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
             $record = $class->newInstance();
 
             if (!$record instanceof \ArrayIterator) {
-                throw new \RuntimeException('Array implementation must extend the ArrayIterator class');
+                throw new RuntimeException('Array implementation must extend the ArrayIterator class');
             }
 
             foreach ($data as $value) {

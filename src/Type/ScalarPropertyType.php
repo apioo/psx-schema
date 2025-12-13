@@ -39,7 +39,7 @@ abstract class ScalarPropertyType extends PropertyTypeAbstract
         return $this->format;
     }
 
-    public function setFormat(Format $format): self
+    public function setFormat(Format $format): static
     {
         $this->format = $format;
 

@@ -122,7 +122,7 @@ class SchemaSource
         return new self($scheme, $value);
     }
 
-    private static function guessSchemeFromSchemaName(string $source): ?string
+    private static function guessSchemeFromSchemaName(string $source): string
     {
         if (class_exists($source)) {
             if (in_array(SchemaInterface::class, class_implements($source))) {

@@ -42,6 +42,7 @@ use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
+use stdClass;
 
 /**
  * TypeSchema
@@ -62,14 +63,14 @@ class TypeSchema implements ParserInterface
     public function parse(string $schema, ?ContextInterface $context = null): SchemaInterface
     {
         $data = Parser::decode($schema);
-        if (!$data instanceof \stdClass) {
+        if (!$data instanceof stdClass) {
             throw new ParserException('Schema must be an object');
         }
 
         return $this->parseSchema($data, $context);
     }
 
-    public function parseSchema(\stdClass $data, ?ContextInterface $context = null): SchemaInterface
+    public function parseSchema(stdClass $data, ?ContextInterface $context = null): SchemaInterface
     {
         $definitions = new Definitions();
 
@@ -91,7 +92,7 @@ class TypeSchema implements ParserInterface
         return new Schema($definitions, $root);
     }
 
-    private function parseDefinitions(\stdClass $schema, DefinitionsInterface $definitions): void
+    private function parseDefinitions(stdClass $schema, DefinitionsInterface $definitions): void
     {
         $data = null;
         if (isset($schema->definitions)) {
@@ -100,11 +101,11 @@ class TypeSchema implements ParserInterface
             $data = $schema->components->schemas;
         }
 
-        if (!$data instanceof \stdClass) {
+        if (!$data instanceof stdClass) {
             return;
         }
 
-        foreach ($data as $name => $definition) {
+        foreach (get_object_vars($data) as $name => $definition) {
             try {
                 $type = $this->parseDefinitionType($definition);
             } catch (\Exception $e) {
@@ -115,14 +116,14 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    private function parseImport(\stdClass $schema, DefinitionsInterface $definitions, ?ContextInterface $context): void
+    private function parseImport(stdClass $schema, DefinitionsInterface $definitions, ?ContextInterface $context): void
     {
         $import = $this->getObjectValue($schema, ['import', '$import']);
-        if (empty($import)) {
-            $import = [];
+        if ($import === null) {
+            return;
         }
 
-        foreach ($import as $namespace => $uri) {
+        foreach (get_object_vars($import) as $namespace => $uri) {
             $schema = $this->schemaManager->getSchema($uri, $context);
             foreach ($schema->getDefinitions()->getAllTypes() as $fullName => $type) {
                 TypeUtil::refs($type, function(string $ns, string $name) use ($namespace){
@@ -147,7 +148,7 @@ class TypeSchema implements ParserInterface
      * @throws UnknownTypeException
      * @throws ParserException
      */
-    public function parseDefinitionType(\stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
+    public function parseDefinitionType(stdClass $data, ?string $namespace = null): Type\DefinitionTypeAbstract
     {
         $data = BCLayer::transformDefinition($data);
         $type = $this->newDefinitionType($data);
@@ -179,7 +180,7 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    private function parseDefinitionStruct(StructDefinitionType $type, \stdClass $data, ?string $namespace): void
+    private function parseDefinitionStruct(StructDefinitionType $type, stdClass $data, ?string $namespace): void
     {
         $base = $this->getBooleanValue($data, ['base']);
         if ($base !== null) {
@@ -192,9 +193,9 @@ class TypeSchema implements ParserInterface
         }
 
         $mapping = $this->getObjectValue($data, ['mapping']);
-        if ($mapping instanceof \stdClass) {
+        if ($mapping instanceof stdClass) {
             $result = [];
-            foreach ($mapping as $mappingType => $mappingValue) {
+            foreach (get_object_vars($mapping) as $mappingType => $mappingValue) {
                 if ($namespace !== null) {
                     $result[$namespace . ':' . $mappingType] = $mappingValue;
                 } else {
@@ -222,7 +223,7 @@ class TypeSchema implements ParserInterface
         }
 
         $parent = $this->getObjectValue($data, ['parent']);
-        if ($parent instanceof \stdClass) {
+        if ($parent instanceof stdClass) {
             $parentType = $this->parsePropertyType($parent, $namespace);
             if (!$parentType instanceof ReferencePropertyType) {
                 throw new ParserException('Parent must be an reference type');
@@ -232,32 +233,32 @@ class TypeSchema implements ParserInterface
         }
 
         $properties = $this->getObjectValue($data, ['properties']);
-        if ($properties instanceof \stdClass) {
-            foreach ($properties as $name => $row) {
-                if ($row instanceof \stdClass) {
+        if ($properties instanceof stdClass) {
+            foreach (get_object_vars($properties) as $name => $row) {
+                if ($row instanceof stdClass) {
                     $type->addProperty($name, $this->parsePropertyType($row, $namespace));
                 }
             }
         }
     }
 
-    private function parseDefinitionMap(Type\MapDefinitionType $type, \stdClass $data, ?string $namespace): void
+    private function parseDefinitionMap(Type\MapDefinitionType $type, stdClass $data, ?string $namespace): void
     {
         $schema = $this->getObjectValue($data, ['schema', 'additionalProperties']);
-        if ($schema instanceof \stdClass) {
+        if ($schema instanceof stdClass) {
             $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    private function parseDefinitionArray(Type\ArrayDefinitionType $type, \stdClass $data, ?string $namespace): void
+    private function parseDefinitionArray(Type\ArrayDefinitionType $type, stdClass $data, ?string $namespace): void
     {
         $schema = $this->getObjectValue($data, ['schema', 'items']);
-        if ($schema instanceof \stdClass) {
+        if ($schema instanceof stdClass) {
             $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    private function newDefinitionType(\stdClass $data): Type\DefinitionTypeAbstract
+    private function newDefinitionType(stdClass $data): Type\DefinitionTypeAbstract
     {
         $rawType = $this->getStringValue($data, ['type']);
         $type = is_string($rawType) ? DefinitionType::tryFrom($rawType) : null;
@@ -273,7 +274,7 @@ class TypeSchema implements ParserInterface
         throw new UnknownTypeException('Could not assign schema to a definition type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
     }
 
-    public function parsePropertyType(\stdClass $data, ?string $namespace = null): Type\PropertyTypeAbstract
+    public function parsePropertyType(stdClass $data, ?string $namespace = null): Type\PropertyTypeAbstract
     {
         $data = BCLayer::transformProperty($data);
         $type = $this->newPropertyType($data);
@@ -306,7 +307,7 @@ class TypeSchema implements ParserInterface
         return $type;
     }
 
-    protected function parseCollection(Type\CollectionPropertyType $type, \stdClass $data, ?string $namespace): void
+    protected function parseCollection(Type\CollectionPropertyType $type, stdClass $data, ?string $namespace): void
     {
         $schema = null;
         if ($type instanceof Type\MapPropertyType) {
@@ -315,12 +316,12 @@ class TypeSchema implements ParserInterface
             $schema = $this->getObjectValue($data, ['schema', 'items']);
         }
 
-        if ($schema instanceof \stdClass) {
+        if ($schema instanceof stdClass) {
             $type->setSchema($this->parsePropertyType($schema, $namespace));
         }
     }
 
-    protected function parseString(StringPropertyType $property, \stdClass $data): void
+    protected function parseString(StringPropertyType $property, stdClass $data): void
     {
         $rawFormat = $this->getStringValue($data, ['format']);
         $format = is_string($rawFormat) ? Format::tryFrom($rawFormat) : null;
@@ -335,7 +336,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseReference(ReferencePropertyType $type, \stdClass $data, ?string $namespace): void
+    protected function parseReference(ReferencePropertyType $type, stdClass $data, ?string $namespace): void
     {
         $target = $this->getStringValue($data, ['target', '$ref']);
         if (empty($target)) {
@@ -358,9 +359,9 @@ class TypeSchema implements ParserInterface
         }
 
         $template = $this->getObjectValue($data, ['template', '$template']);
-        if ($template instanceof \stdClass) {
+        if ($template instanceof stdClass) {
             $result = [];
-            foreach ($template as $templateName => $templateType) {
+            foreach (get_object_vars($template) as $templateName => $templateType) {
                 if ($namespace !== null) {
                     $result[$templateName] = $namespace . ':' . $templateType;
                 } else {
@@ -372,7 +373,7 @@ class TypeSchema implements ParserInterface
         }
     }
 
-    protected function parseGeneric(Type\GenericPropertyType $type, \stdClass $data): void
+    protected function parseGeneric(Type\GenericPropertyType $type, stdClass $data): void
     {
         $name = $this->getStringValue($data, ['name', '$generic']);
         if (empty($name)) {
@@ -382,7 +383,7 @@ class TypeSchema implements ParserInterface
         $type->setName($name);
     }
 
-    private function newPropertyType(\stdClass $data): PropertyTypeAbstract
+    private function newPropertyType(stdClass $data): PropertyTypeAbstract
     {
         $rawType = $this->getStringValue($data, ['type']);
         $type = is_string($rawType) ? PropertyType::tryFrom($rawType) : null;
@@ -410,7 +411,7 @@ class TypeSchema implements ParserInterface
         throw new UnknownTypeException('Could not assign schema to a property type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
     }
 
-    private function getStringValue(\stdClass $data, array $keywords): ?string
+    private function getStringValue(stdClass $data, array $keywords): ?string
     {
         foreach ($keywords as $keyword) {
             if (isset($data->{$keyword}) && is_string($data->{$keyword})) {
@@ -421,7 +422,7 @@ class TypeSchema implements ParserInterface
         return null;
     }
 
-    private function getBooleanValue(\stdClass $data, array $keywords): ?bool
+    private function getBooleanValue(stdClass $data, array $keywords): ?bool
     {
         foreach ($keywords as $keyword) {
             if (isset($data->{$keyword}) && is_bool($data->{$keyword})) {
@@ -432,10 +433,10 @@ class TypeSchema implements ParserInterface
         return null;
     }
 
-    private function getObjectValue(\stdClass $data, array $keywords): ?\stdClass
+    private function getObjectValue(stdClass $data, array $keywords): ?stdClass
     {
         foreach ($keywords as $keyword) {
-            if (isset($data->{$keyword}) && $data->{$keyword} instanceof \stdClass) {
+            if (isset($data->{$keyword}) && $data->{$keyword} instanceof stdClass) {
                 return $data->{$keyword};
             }
         }

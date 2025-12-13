@@ -39,7 +39,7 @@ class Kotlin extends GeneratorAbstract
             ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'java.util.List<org.apache.hc.core5.http.NameValuePair>' : 'org.springframework.util.MultiValueMap<String, String>',
             ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'Object' : 'String',
             ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? 'org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder' : 'reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<String, org.springframework.http.codec.multipart.Part>>',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -59,7 +59,6 @@ class Kotlin extends GeneratorAbstract
             Format::DATE => 'java.time.LocalDate',
             Format::DATETIME => 'java.time.LocalDateTime',
             Format::TIME => 'java.time.LocalTime',
-            default => $this->getString(),
         };
     }
 

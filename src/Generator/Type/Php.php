@@ -81,7 +81,7 @@ class Php extends GeneratorAbstract
             ContentType::FORM => $context & self::CONTEXT_CLIENT ? 'array' : '\\PSX\\Data\\Body\\Form',
             ContentType::JSON => $context & self::CONTEXT_CLIENT ? 'mixed' : '\\PSX\\Data\\Body\\Json',
             ContentType::MULTIPART => $context & self::CONTEXT_CLIENT ? '\\Sdkgen\\Client\\Multipart' : '\\PSX\\Data\\Body\\Multipart',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -101,7 +101,6 @@ class Php extends GeneratorAbstract
             Format::DATE => '\\' . LocalDate::class,
             Format::DATETIME => '\\' . LocalDateTime::class,
             Format::TIME => '\\' . LocalTime::class,
-            default => $this->getString(),
         };
     }
 

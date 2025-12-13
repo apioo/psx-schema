@@ -40,7 +40,7 @@ class TestSchema extends SchemaAbstract
         $location->setDescription('Location of the person');
         $location->addNumber('lat');
         $location->addNumber('long');
-        $location->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\Location::class);
+        $location->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, 'PSX\Schema\Tests\Parser\Popo\Location');
 
         $author = $this->newStruct('Author');
         $author->setDescription('An simple author element with some description');
@@ -53,10 +53,10 @@ class TestSchema extends SchemaAbstract
         $author->addArray('locations', PropertyTypeFactory::getReference('Location'))
             ->setDescription('Array of locations');
         $author->addReference('origin', 'Location');
-        $author->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\Author::class);
+        $author->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, 'PSX\Schema\Tests\Parser\Popo\Author');
 
         $meta = $this->newMap('Meta', PropertyTypeFactory::getString());
-        $meta->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\Meta::class);
+        $meta->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, 'PSX\Schema\Tests\Parser\Popo\Meta');
 
         $news = $this->newStruct('News');
         $news->setDescription('An general news entry');
@@ -89,7 +89,7 @@ class TestSchema extends SchemaAbstract
         $news->addString('g-recaptcha-response');
         $news->addString('media.fields');
         $news->add('payload', PropertyTypeFactory::getAny());
-        $news->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, Popo\News::class);
+        $news->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, 'PSX\Schema\Tests\Parser\Popo\News');
         $news->setAttribute(DefinitionTypeAbstract::ATTR_MAPPING, ['g-recaptcha-response' => 'captcha']);
     }
 }

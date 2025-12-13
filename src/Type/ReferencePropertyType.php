@@ -42,7 +42,7 @@ class ReferencePropertyType extends PropertyTypeAbstract
         return $this->target;
     }
 
-    public function setTarget(string $target): self
+    public function setTarget(string $target): static
     {
         $this->target = $target;
 
@@ -54,7 +54,7 @@ class ReferencePropertyType extends PropertyTypeAbstract
         return $this->template;
     }
 
-    public function setTemplate(?array $template): self
+    public function setTemplate(?array $template): static
     {
         $this->template = $template;
 

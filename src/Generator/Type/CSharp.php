@@ -39,7 +39,7 @@ class CSharp extends GeneratorAbstract
             ContentType::FORM => 'System.Collections.Specialized.NameValueCollection',
             ContentType::JSON => 'object',
             ContentType::MULTIPART => 'Sdkgen.Client.Multipart',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -59,7 +59,6 @@ class CSharp extends GeneratorAbstract
             Format::DATE => 'System.DateOnly',
             Format::DATETIME => 'System.DateTime',
             Format::TIME => 'System.TimeOnly',
-            default => $this->getString(),
         };
     }
 

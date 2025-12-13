@@ -37,7 +37,6 @@ abstract class ParserTestCase extends SchemaTestCase
 {
     protected function assertDiscriminator(SchemaInterface $schema): void
     {
-        /** @var StructDefinitionType $container */
         $element = $schema->getDefinitions()->getType('Form_Element');
         $this->assertInstanceOf(StructDefinitionType::class, $element);
 

@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\SchemaSource;
 
@@ -107,9 +108,7 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('typehub://apioo:software@0.1.2', (string) $source);
     }
 
-    /**
-     * @dataProvider stringProvider
-     */
+    #[DataProvider('stringProvider')]
     public function testString(string $string, string $expectString)
     {
         $this->assertEquals($expectString, (string) SchemaSource::fromString($string));

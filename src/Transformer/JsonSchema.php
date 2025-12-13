@@ -23,6 +23,7 @@ namespace PSX\Schema\Transformer;
 use PSX\Schema\Exception\TransformerException;
 use PSX\Schema\Parser\TypeSchema\BCLayer;
 use PSX\Schema\TransformerInterface;
+use stdClass;
 
 /**
  * Transform an existing JSON Schema to a valid TypeSchema
@@ -33,11 +34,11 @@ use PSX\Schema\TransformerInterface;
  */
 class JsonSchema implements TransformerInterface
 {
-    public function transform(\stdClass $schema): \stdClass
+    public function transform(stdClass $schema): stdClass
     {
         $keywords = [];
-        $definitions = new \stdClass();
-        foreach ($schema as $key => $value) {
+        $definitions = new stdClass();
+        foreach (get_object_vars($schema) as $key => $value) {
             if ($key === 'definitions' || $key === '$defs') {
                 $definitions = $value;
             } else {
@@ -46,9 +47,9 @@ class JsonSchema implements TransformerInterface
         }
 
         $defs = [];
-        if ($definitions instanceof \stdClass) {
-            foreach ($definitions as $name => $type) {
-                if ($type instanceof \stdClass) {
+        if ($definitions instanceof stdClass) {
+            foreach (get_object_vars($definitions) as $name => $type) {
+                if ($type instanceof stdClass) {
                     $defs[$name] = $this->convertSchema($type, $defs, false);
                 }
             }
@@ -65,7 +66,7 @@ class JsonSchema implements TransformerInterface
             $root = $typeName;
         }
 
-        $result = new \stdClass();
+        $result = new stdClass();
         $result->definitions = $defs;
         if ($root !== null) {
             $result->root = $root;
@@ -74,9 +75,9 @@ class JsonSchema implements TransformerInterface
         return $result;
     }
 
-    private function convertSchema(\stdClass $schema, array &$definitions, bool $isProperty, ?string &$typeName = null): \stdClass
+    private function convertSchema(stdClass $schema, array &$definitions, bool $isProperty, ?string &$typeName = null): stdClass
     {
-        $isObject = isset($schema->type) && $schema->type === 'object' && isset($schema->properties) && $schema->properties instanceof \stdClass;
+        $isObject = isset($schema->type) && $schema->type === 'object' && isset($schema->properties) && $schema->properties instanceof stdClass;
 
         if ($isProperty && !$isObject) {
             $schema = BCLayer::transformProperty($schema);
@@ -93,9 +94,9 @@ class JsonSchema implements TransformerInterface
         if ($type === 'struct') {
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
-            if (isset($schema->properties) && $schema->properties instanceof \stdClass) {
+            if (isset($schema->properties) && $schema->properties instanceof stdClass) {
                 $properties = [];
-                foreach ($schema->properties as $name => $value) {
+                foreach (get_object_vars($schema->properties) as $name => $value) {
                     $properties[$name] = $this->convertSchema($value, $definitions, true);
                 }
 
@@ -123,7 +124,7 @@ class JsonSchema implements TransformerInterface
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
             $result['type'] = 'map';
-            if (isset($schema->additionalProperties) && $schema->additionalProperties instanceof \stdClass) {
+            if (isset($schema->additionalProperties) && $schema->additionalProperties instanceof stdClass) {
                 $result['schema'] = $this->convertSchema($schema->additionalProperties, $definitions, true);
             } else {
                 throw new TransformerException('Map must contain an additionalProperties property');
@@ -137,7 +138,7 @@ class JsonSchema implements TransformerInterface
             $title = $schema->title ?? 'Inline' . substr(md5(json_encode($schema)), 0, 8);
 
             $result['type'] = 'array';
-            if (isset($schema->items) && $schema->items instanceof \stdClass) {
+            if (isset($schema->items) && $schema->items instanceof stdClass) {
                 $result['schema'] = $this->convertSchema($schema->items, $definitions, true);
             } else {
                 throw new TransformerException('Array must contain an items property');
@@ -162,16 +163,5 @@ class JsonSchema implements TransformerInterface
         }
 
         return (object) $result;
-    }
-
-    private function copyKeywords(\stdClass $schema, array $result, array $allowedKeywords): array
-    {
-        foreach ($allowedKeywords as $keyword) {
-            if (isset($schema->{$keyword})) {
-                $result[$keyword] = $schema->{$keyword};
-            }
-        }
-
-        return $result;
     }
 }

@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Transformer;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Parser;
 use PSX\Schema\SchemaInterface;
@@ -35,9 +36,7 @@ use PSX\Schema\Transformer\JsonSchema;
  */
 class JsonSchemaTest extends TestCase
 {
-    /**
-     * @dataProvider transformProvider
-     */
+    #[DataProvider('transformProvider')]
     public function testConvert(string $file)
     {
         $schema = file_get_contents(__DIR__ . '/jsonschema/actual/' . $file);
@@ -52,7 +51,7 @@ class JsonSchemaTest extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function transformProvider(): array
+    public static function transformProvider(): array
     {
         $result = [];
         $tests = scandir(__DIR__ . '/jsonschema/actual');

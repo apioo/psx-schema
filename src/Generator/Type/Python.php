@@ -39,7 +39,7 @@ class Python extends GeneratorAbstract
             ContentType::FORM => 'Dict[str, str]',
             ContentType::JSON => 'Any',
             ContentType::MULTIPART => 'Dict[str, Any]',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -59,7 +59,6 @@ class Python extends GeneratorAbstract
             Format::DATE => 'datetime.date',
             Format::DATETIME => 'datetime.datetime',
             Format::TIME => 'datetime.time',
-            default => $this->getString(),
         };
     }
 

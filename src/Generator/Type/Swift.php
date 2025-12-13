@@ -38,8 +38,7 @@ class Swift extends GeneratorAbstract
             ContentType::BINARY => 'Data',
             ContentType::FORM => 'Dictionary<String, String>',
             ContentType::JSON => 'Any',
-            ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 

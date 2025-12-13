@@ -40,7 +40,7 @@ abstract class SchemaAbstract implements SchemaInterface
 {
     private SchemaManagerInterface $schemaManager;
     private DefinitionsInterface $definitions;
-    private ?string $rootName;
+    private ?string $rootName = null;
 
     public function __construct(SchemaManagerInterface $schemaManager)
     {

@@ -43,7 +43,7 @@ abstract class DefinitionTypeAbstract implements TypeInterface
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
@@ -55,7 +55,7 @@ abstract class DefinitionTypeAbstract implements TypeInterface
         return $this->deprecated;
     }
 
-    public function setDeprecated(bool $deprecated): self
+    public function setDeprecated(bool $deprecated): static
     {
         $this->deprecated = $deprecated;
 
@@ -65,7 +65,7 @@ abstract class DefinitionTypeAbstract implements TypeInterface
     abstract protected function getType(): string;
     abstract public function isEmpty(): bool;
 
-    public function setAttribute(string $key, mixed $value): self
+    public function setAttribute(string $key, mixed $value): static
     {
         $this->attributes[$key] = $value;
 

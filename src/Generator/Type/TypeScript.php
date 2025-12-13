@@ -38,7 +38,7 @@ class TypeScript extends GeneratorAbstract
             ContentType::FORM => 'URLSearchParams',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => 'FormData',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 

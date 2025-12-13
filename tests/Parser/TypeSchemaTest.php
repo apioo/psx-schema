@@ -84,7 +84,11 @@ class TypeSchemaTest extends ParserTestCase
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_external.json');
 
         $this->assertEquals('RootType', $schema->getRoot());
-        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('user');
+
+        $root = $schema->getDefinitions()->getType($schema->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $root);
+
+        $reference = $root->getProperty('user');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
         $type = $schema->getDefinitions()->getType($reference->getTarget());
@@ -104,7 +108,11 @@ class TypeSchemaTest extends ParserTestCase
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_typehub.json');
 
         $this->assertEquals('RootType', $schema->getRoot());
-        $reference = $schema->getDefinitions()->getType($schema->getRoot())->getProperty('software');
+
+        $root = $schema->getDefinitions()->getType($schema->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $root);
+
+        $reference = $root->getProperty('software');
         $this->assertInstanceOf(ReferencePropertyType::class, $reference);
 
         $type = $schema->getDefinitions()->getType($reference->getTarget());

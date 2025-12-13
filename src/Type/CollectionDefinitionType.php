@@ -41,7 +41,7 @@ abstract class CollectionDefinitionType extends DefinitionTypeAbstract implement
         return $this->schema;
     }
 
-    public function setSchema(PropertyTypeAbstract $schema): self
+    public function setSchema(PropertyTypeAbstract $schema): static
     {
         $this->schema = $schema;
 

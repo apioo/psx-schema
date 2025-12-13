@@ -36,7 +36,7 @@ abstract class CollectionPropertyType extends PropertyTypeAbstract implements Co
         return $this->schema;
     }
 
-    public function setSchema(PropertyTypeAbstract $schema): self
+    public function setSchema(PropertyTypeAbstract $schema): static
     {
         $this->schema = $schema;
 

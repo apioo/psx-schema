@@ -50,7 +50,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this->parent;
     }
 
-    public function setParent(ReferencePropertyType $parent): self
+    public function setParent(ReferencePropertyType $parent): static
     {
         $this->parent = $parent;
 
@@ -62,7 +62,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this->base;
     }
 
-    public function setBase(?bool $base): self
+    public function setBase(?bool $base): static
     {
         $this->base = $base;
 
@@ -74,7 +74,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this->properties;
     }
 
-    public function setProperties(array $properties): self
+    public function setProperties(array $properties): static
     {
         $this->properties = [];
         foreach ($properties as $name => $property) {
@@ -84,7 +84,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this;
     }
 
-    public function addProperty(string $name, PropertyTypeAbstract $property): self
+    public function addProperty(string $name, PropertyTypeAbstract $property): static
     {
         $this->properties[$name] = $property;
 
@@ -101,7 +101,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return isset($this->properties[$name]);
     }
 
-    public function removeProperty(string $name): self
+    public function removeProperty(string $name): static
     {
         if (isset($this->properties[$name])) {
             unset($this->properties[$name]);
@@ -115,7 +115,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this->discriminator;
     }
 
-    public function setDiscriminator(?string $discriminator): self
+    public function setDiscriminator(?string $discriminator): static
     {
         $this->discriminator = $discriminator;
 
@@ -127,7 +127,7 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this->mapping;
     }
 
-    public function setMapping(?array $mapping): self
+    public function setMapping(?array $mapping): static
     {
         $this->mapping = $mapping;
 

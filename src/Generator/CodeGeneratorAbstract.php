@@ -237,7 +237,7 @@ abstract class CodeGeneratorAbstract implements GeneratorInterface, TypeAwareInt
     /**
      * @throws GeneratorException
      */
-    private function replaceGeneric(PropertyTypeAbstract $type, array $templates): ?PropertyTypeAbstract
+    private function replaceGeneric(PropertyTypeAbstract $type, array $templates): PropertyTypeAbstract
     {
         if ($type instanceof GenericPropertyType) {
             return PropertyTypeFactory::getReference($templates[$type->getName()] ?? throw new GeneratorException('Configured generic "' . $type->getName() . '" not found'));

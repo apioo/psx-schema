@@ -37,7 +37,7 @@ class BuilderTest extends TestCase
 {
     public function testBuilder()
     {
-        $builder = new Builder('foo');
+        $builder = new Builder();
         $builder->setDescription('bar');
         $builder->setClass('stdClass');
         $builder->addArray('array', PropertyTypeFactory::getString());

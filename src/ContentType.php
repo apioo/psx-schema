@@ -20,6 +20,9 @@
 
 namespace PSX\Schema;
 
+use JsonSerializable;
+use Stringable;
+
 /**
  * Describes a content type
  *
@@ -27,7 +30,7 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ContentType implements \Stringable, \JsonSerializable
+final class ContentType implements Stringable, JsonSerializable
 {
     public const BINARY = 'application/octet-stream';
     public const FORM = 'application/x-www-form-urlencoded';
@@ -61,7 +64,7 @@ class ContentType implements \Stringable, \JsonSerializable
      * i.e. the shape of the content type "application/vnd.github.raw+json" is "application/json"
      * based on the shape we generate specific client or server code
      */
-    public function getShape(): ?string
+    public function getShape(): string
     {
         if ($this->isJson()) {
             return self::JSON;
@@ -145,7 +148,7 @@ class ContentType implements \Stringable, \JsonSerializable
             return false;
         }
 
-        $topLevelType = $parts[0] ?? '';
+        $topLevelType = $parts[0];
         if (!in_array($topLevelType, self::TOP_LEVEL_MEDIA_TYPES)) {
             return false;
         }

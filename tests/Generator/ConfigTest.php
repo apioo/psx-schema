@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PSX\Schema\Generator\Config;
 
@@ -32,9 +33,7 @@ use PSX\Schema\Generator\Config;
  */
 class ConfigTest extends TestCase
 {
-    /**
-     * @dataProvider toStringProvider
-     */
+    #[DataProvider('toStringProvider')]
     public function testToString(array $value, string $expect)
     {
         $config = Config::fromArray($value);
@@ -42,7 +41,7 @@ class ConfigTest extends TestCase
         $this->assertEquals($expect, $config->toString());
     }
 
-    public function toStringProvider(): array
+    public static function toStringProvider(): array
     {
         return [
             [[], 'e30='],
@@ -54,9 +53,7 @@ class ConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider queryStringProvider
-     */
+    #[DataProvider('queryStringProvider')]
     public function testFromQueryString(mixed $value, array $expect)
     {
         $config = Config::fromQueryString($value);
@@ -65,7 +62,7 @@ class ConfigTest extends TestCase
         $this->assertEquals($expect, $config->getAll());
     }
 
-    public function queryStringProvider(): array
+    public static function queryStringProvider(): array
     {
         return [
             [null, []],
@@ -77,9 +74,7 @@ class ConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider base64StringProvider
-     */
+    #[DataProvider('base64StringProvider')]
     public function testFromBase64String(string $value, object $expect)
     {
         $config = Config::fromBase64String($value);
@@ -88,7 +83,7 @@ class ConfigTest extends TestCase
         $this->assertJsonStringEqualsJsonString(\json_encode($expect), \json_encode($config));
     }
 
-    public function base64StringProvider(): array
+    public static function base64StringProvider(): array
     {
         return [
             ['e30=', (object) []],

@@ -38,8 +38,7 @@ class VisualBasic extends GeneratorAbstract
             ContentType::BINARY => 'Byte',
             ContentType::FORM => 'Dictionary(Of String, String)',
             ContentType::JSON => 'Object',
-            ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -59,7 +58,6 @@ class VisualBasic extends GeneratorAbstract
             Format::DATE => 'DateOnly',
             Format::DATETIME => 'DateTime',
             Format::TIME => 'TimeOnly',
-            default => $this->getString(),
         };
     }
 

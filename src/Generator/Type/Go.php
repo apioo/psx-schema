@@ -38,7 +38,7 @@ class Go extends GeneratorAbstract
             ContentType::FORM => 'url.Values',
             ContentType::JSON => 'any',
             ContentType::MULTIPART => '*sdkgen.Multipart',
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 

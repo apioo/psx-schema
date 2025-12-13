@@ -181,7 +181,7 @@ class TypeUtil
     {
         if (str_contains($ref, ':')) {
             $parts = explode(':', $ref, 2);
-            $ns    = $parts[0] ?? '';
+            $ns    = $parts[0];
             $name  = $parts[1] ?? '';
         } else {
             $ns    = DefinitionsInterface::SELF_NAMESPACE;

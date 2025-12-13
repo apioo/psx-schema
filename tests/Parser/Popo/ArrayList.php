@@ -3,7 +3,7 @@
 namespace PSX\Schema\Tests\Parser\Popo;
 
 /**
- * @extends \ArrayIterator<string>
+ * @extends \ArrayIterator<string, string>
  */
 class ArrayList extends \ArrayIterator implements \JsonSerializable
 {

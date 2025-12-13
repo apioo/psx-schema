@@ -225,10 +225,6 @@ JSON;
 
     public function testTraverseExtends()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Works only at PHP 8.0');
-        }
-
         $schema = $this->schemaManager->getSchema(Form_Element_Input::class);
         $data = <<<JSON
 {

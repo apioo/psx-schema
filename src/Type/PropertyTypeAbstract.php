@@ -40,7 +40,7 @@ abstract class PropertyTypeAbstract implements TypeInterface
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
@@ -52,7 +52,7 @@ abstract class PropertyTypeAbstract implements TypeInterface
         return $this->deprecated;
     }
 
-    public function setDeprecated(bool $deprecated): self
+    public function setDeprecated(bool $deprecated): static
     {
         $this->deprecated = $deprecated;
 
@@ -64,7 +64,7 @@ abstract class PropertyTypeAbstract implements TypeInterface
         return $this->nullable;
     }
 
-    public function setNullable(bool $nullable): self
+    public function setNullable(bool $nullable): static
     {
         $this->nullable = $nullable;
 

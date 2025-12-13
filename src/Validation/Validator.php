@@ -33,16 +33,22 @@ use PSX\Validate\FilterInterface;
 class Validator implements ValidatorInterface
 {
     /**
-     * @var Field[]
+     * @var array<Field>
      */
     private array $fields;
 
-    public function __construct(array $fields = null)
+    /**
+     * @param array<Field>|null $fields
+     */
+    public function __construct(?array $fields = null)
     {
         $this->fields = $fields;
     }
 
-    public function setFields(array $fields)
+    /**
+     * @param array<Field> $fields
+     */
+    public function setFields(array $fields): void
     {
         $this->fields = $fields;
     }
@@ -55,7 +61,7 @@ class Validator implements ValidatorInterface
     /**
      * @throws ValidationException
      */
-    public function validate(string $path, $data)
+    public function validate(string $path, $data): void
     {
         $field = $this->getField($path);
         if (!$field instanceof Field) {

@@ -38,8 +38,7 @@ class Rust extends GeneratorAbstract
             ContentType::BINARY => 'Bytes',
             ContentType::FORM => 'std::collections::HashMap<string, string>',
             ContentType::JSON => 'serde_json::Value',
-            ContentType::MULTIPART => $this->getString(),
-            ContentType::TEXT, ContentType::XML => $this->getString(),
+            default => $this->getString(),
         };
     }
 
@@ -59,7 +58,6 @@ class Rust extends GeneratorAbstract
             Format::DATE => 'chrono::NaiveDate',
             Format::DATETIME => 'chrono::NaiveDateTime',
             Format::TIME => 'chrono::NaiveTime',
-            default => $this->getString(),
         };
     }
 

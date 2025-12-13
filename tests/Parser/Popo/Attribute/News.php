@@ -21,7 +21,7 @@ class News
     /**
      * @var Record<string>|null
      */
-    protected ?array $mapTags = null;
+    protected ?Record $mapTags = null;
 
     /**
      * @var Record<Author>|null
@@ -104,16 +104,6 @@ class News
         $this->data = $data;
     }
 
-    public function setProfileImage($profileImage)
-    {
-        $this->profileImage = $profileImage;
-    }
-
-    public function getProfileImage()
-    {
-        return $this->profileImage;
-    }
-
     public function setRead(?bool $read)
     {
         $this->read = $read;
@@ -122,16 +112,6 @@ class News
     public function getRead() : ?bool
     {
         return $this->read;
-    }
-
-    public function setSource($source)
-    {
-        $this->source = $source;
-    }
-
-    public function getSource()
-    {
-        return $this->source;
     }
 
     public function setAuthor(?Author $author)
@@ -172,16 +152,6 @@ class News
     public function getReadDate() : ?\PSX\DateTime\LocalDateTime
     {
         return $this->readDate;
-    }
-
-    public function setExpires(?\PSX\DateTime\Period $expires)
-    {
-        $this->expires = $expires;
-    }
-
-    public function getExpires() : ?\PSX\DateTime\Period
-    {
-        return $this->expires;
     }
 
     public function setPrice(?float $price)
@@ -242,16 +212,6 @@ class News
     public function getCoffeeTime() : ?\PSX\DateTime\LocalTime
     {
         return $this->coffeeTime;
-    }
-
-    public function setProfileUri(?\PSX\Uri\Uri $profileUri)
-    {
-        $this->profileUri = $profileUri;
-    }
-
-    public function getProfileUri() : ?\PSX\Uri\Uri
-    {
-        return $this->profileUri;
     }
 
     public function setCaptcha(?string $captcha)

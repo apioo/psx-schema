@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Parser\Popo;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
@@ -39,9 +40,7 @@ use PSX\Uri\Uri;
  */
 class TypeNameTest extends TestCase
 {
-    /**
-     * @dataProvider nameProvider
-     */
+    #[DataProvider('nameProvider')]
     public function testBuild(string $class, int $level, string $expect): void
     {
         $builder = new TypeNameBuilder();
@@ -50,7 +49,7 @@ class TypeNameTest extends TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function nameProvider(): array
+    public static function nameProvider(): array
     {
         return [
             [self::class, -1, 'TypeNameTest'],
