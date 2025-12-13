@@ -16,7 +16,7 @@ jobs:
           coverage: none
       - name: Composer install
         run: composer install --no-interaction --no-ansi --no-progress
-      - name: Run Psalm
+      - name: Run PHPStan
         run: vendor/bin/phpstan
   phpunit:
     name: "PHPUnit (PHP: ${{ matrix.php-versions }})"
