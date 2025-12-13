@@ -1,0 +1,12 @@
+includes:
+	- phpstan-baseline.neon
+parameters:
+	level: 1
+	treatPhpDocTypesAsCertain: false
+	paths:
+		- src
+		- tests
+	excludePaths:
+		- tests/Schema/*
+		- tests/Generator/resource/*
+		- tests/Generator/Result/*
