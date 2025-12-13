@@ -1,4 +1,4 @@
-import {PropertyType} from "./PropertyType";
+import type {PropertyType} from "./PropertyType";
 
 /**
  * Describes arguments of the operation

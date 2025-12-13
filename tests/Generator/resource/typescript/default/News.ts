@@ -1,5 +1,5 @@
-import {Meta} from "./Meta";
-import {Author} from "./Author";
+import type {Meta} from "./Meta";
+import type {Author} from "./Author";
 
 /**
  * An general news entry

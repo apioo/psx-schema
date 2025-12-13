@@ -1,4 +1,4 @@
-import {Security} from "./Security";
+import type {Security} from "./Security";
 
 export interface SecurityHttpBearer extends Security {
 }

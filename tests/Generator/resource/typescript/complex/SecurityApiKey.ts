@@ -1,4 +1,4 @@
-import {Security} from "./Security";
+import type {Security} from "./Security";
 
 export interface SecurityApiKey extends Security {
     in?: string

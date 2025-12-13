@@ -1,5 +1,5 @@
-import {Argument} from "./Argument";
-import {Response} from "./Response";
+import type {Argument} from "./Argument";
+import type {Response} from "./Response";
 
 export interface Operation {
     arguments?: Record<string, Argument>

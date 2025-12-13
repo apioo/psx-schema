@@ -1,6 +1,6 @@
-import {TypeSchema} from "./TypeSchema";
-import {Operation} from "./Operation";
-import {Security} from "./Security";
+import type {TypeSchema} from "./TypeSchema";
+import type {Operation} from "./Operation";
+import type {Security} from "./Security";
 
 /**
  * The TypeAPI Root

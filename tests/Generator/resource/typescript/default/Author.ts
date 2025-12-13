@@ -1,4 +1,4 @@
-import {Location} from "./Location";
+import type {Location} from "./Location";
 
 /**
  * An simple author element with some description

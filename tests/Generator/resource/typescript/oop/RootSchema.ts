@@ -1,4 +1,4 @@
-import {StudentMap} from "./StudentMap";
+import type {StudentMap} from "./StudentMap";
 
 export interface RootSchema {
     students?: StudentMap

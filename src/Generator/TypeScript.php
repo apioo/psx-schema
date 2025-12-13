@@ -143,9 +143,11 @@ class TypeScript extends CodeGeneratorAbstract
             }
 
             if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
-                $imports[] = 'import {' . $typeName . '} from "' . $this->mapping[$ns] . '";';
+                $from = str_replace('{type}', $this->normalizer->import($name), $this->mapping[$ns]);
+
+                $imports[] = 'import type {' . $typeName . '} from "' . $from . '";';
             } else {
-                $imports[] = 'import {' . $typeName . '} from "./' . $this->normalizer->import($name) . '";';
+                $imports[] = 'import type {' . $typeName . '} from "./' . $this->normalizer->import($name) . '";';
             }
         }
 

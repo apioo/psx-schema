@@ -1,4 +1,4 @@
-import {HumanType} from "./HumanType";
+import type {HumanType} from "./HumanType";
 
 export interface Student extends HumanType {
     matricleNumber?: string
