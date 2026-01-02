@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Visitor;
 
+use ArrayAccess;
+use ArrayIterator;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
@@ -39,7 +41,6 @@ use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use ReflectionClass;
 use ReflectionException;
-use RuntimeException;
 use stdClass;
 
 /**
@@ -103,8 +104,8 @@ class TypeVisitor implements VisitorInterface
             $class = new ReflectionClass($className);
             $record = $class->newInstance();
 
-            if (!$record instanceof \ArrayAccess) {
-                throw new RuntimeException('Map implementation must implement the ArrayAccess interface');
+            if (!$record instanceof ArrayAccess) {
+                throw new TraverserException('Map implementation must implement the ArrayAccess interface');
             }
 
             foreach (get_object_vars($data) as $key => $value) {
@@ -128,8 +129,8 @@ class TypeVisitor implements VisitorInterface
             $class = new ReflectionClass($className);
             $record = $class->newInstance();
 
-            if (!$record instanceof \ArrayIterator) {
-                throw new RuntimeException('Array implementation must extend the ArrayIterator class');
+            if (!$record instanceof ArrayIterator) {
+                throw new TraverserException('Array implementation must extend the ArrayIterator class');
             }
 
             foreach ($data as $value) {
