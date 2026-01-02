@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\TypeAlreadyRegisteredException;
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 
@@ -37,8 +38,10 @@ interface DefinitionsInterface
     /**
      * Adds a specific type to the definition. If the name contains a colon
      * it is used as namespace i.e. acme:my_type adds the type "my_type" to
-     * the namespace "acme". If not namespace is used the type is added to
+     * the namespace "acme". If no namespace is used the type is added to
      * the "self" namespace
+     *
+     * @throws TypeAlreadyRegisteredException
      */
     public function addType(string $name, DefinitionTypeAbstract $type): void;
 

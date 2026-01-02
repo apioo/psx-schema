@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use PSX\Schema\Exception\TypeAlreadyRegisteredException;
 use PSX\Schema\Exception\TypeNotFoundException;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 
@@ -47,8 +48,8 @@ class Definitions implements DefinitionsInterface, \JsonSerializable
             $this->container[$ns] = [];
         }
 
-        if (isset($this->container[$ns][$alias])) {
-            throw new \RuntimeException('Type "' . $name . '" already registered');
+        if ($ns === self::SELF_NAMESPACE && isset($this->container[$ns][$alias])) {
+            throw new TypeAlreadyRegisteredException('Type "' . $alias . '" already registered', $alias);
         }
 
         $this->container[$ns][$alias] = $type;
