@@ -5,6 +5,7 @@ from .security import Security
 
 
 class SecurityHttpBearer(Security):
+    type: Literal["httpBearer"] = Field(alias="type")
     pass
 
 

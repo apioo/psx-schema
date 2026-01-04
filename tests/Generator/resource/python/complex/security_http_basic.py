@@ -5,6 +5,7 @@ from .security import Security
 
 
 class SecurityHttpBasic(Security):
+    type: Literal["httpBasic"] = Field(alias="type")
     pass
 
 

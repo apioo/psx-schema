@@ -5,6 +5,7 @@ from .common_form_element import CommonFormElement
 
 
 class CommonFormElementTextArea(CommonFormElement):
+    type: Literal["http://fusio-project.org/ns/2015/form/textarea"] = Field(alias="type")
     mode: Optional[str] = Field(default=None, alias="mode")
     pass
 

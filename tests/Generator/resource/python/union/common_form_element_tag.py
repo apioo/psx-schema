@@ -5,6 +5,7 @@ from .common_form_element import CommonFormElement
 
 
 class CommonFormElementTag(CommonFormElement):
+    type: Literal["http://fusio-project.org/ns/2015/form/tag"] = Field(alias="type")
     pass
 
 

@@ -5,6 +5,7 @@ from .security import Security
 
 
 class SecurityOAuth(Security):
+    type: Literal["oauth2"] = Field(alias="type")
     authorization_url: Optional[str] = Field(default=None, alias="authorizationUrl")
     scopes: Optional[List[str]] = Field(default=None, alias="scopes")
     token_url: Optional[str] = Field(default=None, alias="tokenUrl")

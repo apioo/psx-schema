@@ -90,20 +90,18 @@ class Python extends CodeGeneratorAbstract
 
         $code.= '(' . implode(', ', $parts) . '):' . "\n";
 
-        if ($origin->getBase() === false) {
-            [$parentMapping, $parentDiscriminator] = $this->getDiscriminatorByParent($origin);
-            if (isset($parentMapping[$name->getRaw()])) {
-                $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
+        [$parentMapping, $parentDiscriminator] = $this->getDiscriminatorByParent($origin);
+        if (isset($parentMapping[$name->getRaw()])) {
+            $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
 
-                $code.= $this->indent . $discriminatorProperty . ': Literal["' . $parentMapping[$name->getRaw()] . '"] = Field(alias="' . $parentDiscriminator . '")' . "\n";
-            }
-        } else {
-            $parentDiscriminator = $origin->getDiscriminator();
+            $code.= $this->indent . $discriminatorProperty . ': Literal["' . $parentMapping[$name->getRaw()] . '"] = Field(alias="' . $parentDiscriminator . '")' . "\n";
         }
+
+        $originDiscriminator = $origin->getDiscriminator();
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            if ($property->getName()->getRaw() === $parentDiscriminator) {
+            if ($property->getName()->getRaw() === $parentDiscriminator || $property->getName()->getRaw() === $originDiscriminator) {
                 // skip discriminated union properties
                 continue;
             }

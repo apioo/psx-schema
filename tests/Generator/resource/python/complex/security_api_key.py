@@ -5,6 +5,7 @@ from .security import Security
 
 
 class SecurityApiKey(Security):
+    type: Literal["apiKey"] = Field(alias="type")
     in_: Optional[str] = Field(default=None, alias="in")
     name: Optional[str] = Field(default=None, alias="name")
     pass
