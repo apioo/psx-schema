@@ -14,7 +14,7 @@ from .security_o_auth import SecurityOAuth
 class TypeAPI(TypeSchema):
     base_url: Optional[str] = Field(default=None, alias="baseUrl")
     operations: Optional[Dict[str, Operation]] = Field(default=None, alias="operations")
-    security: Optional[Union[SecurityApiKey, SecurityHttpBasic, SecurityHttpBearer, SecurityOAuth]] = Field(discriminator="type", alias="security")
+    security: Union[SecurityApiKey, SecurityHttpBasic, SecurityHttpBearer, SecurityOAuth] = Field(discriminator="type", alias="security")
     pass
 
 

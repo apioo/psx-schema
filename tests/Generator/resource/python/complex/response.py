@@ -17,7 +17,7 @@ from .string_property_type import StringPropertyType
 class Response(BaseModel):
     code: Optional[int] = Field(default=None, alias="code")
     content_type: Optional[str] = Field(default=None, alias="contentType")
-    schema_: Optional[Union[TypeschemaAnyPropertyType, TypeschemaArrayPropertyType, TypeschemaBooleanPropertyType, TypeschemaGenericPropertyType, TypeschemaIntegerPropertyType, TypeschemaMapPropertyType, TypeschemaNumberPropertyType, TypeschemaReferencePropertyType, TypeschemaStringPropertyType]] = Field(discriminator="type", alias="schema")
+    schema_: Union[TypeschemaAnyPropertyType, TypeschemaArrayPropertyType, TypeschemaBooleanPropertyType, TypeschemaGenericPropertyType, TypeschemaIntegerPropertyType, TypeschemaMapPropertyType, TypeschemaNumberPropertyType, TypeschemaReferencePropertyType, TypeschemaStringPropertyType] = Field(discriminator="type", alias="schema")
     pass
 
 

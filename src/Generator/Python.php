@@ -101,10 +101,12 @@ class Python extends CodeGeneratorAbstract
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            if ($property->getName()->getRaw() === $parentDiscriminator || $property->getName()->getRaw() === $originDiscriminator) {
+            if ($property->getName()->getRaw() === $parentDiscriminator) {
                 // skip discriminated union properties
                 continue;
             }
+
+            $isDiscriminatorProperty = $property->getName()->getRaw() === $originDiscriminator;
 
             [$unionType, $discriminator] = $this->buildDiscriminatorUnion($property);
             if (!empty($unionType)) {
@@ -113,15 +115,21 @@ class Python extends CodeGeneratorAbstract
                 $type = $property->getType();
             }
 
-            if ($property->isNullable() !== false) {
+            if ($property->isNullable() !== false && !$isDiscriminatorProperty && empty($discriminator)) {
                 $type = 'Optional[' . $type . ']';
             }
 
             $default = '';
             $defaultValue = $property->getDefault();
 
-            if (!empty($discriminator)) {
-                $default = 'discriminator="' . $discriminator . '", ';
+            if ($isDiscriminatorProperty) {
+                $default = '';
+            } elseif (!empty($discriminator)) {
+                if (str_starts_with($unionType, 'List[')) {
+                    $default = 'discriminator="' . $discriminator . '", default_factory=list, ';
+                } else {
+                    $default = 'discriminator="' . $discriminator . '", ';
+                }
             } elseif ($defaultValue !== null) {
                 $default = 'default="' . addcslashes($defaultValue, '"\\') . '", ';
             } elseif ($property->isNullable() !== false) {
@@ -232,7 +240,7 @@ class Python extends CodeGeneratorAbstract
         if ($property->getOrigin() instanceof ArrayPropertyType) {
             return ['List[' . $unionType . ']', $discriminator];
         } elseif ($property->getOrigin() instanceof MapPropertyType) {
-            return ['Dict[str, ' . $unionType . ']', $discriminator];
+            throw new GeneratorException('Map with discriminated unions are not supported');
         } else {
             return [$unionType, $discriminator];
         }

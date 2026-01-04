@@ -4,6 +4,7 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
 
 
 class Security(BaseModel):
+    type: str = Field(alias="type")
     pass
 
 

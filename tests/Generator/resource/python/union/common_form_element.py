@@ -4,6 +4,7 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
 
 
 class CommonFormElement(BaseModel):
+    type: str = Field(alias="type")
     element: Optional[str] = Field(default=None, alias="element")
     name: Optional[str] = Field(default=None, alias="name")
     title: Optional[str] = Field(default=None, alias="title")
