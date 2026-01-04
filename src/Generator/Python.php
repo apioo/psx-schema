@@ -90,11 +90,27 @@ class Python extends CodeGeneratorAbstract
 
         $code.= '(' . implode(', ', $parts) . '):' . "\n";
 
+        if ($origin->getBase() === false) {
+            [$parentMapping, $parentDiscriminator] = $this->getDiscriminatorByParent($origin);
+            if (isset($parentMapping[$name->getRaw()])) {
+                $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
+
+                $code.= $this->indent . $discriminatorProperty . ': Literal["' . $parentMapping[$name->getRaw()] . '"] = Field(alias="' . $parentDiscriminator . '")' . "\n";
+            }
+        } else {
+            $parentDiscriminator = $origin->getDiscriminator();
+        }
+
         foreach ($properties as $property) {
             /** @var Code\Property $property */
-            $discriminator = $this->getDiscriminatorType($property);
-            if (!empty($discriminator)) {
-                $type = $discriminator;
+            if ($property->getName()->getRaw() === $parentDiscriminator) {
+                // skip discriminated union properties
+                continue;
+            }
+
+            [$unionType, $discriminator] = $this->buildDiscriminatorUnion($property);
+            if (!empty($unionType)) {
+                $type = $unionType;
             } else {
                 $type = $property->getType();
             }
@@ -105,7 +121,10 @@ class Python extends CodeGeneratorAbstract
 
             $default = '';
             $defaultValue = $property->getDefault();
-            if ($defaultValue !== null) {
+
+            if (!empty($discriminator)) {
+                $default = 'discriminator="' . $discriminator . '", ';
+            } elseif ($defaultValue !== null) {
                 $default = 'default="' . addcslashes($defaultValue, '"\\') . '", ';
             } elseif ($property->isNullable() !== false) {
                 $default = 'default=None, ';
@@ -168,7 +187,7 @@ class Python extends CodeGeneratorAbstract
 
         $imports[] = 'from pydantic import BaseModel, Field, GetCoreSchemaHandler, Tag';
         $imports[] = 'from pydantic_core import CoreSchema, core_schema';
-        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union';
+        $imports[] = 'from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union, Literal';
 
         if ($origin instanceof MapDefinitionType) {
             $imports[] = 'from collections import UserDict';
@@ -195,35 +214,33 @@ class Python extends CodeGeneratorAbstract
             }
         }
 
-        return array_merge($imports, $this->getDiscriminatorImports($origin));
+        return array_merge($imports, $this->buildDiscriminatorImports($origin));
     }
 
-    private function getDiscriminatorType(Code\Property $property): ?string
+    private function buildDiscriminatorUnion(Code\Property $property): array
     {
-        $discriminatorConfig = $this->getDiscriminatorConfig($property->getOrigin());
-        if (empty($discriminatorConfig)) {
-            return null;
+        [$mapping, $discriminator] = $this->getDiscriminatorByProperty($property->getOrigin());
+        if (empty($discriminator)) {
+            return [null, null];
         }
-
-        [$mapping, $discriminator] = $discriminatorConfig;
 
         $subTypes = [];
         foreach ($mapping as $class => $value) {
-            $subTypes[] = 'Annotated[' . $this->normalizer->class($class) . ', Tag(\'' . $value . '\')]';
+            $subTypes[] = $this->normalizer->class($class);
         }
 
-        $unionType = 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator=\'' . $discriminator . '\')]';
+        $unionType = 'Union[' . implode(', ', $subTypes) . ']';
 
         if ($property->getOrigin() instanceof ArrayPropertyType) {
-            return 'List[' . $unionType . ']';
+            return ['List[' . $unionType . ']', $discriminator];
         } elseif ($property->getOrigin() instanceof MapPropertyType) {
-            return 'Dict[str, ' . $unionType . ']';
+            return ['Dict[str, ' . $unionType . ']', $discriminator];
         } else {
-            return $unionType;
+            return [$unionType, $discriminator];
         }
     }
 
-    private function getDiscriminatorImports(DefinitionTypeAbstract $origin): array
+    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin): array
     {
         if (!$origin instanceof StructDefinitionType) {
             return [];
@@ -236,12 +253,10 @@ class Python extends CodeGeneratorAbstract
 
         $imports = [];
         foreach ($origin->getProperties() as $property) {
-            $discriminatorConfig = $this->getDiscriminatorConfig($property);
-            if (empty($discriminatorConfig)) {
+            [$mapping] = $this->getDiscriminatorByProperty($property);
+            if (!is_array($mapping)) {
                 continue;
             }
-
-            [$mapping] = $discriminatorConfig;
 
             foreach ($mapping as $class => $value) {
                 [$ns, $name] = TypeUtil::split($class);
@@ -252,25 +267,49 @@ class Python extends CodeGeneratorAbstract
         return $imports;
     }
 
-    private function getDiscriminatorConfig(PropertyTypeAbstract $property): ?array
+    /**
+     * @return array{array|null, string|null}
+     */
+    private function getDiscriminatorByProperty(PropertyTypeAbstract $property): array
     {
         if ($property instanceof CollectionPropertyType) {
             $property = $property->getSchema();
         }
 
         if (!$property instanceof ReferencePropertyType) {
-            return null;
+            return [null, null];
         }
 
+        return $this->getDiscriminatorType($property);
+    }
+
+    /**
+     * @return array{array|null, string|null}
+     */
+    private function getDiscriminatorByParent(StructDefinitionType $origin): array
+    {
+        $parent = $origin->getParent();
+        if (!$parent instanceof ReferencePropertyType) {
+            return [null, null];
+        }
+
+        return $this->getDiscriminatorType($parent);
+    }
+
+    /**
+     * @return array{array|null, string|null}
+     */
+    private function getDiscriminatorType(ReferencePropertyType $property): array
+    {
         $type = $this->definitions->getType($property->getTarget());
         if (!$type instanceof StructDefinitionType) {
-            return null;
+            return [null, null];
         }
 
         $discriminator = $type->getDiscriminator();
         $mapping = $type->getMapping();
         if ($discriminator === null || $mapping === null) {
-            return null;
+            return [null, null];
         }
 
         return [$mapping, $discriminator];

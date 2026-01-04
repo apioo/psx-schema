@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, GetCoreSchemaHandler, Tag
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union, Literal
 from .property_type import PropertyType
 from .any_property_type import AnyPropertyType
 from .array_property_type import ArrayPropertyType
@@ -17,7 +17,7 @@ from .string_property_type import StringPropertyType
 class Response(BaseModel):
     code: Optional[int] = Field(default=None, alias="code")
     content_type: Optional[str] = Field(default=None, alias="contentType")
-    schema_: Optional[Annotated[Union[Annotated[TypeschemaAnyPropertyType, Tag('any')], Annotated[TypeschemaArrayPropertyType, Tag('array')], Annotated[TypeschemaBooleanPropertyType, Tag('boolean')], Annotated[TypeschemaGenericPropertyType, Tag('generic')], Annotated[TypeschemaIntegerPropertyType, Tag('integer')], Annotated[TypeschemaMapPropertyType, Tag('map')], Annotated[TypeschemaNumberPropertyType, Tag('number')], Annotated[TypeschemaReferencePropertyType, Tag('reference')], Annotated[TypeschemaStringPropertyType, Tag('string')]], Field(discriminator='type')]] = Field(default=None, alias="schema")
+    schema_: Optional[Union[TypeschemaAnyPropertyType, TypeschemaArrayPropertyType, TypeschemaBooleanPropertyType, TypeschemaGenericPropertyType, TypeschemaIntegerPropertyType, TypeschemaMapPropertyType, TypeschemaNumberPropertyType, TypeschemaReferencePropertyType, TypeschemaStringPropertyType]] = Field(discriminator="type", alias="schema")
     pass
 
 
