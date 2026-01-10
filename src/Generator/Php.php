@@ -377,7 +377,7 @@ class Php extends CodeGeneratorAbstract
         $uses = array_unique($uses);
         sort($uses);
 
-        if ($this->namespace !== null) {
+        if ($this->namespace !== null && $this->namespace !== '') {
             $namespace = $this->factory->namespace($this->namespace);
             foreach ($uses as $use) {
                 $namespace->addStmt(new Node\Stmt\Use_([new Node\Stmt\UseUse(new Node\Name($use))]));
