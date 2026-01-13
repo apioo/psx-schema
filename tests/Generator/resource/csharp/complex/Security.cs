@@ -9,8 +9,5 @@ namespace TypeAPI.Model;
 [JsonDerivedType(typeof(SecurityOAuth), typeDiscriminator: "oauth2")]
 public abstract class Security
 {
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
 }
 

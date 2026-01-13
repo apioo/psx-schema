@@ -83,6 +83,8 @@ class CSharp extends CodeGeneratorAbstract
             }
         }
 
+        $originDiscriminator = $origin->getDiscriminator();
+
         $code.= "\n";
         $code.= '{' . "\n";
 
@@ -93,6 +95,11 @@ class CSharp extends CodeGeneratorAbstract
             $override = '';
             if ($this->hasPropertyInParent($property->getName()->getRaw(), $origin->getParent())) {
                 $override = 'new ';
+            }
+
+            $isDiscriminatorProperty = $property->getName()->getRaw() === $originDiscriminator;
+            if ($isDiscriminatorProperty) {
+                continue;
             }
 
             $propertyName = $property->getName()->getProperty();
