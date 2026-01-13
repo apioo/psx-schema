@@ -9,7 +9,7 @@ from .common_form_element_text_area import CommonFormElementTextArea
 
 
 class CommonFormContainer(BaseModel):
-    element: List[Union[CommonFormElementInput, CommonFormElementSelect, CommonFormElementTag, CommonFormElementTextArea]] = Field(discriminator="type", default_factory=list, alias="element")
+    element: List[Annotated[Union[CommonFormElementInput, CommonFormElementSelect, CommonFormElementTag, CommonFormElementTextArea], Field(discriminator="type")]] = Field(alias="element")
     pass
 
 

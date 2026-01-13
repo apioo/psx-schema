@@ -122,14 +122,8 @@ class Python extends CodeGeneratorAbstract
             $default = '';
             $defaultValue = $property->getDefault();
 
-            if ($isDiscriminatorProperty) {
+            if ($isDiscriminatorProperty || !empty($discriminator)) {
                 $default = '';
-            } elseif (!empty($discriminator)) {
-                if (str_starts_with($unionType, 'List[')) {
-                    $default = 'discriminator="' . $discriminator . '", default_factory=list, ';
-                } else {
-                    $default = 'discriminator="' . $discriminator . '", ';
-                }
             } elseif ($defaultValue !== null) {
                 $default = 'default="' . addcslashes($defaultValue, '"\\') . '", ';
             } elseif ($property->isNullable() !== false) {
@@ -235,7 +229,7 @@ class Python extends CodeGeneratorAbstract
             $subTypes[] = $this->normalizer->class($class);
         }
 
-        $unionType = 'Union[' . implode(', ', $subTypes) . ']';
+        $unionType = 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator="' . $discriminator . '")]';
 
         if ($property->getOrigin() instanceof ArrayPropertyType) {
             return ['List[' . $unionType . ']', $discriminator];
