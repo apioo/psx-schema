@@ -25,8 +25,11 @@ use PSX\Schema\Exception\GeneratorException;
 use PSX\Schema\Generator\Normalizer\NormalizerInterface;
 use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
+use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
+use PSX\Schema\Type\MapPropertyType;
+use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeUtil;
 
@@ -39,6 +42,8 @@ use PSX\Schema\TypeUtil;
  */
 class TypeScript extends CodeGeneratorAbstract
 {
+    use DiscriminatorTrait;
+
     public function getFileName(string $file): string
     {
         return $file . '.ts';
@@ -71,11 +76,23 @@ class TypeScript extends CodeGeneratorAbstract
 
         $code.= ' {' . "\n";
 
+        [$parentMapping, $parentDiscriminator] = $this->getDiscriminatorByParent($origin);
+        if (isset($parentMapping[$name->getRaw()])) {
+            $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
+
+            $code.= $this->indent . $discriminatorProperty . ': "' . $parentMapping[$name->getRaw()] . '"' . "\n";
+        }
+
         $reservedClassNames = ['Array', 'Record'];
         $isReservedClassName = in_array($name->getClass(), $reservedClassNames);
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
+            if ($property->getName()->getRaw() === $parentDiscriminator) {
+                // skip discriminated union properties
+                continue;
+            }
+
             // we must use the raw property name since in typescript we dont have a JsonGetter annotation like in Java
             // where we can describe a different JSON key so we must use the original name
             $propertyName = $property->getName()->getRaw();
@@ -83,9 +100,14 @@ class TypeScript extends CodeGeneratorAbstract
                 $propertyName = '"' . $propertyName . '"';
             }
 
-            $type = $property->getType();
-            if ($isReservedClassName) {
-                $type = $this->appendGlobalThis($type, $reservedClassNames);
+            [$unionType, $discriminator] = $this->buildDiscriminatorUnion($property);
+            if (!empty($unionType)) {
+                $type = $unionType;
+            } else {
+                $type = $property->getType();
+                if ($isReservedClassName) {
+                    $type = $this->appendGlobalThis($type, $reservedClassNames);
+                }
             }
 
             $nullable = $property->isNullable() === false ? '' : '?';
@@ -151,7 +173,7 @@ class TypeScript extends CodeGeneratorAbstract
             }
         }
 
-        return $imports;
+        return array_unique(array_merge($imports, $this->buildDiscriminatorImports($origin)));
     }
 
     private function needsQuoting(string $propertyName): bool
@@ -168,5 +190,66 @@ class TypeScript extends CodeGeneratorAbstract
         }
 
         return $type;
+    }
+
+    private function buildDiscriminatorUnion(Code\Property $property): array
+    {
+        [$mapping, $discriminator] = $this->getDiscriminatorByProperty($property->getOrigin());
+        if (empty($discriminator)) {
+            return [null, null];
+        }
+
+        $subTypes = [];
+        foreach ($mapping as $class => $value) {
+            [$ns, $name] = TypeUtil::split($class);
+
+            $subTypes[] = $this->normalizer->class($name);
+        }
+
+        $unionType = implode('|', $subTypes);
+
+        if ($property->getOrigin() instanceof ArrayPropertyType) {
+            return ['Array<' . $unionType . '>', $discriminator];
+        } elseif ($property->getOrigin() instanceof MapPropertyType) {
+            return ['Record<string, ' . $unionType . '>', $discriminator];
+        } else {
+            return [$unionType, $discriminator];
+        }
+    }
+
+    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin): array
+    {
+        if (!$origin instanceof StructDefinitionType) {
+            return [];
+        }
+
+        $properties = $origin->getProperties();
+        if (empty($properties)) {
+            return [];
+        }
+
+        $imports = [];
+        foreach ($origin->getProperties() as $property) {
+            [$mapping] = $this->getDiscriminatorByProperty($property);
+            if (!is_array($mapping)) {
+                continue;
+            }
+
+            foreach ($mapping as $class => $value) {
+                [$ns, $name] = TypeUtil::split($class);
+
+                $typeName = $this->normalizer->class($name);
+
+                if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
+                    $from = str_replace('{type}', $this->normalizer->import($name), $this->mapping[$ns]);
+
+                    $imports[] = 'import type {' . $typeName . '} from "' . $from . '";';
+                } else {
+                    $imports[] = 'import type {' . $typeName . '} from "./' . $this->normalizer->import($name) . '";';
+                }
+            }
+        }
+
+        return $imports;
     }
 }
