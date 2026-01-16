@@ -37,6 +37,6 @@ abstract class MarkupAbstract extends CodeGeneratorAbstract
 
         $heading = (int) $config?->get('heading');
 
-        $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 1;
+        $this->heading = $heading >= 1 && $heading <= 6 ? $heading : 2;
     }
 }
