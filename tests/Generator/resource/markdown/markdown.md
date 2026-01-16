@@ -1,4 +1,4 @@
-# Location
+## Location
 
 Location of the person
 
@@ -8,7 +8,7 @@ lat | Number |
 long | Number | 
 
 
-# Author
+## Author
 
 An simple author element with some description
 
@@ -21,14 +21,14 @@ locations | Array (Location) | Array of locations
 origin | Location | 
 
 
-# Meta
+## Meta
 
 Field | Type | Description | Constraints
 ----- | ---- | ----------- | -----------
 * | String |  | 
 
 
-# News
+## News
 
 An general news entry
 

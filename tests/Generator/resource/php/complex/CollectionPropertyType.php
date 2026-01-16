@@ -34,6 +34,9 @@ abstract class CollectionPropertyType extends PropertyType implements \JsonSeria
     {
         return $this->type;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

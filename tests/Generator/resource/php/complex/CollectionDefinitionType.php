@@ -34,6 +34,9 @@ abstract class CollectionDefinitionType extends DefinitionType implements \JsonS
     {
         return $this->type;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

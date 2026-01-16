@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace TypeAPI.Model;
 
 /// <summary>
-/// A struct represents a class/structure with a fix set of defined properties.
+/// A struct represents a class/structure with a fix set of defined properties
 /// </summary>
 public class StructDefinitionType : DefinitionType
 {
@@ -21,6 +21,9 @@ public class StructDefinitionType : DefinitionType
 
     [JsonPropertyName("properties")]
     public System.Collections.Generic.Dictionary<string, PropertyType>? Properties { get; set; }
+
+    [JsonPropertyName("type")]
+    public new string? Type { get; set; } = "struct";
 
 }
 

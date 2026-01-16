@@ -12,8 +12,5 @@ namespace TypeAPI.Model;
 [JsonDerivedType(typeof(StringPropertyType), typeDiscriminator: "string")]
 public abstract class ScalarPropertyType : PropertyType
 {
-    [JsonPropertyName("type")]
-    public new string? Type { get; set; }
-
 }
 

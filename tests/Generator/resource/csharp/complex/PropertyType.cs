@@ -26,8 +26,5 @@ public abstract class PropertyType
     [JsonPropertyName("nullable")]
     public bool? Nullable { get; set; }
 
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
 }
 

@@ -17,8 +17,5 @@ public abstract class DefinitionType
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-
 }
 

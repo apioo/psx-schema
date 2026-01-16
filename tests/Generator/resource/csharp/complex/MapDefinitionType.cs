@@ -7,5 +7,8 @@ namespace TypeAPI.Model;
 /// </summary>
 public class MapDefinitionType : CollectionDefinitionType
 {
+    [JsonPropertyName("type")]
+    public new string? Type { get; set; } = "map";
+
 }
 

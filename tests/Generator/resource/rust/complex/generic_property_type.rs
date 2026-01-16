@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use property_type::PropertyType;
 
-// Represents a generic value which can be replaced with a dynamic type
+// Represents a generic value which can be replaced with a concrete type
 #[derive(Serialize, Deserialize)]
 pub struct GenericPropertyType {
     #[serde(rename = "deprecated")]

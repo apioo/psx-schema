@@ -7,5 +7,8 @@ namespace TypeAPI.Model;
 /// </summary>
 public class ArrayPropertyType : CollectionPropertyType
 {
+    [JsonPropertyName("type")]
+    public new string? Type { get; set; } = "array";
+
 }
 

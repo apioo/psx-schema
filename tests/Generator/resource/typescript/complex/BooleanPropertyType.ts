@@ -1,8 +1,9 @@
-import {ScalarPropertyType} from "./ScalarPropertyType";
+import type {ScalarPropertyType} from "./ScalarPropertyType";
 
 /**
  * Represents a boolean value
  */
 export interface BooleanPropertyType extends ScalarPropertyType {
+    type: "boolean"
 }
 

@@ -9,5 +9,8 @@ Public Class ReferencePropertyType
     <JsonPropertyName("template")>
     Public Property Template As Nullable(Dictionary(Of String, String))
 
+    <JsonPropertyName("type")>
+    Public Property Type As Nullable(String)
+
 End Class
 

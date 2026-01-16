@@ -16,6 +16,9 @@ pub struct StringPropertyType {
     #[serde(rename = "type")]
     _type: Option<String>,
 
+    #[serde(rename = "default")]
+    default: Option<String>,
+
     #[serde(rename = "format")]
     format: Option<String>,
 

@@ -2,8 +2,10 @@
 # Represents a boolean value
 class BooleanPropertyType
   extend ScalarPropertyType
+  attr_accessor :type
 
-  def initialize()
+  def initialize(type)
+    @type = type
   end
 end
 

@@ -1,6 +1,6 @@
-import {ArrayDefinitionType} from "./ArrayDefinitionType";
-import {MapDefinitionType} from "./MapDefinitionType";
-import {StructDefinitionType} from "./StructDefinitionType";
+import type {ArrayDefinitionType} from "./ArrayDefinitionType";
+import type {MapDefinitionType} from "./MapDefinitionType";
+import type {StructDefinitionType} from "./StructDefinitionType";
 
 /**
  * Base definition type

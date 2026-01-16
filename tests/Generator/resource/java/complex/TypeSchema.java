@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.*;
 @JsonClassDescription("TypeSchema specification")
 public class TypeSchema {
     private java.util.Map<String, DefinitionType> definitions;
-    @JsonPropertyDescription("Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.")
+    @JsonPropertyDescription("Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https")
     private java.util.Map<String, String> _import;
-    @JsonPropertyDescription("Specifies the root type of your specification.")
+    @JsonPropertyDescription("Specifies the root type of your specification, this must be a key which is available at the definitions map")
     private String root;
 
     @JsonSetter("definitions")

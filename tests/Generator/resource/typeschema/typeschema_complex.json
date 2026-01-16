@@ -1,246 +1,74 @@
 {
     "definitions": {
-        "Argument": {
-            "description": "Describes arguments of the operation",
-            "type": "struct",
-            "properties": {
-                "contentType": {
-                    "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-                    "type": "string"
-                },
-                "in": {
-                    "description": "The location where the value can be found either in the path, query, header or body. If you choose path, then your path must have a fitting variable path fragment",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Optional the actual path, query or header name. If not provided the key of the argument map is used",
-                    "type": "string"
-                },
-                "schema": {
-                    "description": "Schema of the JSON payload",
-                    "type": "reference",
-                    "target": "typeschema:PropertyType"
-                }
-            }
-        },
-        "Operation": {
-            "description": "",
-            "type": "struct",
-            "properties": {
-                "arguments": {
-                    "description": "All arguments provided to this operation. Each argument is mapped to a location from the HTTP request i.e. query or body",
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Argument"
-                    }
-                },
-                "authorization": {
-                    "description": "Indicates whether this operation needs authorization, if set to false the client will not send an authorization header, default it is true",
-                    "type": "boolean"
-                },
-                "description": {
-                    "description": "A short description of this operation. The generated code will include this description at the method so it is recommend to use simple alphanumeric characters and no new lines",
-                    "type": "string"
-                },
-                "method": {
-                    "description": "The HTTP method which is associated with this operation, must be a valid HTTP method i.e. GET, POST, PUT etc.",
-                    "type": "string"
-                },
-                "path": {
-                    "description": "The HTTP path which is associated with this operation. A path can also include variable path fragments i.e. /my/path/:year then you can map the variable year path fragment to a specific argument",
-                    "type": "string"
-                },
-                "return": {
-                    "description": "The return type of this operation. The return has also an assigned HTTP success status code which is by default 200",
-                    "type": "reference",
-                    "target": "Response"
-                },
-                "security": {
-                    "description": "An array of scopes which are required to access this operation",
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "stability": {
-                    "description": "Indicates the stability of this operation: 0 - Deprecated, 1 - Experimental, 2 - Stable, 3 - Legacy. If not explicit provided the operation is by default experimental",
-                    "type": "integer"
-                },
-                "throws": {
-                    "description": "All exceptional states which can occur in case the operation fails. Each exception is assigned to an HTTP error status code",
-                    "type": "array",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Response"
-                    }
-                }
-            }
-        },
-        "Response": {
-            "description": "Describes the response of the operation",
-            "type": "struct",
-            "properties": {
-                "code": {
-                    "description": "The associated HTTP response code. For error responses it is possible to use the 499, 599 or 999 status code to catch all errors",
-                    "type": "integer"
-                },
-                "contentType": {
-                    "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-                    "type": "string"
-                },
-                "schema": {
-                    "description": "Schema of the JSON payload",
-                    "type": "reference",
-                    "target": "typeschema:PropertyType"
-                }
-            }
-        },
-        "Security": {
-            "description": "",
-            "type": "struct",
-            "base": true,
-            "properties": {
-                "type": {
-                    "description": "The global security type of the API must be one of: httpBasic, httpBearer, apiKey or oauth2",
-                    "type": "string"
-                }
-            },
-            "discriminator": "type",
-            "mapping": {
-                "SecurityApiKey": "apiKey",
-                "SecurityHttpBasic": "httpBasic",
-                "SecurityHttpBearer": "httpBearer",
-                "SecurityOAuth": "oauth2"
-            }
-        },
-        "SecurityApiKey": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            },
-            "properties": {
-                "in": {
-                    "description": "Must be either \"header\" or \"query\"",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "The name of the header or query parameter i.e. \"X-Api-Key\"",
-                    "type": "string"
-                }
-            }
-        },
-        "SecurityHttpBasic": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            }
-        },
-        "SecurityHttpBearer": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            }
-        },
-        "SecurityOAuth": {
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "Security"
-            },
-            "properties": {
-                "authorizationUrl": {
-                    "description": "Optional the OAuth2 authorization endpoint",
-                    "type": "string"
-                },
-                "scopes": {
-                    "description": "Optional OAuth2 scopes",
-                    "type": "array",
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                "tokenUrl": {
-                    "description": "The OAuth2 token endpoint",
-                    "type": "string"
-                }
-            }
-        },
-        "TypeAPI": {
-            "description": "The TypeAPI Root",
-            "type": "struct",
-            "parent": {
-                "type": "reference",
-                "target": "typeschema:TypeSchema"
-            },
-            "properties": {
-                "baseUrl": {
-                    "description": "Optional the base url of the service, if provided the user does not need to provide a base url for your client",
-                    "type": "string"
-                },
-                "operations": {
-                    "description": "A map of operations which are provided by the API. The key of the operation should be separated by a dot to group operations into logical units i.e. product.getAll or enterprise.product.execute",
-                    "type": "map",
-                    "schema": {
-                        "type": "reference",
-                        "target": "Operation"
-                    }
-                },
-                "security": {
-                    "description": "Describes the authorization mechanism which is used by your API",
-                    "type": "reference",
-                    "target": "Security"
-                }
-            }
-        },
-        "typeschema:AnyPropertyType": {
+        "AnyPropertyType": {
             "description": "Represents an any value which allows any kind of value",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:PropertyType"
+                "target": "PropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "any"
+                }
             }
         },
-        "typeschema:ArrayDefinitionType": {
+        "ArrayDefinitionType": {
             "description": "Represents an array which contains a dynamic list of values of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:CollectionDefinitionType"
+                "target": "CollectionDefinitionType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "array"
+                }
             }
         },
-        "typeschema:ArrayPropertyType": {
+        "ArrayPropertyType": {
             "description": "Represents an array which contains a dynamic list of values of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:CollectionPropertyType"
+                "target": "CollectionPropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "array"
+                }
             }
         },
-        "typeschema:BooleanPropertyType": {
+        "BooleanPropertyType": {
             "description": "Represents a boolean value",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:ScalarPropertyType"
+                "target": "ScalarPropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "boolean"
+                }
             }
         },
-        "typeschema:CollectionDefinitionType": {
+        "CollectionDefinitionType": {
             "description": "Base collection type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:DefinitionType"
+                "target": "DefinitionType"
             },
             "base": true,
             "properties": {
                 "schema": {
                     "description": "",
                     "type": "reference",
-                    "target": "typeschema:PropertyType"
+                    "target": "PropertyType"
                 },
                 "type": {
                     "description": "",
@@ -249,23 +77,23 @@
             },
             "discriminator": "type",
             "mapping": {
-                "typeschema:ArrayDefinitionType": "array",
-                "typeschema:MapDefinitionType": "map"
+                "ArrayDefinitionType": "array",
+                "MapDefinitionType": "map"
             }
         },
-        "typeschema:CollectionPropertyType": {
+        "CollectionPropertyType": {
             "description": "Base collection property type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:PropertyType"
+                "target": "PropertyType"
             },
             "base": true,
             "properties": {
                 "schema": {
                     "description": "",
                     "type": "reference",
-                    "target": "typeschema:PropertyType"
+                    "target": "PropertyType"
                 },
                 "type": {
                     "description": "",
@@ -274,11 +102,11 @@
             },
             "discriminator": "type",
             "mapping": {
-                "typeschema:ArrayPropertyType": "array",
-                "typeschema:MapPropertyType": "map"
+                "ArrayPropertyType": "array",
+                "MapPropertyType": "map"
             }
         },
-        "typeschema:DefinitionType": {
+        "DefinitionType": {
             "description": "Base definition type",
             "type": "struct",
             "base": true,
@@ -298,58 +126,86 @@
             },
             "discriminator": "type",
             "mapping": {
-                "typeschema:ArrayDefinitionType": "array",
-                "typeschema:MapDefinitionType": "map",
-                "typeschema:StructDefinitionType": "struct"
+                "ArrayDefinitionType": "array",
+                "MapDefinitionType": "map",
+                "StructDefinitionType": "struct"
             }
         },
-        "typeschema:GenericPropertyType": {
+        "GenericPropertyType": {
             "description": "Represents a generic value which can be replaced with a concrete type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:PropertyType"
+                "target": "PropertyType"
             },
             "properties": {
                 "name": {
                     "description": "The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference",
                     "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "default": "generic"
                 }
             }
         },
-        "typeschema:IntegerPropertyType": {
+        "IntegerPropertyType": {
             "description": "Represents an integer value",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:ScalarPropertyType"
+                "target": "ScalarPropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "integer"
+                }
             }
         },
-        "typeschema:MapDefinitionType": {
+        "MapDefinitionType": {
             "description": "Represents a map which contains a dynamic set of key value entries of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:CollectionDefinitionType"
+                "target": "CollectionDefinitionType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "map"
+                }
             }
         },
-        "typeschema:MapPropertyType": {
+        "MapPropertyType": {
             "description": "Represents a map which contains a dynamic set of key value entries of the same type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:CollectionPropertyType"
+                "target": "CollectionPropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "map"
+                }
             }
         },
-        "typeschema:NumberPropertyType": {
+        "NumberPropertyType": {
             "description": "Represents a float value",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:ScalarPropertyType"
+                "target": "ScalarPropertyType"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "number"
+                }
             }
         },
-        "typeschema:PropertyType": {
+        "PropertyType": {
             "description": "Base property type",
             "type": "struct",
             "base": true,
@@ -373,23 +229,23 @@
             },
             "discriminator": "type",
             "mapping": {
-                "typeschema:AnyPropertyType": "any",
-                "typeschema:ArrayPropertyType": "array",
-                "typeschema:BooleanPropertyType": "boolean",
-                "typeschema:GenericPropertyType": "generic",
-                "typeschema:IntegerPropertyType": "integer",
-                "typeschema:MapPropertyType": "map",
-                "typeschema:NumberPropertyType": "number",
-                "typeschema:ReferencePropertyType": "reference",
-                "typeschema:StringPropertyType": "string"
+                "AnyPropertyType": "any",
+                "ArrayPropertyType": "array",
+                "BooleanPropertyType": "boolean",
+                "GenericPropertyType": "generic",
+                "IntegerPropertyType": "integer",
+                "MapPropertyType": "map",
+                "NumberPropertyType": "number",
+                "ReferencePropertyType": "reference",
+                "StringPropertyType": "string"
             }
         },
-        "typeschema:ReferencePropertyType": {
+        "ReferencePropertyType": {
             "description": "Represents a reference to a definition type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:PropertyType"
+                "target": "PropertyType"
             },
             "properties": {
                 "target": {
@@ -402,15 +258,19 @@
                     "schema": {
                         "type": "string"
                     }
+                },
+                "type": {
+                    "type": "string",
+                    "default": "reference"
                 }
             }
         },
-        "typeschema:ScalarPropertyType": {
+        "ScalarPropertyType": {
             "description": "Base scalar property type",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:PropertyType"
+                "target": "PropertyType"
             },
             "base": true,
             "properties": {
@@ -421,32 +281,40 @@
             },
             "discriminator": "type",
             "mapping": {
-                "typeschema:BooleanPropertyType": "boolean",
-                "typeschema:IntegerPropertyType": "integer",
-                "typeschema:NumberPropertyType": "number",
-                "typeschema:StringPropertyType": "string"
+                "BooleanPropertyType": "boolean",
+                "IntegerPropertyType": "integer",
+                "NumberPropertyType": "number",
+                "StringPropertyType": "string"
             }
         },
-        "typeschema:StringPropertyType": {
+        "StringPropertyType": {
             "description": "Represents a string value",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:ScalarPropertyType"
+                "target": "ScalarPropertyType"
             },
             "properties": {
+                "default": {
+                    "description": "Optional a default value for this property",
+                    "type": "string"
+                },
                 "format": {
                     "description": "Optional describes the format of the string. Supported are the following types: date, date-time and time. A code generator may use a fitting data type to represent such a format, if not supported it should fallback to a string",
                     "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "default": "string"
                 }
             }
         },
-        "typeschema:StructDefinitionType": {
+        "StructDefinitionType": {
             "description": "A struct represents a class/structure with a fix set of defined properties",
             "type": "struct",
             "parent": {
                 "type": "reference",
-                "target": "typeschema:DefinitionType"
+                "target": "DefinitionType"
             },
             "properties": {
                 "base": {
@@ -467,19 +335,23 @@
                 "parent": {
                     "description": "Defines a parent type, all properties from the parent type are inherited",
                     "type": "reference",
-                    "target": "typeschema:ReferencePropertyType"
+                    "target": "ReferencePropertyType"
                 },
                 "properties": {
                     "description": "Contains a map of available properties for this struct",
                     "type": "map",
                     "schema": {
                         "type": "reference",
-                        "target": "typeschema:PropertyType"
+                        "target": "PropertyType"
                     }
+                },
+                "type": {
+                    "type": "string",
+                    "default": "struct"
                 }
             }
         },
-        "typeschema:TypeSchema": {
+        "TypeSchema": {
             "description": "TypeSchema specification",
             "type": "struct",
             "properties": {
@@ -488,7 +360,7 @@
                     "type": "map",
                     "schema": {
                         "type": "reference",
-                        "target": "typeschema:DefinitionType"
+                        "target": "DefinitionType"
                     }
                 },
                 "import": {

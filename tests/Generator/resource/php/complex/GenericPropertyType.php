@@ -6,11 +6,12 @@ namespace TypeAPI\Model;
 
 use PSX\Schema\Attribute\Description;
 
-#[Description('Represents a generic value which can be replaced with a dynamic type')]
+#[Description('Represents a generic value which can be replaced with a concrete type')]
 class GenericPropertyType extends PropertyType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference.')]
+    #[Description('The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference')]
     protected ?string $name = null;
+    protected ?string $type = 'generic';
     public function setName(?string $name): void
     {
         $this->name = $name;
@@ -19,11 +20,23 @@ class GenericPropertyType extends PropertyType implements \JsonSerializable, \PS
     {
         return $this->name;
     }
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
         $record = parent::toRecord();
         $record->put('name', $this->name);
+        $record->put('type', $this->type);
         return $record;
     }
     public function jsonSerialize(): object

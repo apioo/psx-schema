@@ -13,5 +13,8 @@ public class ReferencePropertyType : PropertyType
     [JsonPropertyName("template")]
     public System.Collections.Generic.Dictionary<string, string>? Template { get; set; }
 
+    [JsonPropertyName("type")]
+    public new string? Type { get; set; } = "reference";
+
 }
 

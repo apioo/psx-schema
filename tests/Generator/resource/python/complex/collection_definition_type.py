@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, GetCoreSchemaHandler, Tag
 from pydantic_core import CoreSchema, core_schema
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union, Literal
 from .definition_type import DefinitionType
 from .property_type import PropertyType
 from .any_property_type import AnyPropertyType
@@ -16,8 +16,7 @@ from .string_property_type import StringPropertyType
 
 # Base collection type
 class CollectionDefinitionType(DefinitionType):
-    schema_: Optional[Annotated[Union[Annotated[AnyPropertyType, Tag('any')], Annotated[ArrayPropertyType, Tag('array')], Annotated[BooleanPropertyType, Tag('boolean')], Annotated[GenericPropertyType, Tag('generic')], Annotated[IntegerPropertyType, Tag('integer')], Annotated[MapPropertyType, Tag('map')], Annotated[NumberPropertyType, Tag('number')], Annotated[ReferencePropertyType, Tag('reference')], Annotated[StringPropertyType, Tag('string')]], Field(discriminator='type')]] = Field(default=None, alias="schema")
-    type: Optional[str] = Field(default=None, alias="type")
+    schema_: Annotated[Union[AnyPropertyType, ArrayPropertyType, BooleanPropertyType, GenericPropertyType, IntegerPropertyType, MapPropertyType, NumberPropertyType, ReferencePropertyType, StringPropertyType], Field(discriminator="type")] = Field(alias="schema")
     pass
 
 

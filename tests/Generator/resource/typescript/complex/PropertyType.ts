@@ -1,12 +1,12 @@
-import {AnyPropertyType} from "./AnyPropertyType";
-import {ArrayPropertyType} from "./ArrayPropertyType";
-import {BooleanPropertyType} from "./BooleanPropertyType";
-import {GenericPropertyType} from "./GenericPropertyType";
-import {IntegerPropertyType} from "./IntegerPropertyType";
-import {MapPropertyType} from "./MapPropertyType";
-import {NumberPropertyType} from "./NumberPropertyType";
-import {ReferencePropertyType} from "./ReferencePropertyType";
-import {StringPropertyType} from "./StringPropertyType";
+import type {AnyPropertyType} from "./AnyPropertyType";
+import type {ArrayPropertyType} from "./ArrayPropertyType";
+import type {BooleanPropertyType} from "./BooleanPropertyType";
+import type {GenericPropertyType} from "./GenericPropertyType";
+import type {IntegerPropertyType} from "./IntegerPropertyType";
+import type {MapPropertyType} from "./MapPropertyType";
+import type {NumberPropertyType} from "./NumberPropertyType";
+import type {ReferencePropertyType} from "./ReferencePropertyType";
+import type {StringPropertyType} from "./StringPropertyType";
 
 /**
  * Base property type

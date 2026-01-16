@@ -18,7 +18,7 @@ class Argument(BaseModel):
     content_type: Optional[str] = Field(default=None, alias="contentType")
     in_: Optional[str] = Field(default=None, alias="in")
     name: Optional[str] = Field(default=None, alias="name")
-    schema_: Annotated[Union[TypeschemaAnyPropertyType, TypeschemaArrayPropertyType, TypeschemaBooleanPropertyType, TypeschemaGenericPropertyType, TypeschemaIntegerPropertyType, TypeschemaMapPropertyType, TypeschemaNumberPropertyType, TypeschemaReferencePropertyType, TypeschemaStringPropertyType], Field(discriminator="type")] = Field(alias="schema")
+    schema_: Annotated[Union[AnyPropertyType, ArrayPropertyType, BooleanPropertyType, GenericPropertyType, IntegerPropertyType, MapPropertyType, NumberPropertyType, ReferencePropertyType, StringPropertyType], Field(discriminator="type")] = Field(alias="schema")
     pass
 
 

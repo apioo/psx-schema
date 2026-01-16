@@ -1,5 +1,5 @@
 
-// A struct represents a class/structure with a fix set of defined properties.
+// A struct represents a class/structure with a fix set of defined properties
 type StructDefinitionType struct {
     Deprecated bool `json:"deprecated"`
     Description string `json:"description"`

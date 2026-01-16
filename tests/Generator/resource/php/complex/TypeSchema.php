@@ -17,9 +17,9 @@ class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
     /**
      * @var \PSX\Record\Record<string>|null
      */
-    #[Description('Through the import keyword it is possible to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https.')]
+    #[Description('Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https')]
     protected ?\PSX\Record\Record $import = null;
-    #[Description('Specifies the root type of your specification.')]
+    #[Description('Specifies the root type of your specification, this must be a key which is available at the definitions map')]
     protected ?string $root = null;
     /**
      * @param \PSX\Record\Record<DefinitionType>|null $definitions
@@ -57,6 +57,9 @@ class TypeSchema implements \JsonSerializable, \PSX\Record\RecordableInterface
     {
         return $this->root;
     }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */

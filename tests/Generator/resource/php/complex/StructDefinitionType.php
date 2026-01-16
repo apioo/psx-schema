@@ -6,25 +6,26 @@ namespace TypeAPI\Model;
 
 use PSX\Schema\Attribute\Description;
 
-#[Description('A struct represents a class/structure with a fix set of defined properties.')]
+#[Description('A struct represents a class/structure with a fix set of defined properties')]
 class StructDefinitionType extends DefinitionType implements \JsonSerializable, \PSX\Record\RecordableInterface
 {
-    #[Description('Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure.')]
+    #[Description('Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure')]
     protected ?bool $base = null;
-    #[Description('Optional the property name of a discriminator property. This should be only used in case this is also a base structure.')]
+    #[Description('Optional the property name of a discriminator property. This should be only used in case this is also a base structure')]
     protected ?string $discriminator = null;
     /**
      * @var \PSX\Record\Record<string>|null
      */
-    #[Description('In case a discriminator is configured it is required to configure a mapping. The mapping is a map where the key is the type name and the value the actual discriminator type value.')]
+    #[Description('In case a discriminator is configured it is required to configure a mapping. The mapping is a map where the key is the type name (a key from the definitions map) and the value the actual discriminator type value')]
     protected ?\PSX\Record\Record $mapping = null;
-    #[Description('Defines a parent type for this structure. Some programming languages like Go do not support the concept of an extends, in this case the code generator simply copies all properties into this structure.')]
+    #[Description('Defines a parent type, all properties from the parent type are inherited')]
     protected ?ReferencePropertyType $parent = null;
     /**
      * @var \PSX\Record\Record<PropertyType>|null
      */
-    #[Description('Contains a map of available properties for this struct.')]
+    #[Description('Contains a map of available properties for this struct')]
     protected ?\PSX\Record\Record $properties = null;
+    protected ?string $type = 'struct';
     public function setBase(?bool $base): void
     {
         $this->base = $base;
@@ -77,6 +78,17 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
     {
         return $this->properties;
     }
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+    /**
+     * @return \PSX\Record\RecordInterface<mixed>
+     */
     public function toRecord(): \PSX\Record\RecordInterface
     {
         /** @var \PSX\Record\Record<mixed> $record */
@@ -86,6 +98,7 @@ class StructDefinitionType extends DefinitionType implements \JsonSerializable, 
         $record->put('mapping', $this->mapping);
         $record->put('parent', $this->parent);
         $record->put('properties', $this->properties);
+        $record->put('type', $this->type);
         return $record;
     }
     public function jsonSerialize(): object

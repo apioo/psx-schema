@@ -7,5 +7,8 @@ namespace TypeAPI.Model;
 /// </summary>
 public class IntegerPropertyType : ScalarPropertyType
 {
+    [JsonPropertyName("type")]
+    public new string? Type { get; set; } = "integer";
+
 }
 

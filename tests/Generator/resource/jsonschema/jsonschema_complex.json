@@ -1,191 +1,5 @@
 {
   "definitions": {
-    "Argument": {
-      "description": "Describes arguments of the operation",
-      "type": "object",
-      "properties": {
-        "contentType": {
-          "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-          "type": "string"
-        },
-        "in": {
-          "description": "The location where the value can be found either in the path, query, header or body. If you choose path, then your path must have a fitting variable path fragment",
-          "type": "string"
-        },
-        "name": {
-          "description": "Optional the actual path, query or header name. If not provided the key of the argument map is used",
-          "type": "string"
-        },
-        "schema": {
-          "$ref": "#/definitions/PropertyType"
-        }
-      }
-    },
-    "Operation": {
-      "description": "",
-      "type": "object",
-      "properties": {
-        "arguments": {
-          "description": "All arguments provided to this operation. Each argument is mapped to a location from the HTTP request i.e. query or body",
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/Argument"
-          }
-        },
-        "authorization": {
-          "description": "Indicates whether this operation needs authorization, if set to false the client will not send an authorization header, default it is true",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "A short description of this operation. The generated code will include this description at the method so it is recommend to use simple alphanumeric characters and no new lines",
-          "type": "string"
-        },
-        "method": {
-          "description": "The HTTP method which is associated with this operation, must be a valid HTTP method i.e. GET, POST, PUT etc.",
-          "type": "string"
-        },
-        "path": {
-          "description": "The HTTP path which is associated with this operation. A path can also include variable path fragments i.e. /my/path/:year then you can map the variable year path fragment to a specific argument",
-          "type": "string"
-        },
-        "return": {
-          "$ref": "#/definitions/Response"
-        },
-        "security": {
-          "description": "An array of scopes which are required to access this operation",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "stability": {
-          "description": "Indicates the stability of this operation: 0 - Deprecated, 1 - Experimental, 2 - Stable, 3 - Legacy. If not explicit provided the operation is by default experimental",
-          "type": "integer"
-        },
-        "throws": {
-          "description": "All exceptional states which can occur in case the operation fails. Each exception is assigned to an HTTP error status code",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Response"
-          }
-        }
-      }
-    },
-    "Response": {
-      "description": "Describes the response of the operation",
-      "type": "object",
-      "properties": {
-        "code": {
-          "description": "The associated HTTP response code. For error responses it is possible to use the 499, 599 or 999 status code to catch all errors",
-          "type": "integer"
-        },
-        "contentType": {
-          "description": "In case the data is not a JSON payload which you can describe with a schema you can select a content type",
-          "type": "string"
-        },
-        "schema": {
-          "$ref": "#/definitions/PropertyType"
-        }
-      }
-    },
-    "Security": {
-      "description": "",
-      "type": "object",
-      "base": true,
-      "properties": {
-        "type": {
-          "description": "The global security type of the API must be one of: httpBasic, httpBearer, apiKey or oauth2",
-          "type": "string"
-        }
-      },
-      "discriminator": "type",
-      "mapping": {
-        "SecurityApiKey": "apiKey",
-        "SecurityHttpBasic": "httpBasic",
-        "SecurityHttpBearer": "httpBearer",
-        "SecurityOAuth": "oauth2"
-      }
-    },
-    "SecurityApiKey": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Security"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "in": {
-              "description": "Must be either \"header\" or \"query\"",
-              "type": "string"
-            },
-            "name": {
-              "description": "The name of the header or query parameter i.e. \"X-Api-Key\"",
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "SecurityHttpBasic": {
-      "$ref": "#/definitions/Security"
-    },
-    "SecurityHttpBearer": {
-      "$ref": "#/definitions/Security"
-    },
-    "SecurityOAuth": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/Security"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "authorizationUrl": {
-              "description": "Optional the OAuth2 authorization endpoint",
-              "type": "string"
-            },
-            "scopes": {
-              "description": "Optional OAuth2 scopes",
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "tokenUrl": {
-              "description": "The OAuth2 token endpoint",
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "TypeAPI": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/TypeSchema"
-        },
-        {
-          "description": "The TypeAPI Root",
-          "type": "object",
-          "properties": {
-            "baseUrl": {
-              "description": "Optional the base url of the service, if provided the user does not need to provide a base url for your client",
-              "type": "string"
-            },
-            "operations": {
-              "description": "A map of operations which are provided by the API. The key of the operation should be separated by a dot to group operations into logical units i.e. product.getAll or enterprise.product.execute",
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/definitions/Operation"
-              }
-            },
-            "security": {
-              "$ref": "#/definitions/Security"
-            }
-          }
-        }
-      ]
-    },
     "AnyPropertyType": {
       "allOf": [
         {
@@ -193,7 +7,13 @@
         },
         {
           "description": "Represents an any value which allows any kind of value",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "any"
+            }
+          }
         }
       ]
     },
@@ -204,7 +24,13 @@
         },
         {
           "description": "Represents an array which contains a dynamic list of values of the same type",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "array"
+            }
+          }
         }
       ]
     },
@@ -215,7 +41,13 @@
         },
         {
           "description": "Represents an array which contains a dynamic list of values of the same type",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "array"
+            }
+          }
         }
       ]
     },
@@ -226,7 +58,13 @@
         },
         {
           "description": "Represents a boolean value",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "boolean"
+            }
+          }
         }
       ]
     },
@@ -250,8 +88,8 @@
           },
           "discriminator": "type",
           "mapping": {
-            "typeschema:ArrayDefinitionType": "array",
-            "typeschema:MapDefinitionType": "map"
+            "ArrayDefinitionType": "array",
+            "MapDefinitionType": "map"
           }
         }
       ]
@@ -276,8 +114,8 @@
           },
           "discriminator": "type",
           "mapping": {
-            "typeschema:ArrayPropertyType": "array",
-            "typeschema:MapPropertyType": "map"
+            "ArrayPropertyType": "array",
+            "MapPropertyType": "map"
           }
         }
       ]
@@ -302,9 +140,9 @@
       },
       "discriminator": "type",
       "mapping": {
-        "typeschema:ArrayDefinitionType": "array",
-        "typeschema:MapDefinitionType": "map",
-        "typeschema:StructDefinitionType": "struct"
+        "ArrayDefinitionType": "array",
+        "MapDefinitionType": "map",
+        "StructDefinitionType": "struct"
       }
     },
     "GenericPropertyType": {
@@ -319,6 +157,10 @@
             "name": {
               "description": "The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference",
               "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "default": "generic"
             }
           }
         }
@@ -331,7 +173,13 @@
         },
         {
           "description": "Represents an integer value",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "integer"
+            }
+          }
         }
       ]
     },
@@ -342,7 +190,13 @@
         },
         {
           "description": "Represents a map which contains a dynamic set of key value entries of the same type",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "map"
+            }
+          }
         }
       ]
     },
@@ -353,7 +207,13 @@
         },
         {
           "description": "Represents a map which contains a dynamic set of key value entries of the same type",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "map"
+            }
+          }
         }
       ]
     },
@@ -364,7 +224,13 @@
         },
         {
           "description": "Represents a float value",
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "number"
+            }
+          }
         }
       ]
     },
@@ -392,15 +258,15 @@
       },
       "discriminator": "type",
       "mapping": {
-        "typeschema:AnyPropertyType": "any",
-        "typeschema:ArrayPropertyType": "array",
-        "typeschema:BooleanPropertyType": "boolean",
-        "typeschema:GenericPropertyType": "generic",
-        "typeschema:IntegerPropertyType": "integer",
-        "typeschema:MapPropertyType": "map",
-        "typeschema:NumberPropertyType": "number",
-        "typeschema:ReferencePropertyType": "reference",
-        "typeschema:StringPropertyType": "string"
+        "AnyPropertyType": "any",
+        "ArrayPropertyType": "array",
+        "BooleanPropertyType": "boolean",
+        "GenericPropertyType": "generic",
+        "IntegerPropertyType": "integer",
+        "MapPropertyType": "map",
+        "NumberPropertyType": "number",
+        "ReferencePropertyType": "reference",
+        "StringPropertyType": "string"
       }
     },
     "ReferencePropertyType": {
@@ -422,6 +288,10 @@
               "additionalProperties": {
                 "type": "string"
               }
+            },
+            "type": {
+              "type": "string",
+              "default": "reference"
             }
           }
         }
@@ -444,10 +314,10 @@
           },
           "discriminator": "type",
           "mapping": {
-            "typeschema:BooleanPropertyType": "boolean",
-            "typeschema:IntegerPropertyType": "integer",
-            "typeschema:NumberPropertyType": "number",
-            "typeschema:StringPropertyType": "string"
+            "BooleanPropertyType": "boolean",
+            "IntegerPropertyType": "integer",
+            "NumberPropertyType": "number",
+            "StringPropertyType": "string"
           }
         }
       ]
@@ -461,9 +331,17 @@
           "description": "Represents a string value",
           "type": "object",
           "properties": {
+            "default": {
+              "description": "Optional a default value for this property",
+              "type": "string"
+            },
             "format": {
               "description": "Optional describes the format of the string. Supported are the following types: date, date-time and time. A code generator may use a fitting data type to represent such a format, if not supported it should fallback to a string",
               "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "default": "string"
             }
           }
         }
@@ -502,6 +380,10 @@
               "additionalProperties": {
                 "$ref": "#/definitions/PropertyType"
               }
+            },
+            "type": {
+              "type": "string",
+              "default": "struct"
             }
           }
         }

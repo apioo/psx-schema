@@ -1,6 +1,6 @@
 Imports System.Text.Json.Serialization
 
-' A struct represents a class/structure with a fix set of defined properties.
+' A struct represents a class/structure with a fix set of defined properties
 Public Class StructDefinitionType
     Inherits DefinitionType
     <JsonPropertyName("base")>
@@ -17,6 +17,9 @@ Public Class StructDefinitionType
 
     <JsonPropertyName("properties")>
     Public Property Properties As Nullable(Dictionary(Of String, PropertyType))
+
+    <JsonPropertyName("type")>
+    Public Property Type As Nullable(String)
 
 End Class
 
