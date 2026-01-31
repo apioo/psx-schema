@@ -173,7 +173,7 @@ class TypeScript extends CodeGeneratorAbstract
             }
         }
 
-        return array_unique(array_merge($imports, $this->buildDiscriminatorImports($origin)));
+        return array_unique(array_merge($imports, $this->buildDiscriminatorImports($origin, $className)));
     }
 
     private function needsQuoting(string $propertyName): bool
@@ -217,7 +217,7 @@ class TypeScript extends CodeGeneratorAbstract
         }
     }
 
-    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin): array
+    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
         if (!$origin instanceof StructDefinitionType) {
             return [];
@@ -239,6 +239,11 @@ class TypeScript extends CodeGeneratorAbstract
                 [$ns, $name] = TypeUtil::split($class);
 
                 $typeName = $this->normalizer->class($name);
+
+                if ($typeName === $className->getClass()) {
+                    // we dont need to include the same class
+                    continue;
+                }
 
                 if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
                     $from = str_replace('{type}', $this->normalizer->import($name), $this->mapping[$ns]);
