@@ -236,7 +236,7 @@ class Python extends CodeGeneratorAbstract
         foreach ($mapping as $class => $value) {
             [$ns, $name] = TypeUtil::split($class);
 
-            $subTypes[] = $this->normalizer->class($name);
+            $subTypes[] = '"' . $this->normalizer->class($name) . '"';
         }
 
         $unionType = 'Annotated[Union[' . implode(', ', $subTypes) . '], Field(discriminator="' . $discriminator . '")]';

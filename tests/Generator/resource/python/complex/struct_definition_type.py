@@ -21,7 +21,7 @@ class StructDefinitionType(DefinitionType):
     discriminator: Optional[str] = Field(default=None, alias="discriminator")
     mapping: Optional[Dict[str, str]] = Field(default=None, alias="mapping")
     parent: Optional[ReferencePropertyType] = Field(default=None, alias="parent")
-    properties: Dict[str, Annotated[Union[AnyPropertyType, ArrayPropertyType, BooleanPropertyType, GenericPropertyType, IntegerPropertyType, MapPropertyType, NumberPropertyType, ReferencePropertyType, StringPropertyType], Field(discriminator="type")]] = Field(alias="properties")
+    properties: Dict[str, Annotated[Union["AnyPropertyType", "ArrayPropertyType", "BooleanPropertyType", "GenericPropertyType", "IntegerPropertyType", "MapPropertyType", "NumberPropertyType", "ReferencePropertyType", "StringPropertyType"], Field(discriminator="type")]] = Field(alias="properties")
     pass
 
 
