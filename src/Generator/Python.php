@@ -167,7 +167,7 @@ class Python extends CodeGeneratorAbstract
     {
         $code = '';
 
-        $imports = $this->getImports($origin);
+        $imports = $this->getImports($origin, $className);
         if (!empty($imports)) {
             $code.= implode("\n", $imports);
             $code.= "\n";
@@ -183,7 +183,7 @@ class Python extends CodeGeneratorAbstract
         return $code;
     }
 
-    private function getImports(DefinitionTypeAbstract $origin): array
+    private function getImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
         $imports = [];
 
@@ -209,6 +209,12 @@ class Python extends CodeGeneratorAbstract
         foreach ($refs as $ref) {
             [$ns, $name] = TypeUtil::split($ref);
 
+            $typeName = $this->normalizer->class($name);
+            if ($typeName === $className->getClass()) {
+                // we dont need to include the same class
+                continue;
+            }
+
             if ($ns !== DefinitionsInterface::SELF_NAMESPACE && isset($this->mapping[$ns])) {
                 $imports[] = 'from ' . $this->mapping[$ns] . ' import ' . $this->normalizer->class($name);
             } else {
@@ -216,7 +222,7 @@ class Python extends CodeGeneratorAbstract
             }
         }
 
-        return array_unique(array_merge($imports, $this->buildDiscriminatorImports($origin)));
+        return array_unique(array_merge($imports, $this->buildDiscriminatorImports($origin, $className)));
     }
 
     private function buildDiscriminatorUnion(Code\Property $property): array
@@ -244,7 +250,7 @@ class Python extends CodeGeneratorAbstract
         }
     }
 
-    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin): array
+    private function buildDiscriminatorImports(DefinitionTypeAbstract $origin, Code\Name $className): array
     {
         if (!$origin instanceof StructDefinitionType) {
             return [];
@@ -264,6 +270,13 @@ class Python extends CodeGeneratorAbstract
 
             foreach ($mapping as $class => $value) {
                 [$ns, $name] = TypeUtil::split($class);
+
+                $typeName = $this->normalizer->class($name);
+                if ($typeName === $className->getClass()) {
+                    // we dont need to include the same class
+                    continue;
+                }
+
                 $imports[] = 'from .' . $this->normalizer->file($name) . ' import ' . $this->normalizer->class($name);
             }
         }

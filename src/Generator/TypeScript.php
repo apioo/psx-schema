@@ -239,7 +239,6 @@ class TypeScript extends CodeGeneratorAbstract
                 [$ns, $name] = TypeUtil::split($class);
 
                 $typeName = $this->normalizer->class($name);
-
                 if ($typeName === $className->getClass()) {
                     // we dont need to include the same class
                     continue;
