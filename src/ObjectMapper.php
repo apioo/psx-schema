@@ -37,11 +37,11 @@ use PSX\Schema\Visitor\TypeVisitor;
  */
 class ObjectMapper
 {
-    private SchemaManager $schemaManager;
+    private SchemaManagerInterface $schemaManager;
     private SchemaTraverser $schemaTraverser;
     private Dumper $dumper;
 
-    public function __construct(SchemaManager $schemaManager, bool $ignoreUnknownProperties = true)
+    public function __construct(SchemaManagerInterface $schemaManager, bool $ignoreUnknownProperties = true)
     {
         $this->schemaManager = $schemaManager;
         $this->schemaTraverser = new SchemaTraverser(ignoreUnknown: $ignoreUnknownProperties);
