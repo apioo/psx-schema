@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Generator;
 
+use JsonException;
 use PSX\Json\Parser;
 use PSX\Schema\DefinitionsInterface;
 use PSX\Schema\Exception\GeneratorException;
@@ -33,6 +34,7 @@ use PSX\Schema\Type\GenericPropertyType;
 use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
+use PSX\Schema\Type\ScalarPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\TypeInterface;
 use PSX\Schema\TypeUtil;
@@ -46,13 +48,17 @@ use PSX\Schema\TypeUtil;
  */
 class JsonSchema implements GeneratorInterface
 {
+    private string $definitionKey;
     private string $refBase;
     private bool $inlineDefinitions;
+    private bool $openAIMode;
 
-    public function __construct(?Config $config = null, bool $inlineDefinitions = false)
+    public function __construct(?Config $config = null)
     {
-        $this->refBase = $config?->get('ref_base') ?? '#/definitions/';
-        $this->inlineDefinitions = $inlineDefinitions;
+        $this->inlineDefinitions = (bool) ($config?->get('inline_definitions') ?? false);
+        $this->openAIMode = (bool) ($config?->get('openai_mode') ?? false);
+        $this->definitionKey = $this->openAIMode ? '$defs' : 'definitions';
+        $this->refBase = $config?->get('ref_base') ?? '#/' . $this->definitionKey . '/';
     }
 
     public function generate(SchemaInterface $schema): Code\Chunks|string
@@ -61,7 +67,7 @@ class JsonSchema implements GeneratorInterface
             $data = $this->toArray($schema->getDefinitions(), $schema->getRoot());
 
             return Parser::encode($data);
-        } catch (TypeNotFoundException|\JsonException $e) {
+        } catch (TypeNotFoundException|JsonException $e) {
             throw new GeneratorException($e->getMessage(), previous: $e);
         }
     }
@@ -82,7 +88,7 @@ class JsonSchema implements GeneratorInterface
         }
 
         if ($this->inlineDefinitions === false && !$definitions->isEmpty()) {
-            $result['definitions'] = $this->generateDefinitions($definitions);
+            $result[$this->definitionKey] = $this->generateDefinitions($definitions);
         }
 
         return array_merge($result, $object);
@@ -107,6 +113,16 @@ class JsonSchema implements GeneratorInterface
         $types  = $definitions->getAllTypes();
 
         ksort($types);
+
+        if ($this->openAIMode) {
+            foreach ($types as $type) {
+                if (!$type instanceof StructDefinitionType) {
+                    continue;
+                }
+
+                $this->setDiscriminatorType($type, $definitions);
+            }
+        }
 
         foreach ($types as $ref => $type) {
             [$ns, $name] = TypeUtil::split($ref);
@@ -134,33 +150,91 @@ class JsonSchema implements GeneratorInterface
             $data = $type->toArray();
             $data['type'] = 'object';
 
+            if (isset($data['base'])) {
+                unset($data['base']);
+            }
+
+            $discriminator = null;
+            if (isset($data['discriminator'])) {
+                $discriminator = $data['discriminator'];
+                unset($data['discriminator']);
+            }
+
+            $mapping = null;
+            if (isset($data['mapping'])) {
+                $mapping = $data['mapping'];
+                unset($data['mapping']);
+            }
+
+            if (!empty($discriminator) && !empty($mapping)) {
+                if ($this->openAIMode) {
+                    return $this->resolveOpenAIDiscriminatedUnion($mapping);
+                } else {
+                    return $this->resolveDiscriminatedUnion($discriminator, $mapping);
+                }
+            }
+
             $parent = $type->getParent();
             if ($parent instanceof ReferencePropertyType) {
                 $template = $parent->getTemplate();
+
+                unset($data['parent']);
             }
 
+            $parentProperties = [];
+            $parentRequired = [];
+            if ($this->openAIMode && $parent instanceof ReferencePropertyType) {
+                $resolvedParent = $definitions->getType($parent->getTarget());
+                $parentType = $this->generateType($resolvedParent, $definitions);
+
+                if (isset($parentType['properties'])) {
+                    $parentProperties = $parentType['properties'];
+                }
+
+                if (isset($parentType['required'])) {
+                    $parentRequired = $parentType['required'];
+                }
+            }
+
+            $properties = [];
+            $required = [];
             if (isset($data['properties'])) {
-                $properties = [];
-                $required = [];
+                $sourceDiscriminatorType = $type->getAttribute('discriminator_type');
+                $sourceDiscriminatorValue = $type->getAttribute('discriminator_value');
+
                 foreach ($data['properties'] as $key => $property) {
                     $properties[$key] = $this->generateType($property, $definitions, $template);
 
-                    if ($property instanceof PropertyTypeAbstract && $property->isNullable() === false) {
+                    if ($property instanceof ScalarPropertyType && !empty($sourceDiscriminatorType) && $sourceDiscriminatorType === $key && !empty($sourceDiscriminatorValue)) {
+                        $properties[$key]['enum'] = [$sourceDiscriminatorValue];
+
+                        if (isset($properties[$key]['default'])) {
+                            unset($properties[$key]['default']);
+                        }
+                    }
+
+                    if ($property instanceof PropertyTypeAbstract && ($property->isNullable() === false || $this->openAIMode)) {
                         $required[] = $key;
                     }
                 }
-
-                $data['properties'] = $properties;
-
-                if (count($required) > 0) {
-                    $data['required'] = $required;
-                }
             }
 
-            if ($parent instanceof ReferencePropertyType) {
-                unset($data['parent']);
+            $allProperties = array_merge($parentProperties, $properties);
+            if (count($allProperties) > 0) {
+                $data['properties'] = $allProperties;
+            }
 
-                if (count($data) === 1) {
+            $allRequired = array_values(array_unique(array_merge($parentRequired, $required)));
+            if (count($allRequired) > 0) {
+                $data['required'] = $allRequired;
+            }
+
+            if ($this->openAIMode) {
+                $data['additionalProperties'] = false;
+            }
+
+            if (!$this->openAIMode && $parent instanceof ReferencePropertyType) {
+                if (!isset($data['properties'])) {
                     // in case $data is of type object and has no other properties we can simply return the type
                     return $this->generateType($parent, $definitions, $template);
                 } else {
@@ -204,6 +278,7 @@ class JsonSchema implements GeneratorInterface
             } else {
                 if ($this->inlineDefinitions === false) {
                     [$ns, $name] = TypeUtil::split($type->getTarget());
+
                     return [
                         '$ref' => $this->refBase . $name
                     ];
@@ -219,6 +294,63 @@ class JsonSchema implements GeneratorInterface
             return $this->generateType(PropertyTypeFactory::getReference($target), $definitions, $template);
         } else {
             return $type->toArray();
+        }
+    }
+
+    private function resolveDiscriminatedUnion(string $discriminator, array $mapping): array
+    {
+        $items = [];
+        $mappingValues = [];
+        foreach ($mapping as $mappingTypeName => $mappingValue) {
+            $ref = $this->refBase . $mappingTypeName;
+
+            $items[] = [
+                '$ref' => $ref,
+            ];
+
+            $mappingValues[$mappingValue] = $ref;
+        }
+
+        return [
+            'oneOf' => $items,
+            'discriminator' => $discriminator,
+            'mapping' => $mappingValues,
+        ];
+    }
+
+    private function resolveOpenAIDiscriminatedUnion(array $mapping): array
+    {
+        $items = [];
+        foreach ($mapping as $mappingTypeName => $mappingValue) {
+            $ref = $this->refBase . $mappingTypeName;
+
+            $items[] = [
+                '$ref' => $ref,
+            ];
+        }
+
+        return [
+            'anyOf' => $items,
+        ];
+    }
+
+    private function setDiscriminatorType(StructDefinitionType $type, DefinitionsInterface $definitions): void
+    {
+        $discriminator = $type->getDiscriminator();
+        $mapping = $type->getMapping();
+
+        if (empty($discriminator) || empty($mapping)) {
+            return;
+        }
+
+        foreach ($mapping as $mappingTypeName => $mappingValue) {
+            $type = $definitions->getType($mappingTypeName);
+            if (!$type instanceof StructDefinitionType) {
+                continue;
+            }
+
+            $type->setAttribute('discriminator_type', $discriminator);
+            $type->setAttribute('discriminator_value', $mappingValue);
         }
     }
 }

@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "Author": {
+      "description": "An simple author element with some description",
+      "type": "object",
+      "properties": {
+        "title": {
+          "nullable": false,
+          "type": "string"
+        },
+        "email": {
+          "description": "We will send no spam to this address",
+          "nullable": true,
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "description": "Array of locations",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Location"
+          }
+        },
+        "origin": {
+          "$ref": "#/$defs/Location"
+        }
+      },
+      "required": [
+        "title",
+        "email",
+        "categories",
+        "locations",
+        "origin"
+      ],
+      "additionalProperties": false
+    },
+    "Location": {
+      "description": "Location of the person",
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "long"
+      ],
+      "additionalProperties": false
+    },
+    "Meta": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "description": "An general news entry",
+  "type": "object",
+  "properties": {
+    "config": {
+      "$ref": "#/$defs/Meta"
+    },
+    "inlineConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapTags": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapReceiver": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/Author"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "receiver": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Author"
+      }
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "read": {
+      "type": "boolean"
+    },
+    "author": {
+      "$ref": "#/$defs/Author"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    },
+    "sendDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "readDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "price": {
+      "deprecated": true,
+      "type": "number"
+    },
+    "rating": {
+      "type": "integer"
+    },
+    "content": {
+      "description": "Contains the \"main\" content of the news entry",
+      "nullable": false,
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "coffeeTime": {
+      "type": "string",
+      "format": "time"
+    },
+    "g-recaptcha-response": {
+      "type": "string"
+    },
+    "media.fields": {
+      "type": "string"
+    },
+    "payload": {}
+  },
+  "required": [
+    "config",
+    "inlineConfig",
+    "mapTags",
+    "mapReceiver",
+    "tags",
+    "receiver",
+    "data",
+    "read",
+    "author",
+    "meta",
+    "sendDate",
+    "readDate",
+    "price",
+    "rating",
+    "content",
+    "question",
+    "version",
+    "coffeeTime",
+    "g-recaptcha-response",
+    "media.fields",
+    "payload"
+  ],
+  "additionalProperties": false
+}

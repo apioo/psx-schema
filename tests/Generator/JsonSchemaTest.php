@@ -20,6 +20,7 @@
 
 namespace PSX\Schema\Tests\Generator;
 
+use PSX\Schema\Generator\Config;
 use PSX\Schema\Generator\JsonSchema;
 
 /**
@@ -73,10 +74,39 @@ class JsonSchemaTest extends GeneratorTestCase
 
     public function testGenerateResolveRefs()
     {
-        $generator = new JsonSchema(inlineDefinitions: true);
+        $config = new Config();
+        $config->put('inline_definitions', true);
 
-        $actual = $generator->generate($this->getSchema());
+        $generator = new JsonSchema($config);
+
+        $actual = (string) $generator->generate($this->getSchema());
         $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_resolve_refs.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateOpenAIMode()
+    {
+        $config = new Config();
+        $config->put('openai_mode', true);
+
+        $generator = new JsonSchema($config);
+
+        $actual = (string) $generator->generate($this->getSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_openai_mode.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testGenerateOpenAIModeComplex()
+    {
+        $config = new Config();
+        $config->put('openai_mode', true);
+
+        $generator = new JsonSchema($config);
+
+        $actual = (string) $generator->generate($this->getComplexSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_openai_mode_complex.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

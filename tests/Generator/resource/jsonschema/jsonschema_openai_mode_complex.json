@@ -1,0 +1,362 @@
+{
+  "$defs": {
+    "AnyPropertyType": {
+      "description": "Represents an any value which allows any kind of value",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "any"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "ArrayDefinitionType": {
+      "description": "Represents an array which contains a dynamic list of values of the same type",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "array"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "ArrayPropertyType": {
+      "description": "Represents an array which contains a dynamic list of values of the same type",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "array"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "BooleanPropertyType": {
+      "description": "Represents a boolean value",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "CollectionDefinitionType": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArrayDefinitionType"
+        },
+        {
+          "$ref": "#/$defs/MapDefinitionType"
+        }
+      ]
+    },
+    "CollectionPropertyType": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArrayPropertyType"
+        },
+        {
+          "$ref": "#/$defs/MapPropertyType"
+        }
+      ]
+    },
+    "DefinitionType": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArrayDefinitionType"
+        },
+        {
+          "$ref": "#/$defs/MapDefinitionType"
+        },
+        {
+          "$ref": "#/$defs/StructDefinitionType"
+        }
+      ]
+    },
+    "GenericPropertyType": {
+      "description": "Represents a generic value which can be replaced with a concrete type",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name of the generic, it is recommended to use common generic names like T or TValue. These generics can then be replaced on usage with a concrete type through the template property at a reference",
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "generic"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "IntegerPropertyType": {
+      "description": "Represents an integer value",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "integer"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "MapDefinitionType": {
+      "description": "Represents a map which contains a dynamic set of key value entries of the same type",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "map"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "MapPropertyType": {
+      "description": "Represents a map which contains a dynamic set of key value entries of the same type",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "map"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "NumberPropertyType": {
+      "description": "Represents a float value",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "PropertyType": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AnyPropertyType"
+        },
+        {
+          "$ref": "#/$defs/ArrayPropertyType"
+        },
+        {
+          "$ref": "#/$defs/BooleanPropertyType"
+        },
+        {
+          "$ref": "#/$defs/GenericPropertyType"
+        },
+        {
+          "$ref": "#/$defs/IntegerPropertyType"
+        },
+        {
+          "$ref": "#/$defs/MapPropertyType"
+        },
+        {
+          "$ref": "#/$defs/NumberPropertyType"
+        },
+        {
+          "$ref": "#/$defs/ReferencePropertyType"
+        },
+        {
+          "$ref": "#/$defs/StringPropertyType"
+        }
+      ]
+    },
+    "ReferencePropertyType": {
+      "description": "Represents a reference to a definition type",
+      "type": "object",
+      "properties": {
+        "target": {
+          "description": "The target type, this must be a key which is available at the definitions map",
+          "type": "string"
+        },
+        "template": {
+          "description": "A map where the key is the name of the generic and the value must point to a key under the definitions keyword. This can be used in case the target points to a type which contains generics, then it is possible to replace those generics with a concrete type",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "reference"
+          ]
+        }
+      },
+      "required": [
+        "target",
+        "template",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "ScalarPropertyType": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BooleanPropertyType"
+        },
+        {
+          "$ref": "#/$defs/IntegerPropertyType"
+        },
+        {
+          "$ref": "#/$defs/NumberPropertyType"
+        },
+        {
+          "$ref": "#/$defs/StringPropertyType"
+        }
+      ]
+    },
+    "StringPropertyType": {
+      "description": "Represents a string value",
+      "type": "object",
+      "properties": {
+        "default": {
+          "description": "Optional a default value for this property",
+          "type": "string"
+        },
+        "format": {
+          "description": "Optional describes the format of the string. Supported are the following types: date, date-time and time. A code generator may use a fitting data type to represent such a format, if not supported it should fallback to a string",
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "default",
+        "format",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "StructDefinitionType": {
+      "description": "A struct represents a class/structure with a fix set of defined properties",
+      "type": "object",
+      "properties": {
+        "base": {
+          "description": "Indicates whether this is a base structure, default is false. If true the structure is used a base type, this means it is not possible to create an instance from this structure",
+          "type": "boolean"
+        },
+        "discriminator": {
+          "description": "Optional the property name of a discriminator property. This should be only used in case this is also a base structure",
+          "type": "string"
+        },
+        "mapping": {
+          "description": "In case a discriminator is configured it is required to configure a mapping. The mapping is a map where the key is the type name (a key from the definitions map) and the value the actual discriminator type value",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "parent": {
+          "$ref": "#/$defs/ReferencePropertyType"
+        },
+        "properties": {
+          "description": "Contains a map of available properties for this struct",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/PropertyType"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "struct"
+          ]
+        }
+      },
+      "required": [
+        "base",
+        "discriminator",
+        "mapping",
+        "parent",
+        "properties",
+        "type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "description": "TypeSchema specification",
+  "type": "object",
+  "properties": {
+    "definitions": {
+      "description": "",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/DefinitionType"
+      }
+    },
+    "import": {
+      "description": "Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "root": {
+      "description": "Specifies the root type of your specification, this must be a key which is available at the definitions map",
+      "type": "string"
+    }
+  },
+  "required": [
+    "definitions",
+    "import",
+    "root"
+  ],
+  "additionalProperties": false
+}

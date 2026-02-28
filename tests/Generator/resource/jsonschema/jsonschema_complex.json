@@ -69,80 +69,52 @@
       ]
     },
     "CollectionDefinitionType": {
-      "allOf": [
+      "oneOf": [
         {
-          "$ref": "#/definitions/DefinitionType"
+          "$ref": "#/definitions/ArrayDefinitionType"
         },
         {
-          "description": "Base collection type",
-          "type": "object",
-          "base": true,
-          "properties": {
-            "schema": {
-              "$ref": "#/definitions/PropertyType"
-            },
-            "type": {
-              "description": "",
-              "type": "string"
-            }
-          },
-          "discriminator": "type",
-          "mapping": {
-            "ArrayDefinitionType": "array",
-            "MapDefinitionType": "map"
-          }
+          "$ref": "#/definitions/MapDefinitionType"
         }
-      ]
-    },
-    "CollectionPropertyType": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/PropertyType"
-        },
-        {
-          "description": "Base collection property type",
-          "type": "object",
-          "base": true,
-          "properties": {
-            "schema": {
-              "$ref": "#/definitions/PropertyType"
-            },
-            "type": {
-              "description": "",
-              "type": "string"
-            }
-          },
-          "discriminator": "type",
-          "mapping": {
-            "ArrayPropertyType": "array",
-            "MapPropertyType": "map"
-          }
-        }
-      ]
-    },
-    "DefinitionType": {
-      "description": "Base definition type",
-      "type": "object",
-      "base": true,
-      "properties": {
-        "deprecated": {
-          "description": "",
-          "type": "boolean"
-        },
-        "description": {
-          "description": "",
-          "type": "string"
-        },
-        "type": {
-          "description": "",
-          "type": "string"
-        }
-      },
+      ],
       "discriminator": "type",
       "mapping": {
-        "ArrayDefinitionType": "array",
-        "MapDefinitionType": "map",
-        "StructDefinitionType": "struct"
+        "array": "#/definitions/ArrayDefinitionType",
+        "map": "#/definitions/MapDefinitionType"
+      }
+    },
+    "CollectionPropertyType": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/ArrayPropertyType"
+        },
+        {
+          "$ref": "#/definitions/MapPropertyType"
+        }
+      ],
+      "discriminator": "type",
+      "mapping": {
+        "array": "#/definitions/ArrayPropertyType",
+        "map": "#/definitions/MapPropertyType"
+      }
+    },
+    "DefinitionType": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/ArrayDefinitionType"
+        },
+        {
+          "$ref": "#/definitions/MapDefinitionType"
+        },
+        {
+          "$ref": "#/definitions/StructDefinitionType"
+        }
+      ],
+      "discriminator": "type",
+      "mapping": {
+        "array": "#/definitions/ArrayDefinitionType",
+        "map": "#/definitions/MapDefinitionType",
+        "struct": "#/definitions/StructDefinitionType"
       }
     },
     "GenericPropertyType": {
@@ -235,38 +207,46 @@
       ]
     },
     "PropertyType": {
-      "description": "Base property type",
-      "type": "object",
-      "base": true,
-      "properties": {
-        "deprecated": {
-          "description": "",
-          "type": "boolean"
+      "oneOf": [
+        {
+          "$ref": "#/definitions/AnyPropertyType"
         },
-        "description": {
-          "description": "",
-          "type": "string"
+        {
+          "$ref": "#/definitions/ArrayPropertyType"
         },
-        "nullable": {
-          "description": "",
-          "type": "boolean"
+        {
+          "$ref": "#/definitions/BooleanPropertyType"
         },
-        "type": {
-          "description": "",
-          "type": "string"
+        {
+          "$ref": "#/definitions/GenericPropertyType"
+        },
+        {
+          "$ref": "#/definitions/IntegerPropertyType"
+        },
+        {
+          "$ref": "#/definitions/MapPropertyType"
+        },
+        {
+          "$ref": "#/definitions/NumberPropertyType"
+        },
+        {
+          "$ref": "#/definitions/ReferencePropertyType"
+        },
+        {
+          "$ref": "#/definitions/StringPropertyType"
         }
-      },
+      ],
       "discriminator": "type",
       "mapping": {
-        "AnyPropertyType": "any",
-        "ArrayPropertyType": "array",
-        "BooleanPropertyType": "boolean",
-        "GenericPropertyType": "generic",
-        "IntegerPropertyType": "integer",
-        "MapPropertyType": "map",
-        "NumberPropertyType": "number",
-        "ReferencePropertyType": "reference",
-        "StringPropertyType": "string"
+        "any": "#/definitions/AnyPropertyType",
+        "array": "#/definitions/ArrayPropertyType",
+        "boolean": "#/definitions/BooleanPropertyType",
+        "generic": "#/definitions/GenericPropertyType",
+        "integer": "#/definitions/IntegerPropertyType",
+        "map": "#/definitions/MapPropertyType",
+        "number": "#/definitions/NumberPropertyType",
+        "reference": "#/definitions/ReferencePropertyType",
+        "string": "#/definitions/StringPropertyType"
       }
     },
     "ReferencePropertyType": {
@@ -298,29 +278,27 @@
       ]
     },
     "ScalarPropertyType": {
-      "allOf": [
+      "oneOf": [
         {
-          "$ref": "#/definitions/PropertyType"
+          "$ref": "#/definitions/BooleanPropertyType"
         },
         {
-          "description": "Base scalar property type",
-          "type": "object",
-          "base": true,
-          "properties": {
-            "type": {
-              "description": "",
-              "type": "string"
-            }
-          },
-          "discriminator": "type",
-          "mapping": {
-            "BooleanPropertyType": "boolean",
-            "IntegerPropertyType": "integer",
-            "NumberPropertyType": "number",
-            "StringPropertyType": "string"
-          }
+          "$ref": "#/definitions/IntegerPropertyType"
+        },
+        {
+          "$ref": "#/definitions/NumberPropertyType"
+        },
+        {
+          "$ref": "#/definitions/StringPropertyType"
         }
-      ]
+      ],
+      "discriminator": "type",
+      "mapping": {
+        "boolean": "#/definitions/BooleanPropertyType",
+        "integer": "#/definitions/IntegerPropertyType",
+        "number": "#/definitions/NumberPropertyType",
+        "string": "#/definitions/StringPropertyType"
+      }
     },
     "StringPropertyType": {
       "allOf": [
@@ -388,30 +366,28 @@
           }
         }
       ]
-    },
-    "TypeSchema": {
-      "description": "TypeSchema specification",
+    }
+  },
+  "description": "TypeSchema specification",
+  "type": "object",
+  "properties": {
+    "definitions": {
+      "description": "",
       "type": "object",
-      "properties": {
-        "definitions": {
-          "description": "",
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/DefinitionType"
-          }
-        },
-        "import": {
-          "description": "Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "root": {
-          "description": "Specifies the root type of your specification, this must be a key which is available at the definitions map",
-          "type": "string"
-        }
+      "additionalProperties": {
+        "$ref": "#/definitions/DefinitionType"
       }
+    },
+    "import": {
+      "description": "Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "root": {
+      "description": "Specifies the root type of your specification, this must be a key which is available at the definitions map",
+      "type": "string"
     }
   }
 }
