@@ -135,7 +135,12 @@ class TypeUtil
     {
         self::walk($type, function(TypeInterface $type) use ($callback, $ignoreMapping){
             if ($type instanceof ReferencePropertyType) {
-                [$ns, $name] = self::split($type->getTarget());
+                $target = $type->getTarget();
+                if (empty($target)) {
+                    return;
+                }
+
+                [$ns, $name] = self::split($target);
                 $return = $callback($ns, $name);
                 if ($return !== null) {
                     $type->setTarget($return);
