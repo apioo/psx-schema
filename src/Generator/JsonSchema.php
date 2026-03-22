@@ -205,11 +205,20 @@ class JsonSchema implements GeneratorInterface
                 foreach ($data['properties'] as $key => $property) {
                     $properties[$key] = $this->generateType($property, $definitions, $template);
 
-                    if ($property instanceof ScalarPropertyType && !empty($sourceDiscriminatorType) && $sourceDiscriminatorType === $key && !empty($sourceDiscriminatorValue)) {
-                        $properties[$key]['enum'] = [$sourceDiscriminatorValue];
+                    if ($property instanceof ScalarPropertyType) {
+                        if (!empty($sourceDiscriminatorType) && $sourceDiscriminatorType === $key && !empty($sourceDiscriminatorValue)) {
+                            $properties[$key]['enum'] = [$sourceDiscriminatorValue];
 
-                        if (isset($properties[$key]['default'])) {
-                            unset($properties[$key]['default']);
+                            if (isset($properties[$key]['default'])) {
+                                unset($properties[$key]['default']);
+                            }
+                        } elseif ($this->openAIMode && $property->isNullable() === true) {
+                            $properties[$key] = [
+                                'anyOf' => [
+                                    $properties[$key],
+                                    ['type' => null]
+                                ],
+                            ];
                         }
                     }
 
@@ -269,7 +278,12 @@ class JsonSchema implements GeneratorInterface
 
             return $data;
         } elseif ($type instanceof ReferencePropertyType) {
-            $targetType = $definitions->getType($type->getTarget());
+            $target = $type->getTarget();
+            if (empty($target)) {
+                return (object) [];
+            }
+
+            $targetType = $definitions->getType($target);
             $hasGenerics = TypeUtil::contains($targetType, GenericPropertyType::class);
 
             if ($hasGenerics) {
@@ -277,7 +291,7 @@ class JsonSchema implements GeneratorInterface
                 return $this->generateType($targetType, $definitions, $type->getTemplate());
             } else {
                 if ($this->inlineDefinitions === false) {
-                    [$ns, $name] = TypeUtil::split($type->getTarget());
+                    [$ns, $name] = TypeUtil::split($target);
 
                     return [
                         '$ref' => $this->refBase . $name
