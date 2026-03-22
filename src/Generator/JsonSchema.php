@@ -213,12 +213,18 @@ class JsonSchema implements GeneratorInterface
                                 unset($properties[$key]['default']);
                             }
                         } elseif ($this->openAIMode && $property->isNullable() === true) {
-                            $properties[$key] = [
-                                'anyOf' => [
-                                    $properties[$key],
-                                    ['type' => null]
-                                ],
+                            $nullableType = [];
+                            if (isset($properties[$key]['description'])) {
+                                $nullableType['description'] = $properties[$key]['description'];
+                                unset($properties[$key]['description']);
+                            }
+
+                            $nullableType['anyOf'] = [
+                                $properties[$key],
+                                ['type' => null]
                             ];
+
+                            $properties[$key] = $nullableType;
                         }
                     }
 
@@ -307,7 +313,13 @@ class JsonSchema implements GeneratorInterface
 
             return $this->generateType(PropertyTypeFactory::getReference($target), $definitions, $template);
         } else {
-            return $type->toArray();
+            $result = $type->toArray();
+
+            if (isset($result['nullable'])) {
+                unset($result['nullable']);
+            }
+
+            return $result;
         }
     }
 

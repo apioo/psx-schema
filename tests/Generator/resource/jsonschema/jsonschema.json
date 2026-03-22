@@ -5,12 +5,10 @@
       "type": "object",
       "properties": {
         "title": {
-          "nullable": false,
           "type": "string"
         },
         "email": {
           "description": "We will send no spam to this address",
-          "nullable": true,
           "type": "string"
         },
         "categories": {
@@ -124,7 +122,6 @@
     },
     "content": {
       "description": "Contains the \"main\" content of the news entry",
-      "nullable": false,
       "type": "string"
     },
     "question": {
