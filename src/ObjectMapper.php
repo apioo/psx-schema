@@ -20,6 +20,7 @@
 
 namespace PSX\Schema;
 
+use JsonException;
 use PSX\Json\Parser;
 use PSX\Schema\Exception\InvalidSchemaException;
 use PSX\Schema\Exception\MappingException;
@@ -27,6 +28,7 @@ use PSX\Schema\Exception\ParserException;
 use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Parser\Popo\Dumper;
 use PSX\Schema\Visitor\TypeVisitor;
+use ReflectionException;
 
 /**
  * ObjectMapper
@@ -35,7 +37,7 @@ use PSX\Schema\Visitor\TypeVisitor;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class ObjectMapper
+class ObjectMapper implements ObjectMapperInterface
 {
     private SchemaManagerInterface $schemaManager;
     private SchemaTraverser $schemaTraverser;
@@ -55,7 +57,7 @@ class ObjectMapper
     {
         try {
             return $this->read(Parser::decode($json), $source);
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             throw new MappingException($e->getMessage(), previous: $e);
         }
     }
@@ -69,7 +71,7 @@ class ObjectMapper
             $schema = $this->schemaManager->getSchema($source);
 
             return $this->schemaTraverser->traverse($data, $schema, new TypeVisitor());
-        } catch (InvalidSchemaException|TraverserException $e) {
+        } catch (InvalidSchemaException|TraverserException|ParserException $e) {
             throw new MappingException($e->getMessage(), previous: $e);
         }
     }
@@ -81,7 +83,7 @@ class ObjectMapper
     {
         try {
             return Parser::encode($this->write($model));
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             throw new MappingException($e->getMessage(), previous: $e);
         }
     }
@@ -93,7 +95,7 @@ class ObjectMapper
     {
         try {
             return $this->dumper->dump($model);
-        } catch (ParserException|\ReflectionException $e) {
+        } catch (ParserException|ReflectionException $e) {
             throw new MappingException($e->getMessage(), previous: $e);
         }
     }
