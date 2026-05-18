@@ -185,7 +185,7 @@ class JsonSchema implements GeneratorInterface
             $parentRequired = [];
             if ($this->openAIMode && $parent instanceof ReferencePropertyType) {
                 $resolvedParent = $definitions->getType($parent->getTarget());
-                $parentType = $this->generateType($resolvedParent, $definitions);
+                $parentType = $this->generateType($resolvedParent, $definitions, $template);
 
                 if (isset($parentType['properties'])) {
                     $parentProperties = $parentType['properties'];

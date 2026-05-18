@@ -110,4 +110,17 @@ class JsonSchemaTest extends GeneratorTestCase
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
+
+    public function testGenerateOpenAIModeGeneric()
+    {
+        $config = new Config();
+        $config->put('openai_mode', true);
+
+        $generator = new JsonSchema($config);
+
+        $actual = (string) $generator->generate($this->getGenericSchema());
+        $expect = file_get_contents(__DIR__ . '/resource/jsonschema/jsonschema_openai_mode_generic.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
 }

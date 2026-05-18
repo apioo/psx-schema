@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "Action": {
+      "description": "This object represents the business logic which can be executed either through an operation or cronjob",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for the object",
+          "type": "integer"
+        },
+        "status": {
+          "description": "Status of the object either 1 = active or 0 = deleted",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Unique name of the object",
+          "type": "string"
+        },
+        "class": {
+          "description": "Underlying class of this action which handles the action logic",
+          "type": "string"
+        },
+        "async": {
+          "description": "Whether to execute the action asynchronously, if true the action directly returns a 202 response and the action is executed later on in the background, useful for expensive operations",
+          "type": "boolean"
+        },
+        "config": {
+          "$ref": "#/$defs/ActionConfig"
+        },
+        "metadata": {
+          "$ref": "#/$defs/Metadata"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "name",
+        "class",
+        "async",
+        "config",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "ActionConfig": {
+      "description": "The action configuration which contains arbitrary key-value entries",
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "description": "A paginated collection of action objects",
+  "type": "object",
+  "properties": {
+    "totalResults": {
+      "type": "integer"
+    },
+    "startIndex": {
+      "type": "integer"
+    },
+    "itemsPerPage": {
+      "type": "integer"
+    },
+    "entry": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Action"
+      }
+    }
+  },
+  "required": [
+    "totalResults",
+    "startIndex",
+    "itemsPerPage",
+    "entry"
+  ],
+  "additionalProperties": false
+}

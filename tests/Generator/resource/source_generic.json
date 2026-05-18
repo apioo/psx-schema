@@ -1,0 +1,87 @@
+{
+  "definitions": {
+    "Action": {
+      "description": "This object represents the business logic which can be executed either through an operation or cronjob",
+      "type": "struct",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for the object",
+          "type": "integer"
+        },
+        "status": {
+          "description": "Status of the object either 1 = active or 0 = deleted",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Unique name of the object",
+          "type": "string"
+        },
+        "class": {
+          "description": "Underlying class of this action which handles the action logic",
+          "type": "string"
+        },
+        "async": {
+          "description": "Whether to execute the action asynchronously, if true the action directly returns a 202 response and the action is executed later on in the background, useful for expensive operations",
+          "type": "boolean"
+        },
+        "config": {
+          "description": "Contains the action specific configuration. The config depends on the action class, you can get all details of the config format by passing the class to the backend-action-getForm tool",
+          "type": "reference",
+          "target": "ActionConfig"
+        },
+        "metadata": {
+          "description": "Use this parameter to attach key-value data",
+          "type": "reference",
+          "target": "Metadata"
+        }
+      }
+    },
+    "ActionCollection": {
+      "description": "A paginated collection of action objects",
+      "type": "struct",
+      "parent": {
+        "type": "reference",
+        "target": "Collection",
+        "template": {
+          "T": "Action"
+        }
+      }
+    },
+    "ActionConfig": {
+      "description": "The action configuration which contains arbitrary key-value entries",
+      "type": "map",
+      "schema": {
+        "type": "any"
+      }
+    },
+    "Collection": {
+      "description": "Base collection",
+      "type": "struct",
+      "properties": {
+        "totalResults": {
+          "type": "integer"
+        },
+        "startIndex": {
+          "type": "integer"
+        },
+        "itemsPerPage": {
+          "type": "integer"
+        },
+        "entry": {
+          "type": "array",
+          "schema": {
+            "type": "generic",
+            "name": "T"
+          }
+        }
+      }
+    },
+    "Metadata": {
+      "type": "map",
+      "schema": {
+        "type": "string"
+      }
+    }
+  },
+  "root": "ActionCollection"
+}
