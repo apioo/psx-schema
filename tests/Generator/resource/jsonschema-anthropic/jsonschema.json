@@ -32,11 +32,7 @@
         }
       },
       "required": [
-        "title",
-        "email",
-        "categories",
-        "locations",
-        "origin"
+        "title"
       ],
       "additionalProperties": false
     },
@@ -51,10 +47,6 @@
           "type": "number"
         }
       },
-      "required": [
-        "lat",
-        "long"
-      ],
       "additionalProperties": false
     },
     "Meta": {
@@ -150,27 +142,8 @@
     }
   },
   "required": [
-    "config",
-    "inlineConfig",
-    "mapTags",
-    "mapReceiver",
-    "tags",
-    "receiver",
-    "data",
-    "read",
     "author",
-    "meta",
-    "sendDate",
-    "readDate",
-    "price",
-    "rating",
-    "content",
-    "question",
-    "version",
-    "coffeeTime",
-    "g-recaptcha-response",
-    "media_fields",
-    "payload"
+    "content"
   ],
   "additionalProperties": false
 }

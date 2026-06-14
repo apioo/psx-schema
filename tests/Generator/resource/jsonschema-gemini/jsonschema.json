@@ -27,13 +27,18 @@
         "type": "object",
         "properties": {
           "title": {
-            "nullable": false,
             "type": "string"
           },
           "email": {
             "description": "We will send no spam to this address",
-            "nullable": true,
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": null
+              }
+            ]
           },
           "categories": {
             "type": "array",
@@ -88,13 +93,18 @@
         "type": "object",
         "properties": {
           "title": {
-            "nullable": false,
             "type": "string"
           },
           "email": {
             "description": "We will send no spam to this address",
-            "nullable": true,
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": null
+              }
+            ]
           },
           "categories": {
             "type": "array",
@@ -153,13 +163,18 @@
       "type": "object",
       "properties": {
         "title": {
-          "nullable": false,
           "type": "string"
         },
         "email": {
           "description": "We will send no spam to this address",
-          "nullable": true,
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": null
+            }
+          ]
         },
         "categories": {
           "type": "array",
@@ -207,15 +222,12 @@
       }
     },
     "sendDate": {
-      "type": "string",
-      "format": "date"
+      "type": "string"
     },
     "readDate": {
-      "type": "string",
-      "format": "date-time"
+      "type": "string"
     },
     "price": {
-      "deprecated": true,
       "type": "number"
     },
     "rating": {
@@ -223,27 +235,26 @@
     },
     "content": {
       "description": "Contains the \"main\" content of the news entry",
-      "nullable": false,
       "type": "string"
     },
     "question": {
       "type": "string"
     },
     "version": {
-      "type": "string",
-      "default": "1.0"
+      "type": "string"
     },
     "coffeeTime": {
-      "type": "string",
-      "format": "time"
+      "type": "string"
     },
     "g-recaptcha-response": {
       "type": "string"
     },
-    "media.fields": {
+    "media_fields": {
       "type": "string"
     },
-    "payload": {}
+    "payload": {
+      "type": "string"
+    }
   },
   "required": [
     "author",

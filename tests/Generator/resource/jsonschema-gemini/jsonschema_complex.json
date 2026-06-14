@@ -1,0 +1,34 @@
+{
+  "description": "TypeSchema specification",
+  "type": "object",
+  "properties": {
+    "definitions": {
+      "description": "",
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/ArrayDefinitionType"
+          },
+          {
+            "$ref": "#/definitions/MapDefinitionType"
+          },
+          {
+            "$ref": "#/definitions/StructDefinitionType"
+          }
+        ]
+      }
+    },
+    "import": {
+      "description": "Allows to import other TypeSchema documents. It contains a map where the key is the namespace and the value points to a remote document. The value is a URL and a code generator should support at least the following schemes: file, http, https",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "root": {
+      "description": "Specifies the root type of your specification, this must be a key which is available at the definitions map",
+      "type": "string"
+    }
+  }
+}

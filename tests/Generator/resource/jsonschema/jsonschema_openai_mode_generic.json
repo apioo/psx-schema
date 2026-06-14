@@ -45,13 +45,13 @@
     "ActionConfig": {
       "description": "The action configuration which contains arbitrary key-value entries",
       "type": "object",
-      "additionalProperties": {}
+      "properties": {},
+      "additionalProperties": false
     },
     "Metadata": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
+      "properties": {},
+      "additionalProperties": false
     }
   },
   "description": "A paginated collection of action objects",

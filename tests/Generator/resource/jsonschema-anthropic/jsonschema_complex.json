@@ -11,9 +11,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "ArrayDefinitionType": {
@@ -27,9 +24,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "ArrayPropertyType": {
@@ -43,9 +37,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "BooleanPropertyType": {
@@ -59,9 +50,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "CollectionDefinitionType": {
@@ -112,10 +100,6 @@
           ]
         }
       },
-      "required": [
-        "name",
-        "type"
-      ],
       "additionalProperties": false
     },
     "IntegerPropertyType": {
@@ -129,9 +113,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "MapDefinitionType": {
@@ -145,9 +126,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "MapPropertyType": {
@@ -161,9 +139,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "NumberPropertyType": {
@@ -177,9 +152,6 @@
           ]
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false
     },
     "PropertyType": {
@@ -234,11 +206,6 @@
           ]
         }
       },
-      "required": [
-        "target",
-        "template",
-        "type"
-      ],
       "additionalProperties": false
     },
     "ScalarPropertyType": {
@@ -276,11 +243,6 @@
           ]
         }
       },
-      "required": [
-        "default",
-        "format",
-        "type"
-      ],
       "additionalProperties": false
     },
     "StructDefinitionType": {
@@ -317,14 +279,6 @@
           ]
         }
       },
-      "required": [
-        "base",
-        "discriminator",
-        "mapping",
-        "parent",
-        "properties",
-        "type"
-      ],
       "additionalProperties": false
     }
   },
@@ -348,10 +302,5 @@
       "type": "string"
     }
   },
-  "required": [
-    "definitions",
-    "import",
-    "root"
-  ],
   "additionalProperties": false
 }

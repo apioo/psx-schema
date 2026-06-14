@@ -37,6 +37,9 @@ class GeneratorFactory
     public const TYPE_HTML = 'html';
     public const TYPE_JAVA = 'java';
     public const TYPE_JSONSCHEMA = 'jsonschema';
+    public const TYPE_JSONSCHEMA_ANTHROPIC = 'jsonschema-anthropic';
+    public const TYPE_JSONSCHEMA_GEMINI = 'jsonschema-gemini';
+    public const TYPE_JSONSCHEMA_OPENAI = 'jsonschema-openai';
     public const TYPE_KOTLIN = 'kotlin';
     public const TYPE_MARKDOWN = 'markdown';
     public const TYPE_PHP = 'php';
@@ -69,6 +72,15 @@ class GeneratorFactory
 
             case self::TYPE_JSONSCHEMA:
                 return new Generator\JsonSchema($config);
+
+            case self::TYPE_JSONSCHEMA_ANTHROPIC:
+                return new Generator\JsonSchemaAnthropic($config);
+
+            case self::TYPE_JSONSCHEMA_GEMINI:
+                return new Generator\JsonSchemaGemini($config);
+
+            case self::TYPE_JSONSCHEMA_OPENAI:
+                return new Generator\JsonSchemaOpenAI($config);
 
             case self::TYPE_KOTLIN:
                 return new Generator\Kotlin($config);
@@ -115,6 +127,9 @@ class GeneratorFactory
             self::TYPE_HTML,
             self::TYPE_JAVA,
             self::TYPE_JSONSCHEMA,
+            self::TYPE_JSONSCHEMA_ANTHROPIC,
+            self::TYPE_JSONSCHEMA_GEMINI,
+            self::TYPE_JSONSCHEMA_OPENAI,
             self::TYPE_KOTLIN,
             self::TYPE_MARKDOWN,
             self::TYPE_PHP,

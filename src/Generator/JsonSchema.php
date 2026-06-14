@@ -48,16 +48,51 @@ use PSX\Schema\TypeUtil;
  */
 class JsonSchema implements GeneratorInterface
 {
+    private const ATTRIBUTE_DISCRIMINATOR_TYPE = 'discriminator_type';
+    private const ATTRIBUTE_DISCRIMINATOR_VALUE = 'discriminator_value';
+
     private string $definitionKey;
     private string $refBase;
     private bool $inlineDefinitions;
-    private bool $openAIMode;
+    private bool $defsKeyword;
+    private bool $allPropertiesRequired;
+    private bool $additionalPropertiesFalse;
+    private bool $anyOfDiscriminatedUnion;
+    private bool $resolveParentProperties;
+    private bool $anyOfNullable;
+    private bool $typeNullable;
+    private bool $discriminatedValueAsEnum;
+    private bool $removeDeprecatedProperty;
+    private bool $removeNullableProperty;
+    private bool $removeDefaultProperty;
+    private bool $removeFormatProperty;
+    private bool $anyValueAsString;
+    private bool $normalizePropertyNames;
 
     public function __construct(?Config $config = null)
     {
+        $openAIMode = (bool) ($config?->get('openai_mode') ?? false);
+        if ($openAIMode === true) {
+            $config = JsonSchemaOpenAI::getConfig($config);
+        }
+
         $this->inlineDefinitions = (bool) ($config?->get('inline_definitions') ?? false);
-        $this->openAIMode = (bool) ($config?->get('openai_mode') ?? false);
-        $this->definitionKey = $this->openAIMode ? '$defs' : 'definitions';
+        $this->defsKeyword = (bool) ($config?->get('defs_keyword') ?? false);
+        $this->allPropertiesRequired = (bool) ($config?->get('all_properties_required') ?? false);
+        $this->additionalPropertiesFalse = (bool) ($config?->get('additional_properties_false') ?? false);
+        $this->anyOfDiscriminatedUnion = (bool) ($config?->get('any_of_discriminated_union') ?? false);
+        $this->resolveParentProperties = (bool) ($config?->get('resolve_parent_properties') ?? false);
+        $this->anyOfNullable = (bool) ($config?->get('any_of_nullable') ?? false);
+        $this->typeNullable = (bool) ($config?->get('type_nullable') ?? false);
+        $this->discriminatedValueAsEnum = (bool) ($config?->get('discriminated_value_as_enum') ?? false);
+        $this->removeDeprecatedProperty = (bool) ($config?->get('remove_deprecated_property') ?? false);
+        $this->removeNullableProperty = (bool) ($config?->get('remove_nullable_property') ?? false);
+        $this->removeDefaultProperty = (bool) ($config?->get('remove_default_property') ?? false);
+        $this->removeFormatProperty = (bool) ($config?->get('remove_format_property') ?? false);
+        $this->anyValueAsString = (bool) ($config?->get('any_value_as_string') ?? false);
+        $this->normalizePropertyNames = (bool) ($config?->get('normalize_property_names') ?? false);
+
+        $this->definitionKey = $this->defsKeyword ? '$defs' : 'definitions';
         $this->refBase = $config?->get('ref_base') ?? '#/' . $this->definitionKey . '/';
     }
 
@@ -114,7 +149,7 @@ class JsonSchema implements GeneratorInterface
 
         ksort($types);
 
-        if ($this->openAIMode) {
+        if ($this->discriminatedValueAsEnum) {
             foreach ($types as $type) {
                 if (!$type instanceof StructDefinitionType) {
                     continue;
@@ -146,8 +181,25 @@ class JsonSchema implements GeneratorInterface
     {
         TypeUtil::normalize($type);
 
+        $data = $type->toArray();
+
+        if ($this->removeDeprecatedProperty && isset($data['deprecated'])) {
+            unset($data['deprecated']);
+        }
+
+        if ($this->removeNullableProperty && isset($data['nullable'])) {
+            unset($data['nullable']);
+        }
+
+        if ($this->removeDefaultProperty && isset($data['default'])) {
+            unset($data['default']);
+        }
+
+        if ($this->removeFormatProperty && isset($data['format'])) {
+            unset($data['format']);
+        }
+
         if ($type instanceof StructDefinitionType) {
-            $data = $type->toArray();
             $data['type'] = 'object';
 
             if (isset($data['base'])) {
@@ -167,8 +219,8 @@ class JsonSchema implements GeneratorInterface
             }
 
             if (!empty($discriminator) && !empty($mapping)) {
-                if ($this->openAIMode) {
-                    return $this->resolveOpenAIDiscriminatedUnion($mapping);
+                if ($this->anyOfDiscriminatedUnion) {
+                    return $this->resolveAnyOfDiscriminatedUnion($mapping);
                 } else {
                     return $this->resolveDiscriminatedUnion($discriminator, $mapping);
                 }
@@ -183,7 +235,7 @@ class JsonSchema implements GeneratorInterface
 
             $parentProperties = [];
             $parentRequired = [];
-            if ($this->openAIMode && $parent instanceof ReferencePropertyType) {
+            if ($this->resolveParentProperties && $parent instanceof ReferencePropertyType) {
                 $resolvedParent = $definitions->getType($parent->getTarget());
                 $parentType = $this->generateType($resolvedParent, $definitions, $template);
 
@@ -199,10 +251,14 @@ class JsonSchema implements GeneratorInterface
             $properties = [];
             $required = [];
             if (isset($data['properties'])) {
-                $sourceDiscriminatorType = $type->getAttribute('discriminator_type');
-                $sourceDiscriminatorValue = $type->getAttribute('discriminator_value');
+                $sourceDiscriminatorType = $type->getAttribute(self::ATTRIBUTE_DISCRIMINATOR_TYPE);
+                $sourceDiscriminatorValue = $type->getAttribute(self::ATTRIBUTE_DISCRIMINATOR_VALUE);
 
                 foreach ($data['properties'] as $key => $property) {
+                    if ($this->normalizePropertyNames) {
+                        $key = self::normalizePropertyName($key);
+                    }
+
                     $properties[$key] = $this->generateType($property, $definitions, $template);
 
                     if ($property instanceof ScalarPropertyType) {
@@ -212,23 +268,30 @@ class JsonSchema implements GeneratorInterface
                             if (isset($properties[$key]['default'])) {
                                 unset($properties[$key]['default']);
                             }
-                        } elseif ($this->openAIMode && $property->isNullable() === true) {
-                            $nullableType = [];
-                            if (isset($properties[$key]['description'])) {
-                                $nullableType['description'] = $properties[$key]['description'];
-                                unset($properties[$key]['description']);
+                        } elseif ($property->isNullable() === true) {
+                            if ($this->anyOfNullable) {
+                                $nullableType = [];
+                                if (isset($properties[$key]['description'])) {
+                                    $nullableType['description'] = $properties[$key]['description'];
+                                    unset($properties[$key]['description']);
+                                }
+
+                                $nullableType['anyOf'] = [
+                                    $properties[$key],
+                                    ['type' => null]
+                                ];
+
+                                $properties[$key] = $nullableType;
+                            } elseif ($this->typeNullable) {
+                                $propertyType = $properties[$key]['type'] ?? null;
+                                if (is_string($propertyType)) {
+                                    $properties[$key]['type'] = [$propertyType, 'null'];
+                                }
                             }
-
-                            $nullableType['anyOf'] = [
-                                $properties[$key],
-                                ['type' => null]
-                            ];
-
-                            $properties[$key] = $nullableType;
                         }
                     }
 
-                    if ($property instanceof PropertyTypeAbstract && ($property->isNullable() === false || $this->openAIMode)) {
+                    if ($property instanceof PropertyTypeAbstract && ($property->isNullable() === false || $this->allPropertiesRequired)) {
                         $required[] = $key;
                     }
                 }
@@ -244,11 +307,11 @@ class JsonSchema implements GeneratorInterface
                 $data['required'] = $allRequired;
             }
 
-            if ($this->openAIMode) {
+            if ($this->additionalPropertiesFalse) {
                 $data['additionalProperties'] = false;
             }
 
-            if (!$this->openAIMode && $parent instanceof ReferencePropertyType) {
+            if (!$this->resolveParentProperties && $parent instanceof ReferencePropertyType) {
                 if (!isset($data['properties'])) {
                     // in case $data is of type object and has no other properties we can simply return the type
                     return $this->generateType($parent, $definitions, $template);
@@ -264,17 +327,19 @@ class JsonSchema implements GeneratorInterface
                 return $data;
             }
         } elseif ($type instanceof MapTypeInterface) {
-            $data = $type->toArray();
             $data['type'] = 'object';
 
-            if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
+            if ($this->additionalPropertiesFalse) {
+                $data['properties'] = (object) [];
+                $data['additionalProperties'] = false;
+                unset($data['schema']);
+            } elseif (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
                 $data['additionalProperties'] = $this->generateType($data['schema'], $definitions, $template);
                 unset($data['schema']);
             }
 
             return $data;
         } elseif ($type instanceof ArrayTypeInterface) {
-            $data = $type->toArray();
             $data['type'] = 'array';
 
             if (isset($data['schema']) && $data['schema'] instanceof TypeInterface) {
@@ -307,19 +372,19 @@ class JsonSchema implements GeneratorInterface
                 }
             }
         } elseif ($type instanceof AnyPropertyType) {
-            return (object) [];
+            if ($this->anyValueAsString) {
+                $data['type'] = 'string';
+
+                return (object) $data;
+            } else {
+                return (object) [];
+            }
         } elseif ($type instanceof GenericPropertyType) {
             $target = $template[$type->getName()] ?? throw new GeneratorException('Could not resolve generic type ' . $type->getName());
 
             return $this->generateType(PropertyTypeFactory::getReference($target), $definitions, $template);
         } else {
-            $result = $type->toArray();
-
-            if (isset($result['nullable'])) {
-                unset($result['nullable']);
-            }
-
-            return $result;
+            return $data;
         }
     }
 
@@ -344,7 +409,7 @@ class JsonSchema implements GeneratorInterface
         ];
     }
 
-    private function resolveOpenAIDiscriminatedUnion(array $mapping): array
+    private function resolveAnyOfDiscriminatedUnion(array $mapping): array
     {
         $items = [];
         foreach ($mapping as $mappingTypeName => $mappingValue) {
@@ -375,8 +440,20 @@ class JsonSchema implements GeneratorInterface
                 continue;
             }
 
-            $type->setAttribute('discriminator_type', $discriminator);
-            $type->setAttribute('discriminator_value', $mappingValue);
+            $type->setAttribute(self::ATTRIBUTE_DISCRIMINATOR_TYPE, $discriminator);
+            $type->setAttribute(self::ATTRIBUTE_DISCRIMINATOR_VALUE, $mappingValue);
         }
+    }
+
+    public static function normalizePropertyName(string $propertyName): string
+    {
+        $propertyName = preg_replace('/[^A-Za-z0-9_-]/', '_', $propertyName);
+        $propertyName = preg_replace('/_+/', '_', $propertyName);
+
+        if (strlen($propertyName) > 64) {
+            $propertyName = substr($propertyName, 0, 64);
+        }
+
+        return rtrim($propertyName, '_');
     }
 }
