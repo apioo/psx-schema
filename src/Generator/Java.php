@@ -102,13 +102,14 @@ class Java extends CodeGeneratorAbstract
                 $default = ' = "' . addcslashes($defaultValue, '"\\') . '"';
             }
 
+            $code.= $this->indent . '@JsonProperty("' . $property->getName()->getRaw() . '")' . "\n";
             $code.= $this->indent . 'private ' . $property->getType() . ' ' . $property->getName()->getProperty() . $default . ';' . "\n";
+            $code.= "\n";
         }
 
         foreach ($properties as $property) {
             /** @var Code\Property $property */
             $code.= "\n";
-            $code.= $this->indent . '@JsonSetter("' . $property->getName()->getRaw() . '")' . "\n";
 
             if ($property->isDeprecated() === true) {
                 $code.= $this->indent . '@Deprecated' . "\n";
@@ -118,8 +119,6 @@ class Java extends CodeGeneratorAbstract
             $code.= $this->indent . $this->indent . 'this.' . $property->getName()->getProperty() . ' = ' . $property->getName()->getArgument() . ';' . "\n";
             $code.= $this->indent . '}' . "\n";
             $code.= "\n";
-
-            $code.= $this->indent . '@JsonGetter("' . $property->getName()->getRaw() . '")' . "\n";
 
             if ($property->isDeprecated() === true) {
                 $code.= $this->indent . '@Deprecated' . "\n";

@@ -9,6 +9,5 @@ class Map(BaseModel, Generic[P], Generic[T]):
     total_results: Optional[int] = Field(default=None, alias="totalResults")
     parent: Optional[P] = Field(default=None, alias="parent")
     entries: Optional[List[T]] = Field(default=None, alias="entries")
-    pass
 
 

@@ -3,25 +3,25 @@ package Foo.Bar;
 import com.fasterxml.jackson.annotation.*;
 
 public class Import {
+    @JsonProperty("students")
     private My.Import.StudentMap students;
+
+    @JsonProperty("student")
     private My.Import.Student student;
 
-    @JsonSetter("students")
+
     public void setStudents(My.Import.StudentMap students) {
         this.students = students;
     }
 
-    @JsonGetter("students")
     public My.Import.StudentMap getStudents() {
         return this.students;
     }
 
-    @JsonSetter("student")
     public void setStudent(My.Import.Student student) {
         this.student = student;
     }
 
-    @JsonGetter("student")
     public My.Import.Student getStudent() {
         return this.student;
     }

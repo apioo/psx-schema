@@ -9,6 +9,5 @@ class CommonFormElement(BaseModel):
     name: Optional[str] = Field(default=None, alias="name")
     title: Optional[str] = Field(default=None, alias="title")
     help: Optional[str] = Field(default=None, alias="help")
-    pass
 
 

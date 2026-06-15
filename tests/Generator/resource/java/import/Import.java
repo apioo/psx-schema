@@ -2,25 +2,25 @@
 import com.fasterxml.jackson.annotation.*;
 
 public class Import {
+    @JsonProperty("students")
     private StudentMap students;
+
+    @JsonProperty("student")
     private Student student;
 
-    @JsonSetter("students")
+
     public void setStudents(StudentMap students) {
         this.students = students;
     }
 
-    @JsonGetter("students")
     public StudentMap getStudents() {
         return this.students;
     }
 
-    @JsonSetter("student")
     public void setStudent(Student student) {
         this.student = student;
     }
 
-    @JsonGetter("student")
     public Student getStudent() {
         return this.student;
     }

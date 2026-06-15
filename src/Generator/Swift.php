@@ -120,11 +120,30 @@ class Swift extends CodeGeneratorAbstract
     {
         $code = '';
 
+        $imports = $this->getImports($origin);
+        if (!empty($imports)) {
+            $code.= "\n";
+            $code.= implode("\n", $imports);
+            $code.= "\n";
+        }
+
         $comment = $origin->getDescription();
         if (!empty($comment)) {
+            $code.= "\n";
             $code.= '// ' . $comment;
         }
 
         return $code;
+    }
+
+    private function getImports(DefinitionTypeAbstract $origin): array
+    {
+        $imports = [];
+
+        if ($origin instanceof StructDefinitionType) {
+            $imports[] = 'import Foundation';
+        }
+
+        return $imports;
     }
 }

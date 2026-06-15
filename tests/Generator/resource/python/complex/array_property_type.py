@@ -7,6 +7,5 @@ from .collection_property_type import CollectionPropertyType
 # Represents an array which contains a dynamic list of values of the same type
 class ArrayPropertyType(CollectionPropertyType):
     type: Literal["array"] = Field(alias="type")
-    pass
 
 

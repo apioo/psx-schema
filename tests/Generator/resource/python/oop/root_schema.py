@@ -6,6 +6,5 @@ from .student_map import StudentMap
 
 class RootSchema(BaseModel):
     students: Optional[StudentMap] = Field(default=None, alias="students")
-    pass
 
 

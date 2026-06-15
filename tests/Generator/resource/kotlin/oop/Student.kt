@@ -1,8 +1,9 @@
 
 import com.fasterxml.jackson.annotation.*
 
-open class Student : HumanType {
+open class Student : HumanType (
     @JsonProperty("matricleNumber")
-    var matricleNumber: String? = null
-}
+    var matricleNumber: String? = null,
+
+)
 

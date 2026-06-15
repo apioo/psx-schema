@@ -1,3 +1,6 @@
+
+import Foundation
+
 class HumanType: Codable {
     var firstName: String?
     var parent: HumanType?

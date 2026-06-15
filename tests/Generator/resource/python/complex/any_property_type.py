@@ -7,6 +7,5 @@ from .property_type import PropertyType
 # Represents an any value which allows any kind of value
 class AnyPropertyType(PropertyType):
     type: Literal["any"] = Field(alias="type")
-    pass
 
 

@@ -1,3 +1,6 @@
+
+import Foundation
+
 class Student: HumanType {
     var matricleNumber: String?
 

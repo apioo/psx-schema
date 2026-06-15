@@ -1,3 +1,6 @@
+
+import Foundation
+
 // An general news entry
 class News: Codable {
     var config: Meta?
@@ -21,7 +24,7 @@ class News: Codable {
     var coffeeTime: String?
     var captcha: String?
     var mediaFields: String?
-    var payload: Any?
+    var payload: Data?
 
     enum CodingKeys: String, CodingKey {
         case config = "config"

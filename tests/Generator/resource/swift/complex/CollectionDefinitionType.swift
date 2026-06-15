@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Base collection type
 class CollectionDefinitionType: DefinitionType {
     var schema: PropertyType?

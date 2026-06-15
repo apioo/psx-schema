@@ -1,3 +1,6 @@
+
+import Foundation
+
 // TypeSchema specification
 class TypeSchema: Codable {
     var definitions: Dictionary<String, DefinitionType>?

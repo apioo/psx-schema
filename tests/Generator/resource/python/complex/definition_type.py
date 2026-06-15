@@ -8,6 +8,5 @@ class DefinitionType(BaseModel):
     deprecated: Optional[bool] = Field(default=None, alias="deprecated")
     description: Optional[str] = Field(default=None, alias="description")
     type: str = Field(alias="type")
-    pass
 
 

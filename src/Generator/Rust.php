@@ -71,6 +71,10 @@ class Rust extends CodeGeneratorAbstract
                 $type = 'Option<' . $type . '>';
             }
 
+            if ($property->isDeprecated() === true) {
+                $code.= $this->indent . '#[deprecated()]' . "\n";
+            }
+
             $code.= $this->indent . '#[serde(rename = "' . $property->getName()->getRaw() . '")]' . "\n";
             $code.= $this->indent . $property->getName()->getProperty() . ': ' . $type . ',' . "\n";
             $code.= "\n";

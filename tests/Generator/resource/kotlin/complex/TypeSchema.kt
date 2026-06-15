@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.*
 /**
  * TypeSchema specification
  */
-open class TypeSchema {
+open class TypeSchema (
     @JsonProperty("definitions")
-    var definitions: HashMap<String, DefinitionType>? = null
+    var definitions: HashMap<String, DefinitionType>? = null,
+
     @JsonProperty("import")
-    var import: HashMap<String, String>? = null
+    var import: HashMap<String, String>? = null,
+
     @JsonProperty("root")
-    var root: String? = null
-}
+    var root: String? = null,
+
+)
 

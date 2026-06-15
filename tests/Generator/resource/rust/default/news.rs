@@ -41,6 +41,7 @@ pub struct News {
     #[serde(rename = "readDate")]
     read_date: Option<chrono::NaiveDateTime>,
 
+    #[deprecated()]
     #[serde(rename = "price")]
     price: Option<f64>,
 

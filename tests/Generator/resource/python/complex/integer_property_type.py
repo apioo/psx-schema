@@ -7,6 +7,5 @@ from .scalar_property_type import ScalarPropertyType
 # Represents an integer value
 class IntegerPropertyType(ScalarPropertyType):
     type: Literal["integer"] = Field(alias="type")
-    pass
 
 

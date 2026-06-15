@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a map which contains a dynamic set of key value entries of the same type
 class MapDefinitionType: CollectionDefinitionType {
     var _type: String? = "map"

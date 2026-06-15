@@ -7,6 +7,5 @@ from .collection_definition_type import CollectionDefinitionType
 # Represents a map which contains a dynamic set of key value entries of the same type
 class MapDefinitionType(CollectionDefinitionType):
     type: Literal["map"] = Field(alias="type")
-    pass
 
 

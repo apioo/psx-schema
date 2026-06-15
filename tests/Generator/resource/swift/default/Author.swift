@@ -1,3 +1,6 @@
+
+import Foundation
+
 // An simple author element with some description
 class Author: Codable {
     var title: String

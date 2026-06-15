@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.*
 /**
  * Represents a map which contains a dynamic set of key value entries of the same type
  */
-open class MapPropertyType : CollectionPropertyType {
+open class MapPropertyType : CollectionPropertyType (
     @JsonProperty("type")
-    var type: String? = "map"
-}
+    var type: String? = "map",
+
+)
 

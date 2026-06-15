@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a float value
 class NumberPropertyType: ScalarPropertyType {
     var _type: String? = "number"

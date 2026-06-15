@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Base definition type
 class DefinitionType: Codable {
     var deprecated: Bool?

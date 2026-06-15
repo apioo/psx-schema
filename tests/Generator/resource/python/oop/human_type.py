@@ -6,6 +6,5 @@ from typing import Any, Dict, Generic, List, Optional, TypeVar, Annotated, Union
 class HumanType(BaseModel):
     first_name: Optional[str] = Field(default=None, alias="firstName")
     parent: Optional[HumanType] = Field(default=None, alias="parent")
-    pass
 
 

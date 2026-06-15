@@ -1,10 +1,12 @@
 
 import com.fasterxml.jackson.annotation.*
 
-open class Import {
+open class Import (
     @JsonProperty("students")
-    var students: StudentMap? = null
+    var students: StudentMap? = null,
+
     @JsonProperty("student")
-    var student: Student? = null
-}
+    var student: Student? = null,
+
+)
 

@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a string value
 class StringPropertyType: ScalarPropertyType {
     var _default: String?

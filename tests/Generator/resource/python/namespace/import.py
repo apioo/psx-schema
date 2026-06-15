@@ -8,6 +8,5 @@ from my.import import Student
 class Import(BaseModel):
     students: Optional[StudentMap] = Field(default=None, alias="students")
     student: Optional[Student] = Field(default=None, alias="student")
-    pass
 
 

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.*
 /**
  * Represents a string value
  */
-open class StringPropertyType : ScalarPropertyType {
+open class StringPropertyType : ScalarPropertyType (
     @JsonProperty("default")
-    var default: String? = null
+    var default: String? = null,
+
     @JsonProperty("format")
-    var format: String? = null
+    var format: String? = null,
+
     @JsonProperty("type")
-    var type: String? = "string"
-}
+    var type: String? = "string",
+
+)
 

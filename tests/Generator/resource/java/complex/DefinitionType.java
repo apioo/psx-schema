@@ -10,36 +10,36 @@ import com.fasterxml.jackson.annotation.*;
 })
 @JsonClassDescription("Base definition type")
 public abstract class DefinitionType {
+    @JsonProperty("deprecated")
     private Boolean deprecated;
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("type")
     private String type;
 
-    @JsonSetter("deprecated")
+
     public void setDeprecated(Boolean deprecated) {
         this.deprecated = deprecated;
     }
 
-    @JsonGetter("deprecated")
     public Boolean getDeprecated() {
         return this.deprecated;
     }
 
-    @JsonSetter("description")
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @JsonGetter("description")
     public String getDescription() {
         return this.description;
     }
 
-    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
 
-    @JsonGetter("type")
     public String getType() {
         return this.type;
     }

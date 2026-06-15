@@ -24,7 +24,6 @@ use PSX\Schema\Generator\Type\GeneratorInterface;
 use PSX\Schema\Type\ArrayDefinitionType;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\MapDefinitionType;
-use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -61,9 +60,14 @@ class Kotlin extends CodeGeneratorAbstract
             }
         }
 
-        $code.= ' {' . "\n";
+        $code.= ' (' . "\n";
 
-        foreach ($properties as $property) {
+        $sortedProperties = array_merge(
+            $this->getPropertiesByNullable($properties, false),
+            $this->getPropertiesByNullable($properties, true),
+        );
+
+        foreach ($sortedProperties as $property) {
             /** @var Code\Property $property */
             $nullable = $property->isNullable() === false ? '' : '?';
 
@@ -81,10 +85,11 @@ class Kotlin extends CodeGeneratorAbstract
                 $code.= $this->indent . '@Deprecated(message = "Deprecated", level = DeprecationLevel.WARNING)' . "\n";
             }
 
-            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . $default . "\n";
+            $code.= $this->indent . 'var ' . $property->getName()->getProperty() . ': ' . $property->getType() . $nullable . $default . ',' . "\n";
+            $code.= "\n";
         }
 
-        $code.= '}' . "\n";
+        $code.= ')' . "\n";
 
         return $code;
     }
@@ -141,5 +146,24 @@ class Kotlin extends CodeGeneratorAbstract
         }
 
         return $imports;
+    }
+
+    private function getPropertiesByNullable(array $properties, bool $nullable): array
+    {
+        $result = [];
+        foreach ($properties as $property) {
+            /** @var Code\Property $property */
+            if ($nullable === false) {
+                if ($property->isNullable() === false) {
+                    $result[] = $property;
+                }
+            } else {
+                if ($property->isNullable() !== false) {
+                    $result[] = $property;
+                }
+            }
+        }
+
+        return $result;
     }
 }

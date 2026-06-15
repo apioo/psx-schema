@@ -20,7 +20,7 @@ class News(BaseModel):
     meta: Optional[Meta] = Field(default=None, alias="meta")
     send_date: Optional[datetime.date] = Field(default=None, alias="sendDate")
     read_date: Optional[datetime.datetime] = Field(default=None, alias="readDate")
-    price: Optional[float] = Field(default=None, alias="price")
+    price: Optional[float] = Field(default=None, alias="price", deprecated=True)
     rating: Optional[int] = Field(default=None, alias="rating")
     content: str = Field(alias="content")
     question: Optional[str] = Field(default=None, alias="question")
@@ -29,6 +29,5 @@ class News(BaseModel):
     captcha: Optional[str] = Field(default=None, alias="g-recaptcha-response")
     media_fields: Optional[str] = Field(default=None, alias="media.fields")
     payload: Optional[Any] = Field(default=None, alias="payload")
-    pass
 
 

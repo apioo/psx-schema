@@ -6,6 +6,5 @@ from .property_type import PropertyType
 
 # Base scalar property type
 class ScalarPropertyType(PropertyType):
-    pass
 
 

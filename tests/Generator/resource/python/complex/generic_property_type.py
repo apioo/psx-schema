@@ -8,6 +8,5 @@ from .property_type import PropertyType
 class GenericPropertyType(PropertyType):
     type: Literal["generic"] = Field(alias="type")
     name: Optional[str] = Field(default=None, alias="name")
-    pass
 
 

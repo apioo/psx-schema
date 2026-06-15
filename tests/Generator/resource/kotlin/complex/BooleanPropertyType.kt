@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.*
 /**
  * Represents a boolean value
  */
-open class BooleanPropertyType : ScalarPropertyType {
+open class BooleanPropertyType : ScalarPropertyType (
     @JsonProperty("type")
-    var type: String? = "boolean"
-}
+    var type: String? = "boolean",
+
+)
 

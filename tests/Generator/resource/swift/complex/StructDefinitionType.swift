@@ -1,3 +1,6 @@
+
+import Foundation
+
 // A struct represents a class/structure with a fix set of defined properties
 class StructDefinitionType: DefinitionType {
     var base: Bool?

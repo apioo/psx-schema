@@ -119,7 +119,7 @@ class CSharp extends CodeGeneratorAbstract
             $code.= $this->indent . '[JsonPropertyName("' . $property->getName()->getRaw() . '")]' . "\n";
 
             if ($property->isDeprecated() === true) {
-                $code.= $this->indent . '[ObsoleteAttribute()]' . "\n";
+                $code.= $this->indent . '[System.Obsolete("Deprecated")]' . "\n";
             }
 
             $code.= $this->indent . 'public ' . $override . $property->getType() . $nullable . ' ' . $propertyName . ' { get; set; }' . $default . "\n";

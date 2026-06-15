@@ -2,36 +2,36 @@
 import com.fasterxml.jackson.annotation.*;
 
 public class Map<P, T> {
+    @JsonProperty("totalResults")
     private Integer totalResults;
+
+    @JsonProperty("parent")
     private P parent;
+
+    @JsonProperty("entries")
     private java.util.List<T> entries;
 
-    @JsonSetter("totalResults")
+
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
 
-    @JsonGetter("totalResults")
     public Integer getTotalResults() {
         return this.totalResults;
     }
 
-    @JsonSetter("parent")
     public void setParent(P parent) {
         this.parent = parent;
     }
 
-    @JsonGetter("parent")
     public P getParent() {
         return this.parent;
     }
 
-    @JsonSetter("entries")
     public void setEntries(java.util.List<T> entries) {
         this.entries = entries;
     }
 
-    @JsonGetter("entries")
     public java.util.List<T> getEntries() {
         return this.entries;
     }

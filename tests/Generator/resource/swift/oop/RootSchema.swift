@@ -1,3 +1,6 @@
+
+import Foundation
+
 class RootSchema: Codable {
     var students: StudentMap?
 

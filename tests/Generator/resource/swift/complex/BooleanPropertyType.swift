@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a boolean value
 class BooleanPropertyType: ScalarPropertyType {
     var _type: String? = "boolean"

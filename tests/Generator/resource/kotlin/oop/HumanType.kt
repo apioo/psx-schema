@@ -1,10 +1,12 @@
 
 import com.fasterxml.jackson.annotation.*
 
-open class HumanType {
+open class HumanType (
     @JsonProperty("firstName")
-    var firstName: String? = null
+    var firstName: String? = null,
+
     @JsonProperty("parent")
-    var parent: HumanType? = null
-}
+    var parent: HumanType? = null,
+
+)
 

@@ -16,6 +16,5 @@ from .string_property_type import StringPropertyType
 # Base collection property type
 class CollectionPropertyType(PropertyType):
     schema_: Annotated[Union["AnyPropertyType", "ArrayPropertyType", "BooleanPropertyType", "GenericPropertyType", "IntegerPropertyType", "MapPropertyType", "NumberPropertyType", "ReferencePropertyType", "StringPropertyType"], Field(discriminator="type")] = Field(alias="schema")
-    pass
 
 

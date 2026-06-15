@@ -6,6 +6,5 @@ from .human_type import HumanType
 
 class Student(HumanType):
     matricle_number: Optional[str] = Field(default=None, alias="matricleNumber")
-    pass
 
 

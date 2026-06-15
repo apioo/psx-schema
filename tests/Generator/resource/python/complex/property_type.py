@@ -9,6 +9,5 @@ class PropertyType(BaseModel):
     description: Optional[str] = Field(default=None, alias="description")
     nullable: Optional[bool] = Field(default=None, alias="nullable")
     type: str = Field(alias="type")
-    pass
 
 

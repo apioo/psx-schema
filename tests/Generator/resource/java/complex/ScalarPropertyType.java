@@ -11,14 +11,14 @@ import com.fasterxml.jackson.annotation.*;
 })
 @JsonClassDescription("Base scalar property type")
 public abstract class ScalarPropertyType extends PropertyType {
+    @JsonProperty("type")
     private String type;
 
-    @JsonSetter("type")
+
     public void setType(String type) {
         this.type = type;
     }
 
-    @JsonGetter("type")
     public String getType() {
         return this.type;
     }

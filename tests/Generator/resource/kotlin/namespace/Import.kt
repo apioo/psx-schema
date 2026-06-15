@@ -3,10 +3,12 @@ package Foo.Bar;
 
 import com.fasterxml.jackson.annotation.*
 
-open class Import {
+open class Import (
     @JsonProperty("students")
-    var students: My.Import.StudentMap? = null
+    var students: My.Import.StudentMap? = null,
+
     @JsonProperty("student")
-    var student: My.Import.Student? = null
-}
+    var student: My.Import.Student? = null,
+
+)
 

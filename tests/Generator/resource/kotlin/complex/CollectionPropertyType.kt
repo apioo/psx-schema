@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.*
 /**
  * Base collection property type
  */
-open abstract class CollectionPropertyType : PropertyType {
+open abstract class CollectionPropertyType : PropertyType (
     @JsonProperty("schema")
-    var schema: PropertyType? = null
+    var schema: PropertyType? = null,
+
     @JsonProperty("type")
-    var type: String? = null
-}
+    var type: String? = null,
+
+)
 

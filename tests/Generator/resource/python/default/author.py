@@ -11,6 +11,5 @@ class Author(BaseModel):
     categories: Optional[List[str]] = Field(default=None, alias="categories")
     locations: Optional[List[Location]] = Field(default=None, alias="locations")
     origin: Optional[Location] = Field(default=None, alias="origin")
-    pass
 
 

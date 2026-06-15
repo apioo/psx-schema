@@ -93,7 +93,7 @@ class Swift extends GeneratorAbstract
 
     protected function getAny(): string
     {
-        return 'Any';
+        return 'Data';
     }
 
     protected function getNamespaced(string $namespace, string $name): string

@@ -9,25 +9,25 @@ import com.fasterxml.jackson.annotation.*;
 })
 @JsonClassDescription("Base collection type")
 public abstract class CollectionDefinitionType extends DefinitionType {
+    @JsonProperty("schema")
     private PropertyType schema;
+
+    @JsonProperty("type")
     private String type;
 
-    @JsonSetter("schema")
+
     public void setSchema(PropertyType schema) {
         this.schema = schema;
     }
 
-    @JsonGetter("schema")
     public PropertyType getSchema() {
         return this.schema;
     }
 
-    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
 
-    @JsonGetter("type")
     public String getType() {
         return this.type;
     }

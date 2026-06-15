@@ -1,3 +1,6 @@
+
+import Foundation
+
 class Map<P, T>: Codable {
     var totalResults: Int?
     var parent: P?

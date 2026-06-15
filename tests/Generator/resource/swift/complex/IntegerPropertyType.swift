@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents an integer value
 class IntegerPropertyType: ScalarPropertyType {
     var _type: String? = "integer"

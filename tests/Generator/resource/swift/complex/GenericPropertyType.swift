@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a generic value which can be replaced with a concrete type
 class GenericPropertyType: PropertyType {
     var name: String?

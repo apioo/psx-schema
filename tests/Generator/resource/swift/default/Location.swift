@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Location of the person
 class Location: Codable {
     var lat: Float?

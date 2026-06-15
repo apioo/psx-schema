@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Base property type
 class PropertyType: Codable {
     var deprecated: Bool?

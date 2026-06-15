@@ -1,8 +1,9 @@
 
 import com.fasterxml.jackson.annotation.*
 
-open class RootSchema {
+open class RootSchema (
     @JsonProperty("students")
-    var students: StudentMap? = null
-}
+    var students: StudentMap? = null,
+
+)
 

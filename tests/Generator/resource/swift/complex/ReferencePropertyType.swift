@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents a reference to a definition type
 class ReferencePropertyType: PropertyType {
     var target: String?

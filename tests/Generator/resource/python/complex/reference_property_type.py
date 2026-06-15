@@ -9,6 +9,5 @@ class ReferencePropertyType(PropertyType):
     type: Literal["reference"] = Field(alias="type")
     target: Optional[str] = Field(default=None, alias="target")
     template: Optional[Dict[str, str]] = Field(default=None, alias="template")
-    pass
 
 

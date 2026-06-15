@@ -3,25 +3,25 @@ import com.fasterxml.jackson.annotation.*;
 
 @JsonClassDescription("Location of the person")
 public class Location {
+    @JsonProperty("lat")
     private Double lat;
+
+    @JsonProperty("long")
     private Double _long;
 
-    @JsonSetter("lat")
+
     public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    @JsonGetter("lat")
     public Double getLat() {
         return this.lat;
     }
 
-    @JsonSetter("long")
     public void setLong(Double _long) {
         this._long = _long;
     }
 
-    @JsonGetter("long")
     public Double getLong() {
         return this._long;
     }

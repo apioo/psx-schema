@@ -42,7 +42,7 @@ public class News
     public System.DateTime? ReadDate { get; set; }
 
     [JsonPropertyName("price")]
-    [ObsoleteAttribute()]
+    [System.Obsolete("Deprecated")]
     public double? Price { get; set; }
 
     [JsonPropertyName("rating")]

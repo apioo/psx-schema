@@ -1,3 +1,6 @@
+
+import Foundation
+
 // Represents an array which contains a dynamic list of values of the same type
 class ArrayDefinitionType: CollectionDefinitionType {
     var _type: String? = "array"

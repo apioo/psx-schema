@@ -121,6 +121,11 @@ class Python extends CodeGeneratorAbstract
                 $type = 'Optional[' . $type . ']';
             }
 
+            $deprecated = '';
+            if ($property->isDeprecated() === true) {
+                $deprecated = ', deprecated=True';
+            }
+
             $default = '';
             $defaultValue = $property->getDefault();
 
@@ -132,10 +137,13 @@ class Python extends CodeGeneratorAbstract
                 $default = 'default=None, ';
             }
 
-            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $type . ' = Field(' . $default . 'alias="' . $property->getName()->getRaw() . '")' . "\n";
+            $code.= $this->indent . $property->getName()->getProperty() . ': ' . $type . ' = Field(' . $default . 'alias="' . $property->getName()->getRaw() . '"' . $deprecated . ')' . "\n";
         }
 
-        $code.= '    pass' . "\n";
+        if (count($properties) === 0) {
+            $code.= $this->indent . 'pass' . "\n";
+        }
+
         $code.= "\n";
 
         return $code;

@@ -3,6 +3,6 @@ package Foo.Bar;
 
 import com.fasterxml.jackson.annotation.*
 
-open class MyMap : My.Import.Student {
-}
+open class MyMap : My.Import.Student (
+)
 
