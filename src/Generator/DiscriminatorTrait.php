@@ -78,7 +78,7 @@ trait DiscriminatorTrait
 
         if ($mapping === null) {
             $mapping = $parentMapping;
-        } elseif (is_array($mapping) && is_array($parentMapping)) {
+        } elseif (is_array($parentMapping)) {
             foreach ($parentMapping as $key => $value) {
                 if (!isset($mapping[$key])) {
                     $mapping[$key] = $value;
