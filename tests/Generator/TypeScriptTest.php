@@ -62,6 +62,19 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/oop/RootSchema.ts');
     }
 
+    public function testGenerateTypeAlias()
+    {
+        $config = new Config();
+        $config->put(Config::TYPE_ALIAS, true);
+
+        $generator = new TypeScript($config);
+
+        $chunks = $generator->generate($this->getOOPSchema());
+        $this->write($generator, $chunks, __DIR__ . '/resource/typescript/type_alias');
+
+        $this->assertFileExists(__DIR__ . '/resource/typescript/type_alias/RootSchema.ts');
+    }
+
     public function testGenerateImport()
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
