@@ -44,6 +44,15 @@ class TypeScript extends CodeGeneratorAbstract
 {
     use DiscriminatorTrait;
 
+    private bool $typeAlias;
+
+    public function __construct(?Config $config = null)
+    {
+        parent::__construct($config);
+
+        $this->typeAlias = $config?->getBool(Config::TYPE_ALIAS) ?? false;
+    }
+
     public function getFileName(string $file): string
     {
         return $file . '.ts';
@@ -61,26 +70,14 @@ class TypeScript extends CodeGeneratorAbstract
 
     protected function writeStruct(Code\Name $name, array $properties, ?string $extends, ?array $generics, ?array $templates, StructDefinitionType $origin): string
     {
-        $code = 'export interface ' . $name->getClass();
-
-        if (!empty($generics)) {
-            $code.= $this->generator->getGenericDefinition($generics);
-        }
-
-        if (!empty($extends)) {
-            $code.= ' extends ' . $extends;
-            if (!empty($templates)) {
-                $code.= $this->generator->getGenericDefinition($templates);
-            }
-        }
-
-        $code.= ' {' . "\n";
+        $separator = $this->typeAlias ? ';' : '';
+        $body = '';
 
         [$parentMapping, $parentDiscriminator] = $this->getDiscriminatorByParent($origin);
         if (isset($parentMapping[$name->getRaw()])) {
             $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
 
-            $code.= $this->indent . $discriminatorProperty . ': "' . $parentMapping[$name->getRaw()] . '"' . "\n";
+            $body.= $this->indent . $discriminatorProperty . ': "' . $parentMapping[$name->getRaw()] . '"' . $separator . "\n";
         }
 
         $reservedClassNames = ['Array', 'Record'];
@@ -111,16 +108,50 @@ class TypeScript extends CodeGeneratorAbstract
             }
 
             $nullable = $property->isNullable() === false ? '' : '?';
-            $code.= $this->indent . $propertyName . $nullable . ': ' . $type . "\n";
+            $body.= $this->indent . $propertyName . $nullable . ': ' . $type . $separator . "\n";
         }
 
-        $code.= '}' . "\n";
+        $signature = $name->getClass();
+        if (!empty($generics)) {
+            $signature.= $this->generator->getGenericDefinition($generics);
+        }
 
-        return $code;
+        $parent = null;
+        if (!empty($extends)) {
+            $parent = $extends;
+            if (!empty($templates)) {
+                $parent.= $this->generator->getGenericDefinition($templates);
+            }
+        }
+
+        if (!$this->typeAlias) {
+            $code = 'export interface ' . $signature;
+            if ($parent !== null) {
+                $code.= ' extends ' . $parent;
+            }
+
+            return $code . ' {' . "\n" . $body . '}' . "\n";
+        }
+
+        $code = 'export type ' . $signature . ' = ';
+        if ($parent !== null) {
+            $code.= $parent;
+            if (empty($body)) {
+                return $code . ';' . "\n";
+            }
+
+            $code.= ' & ';
+        }
+
+        return $code . '{' . "\n" . $body . '};' . "\n";
     }
 
     protected function writeMap(Code\Name $name, string $type, MapDefinitionType $origin): string
     {
+        if ($this->typeAlias) {
+            return 'export type ' . $name->getClass() . ' = Record<string, ' . $type . '>;' . "\n";
+        }
+
         $code ='export interface ' . $name->getClass() . ' extends Record<string, ' . $type . '> {' . "\n";
         $code.= '}' . "\n";
 
