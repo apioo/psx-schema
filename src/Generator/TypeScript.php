@@ -50,7 +50,7 @@ class TypeScript extends CodeGeneratorAbstract
     {
         parent::__construct($config);
 
-        $this->typeAlias = $config?->getBool(Config::TYPE_ALIAS) ?? false;
+        $this->typeAlias = (bool) ($config?->get('type_alias') ?? false);
     }
 
     public function getFileName(string $file): string

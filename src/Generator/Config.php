@@ -38,12 +38,6 @@ class Config extends Record
     public const INDENT = 'indent';
     public const HEADING = 'heading';
     public const PREFIX = 'prefix';
-    public const TYPE_ALIAS = 'typeAlias';
-
-    public function getBool(string $key): bool
-    {
-        return filter_var($this->get($key), FILTER_VALIDATE_BOOLEAN);
-    }
 
     public function toString(): string
     {

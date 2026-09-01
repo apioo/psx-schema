@@ -65,7 +65,7 @@ class TypeScriptTest extends GeneratorTestCase
     public function testGenerateTypeAlias()
     {
         $config = new Config();
-        $config->put(Config::TYPE_ALIAS, true);
+        $config->put('type_alias', true);
 
         $generator = new TypeScript($config);
 
