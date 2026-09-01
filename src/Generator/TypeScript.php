@@ -77,7 +77,7 @@ class TypeScript extends CodeGeneratorAbstract
         if (isset($parentMapping[$name->getRaw()])) {
             $discriminatorProperty = $this->normalizer->property($parentDiscriminator);
 
-            $body.= $this->indent . $discriminatorProperty . ': "' . $parentMapping[$name->getRaw()] . '"' . $separator . "\n";
+            $body .= $this->indent . $discriminatorProperty . ': "' . $parentMapping[$name->getRaw()] . '"' . $separator . "\n";
         }
 
         $reservedClassNames = ['Array', 'Record'];
@@ -108,26 +108,26 @@ class TypeScript extends CodeGeneratorAbstract
             }
 
             $nullable = $property->isNullable() === false ? '' : '?';
-            $body.= $this->indent . $propertyName . $nullable . ': ' . $type . $separator . "\n";
+            $body .= $this->indent . $propertyName . $nullable . ': ' . $type . $separator . "\n";
         }
 
         $signature = $name->getClass();
         if (!empty($generics)) {
-            $signature.= $this->generator->getGenericDefinition($generics);
+            $signature .= $this->generator->getGenericDefinition($generics);
         }
 
         $parent = null;
-        if (!empty($extends)) {
+        if (!in_array($extends, [null, ''], true)) {
             $parent = $extends;
-            if (!empty($templates)) {
-                $parent.= $this->generator->getGenericDefinition($templates);
+            if (is_array($templates) && $templates !== []) {
+                $parent .= $this->generator->getGenericDefinition($templates);
             }
         }
 
         if (!$this->typeAlias) {
             $code = 'export interface ' . $signature;
             if ($parent !== null) {
-                $code.= ' extends ' . $parent;
+                $code .= ' extends ' . $parent;
             }
 
             return $code . ' {' . "\n" . $body . '}' . "\n";
@@ -136,7 +136,7 @@ class TypeScript extends CodeGeneratorAbstract
         $code = 'export type ' . $signature . ' = ';
         if ($parent !== null) {
             $code.= $parent;
-            if (empty($body)) {
+            if ($body === '') {
                 return $code . ';' . "\n";
             }
 
