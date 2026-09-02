@@ -35,7 +35,12 @@ abstract class DefinitionTypeAbstract implements TypeInterface
     public const ATTR_MAPPING = 'mapping';
 
     protected ?string $description = null;
+
     protected ?bool $deprecated = null;
+
+    /**
+     * @var array<string, mixed>
+     */
     protected array $attributes = [];
 
     public function getDescription(): ?string
@@ -77,11 +82,17 @@ abstract class DefinitionTypeAbstract implements TypeInterface
         return $this->attributes[$key] ?? null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -93,6 +104,9 @@ abstract class DefinitionTypeAbstract implements TypeInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

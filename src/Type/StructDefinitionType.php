@@ -30,9 +30,19 @@ namespace PSX\Schema\Type;
 class StructDefinitionType extends DefinitionTypeAbstract
 {
     protected ?ReferencePropertyType $parent = null;
+
     protected ?bool $base = null;
+
+    /**
+     * @var array<string, PropertyTypeAbstract>|null
+     */
     protected ?array $properties = null;
+
     protected ?string $discriminator = null;
+
+    /**
+     * @var array<string, string>|null
+     */
     protected ?array $mapping = null;
 
     protected function getType(): string
@@ -69,11 +79,17 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this;
     }
 
+    /**
+     * @return array<string, PropertyTypeAbstract>|null
+     */
     public function getProperties(): ?array
     {
         return $this->properties;
     }
 
+    /**
+     * @param array<string, PropertyTypeAbstract> $properties
+     */
     public function setProperties(array $properties): static
     {
         $this->properties = [];
@@ -122,11 +138,17 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this;
     }
 
+    /**
+     * @return array<string, string>|null
+     */
     public function getMapping(): ?array
     {
         return $this->mapping;
     }
 
+    /**
+     * @param array<string, string>|null $mapping
+     */
     public function setMapping(?array $mapping): static
     {
         $this->mapping = $mapping;
@@ -134,6 +156,9 @@ class StructDefinitionType extends DefinitionTypeAbstract
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([

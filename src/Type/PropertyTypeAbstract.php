@@ -73,6 +73,9 @@ abstract class PropertyTypeAbstract implements TypeInterface
 
     abstract protected function getType(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_filter([
@@ -85,6 +88,9 @@ abstract class PropertyTypeAbstract implements TypeInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

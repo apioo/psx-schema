@@ -56,6 +56,9 @@ abstract class ScalarPropertyType extends PropertyTypeAbstract
         $this->default = $default;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return array_merge(parent::toArray(), array_filter([
