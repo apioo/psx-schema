@@ -31,7 +31,7 @@ use PSX\Schema\Generator\GraphQL;
  */
 class GraphQLTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new GraphQL();
 

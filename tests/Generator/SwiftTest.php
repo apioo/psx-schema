@@ -33,7 +33,7 @@ use PSX\Schema\Generator\Swift;
  */
 class SwiftTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Swift();
 
@@ -43,7 +43,7 @@ class SwiftTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/swift/default/News.swift');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Swift();
 
@@ -53,7 +53,7 @@ class SwiftTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/swift/complex/TypeSchema.swift');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Swift();
 
@@ -63,7 +63,7 @@ class SwiftTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/swift/oop/RootSchema.swift');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Swift();
 
@@ -73,7 +73,7 @@ class SwiftTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/swift/import/Import.swift');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Swift(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

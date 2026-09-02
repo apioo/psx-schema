@@ -32,7 +32,7 @@ use PSX\Schema\Generator\CSharp;
  */
 class CSharpTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new CSharp();
 
@@ -42,7 +42,7 @@ class CSharpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/csharp/default/News.cs');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new CSharp(Config::of('TypeAPI.Model'));
 
@@ -52,7 +52,7 @@ class CSharpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/csharp/complex/TypeSchema.cs');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new CSharp();
 
@@ -62,7 +62,7 @@ class CSharpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/csharp/oop/RootSchema.cs');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new CSharp();
 
@@ -72,7 +72,7 @@ class CSharpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/csharp/import/Import.cs');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new CSharp(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

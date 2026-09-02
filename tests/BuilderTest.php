@@ -35,7 +35,7 @@ use PSX\Schema\Type\StructDefinitionType;
  */
 class BuilderTest extends TestCase
 {
-    public function testBuilder()
+    public function testBuilder(): void
     {
         $builder = new Builder();
         $builder->setDescription('bar');

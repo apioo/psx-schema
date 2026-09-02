@@ -36,7 +36,7 @@ use PSX\Schema\Type\ReferencePropertyType;
  */
 class DocumentorTest extends ParserTestCase
 {
-    public function testParse()
+    public function testParse(): void
     {
         $parser = new Parser\Documentor();
         $schema = $parser->parse('\PSX\Schema\Tests\Parser\Popo\Attribute\News');
@@ -44,7 +44,7 @@ class DocumentorTest extends ParserTestCase
         $this->assertSchema($this->getSchema(), $schema);
     }
 
-    public function testParseNotFullyQualified()
+    public function testParseNotFullyQualified(): void
     {
         $parser = new Parser\Documentor();
         $schema = $parser->parse('PSX\Schema\Tests\Parser\Popo\Attribute\News');
@@ -52,7 +52,7 @@ class DocumentorTest extends ParserTestCase
         $this->assertSchema($this->getSchema(), $schema);
     }
 
-    public function testParseMap()
+    public function testParseMap(): void
     {
         $parser = new Parser\Documentor();
         $schema = $parser->parse('\PSX\Record\Record<string, \PSX\Schema\Tests\Parser\Popo\Attribute\News>');
@@ -65,7 +65,7 @@ class DocumentorTest extends ParserTestCase
         $this->assertEquals('News', $schema->getTarget());
     }
 
-    public function testParseArray()
+    public function testParseArray(): void
     {
         $parser = new Parser\Documentor();
         $schema = $parser->parse('array<\PSX\Schema\Tests\Parser\Popo\Attribute\News>');
@@ -78,7 +78,7 @@ class DocumentorTest extends ParserTestCase
         $this->assertEquals('News', $schema->getTarget());
     }
 
-    public function testInvalid()
+    public function testInvalid(): void
     {
         $this->expectException(ParserException::class);
 

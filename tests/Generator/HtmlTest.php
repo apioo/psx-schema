@@ -31,7 +31,7 @@ use PSX\Schema\Generator\Html;
  */
 class HtmlTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Html();
 
@@ -41,7 +41,7 @@ class HtmlTest extends GeneratorTestCase
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Html();
 
@@ -51,7 +51,7 @@ class HtmlTest extends GeneratorTestCase
         $this->assertXmlStringEqualsXmlString('<div>' . $expect . '</div>', '<div>' . $actual . '</div>', $actual);
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Html();
 

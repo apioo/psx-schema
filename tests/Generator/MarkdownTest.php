@@ -31,7 +31,7 @@ use PSX\Schema\Generator\Markdown;
  */
 class MarkdownTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Markdown();
 
@@ -43,7 +43,7 @@ class MarkdownTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateTypeSchema()
+    public function testGenerateTypeSchema(): void
     {
         $generator = new Markdown();
 

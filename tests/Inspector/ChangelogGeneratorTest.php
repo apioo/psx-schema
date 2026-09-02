@@ -33,7 +33,7 @@ use PSX\Schema\Tests\Schema\SchemaB;
  */
 class ChangelogGeneratorTest extends SchemaTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
         $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getDefinitions();

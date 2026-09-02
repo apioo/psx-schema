@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Code\Chunks;
  */
 class ChunksTest extends TestCase
 {
-    public function testWriteToZip()
+    public function testWriteToZip(): void
     {
         $subChunks = new Chunks();
         $subChunks->append('file_b', 'foobar');
@@ -46,7 +46,7 @@ class ChunksTest extends TestCase
         $this->assertFileExists(__DIR__ . '/resource/test.zip');
     }
 
-    public function testWriteToFolder()
+    public function testWriteToFolder(): void
     {
         $subChunks = new Chunks();
         $subChunks->append('file_b', 'foobar');
@@ -64,7 +64,7 @@ class ChunksTest extends TestCase
         $this->assertFileExists(__DIR__ . '/resource/folder/file_b');
     }
 
-    public function testFindByPath()
+    public function testFindByPath(): void
     {
         $subSubChunks = new Chunks();
         $subSubChunks->append('file_c', 'foobar');
@@ -84,7 +84,7 @@ class ChunksTest extends TestCase
         $this->assertEquals('foobar', $chunks->findByPath('file_a'));
     }
 
-    public function testGetChunk()
+    public function testGetChunk(): void
     {
         $chunks = new Chunks();
         $chunks->append('folder', new Chunks());

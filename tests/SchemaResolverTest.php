@@ -33,7 +33,7 @@ use PSX\Schema\Type\Factory\PropertyTypeFactory;
  */
 class SchemaResolverTest extends SchemaTestCase
 {
-    public function testResolve()
+    public function testResolve(): void
     {
         $schema = $this->getSchema();
 

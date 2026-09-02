@@ -36,7 +36,7 @@ use PSX\Validate\Filter;
  */
 class ValidatorTest extends TestCase
 {
-    public function testValidate()
+    public function testValidate(): void
     {
         $validator = $this->getValidator();
         $validator->validate('/id', 2);
@@ -44,7 +44,7 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(ValidatorInterface::class, $validator);
     }
 
-    public function testValidateInvalid()
+    public function testValidateInvalid(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -52,7 +52,7 @@ class ValidatorTest extends TestCase
         $validator->validate('/id', 4);
     }
 
-    public function testValidateUnknown()
+    public function testValidateUnknown(): void
     {
         $validator = $this->getValidator();
         $validator->validate('/foo', 4);
@@ -60,7 +60,7 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(ValidatorInterface::class, $validator);
     }
 
-    public function testGetFields()
+    public function testGetFields(): void
     {
         $fields    = [new Field('id', [new Filter\Length(1, 2)])];
         $validator = new Validator($fields);
@@ -68,7 +68,7 @@ class ValidatorTest extends TestCase
         $this->assertEquals($fields, $validator->getFields());
     }
 
-    public function testValidateExceptionValues()
+    public function testValidateExceptionValues(): void
     {
         try {
             $validator = $this->getValidator();
@@ -82,7 +82,7 @@ class ValidatorTest extends TestCase
         }
     }
 
-    protected function getValidator()
+    protected function getValidator(): Validator
     {
         $fields = [
             new Field('id', [new Filter\Length(1, 2)]),

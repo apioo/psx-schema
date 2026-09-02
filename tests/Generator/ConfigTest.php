@@ -33,14 +33,20 @@ use PSX\Schema\Generator\Config;
  */
 class ConfigTest extends TestCase
 {
+    /**
+     * @param array<string, mixed> $value
+     */
     #[DataProvider('toStringProvider')]
-    public function testToString(array $value, string $expect)
+    public function testToString(array $value, string $expect): void
     {
         $config = Config::fromArray($value);
 
         $this->assertEquals($expect, $config->toString());
     }
 
+    /**
+     * @return list<array{array<string, mixed>, string}>
+     */
     public static function toStringProvider(): array
     {
         return [
@@ -53,8 +59,11 @@ class ConfigTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed> $expect
+     */
     #[DataProvider('queryStringProvider')]
-    public function testFromQueryString(mixed $value, array $expect)
+    public function testFromQueryString(mixed $value, array $expect): void
     {
         $config = Config::fromQueryString($value);
 
@@ -62,6 +71,9 @@ class ConfigTest extends TestCase
         $this->assertEquals($expect, $config->getAll());
     }
 
+    /**
+     * @return list<array{string|null, array<string, mixed>}>
+     */
     public static function queryStringProvider(): array
     {
         return [
@@ -75,7 +87,7 @@ class ConfigTest extends TestCase
     }
 
     #[DataProvider('base64StringProvider')]
-    public function testFromBase64String(string $value, object $expect)
+    public function testFromBase64String(string $value, object $expect): void
     {
         $config = Config::fromBase64String($value);
 
@@ -83,6 +95,9 @@ class ConfigTest extends TestCase
         $this->assertJsonStringEqualsJsonString(\json_encode($expect), \json_encode($config));
     }
 
+    /**
+     * @return list<array{string, object}>
+     */
     public static function base64StringProvider(): array
     {
         return [

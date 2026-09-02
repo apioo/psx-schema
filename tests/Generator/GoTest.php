@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Go;
  */
 class GoTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Go();
 
@@ -42,7 +42,7 @@ class GoTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/go/default/news.go');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Go();
 
@@ -52,7 +52,7 @@ class GoTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/go/complex/type_schema.go');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Go();
 
@@ -62,7 +62,7 @@ class GoTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/go/oop/root_schema.go');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Go(Config::of('app', ['my_import' => 'github.com/apioo/my/import']));
 
@@ -72,7 +72,7 @@ class GoTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/go/import/import.go');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Go(Config::of('app', ['my_import' => 'github.com/apioo/my/import']));
 
@@ -82,7 +82,7 @@ class GoTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/go/namespace/import.go');
     }
 
-    public function testGenerateTest()
+    public function testGenerateTest(): void
     {
         $generator = new Go();
 

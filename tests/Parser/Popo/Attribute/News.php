@@ -64,7 +64,7 @@ class News
     protected ?string $mediaFields = null;
     protected mixed $payload = null;
 
-    public function setConfig(?Meta $config)
+    public function setConfig(?Meta $config): void
     {
         $this->config = $config;
     }
@@ -74,37 +74,55 @@ class News
         return $this->config;
     }
 
-    public function setTags(?array $tags)
+    /**
+     * @param array<string>|null $tags
+     */
+    public function setTags(?array $tags): void
     {
         $this->tags = $tags;
     }
 
+    /**
+     * @return array<string>|null
+     */
     public function getTags() : ?array
     {
         return $this->tags;
     }
 
-    public function setReceiver(?array $receiver)
+    /**
+     * @param array<Author>|null $receiver
+     */
+    public function setReceiver(?array $receiver): void
     {
         $this->receiver = $receiver;
     }
 
+    /**
+     * @return array<Author>|null
+     */
     public function getReceiver() : ?array
     {
         return $this->receiver;
     }
 
+    /**
+     * @return array<array<float>>|null
+     */
     public function getData(): ?array
     {
         return $this->data;
     }
 
+    /**
+     * @param array<array<float>>|null $data
+     */
     public function setData(?array $data): void
     {
         $this->data = $data;
     }
 
-    public function setRead(?bool $read)
+    public function setRead(?bool $read): void
     {
         $this->read = $read;
     }
@@ -114,7 +132,7 @@ class News
         return $this->read;
     }
 
-    public function setAuthor(?Author $author)
+    public function setAuthor(?Author $author): void
     {
         $this->author = $author;
     }
@@ -124,7 +142,7 @@ class News
         return $this->author;
     }
 
-    public function setMeta(?Meta $meta)
+    public function setMeta(?Meta $meta): void
     {
         $this->meta = $meta;
     }
@@ -134,7 +152,7 @@ class News
         return $this->meta;
     }
 
-    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate)
+    public function setSendDate(?\PSX\DateTime\LocalDate $sendDate): void
     {
         $this->sendDate = $sendDate;
     }
@@ -144,7 +162,7 @@ class News
         return $this->sendDate;
     }
 
-    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate)
+    public function setReadDate(?\PSX\DateTime\LocalDateTime $readDate): void
     {
         $this->readDate = $readDate;
     }
@@ -154,7 +172,7 @@ class News
         return $this->readDate;
     }
 
-    public function setPrice(?float $price)
+    public function setPrice(?float $price): void
     {
         $this->price = $price;
     }
@@ -164,7 +182,7 @@ class News
         return $this->price;
     }
 
-    public function setRating(?int $rating)
+    public function setRating(?int $rating): void
     {
         $this->rating = $rating;
     }
@@ -174,7 +192,7 @@ class News
         return $this->rating;
     }
 
-    public function setContent(?string $content)
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
@@ -184,7 +202,7 @@ class News
         return $this->content;
     }
 
-    public function setQuestion(?string $question)
+    public function setQuestion(?string $question): void
     {
         $this->question = $question;
     }
@@ -194,7 +212,7 @@ class News
         return $this->question;
     }
 
-    public function setVersion(?string $version)
+    public function setVersion(?string $version): void
     {
         $this->version = $version;
     }
@@ -204,7 +222,7 @@ class News
         return $this->version;
     }
 
-    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime)
+    public function setCoffeeTime(?\PSX\DateTime\LocalTime $coffeeTime): void
     {
         $this->coffeeTime = $coffeeTime;
     }
@@ -214,7 +232,7 @@ class News
         return $this->coffeeTime;
     }
 
-    public function setCaptcha(?string $captcha)
+    public function setCaptcha(?string $captcha): void
     {
         $this->captcha = $captcha;
     }
@@ -224,7 +242,7 @@ class News
         return $this->captcha;
     }
 
-    public function setMediaFields(?string $mediaFields)
+    public function setMediaFields(?string $mediaFields): void
     {
         $this->mediaFields = $mediaFields;
     }

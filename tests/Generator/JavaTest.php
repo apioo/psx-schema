@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Java;
  */
 class JavaTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Java();
 
@@ -42,7 +42,7 @@ class JavaTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/java/default/News.java');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Java(Config::of('org.typeapi.model'));
 
@@ -52,7 +52,7 @@ class JavaTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/java/complex/TypeSchema.java');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Java();
 
@@ -62,7 +62,7 @@ class JavaTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/java/oop/RootSchema.java');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Java();
 
@@ -72,7 +72,7 @@ class JavaTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/java/import/Import.java');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Java(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

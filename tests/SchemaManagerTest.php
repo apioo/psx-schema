@@ -42,42 +42,42 @@ class SchemaManagerTest extends TestCase
         $this->schemaManager = new SchemaManager();
     }
 
-    public function testGetSchemaClass()
+    public function testGetSchemaClass(): void
     {
         $schema = $this->schemaManager->getSchema(TestSchema::class);
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaPopo()
+    public function testGetSchemaPopo(): void
     {
         $schema = $this->schemaManager->getSchema(News::class);
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaFile()
+    public function testGetSchemaFile(): void
     {
         $schema = $this->schemaManager->getSchema(__DIR__ . '/Parser/TypeSchema/test_schema.json');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaHttps()
+    public function testGetSchemaHttps(): void
     {
         $schema = $this->schemaManager->getSchema('https://api.typehub.cloud/export/apioo-developer-1.0.1-typeschema');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaTypeHub()
+    public function testGetSchemaTypeHub(): void
     {
         $schema = $this->schemaManager->getSchema('typehub://apioo:developer@1.0.1');
 
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
-    public function testGetSchemaNotExisting()
+    public function testGetSchemaNotExisting(): void
     {
         $this->expectException(InvalidSchemaException::class);
 

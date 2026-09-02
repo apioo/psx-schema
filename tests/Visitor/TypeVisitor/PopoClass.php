@@ -29,34 +29,25 @@ namespace PSX\Schema\Tests\Visitor\TypeVisitor;
  */
 class PopoClass
 {
-    protected $foo;
-    protected $bar;
+    protected mixed $foo;
+    protected mixed $bar;
 
-    /**
-     * @return mixed
-     */
-    public function getFoo()
+    public function getFoo(): mixed
     {
         return $this->foo;
     }
 
-    /**
-     * @param mixed $foo
-     */
-    public function setFoo($foo)
+    public function setFoo(mixed $foo): void
     {
         $this->foo = $foo;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getBar()
+    public function getBar(): mixed
     {
         return $this->bar;
     }
 
-    public function setBar($bar)
+    public function setBar(mixed $bar): void
     {
         $this->bar = $bar;
     }

@@ -33,7 +33,7 @@ use PSX\Schema\Generator\JsonSchemaAnthropic;
  */
 class JsonSchemaAnthropicTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new JsonSchemaAnthropic();
 
@@ -43,7 +43,7 @@ class JsonSchemaAnthropicTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new JsonSchemaAnthropic();
 

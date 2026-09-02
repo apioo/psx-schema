@@ -51,7 +51,7 @@ use PSX\Validate\Filter;
  */
 class TypeVisitorTest extends TestCase
 {
-    public function testVisitArray()
+    public function testVisitArray(): void
     {
         $type = DefinitionTypeFactory::getArray();
         $data = (new TypeVisitor())->visitArray([10], $type, '');
@@ -60,7 +60,7 @@ class TypeVisitorTest extends TestCase
         $this->assertSame([10], $data);
     }
 
-    public function testVisitArrayValidate()
+    public function testVisitArrayValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -75,14 +75,14 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitArray([10, 8, 6], $type, '/foo/bar');
     }
 
-    public function testVisitBoolean()
+    public function testVisitBoolean(): void
     {
         $type = PropertyTypeFactory::getBoolean();
 
         $this->assertSame(true, (new TypeVisitor())->visitBoolean(true, $type, ''));
     }
 
-    public function testVisitBooleanValidate()
+    public function testVisitBooleanValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -97,7 +97,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitBoolean(false, $type, '/foo/bar');
     }
 
-    public function testVisitStruct()
+    public function testVisitStruct(): void
     {
         $type = DefinitionTypeFactory::getStruct()
             ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class)
@@ -114,7 +114,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals('foo', $record->getBar());
     }
 
-    public function testVisitStructMapping()
+    public function testVisitStructMapping(): void
     {
         $type = DefinitionTypeFactory::getStruct()
             ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class)
@@ -132,7 +132,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals('foo', $record->getBar());
     }
 
-    public function testVisitStructValidate()
+    public function testVisitStructValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -147,7 +147,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitStruct((object) ['bar' => 'foo'], $type, '/foo/bar');
     }
 
-    public function testVisitStructValidatePopo()
+    public function testVisitStructValidatePopo(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -163,7 +163,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '/foo/bar');
     }
 
-    public function testVisitMap()
+    public function testVisitMap(): void
     {
         $type = DefinitionTypeFactory::getMap()
             ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, ArrayAccessClass::class)
@@ -184,7 +184,7 @@ class TypeVisitorTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'bar' => 'foo'], $record->getProperties());
     }
 
-    public function testVisitDateTime()
+    public function testVisitDateTime(): void
     {
         $type = PropertyTypeFactory::getDateTime();
 
@@ -192,7 +192,7 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(LocalDateTime::class, (new TypeVisitor())->visitDateTime('2002-10-10T17:00:00+01:00', $type, ''));
     }
 
-    public function testVisitDateTimeInvalidFormat()
+    public function testVisitDateTimeInvalidFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid date time format');
@@ -202,7 +202,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor())->visitDateTime('foo', $type, '');
     }
 
-    public function testVisitDateTimeValidate()
+    public function testVisitDateTimeValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -217,7 +217,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitDateTime('2002-10-10T17:00:00Z', $type, '/foo/bar');
     }
 
-    public function testVisitDate()
+    public function testVisitDate(): void
     {
         $type = PropertyTypeFactory::getDate();
 
@@ -225,7 +225,7 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(LocalDate::class, (new TypeVisitor())->visitDate('2000-01-01+13:00', $type, ''));
     }
 
-    public function testVisitDateInvalidFormat()
+    public function testVisitDateInvalidFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid date format');
@@ -235,7 +235,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor())->visitDate('foo', $type, '');
     }
 
-    public function testVisitDateValidate()
+    public function testVisitDateValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -250,14 +250,14 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitDate('2002-10-10', $type, '/foo/bar');
     }
 
-    public function testVisitNumber()
+    public function testVisitNumber(): void
     {
         $type = PropertyTypeFactory::getNumber();
 
         $this->assertSame(1.1, (new TypeVisitor())->visitNumber(1.1, $type, ''));
     }
 
-    public function testVisitNumberValidate()
+    public function testVisitNumberValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -272,14 +272,14 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitNumber(12.34, $type, '/foo/bar');
     }
 
-    public function testVisitInteger()
+    public function testVisitInteger(): void
     {
         $type = PropertyTypeFactory::getInteger();
 
         $this->assertSame(1, (new TypeVisitor())->visitNumber(1, $type, ''));
     }
 
-    public function testVisitIntegerValidate()
+    public function testVisitIntegerValidate(): void
     {
         $this->expectException(ValidationException::class);
 
@@ -294,14 +294,14 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitInteger(12, $type, '/foo/bar');
     }
 
-    public function testVisitString()
+    public function testVisitString(): void
     {
         $type = PropertyTypeFactory::getString();
 
         $this->assertSame('foo', (new TypeVisitor())->visitString('foo', $type, ''));
     }
 
-    public function testVisitStringValidate()
+    public function testVisitStringValidate(): void
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('/foo/bar has an invalid length min 8 and max 16 signs');
@@ -315,7 +315,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor($validator))->visitString('foo', $type, '/foo/bar');
     }
 
-    public function testVisitTime()
+    public function testVisitTime(): void
     {
         $type = PropertyTypeFactory::getTime();
 
@@ -323,7 +323,7 @@ class TypeVisitorTest extends TestCase
         $this->assertInstanceOf(LocalTime::class, (new TypeVisitor())->visitTime('10:00:00+02:00', $type, ''));
     }
 
-    public function testVisitTimeInvalidFormat()
+    public function testVisitTimeInvalidFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Must be valid time format');
@@ -333,7 +333,7 @@ class TypeVisitorTest extends TestCase
         (new TypeVisitor())->visitTime('foo', $type, '');
     }
 
-    public function testVisitTimeValidate()
+    public function testVisitTimeValidate(): void
     {
         $this->expectException(ValidationException::class);
 

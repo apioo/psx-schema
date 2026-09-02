@@ -39,49 +39,49 @@ use PSX\Schema\Type\StringPropertyType;
  */
 class PropertyTypeFactoryTest extends TestCase
 {
-    public function testArrayType()
+    public function testArrayType(): void
     {
         $this->assertInstanceOf(ArrayPropertyType::class, PropertyTypeFactory::getArray());
     }
 
-    public function testBoolean()
+    public function testBoolean(): void
     {
         $this->assertInstanceOf(BooleanPropertyType::class, PropertyTypeFactory::getBoolean());
     }
 
-    public function testDateTime()
+    public function testDateTime(): void
     {
         $this->assertInstanceOf(StringPropertyType::class, PropertyTypeFactory::getDateTime());
         $this->assertEquals(Format::DATETIME, PropertyTypeFactory::getDateTime()->getFormat());
     }
 
-    public function testDate()
+    public function testDate(): void
     {
         $this->assertInstanceOf(StringPropertyType::class, PropertyTypeFactory::getDate());
         $this->assertEquals(Format::DATE, PropertyTypeFactory::getDate()->getFormat());
     }
 
-    public function testIntegerType()
+    public function testIntegerType(): void
     {
         $this->assertInstanceOf(IntegerPropertyType::class, PropertyTypeFactory::getInteger());
     }
 
-    public function testNumberType()
+    public function testNumberType(): void
     {
         $this->assertInstanceOf(NumberPropertyType::class, PropertyTypeFactory::getNumber());
     }
 
-    public function testMapType()
+    public function testMapType(): void
     {
         $this->assertInstanceOf(MapPropertyType::class, PropertyTypeFactory::getMap());
     }
 
-    public function testStringType()
+    public function testStringType(): void
     {
         $this->assertInstanceOf(StringPropertyType::class, PropertyTypeFactory::getString());
     }
 
-    public function testTime()
+    public function testTime(): void
     {
         $this->assertInstanceOf(StringPropertyType::class, PropertyTypeFactory::getTime());
         $this->assertEquals(Format::TIME, PropertyTypeFactory::getTime()->getFormat());

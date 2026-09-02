@@ -37,7 +37,7 @@ use PSX\Schema\Visitor\TypeVisitor;
  */
 class SchemaTraverserTest extends SchemaTestCase
 {
-    public function testTraverse()
+    public function testTraverse(): void
     {
         $traverser = new SchemaTraverser();
         $result    = $traverser->traverse($this->getData(), $this->getSchema());
@@ -48,7 +48,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testTraverseNoConstraints()
+    public function testTraverseNoConstraints(): void
     {
         $traverser = new SchemaTraverser(false);
         $result    = $traverser->traverse($this->getData(), $this->getSchema());
@@ -59,7 +59,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testTraverseNoConstraintsAllowInvalidValue()
+    public function testTraverseNoConstraintsAllowInvalidValue(): void
     {
         $data = $this->getData();
         $data->config->test = ['foo'];
@@ -76,7 +76,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testInvalidAdditionalPropertyType()
+    public function testInvalidAdditionalPropertyType(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/config/test must be of type string');
@@ -88,7 +88,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testInvalidArrayPrototypeType()
+    public function testInvalidArrayPrototypeType(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/receiver/1 must be of type object');
@@ -100,7 +100,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testInvalidMapProperty()
+    public function testInvalidMapProperty(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/meta/tags_0 must be of type string');
@@ -112,7 +112,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testTraverseNullable()
+    public function testTraverseNullable(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/content must not be null');
@@ -124,7 +124,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testTraverseNullableNested()
+    public function testTraverseNullableNested(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/author/title must not be null');
@@ -136,7 +136,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testTraverseNullableObject()
+    public function testTraverseNullableObject(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/content must not be null');
@@ -148,7 +148,7 @@ class SchemaTraverserTest extends SchemaTestCase
         $traverser->traverse($data, $this->getSchema());
     }
 
-    public function testTraverseDiscriminator()
+    public function testTraverseDiscriminator(): void
     {
         $schema = $this->schemaManager->getSchema(Form_Container::class);
         $data = <<<JSON
@@ -169,7 +169,7 @@ JSON;
         $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
     }
 
-    public function testTraverseDiscriminatorInvalidType()
+    public function testTraverseDiscriminatorInvalidType(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('Provided discriminator type is invalid, possible values are: http://fusio-project.org/ns/2015/form/input, http://fusio-project.org/ns/2015/form/select, http://fusio-project.org/ns/2015/form/tag, http://fusio-project.org/ns/2015/form/textarea');
@@ -189,7 +189,7 @@ JSON;
         $traverser->traverse(\json_decode($data), $schema);
     }
 
-    public function testTraverseDiscriminatorInvalidDataType()
+    public function testTraverseDiscriminatorInvalidDataType(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/elements/0 must be of type object');
@@ -205,7 +205,7 @@ JSON;
         $traverser->traverse(\json_decode($data), $schema);
     }
 
-    public function testTraverseDiscriminatorNoType()
+    public function testTraverseDiscriminatorNoType(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('Configured discriminator property "element" is invalid');
@@ -223,7 +223,7 @@ JSON;
         $traverser->traverse(\json_decode($data), $schema);
     }
 
-    public function testTraverseExtends()
+    public function testTraverseExtends(): void
     {
         $schema = $this->schemaManager->getSchema(Form_Element_Input::class);
         $data = <<<JSON
@@ -253,7 +253,7 @@ JSON;
         $this->assertEquals('foo', $result->getParent()->getType());
     }
 
-    public function testTraverseUnknownProperties()
+    public function testTraverseUnknownProperties(): void
     {
         $this->expectException(TraverserException::class);
         $this->expectExceptionMessage('/ property "foo" is unknown');
@@ -272,7 +272,7 @@ JSON;
         $traverser->traverse(\json_decode($data), $schema, new TypeVisitor());
     }
 
-    public function testTraverseArray()
+    public function testTraverseArray(): void
     {
         $schema = $this->schemaManager->getSchema(ArrayList::class);
         $data = <<<JSON
@@ -290,7 +290,7 @@ JSON;
         $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
     }
 
-    public function testTraverseMap()
+    public function testTraverseMap(): void
     {
         $schema = $this->schemaManager->getSchema(HashMap::class);
         $data = <<<JSON
@@ -308,13 +308,13 @@ JSON;
         $this->assertJsonStringEqualsJsonString($data, $actual, $actual);
     }
 
-    protected function getData()
+    protected function getData(): mixed
     {
         return json_decode(file_get_contents(__DIR__ . '/SchemaTraverser/expected.json'));
     }
 
-    protected function getExpectedJson()
+    protected function getExpectedJson(): string
     {
-        return file_get_contents(__DIR__ . '/SchemaTraverser/expected.json');
+        return (string) file_get_contents(__DIR__ . '/SchemaTraverser/expected.json');
     }
 }

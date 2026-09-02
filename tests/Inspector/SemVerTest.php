@@ -32,7 +32,7 @@ use PSX\Schema\Inspector\SemVer;
  */
 class SemVerTest extends TestCase
 {
-    public function testCompare()
+    public function testCompare(): void
     {
         $version1 = SemVer::fromString('0.1.0');
         $version2 = SemVer::fromString('0.1.1');
@@ -50,7 +50,7 @@ class SemVerTest extends TestCase
         $this->assertFalse($version2->lower($version1));
     }
 
-    public function testIncrease()
+    public function testIncrease(): void
     {
         $version1 = SemVer::fromString('0.1.0');
         $version1->increaseMajor();
@@ -68,7 +68,7 @@ class SemVerTest extends TestCase
         $this->assertEquals('0.1.1', $version1->toString());
     }
 
-    public function testIncreaseType()
+    public function testIncreaseType(): void
     {
         $version1 = SemVer::fromString('0.1.0');
         $version1->increase(SemVer::MAJOR);
@@ -86,7 +86,7 @@ class SemVerTest extends TestCase
         $this->assertEquals('0.1.1', $version1->toString());
     }
 
-    public function testIncreaseTypeInvalid()
+    public function testIncreaseTypeInvalid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

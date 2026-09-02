@@ -49,6 +49,9 @@ class TypeNameTest extends TestCase
         $this->assertSame($expect, $actual);
     }
 
+    /**
+     * @return list<array{string, int, string}>
+     */
     public static function nameProvider(): array
     {
         return [

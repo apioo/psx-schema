@@ -35,17 +35,17 @@ use PSX\Schema\Type\StructDefinitionType;
  */
 class DefinitionTypeFactoryTest extends TestCase
 {
-    public function testStructType()
+    public function testStructType(): void
     {
         $this->assertInstanceOf(StructDefinitionType::class, DefinitionTypeFactory::getStruct());
     }
 
-    public function testMapType()
+    public function testMapType(): void
     {
         $this->assertInstanceOf(MapDefinitionType::class, DefinitionTypeFactory::getMap());
     }
 
-    public function testArrayType()
+    public function testArrayType(): void
     {
         $this->assertInstanceOf(ArrayDefinitionType::class, DefinitionTypeFactory::getArray());
     }

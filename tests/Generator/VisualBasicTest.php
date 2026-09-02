@@ -32,7 +32,7 @@ use PSX\Schema\Generator\VisualBasic;
  */
 class VisualBasicTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new VisualBasic();
 
@@ -42,7 +42,7 @@ class VisualBasicTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/visualbasic/default/News.vb');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new VisualBasic();
 
@@ -52,7 +52,7 @@ class VisualBasicTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/visualbasic/complex/TypeSchema.vb');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new VisualBasic();
 
@@ -62,7 +62,7 @@ class VisualBasicTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/visualbasic/oop/RootSchema.vb');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new VisualBasic();
 
@@ -72,7 +72,7 @@ class VisualBasicTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/visualbasic/import/Import.vb');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new VisualBasic(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

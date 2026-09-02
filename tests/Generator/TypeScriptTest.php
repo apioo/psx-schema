@@ -32,7 +32,7 @@ use PSX\Schema\Generator\TypeScript;
  */
 class TypeScriptTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new TypeScript();
 
@@ -42,7 +42,7 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/default/News.ts');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new TypeScript();
 
@@ -52,7 +52,7 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/complex/TypeSchema.ts');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new TypeScript();
 
@@ -62,7 +62,7 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/oop/RootSchema.ts');
     }
 
-    public function testGenerateTypeAlias()
+    public function testGenerateTypeAlias(): void
     {
         $config = new Config();
         $config->put('type_alias', true);
@@ -75,7 +75,7 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/type_alias/RootSchema.ts');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 
@@ -85,7 +85,7 @@ class TypeScriptTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/typescript/import/Import.ts');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new TypeScript(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

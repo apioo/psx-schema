@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Rust;
  */
 class RustTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Rust();
 
@@ -42,7 +42,7 @@ class RustTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/rust/default/news.rs');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Rust();
 
@@ -52,7 +52,7 @@ class RustTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/rust/complex/type_schema.rs');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Rust();
 
@@ -62,7 +62,7 @@ class RustTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/rust/oop/root_schema.rs');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Rust();
 
@@ -72,7 +72,7 @@ class RustTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/rust/import/import.rs');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Rust(Config::of('FooBar', ['my_import' => 'My::Import']));
 

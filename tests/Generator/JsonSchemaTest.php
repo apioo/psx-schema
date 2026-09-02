@@ -32,7 +32,7 @@ use PSX\Schema\Generator\JsonSchema;
  */
 class JsonSchemaTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new JsonSchema();
 
@@ -42,7 +42,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new JsonSchema();
 
@@ -52,7 +52,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new JsonSchema();
 
@@ -62,7 +62,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new JsonSchema();
 
@@ -72,7 +72,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateResolveRefs()
+    public function testGenerateResolveRefs(): void
     {
         $config = new Config();
         $config->put('inline_definitions', true);
@@ -85,7 +85,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateOpenAIMode()
+    public function testGenerateOpenAIMode(): void
     {
         $config = new Config();
         $config->put('openai_mode', true);
@@ -98,7 +98,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateOpenAIModeComplex()
+    public function testGenerateOpenAIModeComplex(): void
     {
         $config = new Config();
         $config->put('openai_mode', true);
@@ -111,7 +111,7 @@ class JsonSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateOpenAIModeGeneric()
+    public function testGenerateOpenAIModeGeneric(): void
     {
         $config = new Config();
         $config->put('openai_mode', true);

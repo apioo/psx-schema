@@ -49,7 +49,7 @@ class SchemaAbstractTest extends TestCase
     /**
      * Tests whether we get a copy of a schema and not a reference
      */
-    public function testGetSchema()
+    public function testGetSchema(): void
     {
         $schemaC = $this->schemaManager->getSchema(SchemaCommon::class);
         $schemaA = $this->schemaManager->getSchema(SchemaA::class);
@@ -74,7 +74,7 @@ class SchemaAbstractTest extends TestCase
         $this->assertEquals('bar', $type->getProperty('long')->getDescription());
     }
     
-    public function testSerialize()
+    public function testSerialize(): void
     {
         $schema = $this->schemaManager->getSchema(SchemaCommon::class);
 

@@ -33,7 +33,7 @@ use PSX\Schema\Generator\JsonSchemaGemini;
  */
 class JsonSchemaGeminiTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new JsonSchemaGemini();
 
@@ -43,7 +43,7 @@ class JsonSchemaGeminiTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new JsonSchemaGemini();
 

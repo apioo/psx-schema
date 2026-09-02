@@ -33,7 +33,7 @@ use PSX\Schema\Tests\Schema\SchemaB;
  */
 class SemVerElevatorTest extends SchemaTestCase
 {
-    public function testElevate()
+    public function testElevate(): void
     {
         $schemaA = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
         $schemaB = $this->schemaManager->getSchema(SchemaB::class)->getDefinitions();

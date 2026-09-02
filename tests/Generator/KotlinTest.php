@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Kotlin;
  */
 class KotlinTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Kotlin();
 
@@ -42,7 +42,7 @@ class KotlinTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/kotlin/default/News.kt');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Kotlin();
 
@@ -52,7 +52,7 @@ class KotlinTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/kotlin/complex/TypeSchema.kt');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Kotlin();
 
@@ -62,7 +62,7 @@ class KotlinTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/kotlin/oop/RootSchema.kt');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Kotlin();
 
@@ -72,7 +72,7 @@ class KotlinTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/kotlin/import/Import.kt');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Kotlin(Config::of('Foo.Bar', ['my_import' => 'My.Import']));
 

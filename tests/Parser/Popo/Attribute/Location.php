@@ -10,7 +10,7 @@ class Location
     protected ?float $lat = null;
     protected ?float $long = null;
 
-    public function setLat(?float $lat)
+    public function setLat(?float $lat): void
     {
         $this->lat = $lat;
     }
@@ -20,7 +20,7 @@ class Location
         return $this->lat;
     }
 
-    public function setLong(?float $long)
+    public function setLong(?float $long): void
     {
         $this->long = $long;
     }

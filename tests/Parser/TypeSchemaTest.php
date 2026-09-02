@@ -41,7 +41,7 @@ use PSX\Schema\TypeInterface;
  */
 class TypeSchemaTest extends ParserTestCase
 {
-    public function testParse()
+    public function testParse(): void
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema.json');
@@ -50,7 +50,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertSchemaAttributes($this->getSchema(), $schema);
     }
 
-    public function testParseTypeSchema()
+    public function testParseTypeSchema(): void
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/typeschema.json');
@@ -58,7 +58,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertEquals('Specification', $schema->getRoot());
     }
 
-    public function testDiscriminator()
+    public function testDiscriminator(): void
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/form_container.json');
@@ -66,7 +66,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertDiscriminator($schema);
     }
 
-    public function testParseExternalResource()
+    public function testParseExternalResource(): void
     {
         $mock = new MockHandler([
             new Response(200, [], file_get_contents(__DIR__ . '/TypeSchema/test_schema.json')),
@@ -101,7 +101,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertEquals(['acme.com'], $transaction['request']->getHeader('Host'));
     }
 
-    public function testParseTypeHubResource()
+    public function testParseTypeHubResource(): void
     {
         $client = new Client\Client();
         $parser = new Parser\File(new SchemaManager(null, $client));
@@ -119,7 +119,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertInstanceOf(StructDefinitionType::class, $type);
     }
 
-    public function testParseNestedImport()
+    public function testParseNestedImport(): void
     {
         $parser = new Parser\File(new SchemaManager());
         $schema = $parser->parse(__DIR__ . '/TypeSchema/test_schema_import.json', new Parser\Context\FilesystemContext(__DIR__ . '/TypeSchema'));
@@ -139,7 +139,7 @@ class TypeSchemaTest extends ParserTestCase
         $this->assertInstanceOf(StructDefinitionType::class, $schema->getDefinitions()->getType($reference->getTarget()));
     }
 
-    public function testParseInvalidFile()
+    public function testParseInvalidFile(): void
     {
         $this->expectException(ParserException::class);
         $this->expectExceptionMessageMatches('/^Could not load external schema (.*)$/');

@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Php;
  */
 class PhpTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Php();
 
@@ -42,7 +42,7 @@ class PhpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/php/default/News.php');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Php(Config::of('TypeAPI\\Model'));
 
@@ -52,7 +52,7 @@ class PhpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/php/complex/TypeSchema.php');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Php();
 
@@ -62,7 +62,7 @@ class PhpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/php/oop/RootSchema.php');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Php();
 
@@ -72,7 +72,7 @@ class PhpTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/php/import/Import.php');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Php(Config::of('Foo\\Bar', ['my_import' => 'My\\Import']));
 

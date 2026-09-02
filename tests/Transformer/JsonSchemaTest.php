@@ -37,7 +37,7 @@ use PSX\Schema\Transformer\JsonSchema;
 class JsonSchemaTest extends TestCase
 {
     #[DataProvider('transformProvider')]
-    public function testConvert(string $file)
+    public function testConvert(string $file): void
     {
         $schema = file_get_contents(__DIR__ . '/jsonschema/actual/' . $file);
         $actual = (new JsonSchema())->transform(\json_decode($schema));
@@ -51,6 +51,9 @@ class JsonSchemaTest extends TestCase
         $this->assertInstanceOf(SchemaInterface::class, $schema);
     }
 
+    /**
+     * @return list<array{string}>
+     */
     public static function transformProvider(): array
     {
         $result = [];

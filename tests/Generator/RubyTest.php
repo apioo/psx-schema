@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Ruby;
  */
 class RubyTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Ruby();
 
@@ -42,7 +42,7 @@ class RubyTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/ruby/default/news.rb');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Ruby();
 
@@ -52,7 +52,7 @@ class RubyTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/ruby/complex/type_schema.rb');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Ruby();
 
@@ -62,7 +62,7 @@ class RubyTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/ruby/oop/root_schema.rb');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Ruby();
 
@@ -72,7 +72,7 @@ class RubyTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/ruby/import/import.rb');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Ruby(Config::of('FooBar', ['my_import' => 'My::Import']));
 

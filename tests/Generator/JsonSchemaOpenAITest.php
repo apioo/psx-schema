@@ -33,7 +33,7 @@ use PSX\Schema\Generator\JsonSchemaOpenAI;
  */
 class JsonSchemaOpenAITest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new JsonSchemaOpenAI();
 
@@ -43,7 +43,7 @@ class JsonSchemaOpenAITest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new JsonSchemaOpenAI();
 

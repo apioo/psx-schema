@@ -36,7 +36,7 @@ class ProtobufTest extends GeneratorTestCase
      * map type is not allowed in oneof and oneof must not be repeated. It is
      * the liability of the developer to use a valid schema
      */
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Protobuf();
 
@@ -48,7 +48,7 @@ class ProtobufTest extends GeneratorTestCase
         $this->assertEquals($expect, $actual, $actual);
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Protobuf();
 

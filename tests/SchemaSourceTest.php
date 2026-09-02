@@ -33,7 +33,7 @@ use PSX\Schema\SchemaSource;
  */
 class SchemaSourceTest extends SchemaTestCase
 {
-    public function testFile()
+    public function testFile(): void
     {
         $source = SchemaSource::fromFile(__DIR__ . '/BuilderTest.php');
 
@@ -42,14 +42,14 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('file:///BuilderTest.php', str_replace(__DIR__, '', (string) $source));
     }
 
-    public function testFileInvalid()
+    public function testFileInvalid(): void
     {
         $this->expectException(InvalidSchemaException::class);
 
         SchemaSource::fromFile(__DIR__ . '/foo.txt');
     }
 
-    public function testUrlHttp()
+    public function testUrlHttp(): void
     {
         $source = SchemaSource::fromUrl('http://typeschema.org/spec.json');
 
@@ -58,7 +58,7 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('http://typeschema.org/spec.json', (string) $source);
     }
 
-    public function testUrlHttps()
+    public function testUrlHttps(): void
     {
         $source = SchemaSource::fromUrl('https://typeschema.org/spec.json');
 
@@ -67,14 +67,14 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('https://typeschema.org/spec.json', (string) $source);
     }
 
-    public function testUrlInvalid()
+    public function testUrlInvalid(): void
     {
         $this->expectException(InvalidSchemaException::class);
 
         SchemaSource::fromUrl('foobar');
     }
 
-    public function testClass()
+    public function testClass(): void
     {
         $source = SchemaSource::fromClass(SchemaSourceTest::class);
 
@@ -83,14 +83,14 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('php+class://PSX.Schema.Tests.SchemaSourceTest', (string) $source);
     }
 
-    public function testClassInvalid()
+    public function testClassInvalid(): void
     {
         $this->expectException(InvalidSchemaException::class);
 
         SchemaSource::fromClass('foobar');
     }
 
-    public function testType()
+    public function testType(): void
     {
         $source = SchemaSource::fromType('array<string, string>');
 
@@ -99,7 +99,7 @@ class SchemaSourceTest extends SchemaTestCase
         $this->assertEquals('php+doc://array<string, string>', (string) $source);
     }
 
-    public function testTypeHub()
+    public function testTypeHub(): void
     {
         $source = SchemaSource::fromTypeHub('apioo', 'software', '0.1.2');
 
@@ -109,11 +109,14 @@ class SchemaSourceTest extends SchemaTestCase
     }
 
     #[DataProvider('stringProvider')]
-    public function testString(string $string, string $expectString)
+    public function testString(string $string, string $expectString): void
     {
         $this->assertEquals($expectString, (string) SchemaSource::fromString($string));
     }
 
+    /**
+     * @return list<array{string, string}>
+     */
     public static function stringProvider(): array
     {
         return [

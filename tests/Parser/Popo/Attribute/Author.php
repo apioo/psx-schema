@@ -16,19 +16,19 @@ class Author
     protected ?string $email = null;
 
     /**
-     * @var array<string>
+     * @var array<string>|null
      */
     protected ?array $categories = null;
 
     /**
-     * @var array<Location>
+     * @var array<Location>|null
      */
     #[Description('Array of locations')]
     protected ?array $locations = null;
 
     protected ?Location $origin = null;
 
-    public function setTitle(?string $title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
@@ -38,7 +38,7 @@ class Author
         return $this->title;
     }
 
-    public function setEmail(?string $email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
@@ -48,27 +48,39 @@ class Author
         return $this->email;
     }
 
-    public function setCategories(?array $categories)
+    /**
+     * @param array<string>|null $categories
+     */
+    public function setCategories(?array $categories): void
     {
         $this->categories = $categories;
     }
 
+    /**
+     * @return array<string>|null
+     */
     public function getCategories() : ?array
     {
         return $this->categories;
     }
 
-    public function setLocations(?array $locations)
+    /**
+     * @param array<Location>|null $locations
+     */
+    public function setLocations(?array $locations): void
     {
         $this->locations = $locations;
     }
 
+    /**
+     * @return array<Location>|null
+     */
     public function getLocations() : ?array
     {
         return $this->locations;
     }
 
-    public function setOrigin(?Location $origin)
+    public function setOrigin(?Location $origin): void
     {
         $this->origin = $origin;
     }

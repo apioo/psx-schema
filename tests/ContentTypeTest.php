@@ -39,6 +39,9 @@ class ContentTypeTest extends TestCase
         self::assertTrue(ContentType::isValid($contentType));
     }
 
+    /**
+     * @return list<array{string}>
+     */
     public static function contentTypeProviderValid(): array
     {
         return [
@@ -58,6 +61,9 @@ class ContentTypeTest extends TestCase
         self::assertFalse(ContentType::isValid($contentType));
     }
 
+    /**
+     * @return list<array{string}>
+     */
     public static function contentTypeProviderInvalid(): array
     {
         return [

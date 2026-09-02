@@ -35,7 +35,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ParseCommandTest extends TestCase
 {
-    public function testGeneratePhp()
+    public function testGeneratePhp(): void
     {
         $command = $this->getParseCommand();
 

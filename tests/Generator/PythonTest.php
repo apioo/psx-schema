@@ -32,7 +32,7 @@ use PSX\Schema\Generator\Python;
  */
 class PythonTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Python();
 
@@ -42,7 +42,7 @@ class PythonTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/python/default/news.py');
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new Python();
 
@@ -52,7 +52,7 @@ class PythonTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/python/complex/type_schema.py');
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new Python();
 
@@ -62,7 +62,7 @@ class PythonTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/python/oop/root_schema.py');
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new Python(Config::of('app', ['my_import' => 'my.import']));
 
@@ -72,7 +72,7 @@ class PythonTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/python/import/import.py');
     }
 
-    public function testGenerateImportNamespace()
+    public function testGenerateImportNamespace(): void
     {
         $generator = new Python(Config::of('app', ['my_import' => 'my.import']));
 
@@ -82,7 +82,7 @@ class PythonTest extends GeneratorTestCase
         $this->assertFileExists(__DIR__ . '/resource/python/namespace/import.py');
     }
 
-    public function testGenerateUnion()
+    public function testGenerateUnion(): void
     {
         $generator = new Python();
 

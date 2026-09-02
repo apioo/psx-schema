@@ -32,7 +32,7 @@ use PSX\Schema\Tests\Schema\SchemaA;
  */
 class HashTest extends SchemaTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $schema = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
 
@@ -41,7 +41,7 @@ class HashTest extends SchemaTestCase
         $this->assertEquals('7f30d51e70578cce4138b638a3d7a64494b16e83540e12f8905d3d6daa9beafc', $value, $value);
     }
 
-    public function testGenerateByType()
+    public function testGenerateByType(): void
     {
         $schema = $this->schemaManager->getSchema(SchemaA::class)->getDefinitions();
 

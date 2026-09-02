@@ -31,7 +31,7 @@ use PSX\Schema\Generator\TypeSchema;
  */
 class TypeSchemaTest extends GeneratorTestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new TypeSchema();
 
@@ -41,7 +41,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateComplex()
+    public function testGenerateComplex(): void
     {
         $generator = new TypeSchema();
 
@@ -51,7 +51,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateOOP()
+    public function testGenerateOOP(): void
     {
         $generator = new TypeSchema();
 
@@ -61,7 +61,7 @@ class TypeSchemaTest extends GeneratorTestCase
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testGenerateImport()
+    public function testGenerateImport(): void
     {
         $generator = new TypeSchema();
 

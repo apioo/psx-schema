@@ -36,7 +36,7 @@ use PSX\Schema\Type\StructDefinitionType;
  */
 class PopoTest extends ParserTestCase
 {
-    public function testParse()
+    public function testParse(): void
     {
         $parser = new Parser\Popo();
         $schema = $parser->parse(Popo\Attribute\News::class);
@@ -44,7 +44,7 @@ class PopoTest extends ParserTestCase
         $this->assertSchema($this->getSchema(), $schema);
     }
 
-    public function testDiscriminator()
+    public function testDiscriminator(): void
     {
         $parser = new Parser\Popo();
         $schema = $parser->parse(Form_Element::class);
@@ -52,7 +52,7 @@ class PopoTest extends ParserTestCase
         $this->assertDiscriminator($schema);
     }
 
-    public function testArrayInArray()
+    public function testArrayInArray(): void
     {
         $parser = new Parser\Popo();
         $schema = $parser->parse(ArrayInArray::class);

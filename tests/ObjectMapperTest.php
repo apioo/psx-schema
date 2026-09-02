@@ -39,7 +39,7 @@ use PSX\Schema\Type\StructDefinitionType;
  */
 class ObjectMapperTest extends TestCase
 {
-    public function testRead()
+    public function testRead(): void
     {
         $json = <<<'JSON'
 {
@@ -57,7 +57,7 @@ JSON;
         $this->assertEquals('foobar', $news->getContent());
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $news = new News();
         $news->setContent('foobar');
