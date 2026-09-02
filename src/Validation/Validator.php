@@ -42,7 +42,7 @@ class Validator implements ValidatorInterface
      */
     public function __construct(?array $fields = null)
     {
-        $this->fields = $fields;
+        $this->fields = $fields ?? [];
     }
 
     /**
@@ -53,6 +53,9 @@ class Validator implements ValidatorInterface
         $this->fields = $fields;
     }
 
+    /**
+     * @return array<Field>
+     */
     public function getFields(): array
     {
         return $this->fields;
@@ -61,7 +64,7 @@ class Validator implements ValidatorInterface
     /**
      * @throws ValidationException
      */
-    public function validate(string $path, $data): void
+    public function validate(string $path, mixed $data): void
     {
         $field = $this->getField($path);
         if (!$field instanceof Field) {

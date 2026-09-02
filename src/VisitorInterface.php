@@ -28,6 +28,7 @@ use PSX\Schema\Type\MapTypeInterface;
 use PSX\Schema\Type\NumberPropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
+use stdClass;
 
 /**
  * VisitorInterface
@@ -41,15 +42,17 @@ interface VisitorInterface
     /**
      * Visits a struct value
      */
-    public function visitStruct(\stdClass $data, StructDefinitionType $type, string $path): object;
+    public function visitStruct(stdClass $data, StructDefinitionType $type, string $path): object;
 
     /**
      * Visits a map value
      */
-    public function visitMap(\stdClass $data, MapTypeInterface $type, string $path): object;
+    public function visitMap(stdClass $data, MapTypeInterface $type, string $path): object;
 
     /**
      * Visits an array value
+     *
+     * @param list<mixed> $data
      */
     public function visitArray(array $data, ArrayTypeInterface $type, string $path): mixed;
 

@@ -20,6 +20,9 @@
 
 namespace PSX\Schema\Validation;
 
+use Closure;
+use PSX\Validate\FilterInterface;
+
 /**
  * Field
  *
@@ -30,11 +33,16 @@ namespace PSX\Schema\Validation;
 class Field
 {
     private string $name;
+
+    /**
+     * @var list<FilterInterface|Closure>
+     */
     private array $filters;
 
     /**
-     * The name should be a JSON pointer which locates the target property i.e.
-     * /author/name
+     * The name should be a JSON pointer which locates the target property i.e. /author/name
+     *
+     * @param list<FilterInterface|Closure> $filters
      */
     public function __construct(string $name, array $filters = [])
     {
@@ -47,6 +55,9 @@ class Field
         return $this->name;
     }
 
+    /**
+     * @return list<FilterInterface|Closure>
+     */
     public function getFilters(): array
     {
         return $this->filters;

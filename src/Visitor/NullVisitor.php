@@ -48,6 +48,9 @@ class NullVisitor implements VisitorInterface
         return $data;
     }
 
+    /**
+     * @return list<mixed>
+     */
     public function visitArray(array $data, ArrayTypeInterface $type, string $path): array
     {
         return $data;

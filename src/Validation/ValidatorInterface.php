@@ -32,5 +32,5 @@ interface ValidatorInterface
     /**
      * Applies the filters to the data which matches the provided path
      */
-    public function validate(string $path, $data);
+    public function validate(string $path, mixed $data): void;
 }
