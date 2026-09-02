@@ -38,7 +38,7 @@ use PSX\Uri\Uri;
  */
 class DumperTest extends TestCase
 {
-    public function testDump()
+    public function testDump(): void
     {
         $config = new Attribute\Meta();
         $config['foo'] = 'bar';
@@ -79,12 +79,12 @@ class DumperTest extends TestCase
         $this->assertInstanceOf(RecordInterface::class, $actual);
 
         $actual = json_encode($actual, JSON_PRETTY_PRINT);
-        $expect = file_get_contents(__DIR__ . '/expect.json');
+        $expect = file_get_contents(__DIR__ . '/resource/expect.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }
 
-    public function testDumpTraversable()
+    public function testDumpTraversable(): void
     {
         $location = new Attribute\Location();
         $location->setLat(12.34);
@@ -104,7 +104,39 @@ class DumperTest extends TestCase
         $this->assertInstanceOf(RecordInterface::class, $actual);
 
         $actual = json_encode($actual, JSON_PRETTY_PRINT);
-        $expect = file_get_contents(__DIR__ . '/expect_iterable.json');
+        $expect = file_get_contents(__DIR__ . '/resource/expect_iterable.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testDumpPublicProperties(): void
+    {
+        $dto = new PublicPropertiesDto();
+        $dto->foo = 'bar';
+        $dto->bar = 1337;
+
+        $dumper = new Dumper();
+        $actual = $dumper->dump($dto);
+
+        $this->assertInstanceOf(RecordInterface::class, $actual);
+
+        $actual = json_encode($actual, JSON_PRETTY_PRINT);
+        $expect = file_get_contents(__DIR__ . '/resource/expect_public_properties.json');
+
+        $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
+    }
+
+    public function testDumpPublicConstructorProperties(): void
+    {
+        $dto = new PublicConstructorPropertiesDto('bar', 1337);
+
+        $dumper = new Dumper();
+        $actual = $dumper->dump($dto);
+
+        $this->assertInstanceOf(RecordInterface::class, $actual);
+
+        $actual = json_encode($actual, JSON_PRETTY_PRINT);
+        $expect = file_get_contents(__DIR__ . '/resource/expect_public_constructor_properties.json');
 
         $this->assertJsonStringEqualsJsonString($expect, $actual, $actual);
     }

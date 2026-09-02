@@ -114,12 +114,16 @@ class Dumper
 
         $properties = $this->reader->getProperties($reflection);
         foreach ($properties as $name => $property) {
-            $getter = $this->reader->findGetter($property);
-            if (!$getter instanceof \ReflectionMethod) {
-                continue;
-            }
+            if ($property->isPublic()) {
+                $value = $property->getValue($data);
+            } else {
+                $getter = $this->reader->findGetter($property);
+                if (!$getter instanceof \ReflectionMethod) {
+                    continue;
+                }
 
-            $value = $getter->invoke($data);
+                $value = $getter->invoke($data);
+            }
 
             $type = $this->reader->buildProperty($property);
             if ($type instanceof PropertyTypeAbstract) {
