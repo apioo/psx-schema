@@ -35,6 +35,7 @@ use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\DefinitionTypeFactory;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use ReflectionClass;
 
 /**
  * Documentor
@@ -54,7 +55,11 @@ class Documentor implements ResolverInterface
         $this->typeResolver = new TypeResolver();
     }
 
-    public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
+    /**
+     * @param ReflectionClass<object> $reflection
+     * @throws ParserException
+     */
+    public function resolveClass(ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
         if ($this->hasParent($reflection, \ArrayObject::class) || $reflection->implementsInterface(RecordInterface::class)) {
             $tag = $this->getTag('extends', $reflection->getDocComment());
@@ -92,7 +97,7 @@ class Documentor implements ResolverInterface
             }
 
             $parentClass = $reflection->getParentClass();
-            if (!$parentClass instanceof \ReflectionClass) {
+            if (!$parentClass instanceof ReflectionClass) {
                 // we have no parent class
                 return $struct;
             }
@@ -186,7 +191,11 @@ class Documentor implements ResolverInterface
         return $matches[1] ?? null;
     }
 
-    private function getTemplateValues(\ReflectionClass $reflection, string $tag): array
+    /**
+     * @param ReflectionClass<object> $reflection
+     * @return list<string>
+     */
+    private function getTemplateValues(ReflectionClass $reflection, string $tag): array
     {
         $values = [];
         $context = $this->contextFactory->createFromReflector($reflection);
@@ -202,7 +211,11 @@ class Documentor implements ResolverInterface
         return $values;
     }
 
-    private function getTemplateKeys(\ReflectionClass $reflection): array
+    /**
+     * @param ReflectionClass<object> $reflection
+     * @return list<string>
+     */
+    private function getTemplateKeys(ReflectionClass $reflection): array
     {
         $tag = $this->getTag('template', $reflection->getDocComment());
         if (empty($tag)) {
@@ -215,10 +228,13 @@ class Documentor implements ResolverInterface
         return array_slice($keys, 0, 1);
     }
 
-    private function hasParent(\ReflectionClass $reflection, string $class): bool
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
+    private function hasParent(ReflectionClass $reflection, string $class): bool
     {
         $parent = $reflection->getParentClass();
-        if (!$parent instanceof \ReflectionClass) {
+        if (!$parent instanceof ReflectionClass) {
             return false;
         }
 

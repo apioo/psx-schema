@@ -23,6 +23,7 @@ namespace PSX\Schema\Parser\Popo\Resolver;
 use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use ReflectionClass;
 
 /**
  * Composite
@@ -43,7 +44,10 @@ class Composite implements ResolverInterface
         $this->resolver = $resolver;
     }
 
-    public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
+    public function resolveClass(ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
         foreach ($this->resolver as $resolver) {
             $property = $resolver->resolveClass($reflection);

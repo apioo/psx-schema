@@ -20,11 +20,12 @@
 
 namespace PSX\Schema\Parser\Popo;
 
-use Psr\Cache\CacheItemPoolInterface;
 use PSX\Schema\Attribute;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\PropertyTypeAbstract;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * ReflectionReader
@@ -45,12 +46,16 @@ class ReflectionReader
         );
     }
 
-    public function buildDefinition(\ReflectionClass $reflection): ?DefinitionTypeAbstract
+    /**
+     * @param ReflectionClass<object> $reflection
+     * @return DefinitionTypeAbstract|null
+     */
+    public function buildDefinition(ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
         return $this->resolver->resolveClass($reflection);
     }
 
-    public function buildProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
+    public function buildProperty(ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
         return $this->resolver->resolveProperty($reflection);
     }
@@ -58,9 +63,10 @@ class ReflectionReader
     /**
      * Returns an array where the key is name of the property and the value is the reflection property
      *
-     * @return array<string, \ReflectionProperty>
+     * @param ReflectionClass<object> $reflection
+     * @return array<string, ReflectionProperty>
      */
-    public function getProperties(\ReflectionClass $reflection): array
+    public function getProperties(ReflectionClass $reflection): array
     {
         $result = [];
         foreach ($reflection->getProperties() as $property) {
@@ -97,7 +103,7 @@ class ReflectionReader
         return $result;
     }
 
-    public function findGetter(\ReflectionProperty $reflection): ?\ReflectionMethod
+    public function findGetter(ReflectionProperty $reflection): ?ReflectionMethod
     {
         $getters = [
             'get' . ucfirst($reflection->getName()),
@@ -114,6 +120,9 @@ class ReflectionReader
         return null;
     }
 
+    /**
+     * @param list<object> $attributes
+     */
     private function hasExcludeAttribute(array $attributes): bool
     {
         foreach ($attributes as $attribute) {
@@ -125,6 +134,9 @@ class ReflectionReader
         return false;
     }
 
+    /**
+     * @param list<object> $attributes
+     */
     private function getAttributeKey(array $attributes): ?string
     {
         foreach ($attributes as $attribute) {

@@ -411,6 +411,9 @@ class TypeSchema implements ParserInterface
         throw new UnknownTypeException('Could not assign schema to a property type, got the following keys: ' . implode(',', array_keys(get_object_vars($data))));
     }
 
+    /**
+     * @param list<string> $keywords
+     */
     private function getStringValue(stdClass $data, array $keywords): ?string
     {
         foreach ($keywords as $keyword) {
@@ -422,6 +425,9 @@ class TypeSchema implements ParserInterface
         return null;
     }
 
+    /**
+     * @param list<string> $keywords
+     */
     private function getBooleanValue(stdClass $data, array $keywords): ?bool
     {
         foreach ($keywords as $keyword) {
@@ -433,6 +439,9 @@ class TypeSchema implements ParserInterface
         return null;
     }
 
+    /**
+     * @param list<string> $keywords
+     */
     private function getObjectValue(stdClass $data, array $keywords): ?stdClass
     {
         foreach ($keywords as $keyword) {

@@ -42,6 +42,8 @@ use PSX\Schema\Type\ScalarPropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use ReflectionClass;
+use ReflectionException;
+use ReflectionProperty;
 
 /**
  * Tries to import the data into a plain old php object
@@ -71,7 +73,7 @@ class Popo implements ParserInterface
 
         try {
             $this->parseClass($className, $definitions, $context, $typeName);
-        } catch (\ReflectionException|TypeNotFoundException $e) {
+        } catch (ReflectionException|TypeNotFoundException $e) {
             throw new ParserException('Could not parse class: ' . $className, previous: $e);
         }
 
@@ -80,7 +82,7 @@ class Popo implements ParserInterface
 
     /**
      * @throws TypeNotFoundException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws ParserException
      */
     protected function parseClass(string $className, DefinitionsInterface $definitions, ?ContextInterface $context = null, ?string &$typeName = null): DefinitionTypeAbstract
@@ -156,7 +158,8 @@ class Popo implements ParserInterface
     }
 
     /**
-     * @throws \ReflectionException
+     * @param ReflectionClass<object> $class
+     * @throws ReflectionException
      * @throws TypeNotFoundException
      */
     private function parseProperties(ReflectionClass $class, StructDefinitionType $property, DefinitionsInterface $definitions, ?ContextInterface $context): void
@@ -185,7 +188,7 @@ class Popo implements ParserInterface
         }
     }
 
-    private function parseProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
+    private function parseProperty(ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
         $type = $this->reader->buildProperty($reflection);
 
@@ -210,6 +213,9 @@ class Popo implements ParserInterface
         return $type;
     }
 
+    /**
+     * @param list<object> $annotations
+     */
     private function parseDefinitionAnnotations(array $annotations, DefinitionTypeAbstract $type): void
     {
         foreach ($annotations as $annotation) {
@@ -221,6 +227,9 @@ class Popo implements ParserInterface
         }
     }
 
+    /**
+     * @param list<object> $annotations
+     */
     private function parseStructAnnotations(array $annotations, StructDefinitionType $type): void
     {
         $mapping = [];
@@ -235,6 +244,9 @@ class Popo implements ParserInterface
         $type->setMapping($mapping);
     }
 
+    /**
+     * @param list<object> $annotations
+     */
     private function parsePropertyAnnotations(array $annotations, PropertyTypeAbstract $type): void
     {
         foreach ($annotations as $annotation) {
@@ -248,6 +260,9 @@ class Popo implements ParserInterface
         }
     }
 
+    /**
+     * @param list<object> $annotations
+     */
     private function parseScalarAnnotations(array $annotations, ScalarPropertyType $type): void
     {
         foreach ($annotations as $annotation) {
@@ -261,7 +276,7 @@ class Popo implements ParserInterface
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws TypeNotFoundException
      * @throws ParserException
      */
@@ -277,6 +292,9 @@ class Popo implements ParserInterface
         return $type;
     }
 
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
     private function getTypeName(ReflectionClass $reflection, ?ContextInterface $context): string
     {
         $level = 1;

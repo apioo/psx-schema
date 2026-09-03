@@ -43,6 +43,8 @@ use PSX\Schema\Type\PropertyTypeAbstract;
 use PSX\Schema\Type\ReferencePropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * The dumper extracts all data from POPOs
@@ -61,7 +63,7 @@ class Dumper
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws ParserException
      */
     public function dump(mixed $data): mixed
@@ -86,12 +88,12 @@ class Dumper
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws ParserException
      */
     private function dumpObject(object $data, string $class): mixed
     {
-        $type = $this->reader->buildDefinition(new \ReflectionClass($class));
+        $type = $this->reader->buildDefinition(new ReflectionClass($class));
         if ($type instanceof StructDefinitionType) {
             return $this->dumpStruct($data);
         } elseif ($type instanceof MapDefinitionType) {
@@ -104,12 +106,13 @@ class Dumper
     }
 
     /**
-     * @throws \ReflectionException
+     * @return RecordInterface<mixed>
+     * @throws ReflectionException
      * @throws ParserException
      */
     private function dumpStruct(object $data): RecordInterface
     {
-        $reflection = new \ReflectionClass(get_class($data));
+        $reflection = new ReflectionClass(get_class($data));
         $result = new Record();
 
         $properties = $this->reader->getProperties($reflection);
@@ -139,6 +142,7 @@ class Dumper
     }
 
     /**
+     * @return RecordInterface<mixed>
      * @throws ParserException
      */
     private function dumpMap(object $data, MapTypeInterface $type): RecordInterface
@@ -156,9 +160,10 @@ class Dumper
     }
 
     /**
+     * @return list<mixed>
      * @throws ParserException
      */
-    private function dumpArray($data, ArrayTypeInterface $type): array
+    private function dumpArray(mixed $data, ArrayTypeInterface $type): array
     {
         if (!is_iterable($data)) {
             throw new ParserException('Array must be iterable');
@@ -224,16 +229,18 @@ class Dumper
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws ParserException
      */
-    private function dumpReference($data, ReferencePropertyType $type)
+    private function dumpReference(mixed $data, ReferencePropertyType $type): mixed
     {
         return $this->dumpObject($data, $type->getTarget());
     }
 
     /**
-     * @throws \ReflectionException
+     * @param iterable<array-key, mixed> $data
+     * @return Record<mixed>|list<mixed>
+     * @throws ReflectionException
      * @throws ParserException
      */
     private function dumpIterable(iterable $data): Record|array
@@ -243,8 +250,8 @@ class Dumper
             $values[$key] = $this->dump($value);
         }
 
-        if (isset($values[0])) {
-            return array_values($values);
+        if (array_is_list($values)) {
+            return $values;
         } else {
             return Record::fromArray($values);
         }

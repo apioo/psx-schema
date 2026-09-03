@@ -22,6 +22,8 @@ namespace PSX\Schema\Parser\Popo;
 
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * ResolverInterface
@@ -32,7 +34,10 @@ use PSX\Schema\Type\PropertyTypeAbstract;
  */
 interface ResolverInterface
 {
-    public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract;
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
+    public function resolveClass(ReflectionClass $reflection): ?DefinitionTypeAbstract;
 
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract;
+    public function resolveProperty(ReflectionProperty $reflection): ?PropertyTypeAbstract;
 }

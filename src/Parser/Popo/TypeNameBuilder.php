@@ -20,6 +20,8 @@
 
 namespace PSX\Schema\Parser\Popo;
 
+use ReflectionClass;
+
 /**
  * TypeNameBuilder
  *
@@ -29,7 +31,10 @@ namespace PSX\Schema\Parser\Popo;
  */
 class TypeNameBuilder
 {
-    public function build(\ReflectionClass $reflection, int $level): string
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
+    public function build(ReflectionClass $reflection, int $level): string
     {
         if ($level > 1) {
             $parts = explode('\\', $reflection->getName());

@@ -28,6 +28,9 @@ use PSX\Schema\Parser\Popo\ResolverInterface;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
 use PSX\Schema\Type\PropertyTypeAbstract;
+use ReflectionClass;
+use ReflectionNamedType;
+use ReflectionProperty;
 
 /**
  * Native
@@ -38,23 +41,26 @@ use PSX\Schema\Type\PropertyTypeAbstract;
  */
 class Native implements ResolverInterface
 {
-    public function resolveClass(\ReflectionClass $reflection): ?DefinitionTypeAbstract
+    /**
+     * @param ReflectionClass<object> $reflection
+     */
+    public function resolveClass(ReflectionClass $reflection): ?DefinitionTypeAbstract
     {
         return null;
     }
 
-    public function resolveProperty(\ReflectionProperty $reflection): ?PropertyTypeAbstract
+    public function resolveProperty(ReflectionProperty $reflection): ?PropertyTypeAbstract
     {
         $type = null;
         $reflectionType = $reflection->getType();
-        if ($reflectionType instanceof \ReflectionNamedType) {
+        if ($reflectionType instanceof ReflectionNamedType) {
             $type = $this->getPropertyForType($reflectionType, $reflection);
         }
 
         return $type;
     }
 
-    private function getPropertyForType(\ReflectionNamedType $type, \ReflectionProperty $property): ?PropertyTypeAbstract
+    private function getPropertyForType(ReflectionNamedType $type, ReflectionProperty $property): ?PropertyTypeAbstract
     {
         $name = $type->getName();
         if ($name === 'string') {
