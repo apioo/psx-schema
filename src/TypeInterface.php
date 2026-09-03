@@ -20,6 +20,8 @@
 
 namespace PSX\Schema;
 
+use JsonSerializable;
+
 /**
  * TypeInterface
  *
@@ -27,10 +29,10 @@ namespace PSX\Schema;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-interface TypeInterface extends \JsonSerializable
+interface TypeInterface extends JsonSerializable
 {
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray(): array;
 }

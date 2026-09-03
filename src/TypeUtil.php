@@ -116,6 +116,8 @@ class TypeUtil
 
     /**
      * Collects and returns all refs
+     *
+     * @return array<string, string>
      */
     public static function findRefs(TypeInterface $type, bool $ignoreMapping = false): array
     {
@@ -181,6 +183,8 @@ class TypeUtil
 
     /**
      * Splits a type name into the namespace and name
+     *
+     * @return array{string, string}
      */
     public static function split(string $ref): array
     {
