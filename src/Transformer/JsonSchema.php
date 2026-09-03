@@ -75,6 +75,10 @@ class JsonSchema implements TransformerInterface
         return $result;
     }
 
+    /**
+     * @param array<mixed> $definitions
+     * @throws TransformerException
+     */
     private function convertSchema(stdClass $schema, array &$definitions, bool $isProperty, ?string &$typeName = null): stdClass
     {
         $isObject = isset($schema->type) && $schema->type === 'object' && isset($schema->properties) && $schema->properties instanceof stdClass;

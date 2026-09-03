@@ -220,6 +220,13 @@ class TypeVisitor implements VisitorInterface
         return $result;
     }
 
+    /**
+     * @param ReflectionClass<object> $class
+     * @param array<string, mixed> $vars
+     * @param array<string, string> $mapping
+     * @return array<string, mixed>
+     * @throws TraverserException
+     */
     private function getConstructorArguments(ReflectionClass $class, array $vars, array $mapping): array
     {
         $constructor = $class->getConstructor();
