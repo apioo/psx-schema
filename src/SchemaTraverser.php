@@ -44,6 +44,7 @@ use PSX\Schema\Type\ScalarPropertyType;
 use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 use PSX\Schema\Visitor\NullVisitor;
+use stdClass;
 
 /**
  * SchemaTraverser
@@ -54,6 +55,9 @@ use PSX\Schema\Visitor\NullVisitor;
  */
 class SchemaTraverser
 {
+    /**
+     * @var list<string>
+     */
     private array $pathStack = [];
     private bool $assertConstraints;
     private bool $ignoreUnknown;
@@ -65,8 +69,8 @@ class SchemaTraverser
     }
 
     /**
-     * Traverses through the data and validates it according to the provided
-     * schema. Calls also the visitor methods for each type
+     * Traverses through the data and validates it according to the provided schema. Calls also the visitor methods for
+     * each type
      *
      * @throws TraverserException
      */
@@ -88,6 +92,7 @@ class SchemaTraverser
     }
 
     /**
+     * @param array<string, string> $context
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
@@ -121,12 +126,13 @@ class SchemaTraverser
     }
 
     /**
+     * @param array<string, string> $context
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseStruct(\stdClass $data, StructDefinitionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
+    protected function traverseStruct(stdClass $data, StructDefinitionType $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
     {
-        $result = new \stdClass();
+        $result = new stdClass();
         $properties = [];
 
         $discriminator = $type->getDiscriminator();
@@ -190,13 +196,14 @@ class SchemaTraverser
     }
 
     /**
+     * @param array<string, string> $context
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseMap(\stdClass $data, MapTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
+    protected function traverseMap(stdClass $data, MapTypeInterface $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): object
     {
         $data = (array) $data;
-        $result = new \stdClass();
+        $result = new stdClass();
 
         $schema = $type->getSchema();
         if ($schema instanceof PropertyTypeAbstract) {
@@ -213,10 +220,11 @@ class SchemaTraverser
     }
 
     /**
+     * @param array<string, string> $context
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
-    protected function traverseProperty(mixed $data, PropertyTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context)
+    protected function traverseProperty(mixed $data, PropertyTypeAbstract $type, DefinitionsInterface $definitions, VisitorInterface $visitor, array $context): mixed
     {
         if ($type instanceof MapPropertyType) {
             if ($this->assertConstraints) {
@@ -227,7 +235,7 @@ class SchemaTraverser
                 }
             }
 
-            return $data instanceof \stdClass ? $this->traverseMap($data, $type, $definitions, $visitor, $context) : null;
+            return $data instanceof stdClass ? $this->traverseMap($data, $type, $definitions, $visitor, $context) : null;
         } elseif ($type instanceof ArrayPropertyType) {
             if ($this->assertConstraints) {
                 if ($data !== null) {
@@ -315,6 +323,8 @@ class SchemaTraverser
     }
 
     /**
+     * @param list<mixed> $data
+     * @param array<string, string> $context
      * @throws ValidationException
      * @throws TypeNotFoundException
      */
@@ -353,7 +363,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertScalarConstraints($data, ScalarPropertyType $type): void
+    protected function assertScalarConstraints(mixed $data, ScalarPropertyType $type): void
     {
         if (!is_scalar($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type scalar', 'type', $this->pathStack);
@@ -370,9 +380,9 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertObject($data): void
+    protected function assertObject(mixed $data): void
     {
-        if (!$data instanceof \stdClass) {
+        if (!$data instanceof stdClass) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type object', 'type', $this->pathStack);
         }
     }
@@ -380,7 +390,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertArray($data): void
+    protected function assertArray(mixed $data): void
     {
         if (!is_array($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type array', 'type', $this->pathStack);
@@ -390,7 +400,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertNumber($data, NumberPropertyType $property): void
+    protected function assertNumber(mixed $data, NumberPropertyType $property): void
     {
         if ($property instanceof IntegerPropertyType) {
             if (!is_int($data)) {
@@ -406,7 +416,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertBoolean($data): void
+    protected function assertBoolean(mixed $data): void
     {
         if (!is_bool($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type boolean', 'type', $this->pathStack);
@@ -416,7 +426,7 @@ class SchemaTraverser
     /**
      * @throws ValidationException
      */
-    protected function assertString($data): void
+    protected function assertString(mixed $data): void
     {
         if (!is_string($data)) {
             throw new ValidationException($this->getCurrentPath() . ' must be of type string', 'type', $this->pathStack);

@@ -58,6 +58,9 @@ class SchemaResolver
         }
     }
 
+    /**
+     * @param list<string> $types
+     */
     private function lookupTypes(DefinitionTypeAbstract $type, array &$types): void
     {
         TypeUtil::walk($type, function(TypeInterface $type) use (&$types){
