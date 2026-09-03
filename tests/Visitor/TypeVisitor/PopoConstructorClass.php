@@ -21,34 +21,19 @@
 namespace PSX\Schema\Tests\Visitor\TypeVisitor;
 
 /**
- * PopoClass
+ * PopoConstructorClass
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class PopoClass
+class PopoConstructorClass
 {
-    private string $foo;
-    private string $bar;
-
-    public function getFoo(): string
-    {
-        return $this->foo;
-    }
-
-    public function setFoo(string $foo): void
-    {
-        $this->foo = $foo;
-    }
-
-    public function getBar(): string
-    {
-        return $this->bar;
-    }
-
-    public function setBar(string $bar): void
-    {
-        $this->bar = $bar;
+    public function __construct(
+        public string $foo,
+        public string $bar,
+        public ?string $nullable,
+        public string $default = 'baz',
+    ) {
     }
 }

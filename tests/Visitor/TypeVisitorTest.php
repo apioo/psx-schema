@@ -21,25 +21,22 @@
 namespace PSX\Schema\Tests\Visitor;
 
 use PHPUnit\Framework\TestCase;
-use PSX\DateTime\Duration;
 use PSX\DateTime\LocalDate;
 use PSX\DateTime\LocalDateTime;
 use PSX\DateTime\LocalTime;
-use PSX\DateTime\Period;
 use PSX\Record\RecordInterface;
+use PSX\Schema\Exception\TraverserException;
 use PSX\Schema\Exception\ValidationException;
 use PSX\Schema\Tests\Visitor\TypeVisitor\ArrayAccessClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\PopoClass;
+use PSX\Schema\Tests\Visitor\TypeVisitor\PopoConstructorClass;
 use PSX\Schema\Tests\Visitor\TypeVisitor\RecordClass;
 use PSX\Schema\Type\DefinitionTypeAbstract;
 use PSX\Schema\Type\Factory\DefinitionTypeFactory;
 use PSX\Schema\Type\Factory\PropertyTypeFactory;
-use PSX\Schema\Type\PropertyTypeAbstract;
-use PSX\Schema\TypeFactory;
 use PSX\Schema\Validation\Field;
 use PSX\Schema\Validation\Validator;
 use PSX\Schema\Visitor\TypeVisitor;
-use PSX\Uri\Uri;
 use PSX\Validate\Filter;
 
 /**
@@ -104,9 +101,6 @@ class TypeVisitorTest extends TestCase
             ->addProperty('foo', PropertyTypeFactory::getString())
             ->addProperty('bar', PropertyTypeFactory::getString());
 
-        // popo class
-        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class);
-
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
 
         $this->assertInstanceOf(PopoClass::class, $record);
@@ -122,14 +116,52 @@ class TypeVisitorTest extends TestCase
             ->addProperty('foo', PropertyTypeFactory::getString())
             ->addProperty('bar', PropertyTypeFactory::getString());
 
-        // popo class
-        $type->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoClass::class);
-
         $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $type, '');
 
         $this->assertInstanceOf(PopoClass::class, $record);
         $this->assertEquals('bar', $record->getFoo());
         $this->assertEquals('foo', $record->getBar());
+    }
+
+    public function testVisitStructConstructor(): void
+    {
+        $type = DefinitionTypeFactory::getStruct()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoConstructorClass::class)
+            ->addProperty('foo', PropertyTypeFactory::getString())
+            ->addProperty('bar', PropertyTypeFactory::getString());
+
+        $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'bar' => 'foo'], $type, '');
+
+        $this->assertInstanceOf(PopoConstructorClass::class, $record);
+        $this->assertEquals('bar', $record->foo);
+        $this->assertEquals('foo', $record->bar);
+    }
+
+    public function testVisitStructConstructorMapping(): void
+    {
+        $type = DefinitionTypeFactory::getStruct()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoConstructorClass::class)
+            ->setAttribute(DefinitionTypeAbstract::ATTR_MAPPING, ['my-custom-prop' => 'bar'])
+            ->addProperty('foo', PropertyTypeFactory::getString())
+            ->addProperty('bar', PropertyTypeFactory::getString());
+
+        $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar', 'my-custom-prop' => 'foo'], $type, '');
+
+        $this->assertInstanceOf(PopoConstructorClass::class, $record);
+        $this->assertEquals('bar', $record->foo);
+        $this->assertEquals('foo', $record->bar);
+    }
+
+    public function testVisitStructConstructorMissingProperty(): void
+    {
+        $this->expectException(TraverserException::class);
+
+        $type = DefinitionTypeFactory::getStruct()
+            ->setAttribute(DefinitionTypeAbstract::ATTR_CLASS, PopoConstructorClass::class)
+            ->addProperty('foo', PropertyTypeFactory::getString())
+            ->addProperty('bar', PropertyTypeFactory::getString());
+
+        $record = (new TypeVisitor())->visitStruct((object) ['foo' => 'bar'], $type, '');
     }
 
     public function testVisitStructValidate(): void

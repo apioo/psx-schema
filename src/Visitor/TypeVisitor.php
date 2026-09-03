@@ -41,6 +41,8 @@ use PSX\Schema\Validation\ValidatorInterface;
 use PSX\Schema\VisitorInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
+use ReflectionParameter;
 use stdClass;
 
 /**
@@ -72,11 +74,13 @@ class TypeVisitor implements VisitorInterface
         }
 
         if (!empty($className) && class_exists($className)) {
-            $class = new ReflectionClass($className);
-            $record = $class->newInstance();
-
             $mapping = $type->getAttribute(DefinitionTypeAbstract::ATTR_MAPPING) ?: [];
-            foreach (get_object_vars($data) as $key => $value) {
+            $vars = get_object_vars($data);
+
+            $class = new ReflectionClass($className);
+            $record = $class->newInstanceArgs($this->getConstructorArguments($class, $vars, $mapping));
+
+            foreach ($vars as $key => $value) {
                 try {
                     $name = $mapping[$key] ?? $key;
 
@@ -214,5 +218,51 @@ class TypeVisitor implements VisitorInterface
         }
 
         return $result;
+    }
+
+    private function getConstructorArguments(ReflectionClass $class, array $vars, array $mapping): array
+    {
+        $constructor = $class->getConstructor();
+        if (!$constructor instanceof ReflectionMethod) {
+            return [];
+        }
+
+        $parameters = [];
+        foreach ($constructor->getParameters() as $parameter) {
+            $parameters[$parameter->getName()] = $parameter;
+        }
+
+        if (count($parameters) === 0) {
+            return [];
+        }
+
+        $arguments = [];
+        foreach ($vars as $key => $value) {
+            $name = $mapping[$key] ?? $key;
+
+            $parameter = $parameters[$name] ?? null;
+            if ($parameter instanceof ReflectionParameter) {
+                $arguments[$parameter->getName()] = $value;
+            }
+        }
+
+        foreach ($parameters as $parameter) {
+            if (isset($arguments[$parameter->getName()])) {
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                continue;
+            }
+
+            if ($parameter->allowsNull()) {
+                $arguments[$parameter->getName()] = null;
+                continue;
+            }
+
+            throw new TraverserException('Required property "' . $parameter->getName() . '" not provided');
+        }
+
+        return $arguments;
     }
 }
