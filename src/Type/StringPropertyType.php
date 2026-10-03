@@ -29,8 +29,32 @@ namespace PSX\Schema\Type;
  */
 class StringPropertyType extends ScalarPropertyType
 {
+    protected ?string $default = null;
+
     protected function getType(): string
     {
         return 'string';
+    }
+
+    public function getDefault(): ?string
+    {
+        return $this->default;
+    }
+
+    public function setDefault(?string $default): void
+    {
+        $this->default = $default;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), array_filter([
+            'default' => $this->default,
+        ], function($value){
+            return $value !== null;
+        }));
     }
 }
