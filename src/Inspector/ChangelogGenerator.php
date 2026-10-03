@@ -196,7 +196,7 @@ class ChangelogGenerator
     private function generateString(StringPropertyType $leftType, StringPropertyType $rightType, string $typeName, ?string $propertyName = null): \Generator
     {
         if ($leftType->getFormat() !== $rightType->getFormat()) {
-            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'format', $leftType->getFormat(), $rightType->getFormat());
+            yield SemVer::MINOR => $this->getMessageChanged($typeName, $propertyName, TypeUtil::getTypeName($leftType), 'format', $leftType->getFormat()?->value, $rightType->getFormat()?->value);
         }
 
         if ($leftType->getDefault() !== $rightType->getDefault()) {
@@ -233,7 +233,7 @@ class ChangelogGenerator
         }
     }
 
-    private function getMessageChanged(string $typeName, ?string $propertyName, string $type, string $description, $from, $to): string
+    private function getMessageChanged(string $typeName, ?string $propertyName, string $type, string $description, mixed $from, mixed $to): string
     {
         $from = $from ?? 'NULL';
         $to = $to ?? 'NULL';

@@ -21,6 +21,7 @@
 namespace PSX\Schema\Tests;
 
 use PSX\Schema\Inspector\ChangelogGenerator;
+use PSX\Schema\SchemaSource;
 use PSX\Schema\Tests\Schema\SchemaA;
 use PSX\Schema\Tests\Schema\SchemaB;
 
@@ -44,6 +45,21 @@ class ChangelogGeneratorTest extends SchemaTestCase
         $expect = [
             'Type "LocationA" was removed',
             'Type "LocationB" was added',
+        ];
+
+        $this->assertEquals($expect, $actual);
+    }
+
+    public function testGenerateComplex(): void
+    {
+        $schemaA = $this->schemaManager->getSchema(SchemaSource::fromFile(__DIR__ . '/resource/format_change_old.json'))->getDefinitions();
+        $schemaB = $this->schemaManager->getSchema(SchemaSource::fromFile(__DIR__ . '/resource/format_change_new.json'))->getDefinitions();
+
+        $generator = new ChangelogGenerator();
+
+        $actual = iterator_to_array($generator->generate($schemaA, $schemaB), false);
+        $expect = [
+            'Property "Comment.createdTime" (string) format has changed from "NULL" to "date-time"',
         ];
 
         $this->assertEquals($expect, $actual);

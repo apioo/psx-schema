@@ -1,0 +1,44 @@
+{
+  "definitions": {
+    "Comment": {
+      "description": "Represents a comment attached to a record.",
+      "type": "struct",
+      "properties": {
+        "id": {
+          "description": "Unique identifier of the comment.",
+          "type": "string"
+        },
+        "createdTime": {
+          "description": "Timestamp when the comment was created.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastUpdatedTime": {
+          "description": "Timestamp when the comment was last updated.",
+          "type": "string"
+        },
+        "text": {
+          "description": "The comment text content.",
+          "type": "string"
+        },
+        "parentCommentId": {
+          "description": "ID of parent comment if threaded.",
+          "type": "string"
+        },
+        "reactions": {
+          "description": "List of user reactions on the comment.",
+          "type": "array",
+          "schema": {
+            "type": "reference",
+            "target": "Comment_Reaction"
+          }
+        },
+        "author": {
+          "description": "User who created the comment.",
+          "type": "reference",
+          "target": "Comment_Author"
+        }
+      }
+    }
+  }
+}
