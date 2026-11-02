@@ -23,8 +23,10 @@ namespace PSX\Schema\Tests\Parser;
 use PSX\Schema\Parser;
 use PSX\Schema\Tests\Parser\Popo\ArrayInArray;
 use PSX\Schema\Tests\Parser\Popo\Form_Element;
+use PSX\Schema\Tests\Parser\Popo\PublicPropertiesDto;
 use PSX\Schema\Type\ArrayPropertyType;
 use PSX\Schema\Type\NumberPropertyType;
+use PSX\Schema\Type\StringPropertyType;
 use PSX\Schema\Type\StructDefinitionType;
 
 /**
@@ -66,5 +68,30 @@ class PopoTest extends ParserTestCase
         $array = $items->getSchema();
         $this->assertInstanceOf(ArrayPropertyType::class, $array);
         $this->assertInstanceOf(NumberPropertyType::class, $array->getSchema());
+    }
+
+    public function testPropertyWithoutDefaultValue(): void
+    {
+        $deprecations = [];
+        set_error_handler(static function (int $errno, string $errstr) use (&$deprecations): bool {
+            $deprecations[] = $errstr;
+            return true;
+        }, E_DEPRECATED);
+
+        try {
+            $parser = new Parser\Popo();
+            $schema = $parser->parse(PublicPropertiesDto::class);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $deprecations);
+
+        $object = $schema->getDefinitions()->getType($schema->getRoot());
+        $this->assertInstanceOf(StructDefinitionType::class, $object);
+
+        $foo = $object->getProperty('foo');
+        $this->assertInstanceOf(StringPropertyType::class, $foo);
+        $this->assertNull($foo->getDefault());
     }
 }

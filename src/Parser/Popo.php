@@ -205,7 +205,7 @@ class Popo implements ParserInterface
             $this->parseScalarAnnotations($annotations, $type);
         }
 
-        $defaultValue = $reflection->getDefaultValue();
+        $defaultValue = $reflection->hasDefaultValue() ? $reflection->getDefaultValue() : null;
         if ($type instanceof StringPropertyType && is_string($defaultValue) && $defaultValue !== '') {
             $type->setDefault($defaultValue);
         }
